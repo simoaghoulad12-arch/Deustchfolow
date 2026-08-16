@@ -457,3 +457,58 @@ für Details und Gegenmaßnahmen je Risiko.
 
 Kein Schritt aus diesem Plan wurde in diesem Quality Gate umgesetzt —
 reine Analyse und Festlegung, wie gefordert.
+
+---
+
+## 11. Nachtrag — Einfachheits-/Overengineering-Check
+
+Zweiter Quality-Gate-Durchlauf mit explizitem Fokus auf Einfachheit. Prüfung
+der bisherigen Empfehlungen (Punkte 1–10) auf unnötige Komplexität:
+
+**Bleibt unverändert (kein Overengineering):**
+- Monorepo (pnpm + Turborepo) ist gerechtfertigt durch echten Bedarf an
+  geteilten Typen zwischen `apps/web` und `apps/api` (`Role`, `CEFRLevel`,
+  `Entitlement`) — kein Selbstzweck.
+- Ein einziger NestJS-Service mit Modulen (`auth`, `users`, `learning`,
+  `tutors`, `bookings`, …) ist der richtige Schnitt für das MVP. Kein
+  Microservice-Split — dafür gibt es aktuell keinen technischen Grund
+  (kein unabhängiges Skalierungsbedürfnis einzelner Module, kein Team-
+  Schnitt, der das rechtfertigt).
+- `packages/ui`, `packages/config`, `packages/types`, `packages/database`
+  sind bereits minimal und jeweils durch einen konkreten Zweck
+  gerechtfertigt — keine zusätzlichen Packages nötig.
+- Trennung `User` / `UserProfile` / `LearningProfile` bleibt bestehen —
+  explizit vom Auftrag gefordert, nicht optional, und kostet nur eine
+  zusätzliche 1:1-Tabelle pro klar getrenntem Zweck.
+- Vierschichtiges Modell Identity → Role → Subscription → Entitlement
+  bleibt bestehen — das ist die Kernanforderung ("Premium nicht als Rolle")
+  und lässt sich nicht weiter vereinfachen, ohne das eigentliche Problem
+  (Premium wird sonst zum Rollenproblem) wieder einzuführen.
+
+**Wird vereinfacht (Scope-Reduktion gegenüber Punkt 9/10 oben):**
+- **`EntitlementGrant`-Tabelle wird aus dem Phase-2-Scope gestrichen.**
+  Für den Start reichen plan-basierte Entitlements
+  (`PLAN_ENTITLEMENTS[subscription.plan]`, reine Config, keine Tabelle).
+  Manuelle Einzel-Freischaltungen (Support-Trial, Beta-Zugang) sind ein
+  echtes, aber noch nicht akutes Bedürfnis — die Tabelle wird erst
+  angelegt, wenn ein konkretes Feature sie braucht. `canAccess(user,
+  entitlement)` bleibt als Funktionssignatur stabil; die Implementierung
+  kann intern von "nur Plan-Lookup" auf "Plan-Lookup + Grants" erweitert
+  werden, ohne den Aufrufer zu ändern.
+- **`AuditLog`-Tabelle wird aus dem Phase-2-Scope gestrichen.** Wird erst
+  gebaut, wenn tatsächlich Admin-/Support-Werkzeuge entstehen (die es in
+  Phase 2 noch nicht gibt). Bis dahin gäbe es nichts, das sie befüllen
+  würde.
+- **`DataExportRequest`-Tabelle wird aus dem Phase-2-Scope gestrichen.**
+  Wird erst gebaut, wenn das Datenexport-Feature selbst gebaut wird.
+- **`NotificationPreference` bleibt weiterhin nur Konzept**, keine Tabelle
+  vor Phase 2.
+
+**Ergebnis:** Der minimal notwendige Phase-2-Datenbank-Scope reduziert sich
+auf `User` (angepasst), `UserProfile`, `LearningProfile`, `Subscription`,
+`PasswordResetToken`, sowie Auth.js' eigene `Session`/`Account`/
+`VerificationToken`-Modelle. Das ersetzt die längere Liste unter Punkt 10
+("Database Changes"). Alle gestrichenen Tabellen bleiben in diesem
+Dokument als bewusst *aufgeschobene*, nicht *verworfene* Erweiterungen
+festgehalten — die Architektur (Punkt 1, `canAccess()`-Vertrag) unterstützt
+sie ohne Redesign, sobald sie gebraucht werden.
