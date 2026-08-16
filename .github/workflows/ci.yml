@@ -7,9 +7,17 @@ on:
 
 env:
   # Placeholder connection string so Prisma can validate/generate the
-  # client. Not a real secret — no database is contacted in this pipeline.
+  # client. Not a real secret — no database is contacted in this pipeline
+  # (tests mock Prisma; Next.js pages that touch the database are
+  # dynamically rendered and never executed at build time).
   DATABASE_URL: 'postgresql://postgres:postgres@localhost:5432/deutschflow_ci'
   DIRECT_DATABASE_URL: 'postgresql://postgres:postgres@localhost:5432/deutschflow_ci'
+  # Dummy, non-secret value — only used to satisfy requireEnv()/module
+  # signing in tests and build; never a real credential.
+  SERVICE_TOKEN_SECRET: 'ci-only-dummy-secret-not-real'
+  APP_URL: 'http://localhost:3000'
+  NEST_API_URL: 'http://localhost:4000/api/v1'
+  NEXT_PUBLIC_API_URL: 'http://localhost:4000/api/v1'
 
 jobs:
   ci:

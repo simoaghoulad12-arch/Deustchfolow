@@ -4,9 +4,11 @@ DeutschFlow ist eine Plattform zum Deutschlernen von A1 bis C1 mit
 kostenpflichtigen Zusatzservices (echte Konversation, Tutor-Stunden,
 Bewerbungstraining, Prüfungsvorbereitung) für den Weg nach Deutschland/EU.
 
-Dieses Repository befindet sich in **Phase 1: Technisches Fundament**. Es
-enthält ein produktionsnahes Monorepo-Grundgerüst — noch keine vollständige
-Lernplattform, keine Zahlungen, keine KI-Integration und keine Fake-Daten.
+Dieses Repository befindet sich in **Phase 2: Authentication & User
+Foundation**. Es enthält ein produktionsnahes Monorepo mit Registrierung,
+Login, Session-Verwaltung, E-Mail-Verifizierung, Passwort-Reset und einem
+Subscription-/Entitlement-Modell — noch keine vollständige Lernplattform,
+keine Zahlungen, keine KI-Integration und keine Fake-Daten.
 
 ## Tech-Stack
 
@@ -42,22 +44,37 @@ deutschflow/
 - **Frontend (`apps/web`):** Next.js App Router, server-first, mobile-first
   gestaltet. Aktuell nur eine minimale Landingpage.
 - **Backend (`apps/api`):** NestJS mit modularer Struktur unter
-  `src/modules/*` (`auth`, `users`, `learning`, `progress`, `ai-tutor`,
-  `tutors`, `bookings`, `payments`). Die Module sind bewusst als leere
-  Architektur-Platzhalter angelegt — Business-Logik folgt modulweise in
-  späteren Phasen. Alle Endpunkte liegen unter dem versionierten Prefix
-  `/api/v1`.
-- **Datenbank (`packages/database`):** Prisma-Schema mit minimalem
-  `User`-Modell (UUID-Primärschlüssel, `createdAt`/`updatedAt`,
-  Rollen-Enum, Index auf `role`). Das vollständige Datenmodell
-  (Lerninhalte, Buchungen, Zahlungen, …) wird phasenweise ergänzt.
-- **Rollenmodell:** `GUEST`, `STUDENT_FREE`, `STUDENT_PREMIUM`, `TUTOR`,
-  `CONTENT_EDITOR`, `ADMIN` — zentral definiert in `packages/types`, in
-  Prisma als `Role`-Enum gespiegelt. Autorisierungslogik folgt in Phase 2.
+  `src/modules/*` (`auth`, `users`, `learning`, `entitlements`, `progress`,
+  `ai-tutor`, `tutors`, `bookings`, `payments`). `auth` stellt die global
+  angewendeten `AuthGuard`/`RolesGuard` (Authorization), `users` und
+  `learning` liefern die "me"-Endpunkte für Profil/Lernprofil,
+  `entitlements` löst Subscription → Entitlements auf. Alle Endpunkte
+  liegen unter dem versionierten Prefix `/api/v1`.
+- **Authentication vs. Authorization:** Next.js (`apps/web`) besitzt die
+  Authentication — eigenes, Auth.js-schema-kompatibles Session-Modul
+  (siehe `docs/architecture-decisions/`, Abschnitt 12, warum kein
+  `next-auth`-Package). NestJS besitzt die Authorization — jeder Request
+  trägt ein kurzlebiges, serverseitig signiertes Service-Token, nie die
+  Browser-Session direkt.
+- **Datenbank (`packages/database`):** Prisma-Schema mit `User`,
+  `UserProfile`, `LearningProfile`, `Subscription`, `PasswordResetToken`,
+  `Session`, `Account`, `VerificationToken`. Das vollständige Lern- und
+  Marketplace-Datenmodell folgt in späteren Phasen.
+- **Rollenmodell:** `STUDENT`, `TUTOR`, `CONTENT_EDITOR`, `SUPPORT`,
+  `ADMIN` — zentral in `packages/types`, in Prisma als `Role`-Enum
+  gespiegelt. `GUEST` ist bewusst keine DB-Rolle (Abwesenheit einer
+  Session).
+- **Premium/Entitlements:** `Subscription.plan` (`FREE`/`PREMIUM`/`PRO`)
+  ist von `Role` getrennt. Feature-Zugriff läuft ausschließlich über
+  `canAccess(user, entitlement)`, nie über `user.role === 'PREMIUM'` —
+  siehe `packages/types/src/entitlement.ts` (`PLAN_ENTITLEMENTS`).
 - **Geteilte Packages:** `types` (Domänentypen), `ui` (UI-Utilities wie
   `cn()` als Basis für spätere shadcn/ui-Komponenten), `config`
-  (TypeScript-/ESLint-/Prettier-Konfiguration — eine Quelle der Wahrheit
-  für Code-Qualität in allen Apps/Packages).
+  (TypeScript-/ESLint-/Prettier-Konfiguration), `database` (Prisma) — alle
+  vier haben jetzt einen echten `build`-Schritt (`tsc`), damit sie auch
+  von kompiliertem Node-Code (z. B. `apps/api`'s `dist/`) zur Laufzeit
+  konsumiert werden können, nicht nur von Bundlern wie Next.js oder
+  ts-basierten Testrunnern.
 
 ## Lokale Installation
 
@@ -84,11 +101,18 @@ Es werden **niemals echte Secrets committet** — `.env`-Dateien sind in
 
 | Variable | Verwendet von | Sichtbarkeit |
 |---|---|---|
-| `DATABASE_URL` | `packages/database`, `apps/api` | server-only |
-| `DIRECT_DATABASE_URL` | `packages/database`, `apps/api` | server-only (Migrations bei Connection Pooling) |
+| `DATABASE_URL` | `packages/database`, `apps/api`, `apps/web` | server-only |
+| `DIRECT_DATABASE_URL` | `packages/database`, `apps/api`, `apps/web` | server-only (Migrations bei Connection Pooling) |
 | `NODE_ENV` | `apps/api` | server-only |
 | `PORT` | `apps/api` | server-only |
+| `SERVICE_TOKEN_SECRET` | `apps/api`, `apps/web` | server-only — muss in beiden Apps identisch sein |
+| `APP_URL` | `apps/web` | server-only (Links in E-Mails) |
+| `NEST_API_URL` | `apps/web` | server-only (Next.js → NestJS, nie der Browser) |
 | `NEXT_PUBLIC_API_URL` | `apps/web` | öffentlich (Browser) |
+
+`apps/web` besitzt jetzt auch `DATABASE_URL`, weil Next.js die
+Authentication direkt gegen dieselbe Postgres-Datenbank betreibt (siehe
+Architekturentscheidung oben).
 
 Server-only Secrets dürfen ausschließlich in `apps/api` bzw.
 `packages/database` verwendet werden — niemals in `apps/web`, außer als
@@ -135,6 +159,14 @@ pnpm db:migrate       # Migration lokal anwenden (benötigt laufendes PostgreSQL
 ## Status & Nicht-Ziele dieser Phase
 
 Bewusst **nicht** enthalten (folgt in späteren Phasen): Stripe/SEPA,
-Tutor-Marktplatz-Logik, Video/Audio, KI-Provider-Integration, vollständige
-Authentifizierung/Autorisierung, vollständiges A1–C1-Curriculum,
-Admin-Dashboard, Testdaten/Fake-Daten.
+Tutor-Marktplatz-Logik, Video/Audio, KI-Provider-Integration, vollständiges
+A1–C1-Curriculum, Admin-Dashboard, echter E-Mail-Versand (nur ein
+Dev-Console-Provider), Testdaten/Fake-Daten.
+
+## Architekturentscheidungen
+
+Ausführlich dokumentiert unter
+[`docs/architecture-decisions/`](docs/architecture-decisions/) —
+Identity/Role/Subscription/Entitlement-Trennung, Session-Strategie
+(DB-Sessions statt JWT, mit Begründung), Next.js/NestJS-Verantwortlichkeiten
+und der Request-Flow zwischen beiden.

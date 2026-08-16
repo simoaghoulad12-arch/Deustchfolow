@@ -1,4 +1,5 @@
-import { Button } from '@/components/ui/button';
+import Link from 'next/link';
+import { Button, buttonVariants } from '@/components/ui/button';
 
 export default function HomePage() {
   return (
@@ -6,6 +7,11 @@ export default function HomePage() {
       <header className="border-b border-border">
         <div className="container flex h-16 items-center justify-between">
           <span className="text-lg font-semibold">DeutschFlow</span>
+          <nav className="flex items-center gap-2">
+            <Link href="/login" className={buttonVariants({ variant: 'outline' })}>
+              Anmelden
+            </Link>
+          </nav>
         </div>
       </header>
 
@@ -27,7 +33,9 @@ export default function HomePage() {
         </p>
 
         <div className="flex flex-col gap-4 sm:flex-row">
-          <Button size="lg">Deutsch lernen</Button>
+          <Link href="/register" className={buttonVariants({ size: 'lg' })}>
+            Deutsch lernen
+          </Link>
           <Button size="lg" variant="outline">
             Mehr erfahren
           </Button>

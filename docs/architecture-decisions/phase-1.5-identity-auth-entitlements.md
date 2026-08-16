@@ -512,3 +512,48 @@ auf `User` (angepasst), `UserProfile`, `LearningProfile`, `Subscription`,
 Dokument als bewusst *aufgeschobene*, nicht *verworfene* Erweiterungen
 festgehalten — die Architektur (Punkt 1, `canAccess()`-Vertrag) unterstützt
 sie ohne Redesign, sobald sie gebraucht werden.
+
+---
+
+## 12. Implementierungshinweis (Phase 2) — Abweichung dokumentiert vor Umsetzung
+
+**Betrifft:** Punkt 3/4 ("Auth.js mit Prisma Adapter und Database Sessions").
+
+**Befund während der Implementierung:** Das `next-auth`/Auth.js-Package
+unterstützt seinen **Credentials-Provider (E-Mail+Passwort) nicht in
+Kombination mit der `"database"`-Session-Strategie** — das ist eine
+dokumentierte, bewusste Einschränkung von Auth.js selbst (Begründung des
+Projekts: Credentials-Logins sind nicht Teil des OAuth-Modells, für das
+Auth.js primär gebaut ist). Beide zuvor getroffenen Entscheidungen —
+"Login läuft über E-Mail+Passwort" (Aufgabenstellung Phase 2) und
+"Sessions sind DB-gestützt, nicht JWT" (Punkt 3 dieses Dokuments) — sind
+mit dem `next-auth`-Package **in Kombination** nicht direkt umsetzbar, ohne
+den internen Provider-Mechanismus zu umgehen.
+
+**Entscheidung:** Die DB-Session-Strategie bleibt unverändert bestehen
+(Punkt 3 wird **nicht** revidiert). Umgesetzt wird sie jedoch **ohne das
+`next-auth`-Package selbst**, sondern durch:
+
+- ein Prisma-Schema, das mit dem von Auth.js erwarteten Schema kompatibel
+  bleibt (`Session`, `Account`, `VerificationToken` – letztere zwei aktuell
+  ungenutzt, aber vorbereitet für künftiges OAuth),
+- ein kleines, selbst geschriebenes Session-Modul in `apps/web/lib/auth/`
+  (Session erzeugen/lesen/löschen direkt über Prisma, opakes
+  Cookie-Token), das exakt die gleiche Semantik hat wie Auth.js'
+  `"database"`-Strategie (Cookie → Session-Zeile → User), nur ohne die
+  Provider-Abstraktion, die wir für reines Credentials-Login nicht
+  brauchen.
+
+**Begründung, warum das die einfachere Lösung ist (nicht die
+aufwendigere):** `next-auth` zu installieren und seine Credentials/
+Database-Inkompatibilität durch Workarounds zu umgehen, wäre *mehr*
+Code und *mehr* Abhängigkeitsfläche als eine ~100-Zeilen-Session-Bibliothek,
+die genau das tut, was gebraucht wird. Das erfüllt Punkt 8 ("keine
+unnötige Komplexität") direkter als das Package zu erzwingen. Sobald
+OAuth-Login (Google etc.) tatsächlich gebraucht wird, ist das
+DB-Schema bereits kompatibel — `next-auth` kann dann für die
+OAuth-Provider ergänzt werden, ohne die bestehenden Tabellen zu ändern.
+
+**Kein Einfluss auf:** Rollen-Modell, Request-Flow Next.js→NestJS,
+Entitlement-Architektur, Security-Anforderungen — alle bleiben wie in
+Punkt 1–11 festgelegt.

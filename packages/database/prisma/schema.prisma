@@ -1,7 +1,8 @@
-// DeutschFlow – Foundation schema.
-// This intentionally only contains the minimal structures needed to prove
-// out the database package. The full domain model (learning content,
-// bookings, payments, ...) is designed and added in later phases.
+// DeutschFlow – Phase 2 schema: Identity, Authentication, Learning Profile,
+// Subscription. See docs/architecture-decisions/phase-1.5-identity-auth-entitlements.md
+// for the architecture this implements. Entitlements are intentionally NOT a
+// database table in this phase — they are derived from Subscription.plan via
+// a central PLAN_ENTITLEMENTS config (see packages/types).
 
 generator client {
   provider = "prisma-client-js"
@@ -14,25 +15,178 @@ datasource db {
 }
 
 enum Role {
-  GUEST
-  STUDENT_FREE
-  STUDENT_PREMIUM
+  STUDENT
   TUTOR
   CONTENT_EDITOR
+  SUPPORT
   ADMIN
 }
 
-/// Minimal user record. Extended profile, learning progress, bookings, etc.
-/// are added as their own models in later phases.
-model User {
-  id    String @id @default(uuid()) @db.Uuid
-  email String @unique
+enum SubscriptionPlan {
+  FREE
+  PREMIUM
+  PRO
+}
 
-  role Role @default(STUDENT_FREE)
+enum SubscriptionStatus {
+  ACTIVE
+  CANCELLED
+  EXPIRED
+}
+
+enum CEFRLevel {
+  A1
+  A2
+  B1
+  B2
+  C1
+}
+
+/// Identity + authentication. Deliberately minimal — display data lives in
+/// UserProfile, learning state in LearningProfile (see architecture decision
+/// record, section 5).
+model User {
+  id            String    @id @default(uuid()) @db.Uuid
+  email         String    @unique
+  emailVerified DateTime? @map("email_verified")
+  passwordHash  String    @map("password_hash")
+
+  role Role @default(STUDENT)
+
+  deletedAt DateTime? @map("deleted_at")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+
+  profile             UserProfile?
+  learningProfile     LearningProfile?
+  subscriptions       Subscription[]
+  passwordResetTokens PasswordResetToken[]
+  sessions            Session[]
+  accounts            Account[]
+
+  @@index([role])
+  @@map("users")
+}
+
+/// 1:1 — personal/display data. Kept separate from User so auth-critical
+/// code paths never need to load it (data minimization).
+model UserProfile {
+  userId String @id @db.Uuid
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  displayName String? @map("display_name")
+  avatarUrl   String? @map("avatar_url")
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  @@index([role])
-  @@map("users")
+  @@map("user_profiles")
+}
+
+/// 1:1 — learning-specific state, owned conceptually by the future learning
+/// system. Separated from UserProfile so it can evolve independently.
+model LearningProfile {
+  userId String @id @db.Uuid
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  nativeLanguage      String?    @map("native_language")
+  explanationLanguage String?    @map("explanation_language")
+  timezone            String?
+  learningGoal        String?    @map("learning_goal")
+  currentLevel        CEFRLevel? @map("current_level")
+  targetLevel         CEFRLevel? @map("target_level")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("learning_profiles")
+}
+
+/// The commercial relationship, deliberately separate from Role. FREE is a
+/// real, first-class plan — every user has exactly one active Subscription.
+/// Entitlements are derived from `plan`, not stored here (see
+/// packages/types PLAN_ENTITLEMENTS).
+model Subscription {
+  id     String @id @default(uuid()) @db.Uuid
+  userId String @db.Uuid
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  plan   SubscriptionPlan   @default(FREE)
+  status SubscriptionStatus @default(ACTIVE)
+
+  startedAt DateTime  @default(now()) @map("started_at")
+  expiresAt DateTime? @map("expires_at")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([userId, status])
+  @@map("subscriptions")
+}
+
+/// Single-use, short-TTL, hashed token for password reset. Never store the
+/// raw token — only its hash (see lib/auth/tokens.ts).
+model PasswordResetToken {
+  id     String @id @default(uuid()) @db.Uuid
+  userId String @db.Uuid
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  tokenHash String    @unique @map("token_hash")
+  expiresAt DateTime  @map("expires_at")
+  usedAt    DateTime? @map("used_at")
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([userId])
+  @@map("password_reset_tokens")
+}
+
+/// Database-backed session. Deleting a row logs that session out
+/// immediately — see architecture decision record section 3 for why this
+/// was chosen over stateless JWT sessions.
+model Session {
+  id     String @id @default(uuid()) @db.Uuid
+  userId String @db.Uuid
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  sessionToken String   @unique @map("session_token")
+  expiresAt    DateTime @map("expires_at")
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([userId])
+  @@map("sessions")
+}
+
+/// Reserved for future OAuth providers (Auth.js-compatible shape). Unused
+/// in Phase 2 — DeutschFlow only supports email/password login so far.
+model Account {
+  id     String @id @default(uuid()) @db.Uuid
+  userId String @db.Uuid
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  type              String
+  provider          String
+  providerAccountId String  @map("provider_account_id")
+  refreshToken      String? @map("refresh_token") @db.Text
+  accessToken       String? @map("access_token") @db.Text
+  expiresAt         Int?    @map("expires_at")
+  tokenType         String? @map("token_type")
+  scope             String?
+  idToken           String? @map("id_token") @db.Text
+  sessionState      String? @map("session_state")
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+/// Single-use, short-TTL, hashed token for email verification.
+model VerificationToken {
+  identifier String
+  tokenHash  String   @unique @map("token_hash")
+  expiresAt  DateTime @map("expires_at")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  @@id([identifier, tokenHash])
+  @@map("verification_tokens")
 }

@@ -1,8 +1,7 @@
 import { Module } from '@nestjs/common';
+import { UsersController } from './users.controller';
 
-/**
- * Placeholder module reserving the architectural slot for Users.
- * Business logic is implemented in a later phase.
- */
-@Module({})
+@Module({
+  controllers: [UsersController],
+})
 export class UsersModule {}
