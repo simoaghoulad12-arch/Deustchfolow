@@ -1,0 +1,9 @@
+{
+  "extends": "@deutschflow/config/base.json",
+  "compilerOptions": {
+    "module": "CommonJS",
+    "moduleResolution": "Node",
+    "noEmit": true
+  },
+  "include": ["src"]
+}

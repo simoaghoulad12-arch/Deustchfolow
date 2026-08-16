@@ -1,0 +1,38 @@
+// DeutschFlow – Foundation schema.
+// This intentionally only contains the minimal structures needed to prove
+// out the database package. The full domain model (learning content,
+// bookings, payments, ...) is designed and added in later phases.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_DATABASE_URL")
+}
+
+enum Role {
+  GUEST
+  STUDENT_FREE
+  STUDENT_PREMIUM
+  TUTOR
+  CONTENT_EDITOR
+  ADMIN
+}
+
+/// Minimal user record. Extended profile, learning progress, bookings, etc.
+/// are added as their own models in later phases.
+model User {
+  id    String @id @default(uuid()) @db.Uuid
+  email String @unique
+
+  role Role @default(STUDENT_FREE)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([role])
+  @@map("users")
+}
