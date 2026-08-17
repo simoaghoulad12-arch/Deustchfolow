@@ -8,7 +8,7 @@ import { UsersModule } from './modules/users/users.module';
 import { LearningModule } from './modules/learning/learning.module';
 import { EntitlementsModule } from './modules/entitlements/entitlements.module';
 import { ProgressModule } from './modules/progress/progress.module';
-import { AiTutorModule } from './modules/ai-tutor/ai-tutor.module';
+import { AiModule } from './modules/ai/ai.module';
 import { TutorsModule } from './modules/tutors/tutors.module';
 import { BookingsModule } from './modules/bookings/bookings.module';
 import { PaymentsModule } from './modules/payments/payments.module';
@@ -25,10 +25,10 @@ import { PaymentsModule } from './modules/payments/payments.module';
     UsersModule,
     LearningModule,
     EntitlementsModule,
+    AiModule,
     // Remaining domain modules — still architectural placeholders, filled
     // in module by module in the phases that follow.
     ProgressModule,
-    AiTutorModule,
     TutorsModule,
     BookingsModule,
     PaymentsModule,

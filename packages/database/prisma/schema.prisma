@@ -72,6 +72,11 @@ enum VocabularyStatus {
   MASTERED
 }
 
+enum ConversationRole {
+  USER
+  ASSISTANT
+}
+
 /// Identity + authentication. Deliberately minimal — display data lives in
 /// UserProfile, learning state in LearningProfile (see architecture decision
 /// record, section 5).
@@ -98,6 +103,10 @@ model User {
   lessonProgress    LessonProgress[]
   skillProgress     UserSkillProgress[]
   vocabularyEntries UserVocabulary[]
+
+  conversationSessions ConversationSession[]
+  writingSubmissions   WritingSubmission[]
+  aiUsageRecords       AiUsageRecord[]
 
   @@index([role])
   @@map("users")
@@ -311,8 +320,9 @@ model Lesson {
   /// objectives (Postgres native array).
   objectives       String[]
 
-  exercises Exercise[]
-  progress  LessonProgress[]
+  exercises          Exercise[]
+  progress           LessonProgress[]
+  writingSubmissions WritingSubmission[]
 
   /// Simple self-relation: this lesson requires the lessons in
   /// `prerequisites` to be completed first. Deliberately not a separate
@@ -500,4 +510,94 @@ model UserVocabulary {
   @@id([userId, vocabularyId])
   @@index([userId, nextReviewAt])
   @@map("user_vocabulary")
+}
+
+// ---------------------------------------------------------------------------
+// Phase 4 — AI Learning System.
+// The Learning Engine works without this layer (see architecture decision
+// record phase-4-ai-learning-system.md, section 30 of the spec: AI
+// suggests/analyzes/explains, the Learning Engine decides progress). AI
+// never writes to LessonProgress/UserSkillProgress directly — only via
+// ProgressService, and AI-generated exercises are never persisted as
+// Exercise/Question/Option rows (kept ephemeral in message metadata).
+// ---------------------------------------------------------------------------
+
+model ConversationSession {
+  id     String @id @default(uuid()) @db.Uuid
+  userId String @db.Uuid
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  title String?
+
+  messages ConversationMessage[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([userId])
+  @@map("conversation_sessions")
+}
+
+model ConversationMessage {
+  id        String              @id @default(uuid()) @db.Uuid
+  sessionId String              @db.Uuid
+  session   ConversationSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  role    ConversationRole
+  content String
+
+  /// Structured AI response pieces (corrections, suggestedExercise, skill,
+  /// level) for ASSISTANT messages only — never used for USER messages.
+  /// Kept as Json deliberately: this is diagnostic AI output tied 1:1 to
+  /// a single message, not shared curriculum data (see architecture
+  /// decision record, section 5).
+  metadata Json?
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([sessionId])
+  @@map("conversation_messages")
+}
+
+model WritingSubmission {
+  id       String  @id @default(uuid()) @db.Uuid
+  userId   String  @db.Uuid
+  user     User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lessonId String? @db.Uuid
+  lesson   Lesson? @relation(fields: [lessonId], references: [id])
+
+  text          String
+  correctedText String? @map("corrected_text")
+
+  /// Structured list of detected errors (category, original, correction,
+  /// explanation, severity) — see architecture decision record, section 5,
+  /// for why this is Json rather than child tables.
+  errors Json?
+
+  /// The AI's CEFR assessment of this submission. Deliberately NOT written
+  /// to LearningProfile.currentLevel automatically (spec section 10) — a
+  /// human or a later, separate decision layer acts on it.
+  detectedLevel CEFRLevel? @map("detected_level")
+  score         Int?
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([userId])
+  @@map("writing_submissions")
+}
+
+/// One row per AI request that counted against a user's usage limit —
+/// event log, not a pre-aggregated counter, so "today's usage" is a
+/// simple COUNT(*) query (see architecture decision record, section 3,
+/// for why this is DB-backed rather than the in-memory rate limiter).
+model AiUsageRecord {
+  id      String @id @default(uuid()) @db.Uuid
+  userId  String @db.Uuid
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  feature String
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([userId, feature, createdAt])
+  @@map("ai_usage_records")
 }

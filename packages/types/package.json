@@ -10,6 +10,9 @@
     "lint": "eslint src --ext .ts",
     "clean": "rm -rf dist"
   },
+  "dependencies": {
+    "zod": "^3.23.8"
+  },
   "devDependencies": {
     "@deutschflow/config": "workspace:*",
     "@typescript-eslint/eslint-plugin": "^8.8.1",

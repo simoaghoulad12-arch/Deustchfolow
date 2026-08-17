@@ -36,5 +36,9 @@ import { VocabularyService } from './vocabulary/vocabulary.service';
     ProgressService,
     VocabularyService,
   ],
+  // ProgressService is the only path the AI module (or anything else) is
+  // allowed to update progress through — see AiModule / exercise-
+  // generation.service.ts and architecture decision record section 1.
+  exports: [ProgressService],
 })
 export class LearningModule {}

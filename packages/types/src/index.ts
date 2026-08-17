@@ -7,3 +7,4 @@ export * from './entitlement';
 export * from './auth';
 export * from './exercise';
 export * from './progress';
+export * from './ai';
