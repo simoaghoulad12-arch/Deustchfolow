@@ -121,8 +121,27 @@ Keine kritischen oder blockierenden UX-Probleme gefunden. Die Oberfläche bleibt
 
 ---
 
+## 11. Nachtrag — technische Vorbereitung während BLOCKED (kein Key)
+
+Auf ausdrückliche Anweisung: Status bleibt `BLOCKED — REAL AI EVALUATION PENDING`, kein `ai:eval`-Lauf, keine Fake-Ergebnisse, kein kostenpflichtiger Call. Stattdessen wurde die Wartezeit für Provider-Robustheit genutzt (ausschließlich in `claude.provider.ts`, der einzigen Datei mit SDK-Import, plus einem optionalen Feld auf dem provider-agnostischen Interface — siehe ADR
+`docs/architecture-decisions/phase-4-ai-learning-system.md`, Abschnitt 7 für die volle Begründung):
+
+1. **Timeout:** `ClaudeProvider` setzt jetzt explizit `timeout: 30_000`ms statt den SDK-Default (10 Minuten) zu erben. Per `ANTHROPIC_TIMEOUT_MS` überschreibbar.
+2. **Abort/Cancellation:** `AiCompletionRequest`/`AiCompletionOptions` haben ein neues optionales `signal?: AbortSignal`, durchgereicht bis zu `client.messages.create()`. Kein bestehender Aufrufer setzt aktuell einen Signal (keine Controller-Verdrahtung erzwungen) — die Fähigkeit existiert und ist getestet.
+3. **Retry-Strategie:** Kein eigener Retry-Loop. `maxRetries` wird jetzt explizit gesetzt (Default 2, per `ANTHROPIC_MAX_RETRIES` überschreibbar) statt implizit vom SDK übernommen — das SDK selbst retried bereits mit Exponential Backoff auf 408/409/429/5xx.
+4. **Fehlerbehandlung 429/5xx/Timeout:** `ClaudeProvider` normalisiert jeden SDK-Fehler zu einem einzelnen, konsistent geformten `Error` (`Claude API error (status=…, type=…): …`), bevor er `AiService`s bestehenden catch-all erreicht — kein neuer Verzweigungscode in `AiService`/`TutorService`/`CorrectionService`.
+5. **Sichere Logging-Regeln:** Die normalisierte Fehlermeldung stammt ausschließlich aus Statuscode + Fehlerklassenname + Anthropics eigenem Response-Text — nie aus Nutzereingabe/Prompt. Per Test verifiziert (`never includes request content in the normalized error message`).
+6. **Tests für Provider-Ausfälle/Timeout/Rate-Limit/ungültige Ausgabe:** `claude.provider.spec.ts` von 5 auf 16 Tests erweitert — Client-Konfiguration (Timeout/Retries inkl. Env-Override und ungültigem Override), Signal-Weiterleitung, sauberer Reject bei Abbruch (`APIUserAbortError`), Normalisierung von `RateLimitError` (429), `InternalServerError` (5xx) und `APIConnectionTimeoutError`, sowie ein generischer Fang für einen Nicht-Error-Wurf.
+7. **Eval-Suite unverändert:** `cases.ts`, `heuristics.ts`, `run-eval.ts`, `types.ts`, `heuristics.spec.ts` — `git diff` bestätigt keine Änderung.
+
+Ergebnis: `pnpm lint`/`typecheck`/`test`/`build` erneut vollständig grün (194 Tests: 164 API + 30 Web). `ai:real-test` und `ai:eval` brechen weiterhin sauber ab, ohne Key, ohne Fake-Daten — unverändertes Verhalten, nur die dahinterliegende Provider-Robustheit ist jetzt stärker.
+
+---
+
 ## STATUS
 
-**PHASE 4.5 = BLOCKED (kein ANTHROPIC_API_KEY verfügbar)**
+**PHASE 4.5 = BLOCKED**
 
-Alle technisch verifizierbaren Teile sind grün: `pnpm lint`, `pnpm typecheck`, `pnpm test` (183/183: 153 API + 30 Web), `pnpm build` — alle erfolgreich. Ein echter Fehler wurde gefunden und behoben (Abschnitt 5). Security- und UX-Review ohne kritische Findings. Die Infrastruktur für den echten AI-Quality-Gate (Real-Provider-Test, 26-Fälle-Eval-Suite, Heuristiken, Kostenschätzung) ist vollständig, getestet und reproduzierbar — **aber noch nicht mit einem echten Provider ausgeführt worden**, weil kein Key verfügbar war. Diese Phase kann erst als vollständig **PASSED** gelten, wenn Schritt 1 aus Abschnitt 10 nachgeholt wurde.
+**Reason:** Kein echter ANTHROPIC_API_KEY verfügbar.
+
+Alle technisch verifizierbaren Teile sind grün: `pnpm lint`, `pnpm typecheck`, `pnpm test` (194/194: 164 API + 30 Web), `pnpm build` — alle erfolgreich. Ein echter Fehler wurde gefunden und behoben (Abschnitt 5). Security- und UX-Review ohne kritische Findings. Provider-Robustheit (Timeout, Retry, Abort, Fehlerbehandlung, Logging) gehärtet und getestet (Abschnitt 11). Die Infrastruktur für den echten AI-Quality-Gate (Real-Provider-Test, 26-Fälle-Eval-Suite, Heuristiken, Kostenschätzung) ist vollständig, getestet und reproduzierbar — **aber noch nicht mit einem echten Provider ausgeführt worden**, weil kein Key verfügbar war. Diese Phase kann erst als vollständig **PASSED** gelten, wenn ein echter Key bereitgestellt und `ai:eval` real ausgeführt wurde.

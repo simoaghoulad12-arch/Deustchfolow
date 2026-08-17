@@ -25,6 +25,8 @@ export interface AiCompletionRequest {
   history?: AiConversationTurn[];
   responseSchema: AiResponseSchema;
   maxOutputTokens?: number;
+  /** Optional cancellation — a caller (e.g. a future request-abort handler) can cancel an in-flight completion. Providers must reject cleanly, never hang or crash, when this fires. */
+  signal?: AbortSignal;
 }
 
 export interface AiCompletionResult {

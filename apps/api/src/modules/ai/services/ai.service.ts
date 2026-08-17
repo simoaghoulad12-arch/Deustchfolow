@@ -22,6 +22,8 @@ export interface AiCompletionOptions<T> {
   schemaName: string;
   schemaDescription: string;
   maxOutputTokens?: number;
+  /** Optional cancellation, passed straight through to the provider (see AiProvider.complete). */
+  signal?: AbortSignal;
 }
 
 /**
@@ -61,6 +63,7 @@ export class AiService {
         userMessage: options.userMessage,
         history: options.history,
         maxOutputTokens: options.maxOutputTokens,
+        signal: options.signal,
         responseSchema: {
           name: options.schemaName,
           description: options.schemaDescription,

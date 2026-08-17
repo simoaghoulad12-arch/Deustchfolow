@@ -81,3 +81,51 @@ metadata `Json?` nur für strukturierte AI-Antwortteile),
 keine eigene "Prompt"- oder "AI-Provider-Log"-Tabelle in der
 Produktionsdatenbank (Observability läuft über strukturierte
 Log-Ausgabe, siehe Abschnitt 27 der Aufgabenstellung, nicht über die DB).
+
+## 7. Phase 4.5 — Provider-Robustheit: Timeout explizit, Retry ohne eigene Schleife
+
+Ohne echten `ANTHROPIC_API_KEY` konnte die inhaltliche KI-Qualität in
+Phase 4.5 nicht geprüft werden (siehe
+`docs/ai-evaluation/phase-4.5-report.md`). Die Zeit wurde stattdessen für
+die Provider-Robustheit genutzt — vier kleine, eng begründete Änderungen,
+alle ausschließlich in `claude.provider.ts` (der einzigen Datei, die das
+SDK importieren darf) plus einem optionalen Feld auf dem
+provider-agnostischen `AiCompletionRequest`/`AiCompletionOptions`:
+
+- **Timeout explizit, nicht der SDK-Default.** `@anthropic-ai/sdk`s
+  Default ist 10 Minuten — für einen interaktiven Tutor-/Schreib-Chat
+  viel zu lang. Entscheidung: 30s Default, per `ANTHROPIC_TIMEOUT_MS`
+  überschreibbar (gleiches Muster wie `ANTHROPIC_MODEL`).
+- **Retry: kein eigener Mechanismus.** Das SDK retried bereits selbst
+  mit Exponential Backoff auf 408/409/429/5xx und Connection-Errors,
+  respektiert `Retry-After`/`Retry-After-Ms`-Header (siehe
+  `node_modules/@anthropic-ai/sdk/core.js`, `shouldRetry`/
+  `retryRequest`). Eine zweite, selbstgebaute Retry-Schleife darüber
+  hätte Latenz und Requestzahl bei jedem transienten Fehler
+  unkontrolliert vervielfacht. Entscheidung: `maxRetries` nur explizit
+  setzen (Default 2, per `ANTHROPIC_MAX_RETRIES` überschreibbar) statt
+  den impliziten SDK-Default zu übernehmen — das ist die gesamte
+  "Retry-Strategie", bewusst die einfachste Lösung, die bereits
+  ausführlich getestet ist (vom SDK selbst).
+- **Abort/Cancellation als Fähigkeit, nicht als erzwungene Verdrahtung.**
+  `AiCompletionRequest`/`AiCompletionOptions` bekommen ein optionales
+  `signal?: AbortSignal`, durchgereicht bis zu
+  `client.messages.create(body, { signal })`. Kein bestehender Aufrufer
+  (TutorService/CorrectionService) setzt aktuell einen Signal — das wäre
+  eine Controller-Ebene-Änderung, die niemand angefordert hat und die
+  hier nicht spekulativ nachgebaut wird. Die Fähigkeit existiert und ist
+  getestet (sauberer Reject statt Hänger bei Abbruch), ohne bestehende
+  Aufrufer zu verändern.
+- **Fehler-Normalisierung statt Fehler-Taxonomie.** `ClaudeProvider`
+  fängt jeden SDK-Fehler und wandelt ihn in einen einzelnen, immer
+  gleich geformten `Error` um (`Claude API error (status=…, type=…):
+  …`), bevor er `AiService`s bereits bestehenden catch-all erreicht.
+  Keine neuen Fehlerklassen, keine Verzweigung in
+  `AiService`/`TutorService`/`CorrectionService` — die greifen weiterhin
+  blind jeden Fehler ab und lösen denselben kontrollierten Fallback aus.
+  Der Effekt: `AiObservabilityLogger`s `errorMessage`-Feld wird bei
+  jedem Claude-spezifischen Fehler informativer (429 vs. 500 vs. Timeout
+  vs. Abbruch unterscheidbar), ohne dass sich an dessen Form oder an der
+  "nie Nutzerinhalt loggen"-Regel etwas ändert — `error.message` der
+  SDK-Fehlerklassen stammt aus Anthropics eigener Fehler-Response, nie
+  aus unserem Request/Prompt.
