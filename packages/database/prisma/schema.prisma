@@ -108,6 +108,16 @@ model User {
   writingSubmissions   WritingSubmission[]
   aiUsageRecords       AiUsageRecord[]
 
+  /// 1:1 marketplace profile — only meaningful when role = TUTOR, but kept
+  /// as an optional relation (not a role-gated table) so a user who
+  /// changes role never loses history (see architecture decision record).
+  tutorProfile TutorProfile?
+
+  studentBookings Booking[]              @relation("StudentBookings")
+  reviewsWritten  Review[]
+  documentRequirements DocumentRequirement[]
+  germanyPath     GermanyPath?
+
   @@index([role])
   @@map("users")
 }
@@ -529,12 +539,21 @@ model ConversationSession {
 
   title String?
 
+  /// Phase 5: when set, this conversation is a Real-Life Simulation run
+  /// rather than a general tutor chat. Deliberately reuses this existing
+  /// model instead of a parallel "SimulationSession" table — the shape
+  /// (userId, role, content, metadata, ownership) is identical; only the
+  /// originating catalog entry differs (see architecture decision record).
+  simulationId String?     @db.Uuid
+  simulation   Simulation? @relation(fields: [simulationId], references: [id])
+
   messages ConversationMessage[]
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
   @@index([userId])
+  @@index([simulationId])
   @@map("conversation_sessions")
 }
 
@@ -600,4 +619,431 @@ model AiUsageRecord {
 
   @@index([userId, feature, createdAt])
   @@map("ai_usage_records")
+}
+
+// ---------------------------------------------------------------------------
+// Phase 5 — Tutor Marketplace + Germany Coach Foundation + Real-Life
+// Simulations. See docs/architecture-decisions/phase-5-marketplace-and-
+// germany-coach.md for the decisions behind the shapes below (double-booking
+// exclusion constraint, timezone storage, document storage abstraction,
+// reuse of ConversationSession for simulations, why "Offering" and not
+// "Service" as the model name).
+// No real payments yet — Booking's shape anticipates Stripe Connect
+// (Phase 6) without implementing it.
+// ---------------------------------------------------------------------------
+
+enum TutorVerificationStatus {
+  PENDING
+  UNDER_REVIEW
+  VERIFIED
+  REJECTED
+}
+
+/// Coarse marketplace categories a tutor/offering can be filtered and
+/// discovered by. Deliberately a fixed enum (not free text) so
+/// marketplace filters are exact-match, indexable queries.
+enum TutorSpecialty {
+  CONVERSATION
+  EXAM_PREPARATION
+  APPLICATION_COACHING
+  PRONUNCIATION
+  BUSINESS_GERMAN
+  EVERYDAY_GERMAN
+  PROFESSIONAL_GERMAN
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  COMPLETED
+  CANCELLED
+  NO_SHOW
+  REFUND_PENDING
+  REFUNDED
+}
+
+enum GermanyGoalType {
+  WORK
+  STUDY
+  APPRENTICESHIP
+  FAMILY
+  LANGUAGE
+  JOB_SEARCH
+  OTHER
+}
+
+/// Fixed, ordered path — a deliberately simple linear model, not a
+/// workflow engine (spec: "noch keine umfangreiche Rechtsdatenbank
+/// bauen, zuerst saubere Architektur"). Order in this enum IS the step
+/// order; GermanyPathService computes "done/current/upcoming" from where
+/// `currentStep` sits in this list, nothing is stored per-step.
+enum GermanyPathStep {
+  ORIENTATION
+  GERMAN_LEVEL
+  QUALIFICATION_CHECK
+  JOB_OR_APPRENTICESHIP
+  DOCUMENTS
+  VISA_RESIDENCE_CHECK
+  ENTRY
+  FIRST_STEPS
+  GERMANY_EVERYDAY_LIFE
+}
+
+enum OfficialSourceTopic {
+  VISA
+  WORK_PERMIT
+  RECOGNITION_OF_QUALIFICATIONS
+  JOB_SEARCH
+  HOUSING
+  HEALTH_INSURANCE
+  LANGUAGE
+  GENERAL
+}
+
+enum DocumentRequirementStatus {
+  MISSING
+  UPLOADED
+  UNDER_REVIEW
+  VERIFIED
+  EXPIRED
+  NOT_REQUIRED
+}
+
+enum SimulationCategory {
+  HOUSING
+  DOCTOR
+  BANK
+  GOVERNMENT_OFFICE
+  TRANSPORT
+  SHOPPING
+  PHONE_CALL
+  WORK
+  STUDY
+  PACKAGE
+  NEIGHBORS
+}
+
+enum CareerModuleType {
+  CV
+  COVER_LETTER
+  INTERVIEW
+  WORKPLACE_GERMAN
+  PROFESSIONAL_EMAIL
+}
+
+/// Marketplace-facing tutor identity. Kept separate from User the same
+/// way UserProfile/LearningProfile are (data minimization, independent
+/// evolution) — only meaningful once role = TUTOR, but not role-gated at
+/// the DB level so a role change never destroys history.
+///
+/// Every field here is either tutor-provided (never presented as a
+/// verified fact by the platform — see TutorsController) or computed on
+/// read from real rows (averageRating/completedSessions are NOT stored
+/// here — see TutorProfilesService — to avoid a stale-cache-invalidation
+/// problem for numbers that must always be accurate).
+model TutorProfile {
+  userId String @id @db.Uuid
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  headline        String?
+  aboutMe         String?          @db.Text
+  languages       String[]
+  teachingLevels  CEFRLevel[]      @map("teaching_levels")
+  specialties     TutorSpecialty[]
+  yearsExperience Int?             @map("years_experience")
+  /// IANA timezone, e.g. "Europe/Berlin" — the tutor's own reference
+  /// frame for TutorAvailabilityRule (spec section 4: "Speichere intern
+  /// UTC, zeige lokal in der Zeitzone des Nutzers" — this is the "local"
+  /// side of that for the tutor).
+  timezone String
+
+  verificationStatus TutorVerificationStatus @default(PENDING) @map("verification_status")
+  /// Admin kill switch — deactivated tutors disappear from marketplace
+  /// listings/search without deleting their history (bookings, reviews).
+  isActive Boolean @default(true) @map("is_active")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  verificationDocuments  TutorVerificationDocument[]
+  availabilityRules      TutorAvailabilityRule[]
+  availabilityExceptions TutorAvailabilityException[]
+  offerings              Offering[]
+  bookings               Booking[]                     @relation("TutorBookings")
+  reviews                Review[]
+
+  @@index([verificationStatus])
+  @@index([isActive])
+  @@map("tutor_profiles")
+}
+
+/// Metadata only — the actual bytes live behind DocumentStorageService
+/// (private bucket / local dev equivalent, see architecture decision
+/// record). `storageKey` is an opaque object key, never a public URL;
+/// access is always mediated through a short-lived signed URL minted
+/// server-side after an ownership/admin check.
+model TutorVerificationDocument {
+  id      String       @id @default(uuid()) @db.Uuid
+  tutorId String       @db.Uuid
+  tutor   TutorProfile @relation(fields: [tutorId], references: [userId], onDelete: Cascade)
+
+  /// Tutor-supplied label (e.g. "Goethe-Zertifikat C2") — descriptive
+  /// only, never itself proof of anything; verification is the admin
+  /// decision recorded on TutorProfile.verificationStatus, not per-file.
+  label      String
+  storageKey String   @map("storage_key")
+  uploadedAt DateTime @default(now()) @map("uploaded_at")
+
+  @@index([tutorId])
+  @@map("tutor_verification_documents")
+}
+
+/// Recurring weekly availability, expressed in the tutor's OWN local
+/// timezone (TutorProfile.timezone) and weekday — not UTC. Storing it
+/// this way (rather than pre-computed UTC windows) is what makes it
+/// correctly survive DST: "every Monday 9-17 Berlin time" is a stable
+/// rule; its UTC instant shifts twice a year, which is exactly what a
+/// naive UTC-stored rule would get wrong. Converted to UTC on read by
+/// TutorAvailabilityService using luxon for a specific requested date.
+model TutorAvailabilityRule {
+  id      String       @id @default(uuid()) @db.Uuid
+  tutorId String       @db.Uuid
+  tutor   TutorProfile @relation(fields: [tutorId], references: [userId], onDelete: Cascade)
+
+  /// 0 = Sunday .. 6 = Saturday (JS Date convention), local to the
+  /// tutor's timezone.
+  weekday     Int
+  /// Minutes since local midnight, e.g. 540 = 09:00.
+  startMinute Int @map("start_minute")
+  endMinute   Int @map("end_minute")
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([tutorId])
+  @@map("tutor_availability_rules")
+}
+
+/// A single absolute-time override — vacation/blocked time. Stored as a
+/// real UTC instant range (not weekday+minute) since exceptions are
+/// concrete dates, not recurring patterns.
+model TutorAvailabilityException {
+  id      String       @id @default(uuid()) @db.Uuid
+  tutorId String       @db.Uuid
+  tutor   TutorProfile @relation(fields: [tutorId], references: [userId], onDelete: Cascade)
+
+  startAt   DateTime @map("start_at") @db.Timestamptz
+  endAt     DateTime @map("end_at") @db.Timestamptz
+  isBlocked Boolean  @default(true) @map("is_blocked")
+  reason    String?
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([tutorId, startAt])
+  @@map("tutor_availability_exceptions")
+}
+
+/// A tutor's bookable offering — deliberately named "Offering", not
+/// "Service", to avoid colliding with the unrelated `TutorService`
+/// class in apps/api/src/modules/ai (the AI tutor chat service).
+model Offering {
+  id      String       @id @default(uuid()) @db.Uuid
+  tutorId String       @db.Uuid
+  tutor   TutorProfile @relation(fields: [tutorId], references: [userId], onDelete: Cascade)
+
+  title           String
+  description     String?          @db.Text
+  category        TutorSpecialty
+  durationMinutes Int              @map("duration_minutes")
+  /// Integer minor units (cents), never a float — no payment processing
+  /// yet (Phase 6), but the shape must already be Stripe-Connect-ready.
+  priceCents      Int              @map("price_cents")
+  currency        String           @default("EUR")
+  cefrLevels      CEFRLevel[]      @map("cefr_levels")
+  isActive        Boolean          @default(true) @map("is_active")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  bookings Booking[]
+
+  @@index([tutorId])
+  @@index([isActive])
+  @@map("offerings")
+}
+
+/// The booking record. Payment fields intentionally absent — Phase 6
+/// (Stripe Connect) adds them without reshaping this model (student,
+/// tutor, offering, time range, status are already exactly what a
+/// payment integration needs to hang off of).
+///
+/// Double-booking prevention: enforced at the database level via a
+/// PostgreSQL EXCLUDE constraint (added by raw SQL in the migration —
+/// Prisma's schema DSL cannot express this) on (tutorId, tsrange(startAt,
+/// endAt)) WHERE status IN ('PENDING','CONFIRMED'). The application-level
+/// pre-check in BookingsService exists only for a fast, friendly error —
+/// the DB constraint is the actual race-condition-proof guarantee. See
+/// architecture decision record.
+model Booking {
+  id String @id @default(uuid()) @db.Uuid
+
+  studentId String @db.Uuid
+  student   User   @relation("StudentBookings", fields: [studentId], references: [id])
+
+  tutorId String       @db.Uuid
+  tutor   TutorProfile @relation("TutorBookings", fields: [tutorId], references: [userId])
+
+  offeringId String   @db.Uuid
+  offering   Offering @relation(fields: [offeringId], references: [id])
+
+  startAt DateTime @map("start_at") @db.Timestamptz
+  endAt   DateTime @map("end_at") @db.Timestamptz
+  /// IANA timezone the student booked in — display-only, never used for
+  /// authorization or overlap logic (which always operates in UTC).
+  studentTimezone String @map("student_timezone")
+
+  status BookingStatus @default(PENDING)
+
+  notes              String? @db.Text
+  cancellationReason String? @map("cancellation_reason")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  review Review?
+
+  @@index([tutorId, startAt])
+  @@index([studentId])
+  @@index([status])
+  @@map("bookings")
+}
+
+/// One review per booking, only after COMPLETED (enforced in
+/// ReviewsService, not just at the DB level — see architecture decision
+/// record for why a partial unique index alone isn't sufficient here).
+model Review {
+  id        String  @id @default(uuid()) @db.Uuid
+  bookingId String  @unique @db.Uuid
+  booking   Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+  studentId String @db.Uuid
+  student   User   @relation(fields: [studentId], references: [id])
+
+  tutorId String       @db.Uuid
+  tutor   TutorProfile @relation(fields: [tutorId], references: [userId])
+
+  rating   Int
+  comment  String? @db.Text
+  isHidden Boolean @default(false) @map("is_hidden")
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([tutorId])
+  @@map("reviews")
+}
+
+/// "Wo bin ich auf meinem Weg nach Deutschland?" — one row per user,
+/// intentionally minimal (see GermanyPathStep doc comment above for why
+/// this isn't a workflow-engine table).
+model GermanyPath {
+  userId String @id @db.Uuid
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  goalType    GermanyGoalType @map("goal_type")
+  currentStep GermanyPathStep @default(ORIENTATION) @map("current_step")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("germany_paths")
+}
+
+/// A trusted, citable source for Germany-relevant information — the
+/// architecture for facts, not the facts themselves (spec section 13:
+/// "keine Anforderungen erfinden"). No content/requirement text is
+/// invented anywhere in this phase; DocumentRequirement.notes stays
+/// free-text/optional until real content is sourced from rows here.
+model OfficialSource {
+  id             String              @id @default(uuid()) @db.Uuid
+  title          String
+  url            String
+  authority      String
+  topic          OfficialSourceTopic
+  language       String
+  lastVerifiedAt DateTime?           @map("last_verified_at")
+  active         Boolean             @default(true)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  documentRequirements DocumentRequirement[]
+
+  @@index([topic])
+  @@index([active])
+  @@map("official_sources")
+}
+
+/// A document a user may need for their Germany goal. `documentType` and
+/// `notes` are deliberately free text at this Foundation stage — actual
+/// per-goal requirement rules are future work sourced from
+/// OfficialSource rows, never invented here (spec section 14).
+model DocumentRequirement {
+  id     String @id @default(uuid()) @db.Uuid
+  userId String @db.Uuid
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  documentType String                     @map("document_type")
+  goal         GermanyGoalType
+  context      String?
+  status       DocumentRequirementStatus  @default(MISSING)
+  sourceId     String?                    @db.Uuid @map("source_id")
+  source       OfficialSource?            @relation(fields: [sourceId], references: [id])
+  notes        String?                    @db.Text
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([userId])
+  @@map("document_requirements")
+}
+
+/// Real-Life Simulation catalog entry — content only, no per-user
+/// session state stored here (a run is a ConversationSession with
+/// simulationId set, see above).
+model Simulation {
+  id             String             @id @default(uuid()) @db.Uuid
+  title          String
+  category       SimulationCategory
+  cefrLevel      CEFRLevel          @map("cefr_level")
+  situation      String             @db.Text
+  goal           String             @db.Text
+  roles          String[]
+  expectedSkills LearningSkill[]    @map("expected_skills")
+  isActive       Boolean            @default(true) @map("is_active")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  conversationSessions ConversationSession[]
+
+  @@index([category])
+  @@index([cefrLevel])
+  @@map("simulations")
+}
+
+/// Career practice catalog entry — a prepared topic, not an
+/// auto-generated deliverable (spec section 16: "noch keine komplexe
+/// KI-Automatisierung erzwingen").
+model CareerModule {
+  id          String           @id @default(uuid()) @db.Uuid
+  type        CareerModuleType
+  title       String
+  description String           @db.Text
+  cefrLevel   CEFRLevel?       @map("cefr_level")
+  isActive    Boolean          @default(true) @map("is_active")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([type])
+  @@map("career_modules")
 }
