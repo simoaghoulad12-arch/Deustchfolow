@@ -1,5 +1,6 @@
 import { ForbiddenException, NotFoundException } from '@nestjs/common';
 import { TutorService } from '../tutor.service';
+import { AiValidationError } from '../ai-errors';
 import type { PrismaService } from '../../../../common/prisma/prisma.service';
 import type { AiService } from '../ai.service';
 import type { AiContextBuilder } from '../../context/ai-context-builder.service';
@@ -167,6 +168,19 @@ describe('TutorService', () => {
     expect(result.failed).toBe(true);
     expect(result.suggestedExercise).toBeNull();
     expect(deps.prisma.client.conversationMessage.create).toHaveBeenCalledTimes(2);
+  });
+
+  it('falls back the same way when the AI response fails schema validation (invalid structured output)', async () => {
+    const deps = buildDeps();
+    (deps.aiService.complete as jest.Mock).mockRejectedValue(
+      new AiValidationError('AI response did not match the expected schema.'),
+    );
+    const service = buildService(deps);
+
+    const result = await service.sendMessage('user-1', { message: 'Hallo' });
+
+    expect(result.failed).toBe(true);
+    expect(result.suggestedExercise).toBeNull();
   });
 
   it('never passes the raw user message into the prompt builder — only context and depth', async () => {

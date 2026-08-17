@@ -1,5 +1,6 @@
 import { ForbiddenException } from '@nestjs/common';
 import { CorrectionService } from '../correction.service';
+import { AiValidationError } from '../ai-errors';
 import type { PrismaService } from '../../../../common/prisma/prisma.service';
 import type { AiService } from '../ai.service';
 import type { AiContextBuilder } from '../../context/ai-context-builder.service';
@@ -122,6 +123,26 @@ describe('CorrectionService', () => {
         data: expect.objectContaining({ correctedText: null, detectedLevel: null, score: null }),
       }),
     );
+  });
+
+  it('falls back the same way when the AI response fails schema validation (invalid structured output)', async () => {
+    const deps = buildDeps();
+    (deps.aiService.complete as jest.Mock).mockRejectedValue(
+      new AiValidationError('AI response did not match the expected schema.'),
+    );
+    const service = new CorrectionService(
+      deps.aiService,
+      deps.contextBuilder,
+      deps.promptManager,
+      deps.usageService,
+      deps.entitlementsService,
+      deps.prisma,
+    );
+
+    const result = await service.correctWriting('user-1', { text: 'Ich gehe zu Schule.' });
+
+    expect(result.failed).toBe(true);
+    expect(result.correctedText).toBe('Ich gehe zu Schule.');
   });
 
   it('rejects with ForbiddenException when the plan has no AI writing entitlement at all', async () => {

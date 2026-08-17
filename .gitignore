@@ -30,6 +30,11 @@ pnpm-debug.log*
 # Testing
 coverage/
 
+# AI evaluation suite — generated raw output from a real provider run
+# (apps/api scripts/ai-eval/run-eval.ts), not a source file. The curated
+# docs/ai-evaluation/phase-4.5-report.md stays committed.
+docs/ai-evaluation/*-raw-results.json
+
 # IDE / OS
 .vscode/*
 !.vscode/extensions.json
