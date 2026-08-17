@@ -20,5 +20,5 @@ export async function registerAction(formData: FormData): Promise<void> {
     redirect(`/register?error=${encodeURIComponent(result.error)}`);
   }
 
-  redirect('/settings');
+  redirect('/dashboard');
 }

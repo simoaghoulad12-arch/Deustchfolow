@@ -42,6 +42,36 @@ enum CEFRLevel {
   C1
 }
 
+enum LearningSkill {
+  GRAMMAR
+  VOCABULARY
+  READING
+  LISTENING
+  WRITING
+  SPEAKING
+}
+
+enum ExerciseType {
+  MULTIPLE_CHOICE
+  FILL_BLANK
+  TRANSLATION
+  TRUE_FALSE
+  ORDER_WORDS
+  SHORT_ANSWER
+}
+
+enum ProgressStatus {
+  NOT_STARTED
+  IN_PROGRESS
+  COMPLETED
+}
+
+enum VocabularyStatus {
+  NEW
+  LEARNING
+  MASTERED
+}
+
 /// Identity + authentication. Deliberately minimal — display data lives in
 /// UserProfile, learning state in LearningProfile (see architecture decision
 /// record, section 5).
@@ -63,6 +93,11 @@ model User {
   passwordResetTokens PasswordResetToken[]
   sessions            Session[]
   accounts            Account[]
+
+  exerciseAttempts  ExerciseAttempt[]
+  lessonProgress    LessonProgress[]
+  skillProgress     UserSkillProgress[]
+  vocabularyEntries UserVocabulary[]
 
   @@index([role])
   @@map("users")
@@ -189,4 +224,280 @@ model VerificationToken {
 
   @@id([identifier, tokenHash])
   @@map("verification_tokens")
+}
+
+// ---------------------------------------------------------------------------
+// Phase 3 — Learning Engine.
+// Level -> Course -> Module -> Lesson -> Exercise -> Question -> Option.
+// See docs/architecture-decisions/phase-3-learning-engine.md for the small
+// set of implementation decisions made while building this out (e.g. why
+// "Answers" and "Exercise Attempts" are one model, why Course/Module
+// progress is computed rather than stored).
+// ---------------------------------------------------------------------------
+
+/// One row per CEFR level. `code` reuses the shared CEFRLevel enum rather
+/// than a free-text string.
+model Level {
+  id          String    @id @default(uuid()) @db.Uuid
+  code        CEFRLevel @unique
+  name        String
+  description String?
+  order       Int       @unique
+
+  courses Course[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("levels")
+}
+
+model Course {
+  id      String @id @default(uuid()) @db.Uuid
+  levelId String @db.Uuid
+  level   Level  @relation(fields: [levelId], references: [id], onDelete: Cascade)
+
+  title       String
+  slug        String  @unique
+  description String?
+  order       Int
+
+  modules Module[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@unique([levelId, order])
+  @@index([levelId])
+  @@map("courses")
+}
+
+/// A module groups lessons within a course. Named `Module` for the domain
+/// concept — unrelated to NestJS's own `@Module()` decorator.
+model Module {
+  id       String @id @default(uuid()) @db.Uuid
+  courseId String @db.Uuid
+  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  title       String
+  slug        String
+  description String?
+  order       Int
+
+  lessons Lesson[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@unique([courseId, slug])
+  @@unique([courseId, order])
+  @@index([courseId])
+  @@map("modules")
+}
+
+model Lesson {
+  id       String @id @default(uuid()) @db.Uuid
+  moduleId String @db.Uuid
+  module   Module @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+
+  title            String
+  slug             String        @unique
+  description      String?
+  skill            LearningSkill
+  difficulty       Int           @default(1)
+  estimatedMinutes Int           @map("estimated_minutes")
+  order            Int
+  /// Structured, not free-text JSON — a simple string list of learning
+  /// objectives (Postgres native array).
+  objectives       String[]
+
+  exercises Exercise[]
+  progress  LessonProgress[]
+
+  /// Simple self-relation: this lesson requires the lessons in
+  /// `prerequisites` to be completed first. Deliberately not a separate
+  /// "requirement rule" model — a plain many-to-many is enough for now.
+  prerequisites Lesson[] @relation("LessonPrerequisites")
+  unlocks       Lesson[] @relation("LessonPrerequisites")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@unique([moduleId, order])
+  @@index([moduleId])
+  @@map("lessons")
+}
+
+model Exercise {
+  id       String @id @default(uuid()) @db.Uuid
+  lessonId String @db.Uuid
+  lesson   Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  type        ExerciseType
+  prompt      String
+  /// Shown to the student only after they answer — never in the initial
+  /// exercise payload (see EntitlementsService-style access discipline in
+  /// apps/api/src/modules/learning/exercises).
+  explanation String?
+  difficulty  Int          @default(1)
+  order       Int
+
+  questions Question[]
+  attempts  ExerciseAttempt[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@unique([lessonId, order])
+  @@index([lessonId])
+  @@map("exercises")
+}
+
+/// Structured answer options instead of an unstructured text blob. Most
+/// exercises have exactly one Question; the extra level exists so a future
+/// multi-part exercise (e.g. several blanks) doesn't need a schema change.
+model Question {
+  id         String   @id @default(uuid()) @db.Uuid
+  exerciseId String   @db.Uuid
+  exercise   Exercise @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
+
+  text          String
+  order         Int     @default(0)
+  /// Expected answer for text-graded types (FILL_BLANK, TRANSLATION,
+  /// SHORT_ANSWER). Unused for option-graded types (MULTIPLE_CHOICE,
+  /// TRUE_FALSE, ORDER_WORDS), which grade via `Option` rows instead.
+  correctAnswer String? @map("correct_answer")
+
+  options Option[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([exerciseId])
+  @@map("questions")
+}
+
+/// For MULTIPLE_CHOICE/TRUE_FALSE: `isCorrect` marks the right choice. For
+/// ORDER_WORDS: `order` is the word's correct position and `isCorrect` is
+/// unused. Never sent to students with `isCorrect` populated before they
+/// answer — see the exercises service.
+model Option {
+  id         String   @id @default(uuid()) @db.Uuid
+  questionId String   @db.Uuid
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  text      String
+  isCorrect Boolean @default(false) @map("is_correct")
+  order     Int     @default(0)
+
+  @@index([questionId])
+  @@map("options")
+}
+
+/// One event per submitted answer — covers both "Answers" and "Exercise
+/// Attempts" from the spec, which describe the same data (see
+/// architecture decision record). Immutable once written; no updatedAt.
+model ExerciseAttempt {
+  id         String   @id @default(uuid()) @db.Uuid
+  userId     String   @db.Uuid
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  exerciseId String   @db.Uuid
+  exercise   Exercise @relation(fields: [exerciseId], references: [id])
+
+  /// Raw submitted answer: selected Option id for option-graded types, or
+  /// free text for text-graded types. Kept as a single string — no nested
+  /// JSON needed for one answer per attempt.
+  answer        String
+  isCorrect     Boolean @map("is_correct")
+  attemptNumber Int     @map("attempt_number")
+  timeSpentMs   Int?    @map("time_spent_ms")
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([userId, exerciseId])
+  @@index([exerciseId])
+  @@map("exercise_attempts")
+}
+
+/// The single source of truth for progress. Course/Module-level progress
+/// is computed from these rows on read, not stored redundantly (see
+/// architecture decision record).
+model LessonProgress {
+  userId   String @db.Uuid
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lessonId String @db.Uuid
+  lesson   Lesson @relation(fields: [lessonId], references: [id])
+
+  status         ProgressStatus @default(NOT_STARTED)
+  /// 0-100, clamped by the service layer — not worth a DB check
+  /// constraint for this MVP.
+  progress       Int            @default(0)
+  completedAt    DateTime?      @map("completed_at")
+  lastAccessedAt DateTime?      @map("last_accessed_at")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@id([userId, lessonId])
+  @@index([lessonId])
+  @@map("lesson_progress")
+}
+
+/// Per-skill standing, updated by rule-based logic today and potentially
+/// by an AI layer later (see architecture decision record, section 29 —
+/// the learning engine itself never depends on that layer existing).
+model UserSkillProgress {
+  userId String        @db.Uuid
+  user   User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  skill  LearningSkill
+
+  level CEFRLevel?
+  score Int        @default(0)
+
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@id([userId, skill])
+  @@map("user_skill_progress")
+}
+
+model Vocabulary {
+  id              String    @id @default(uuid()) @db.Uuid
+  word            String
+  normalizedWord  String    @map("normalized_word")
+  translation     String
+  level           CEFRLevel
+  partOfSpeech    String?   @map("part_of_speech")
+  exampleSentence String?   @map("example_sentence")
+
+  userEntries UserVocabulary[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@unique([normalizedWord, level])
+  @@index([level])
+  @@map("vocabulary")
+}
+
+/// Spaced-repetition data only — no algorithm here. `nextReviewAt` is
+/// simply a field a future review-scheduling service reads and writes;
+/// see architecture decision record / spec section 11.
+model UserVocabulary {
+  userId       String     @db.Uuid
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  vocabularyId String     @db.Uuid
+  vocabulary   Vocabulary @relation(fields: [vocabularyId], references: [id], onDelete: Cascade)
+
+  status         VocabularyStatus @default(NEW)
+  correctCount   Int              @default(0) @map("correct_count")
+  incorrectCount Int              @default(0) @map("incorrect_count")
+  lastReviewedAt DateTime?        @map("last_reviewed_at")
+  nextReviewAt   DateTime?        @map("next_review_at")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@id([userId, vocabularyId])
+  @@index([userId, nextReviewAt])
+  @@map("user_vocabulary")
 }

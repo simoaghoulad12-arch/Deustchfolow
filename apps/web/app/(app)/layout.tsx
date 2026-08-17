@@ -13,10 +13,23 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   return (
     <div className="flex min-h-screen flex-col">
       <header className="border-b border-border">
-        <div className="container flex h-16 items-center justify-between">
-          <Link href="/" className="text-lg font-semibold">
-            DeutschFlow
-          </Link>
+        <div className="container flex h-16 items-center justify-between gap-6">
+          <div className="flex items-center gap-6">
+            <Link href="/dashboard" className="text-lg font-semibold">
+              DeutschFlow
+            </Link>
+            <nav className="hidden items-center gap-4 text-sm text-muted-foreground sm:flex">
+              <Link href="/dashboard" className="hover:text-foreground">
+                Dashboard
+              </Link>
+              <Link href="/learn" className="hover:text-foreground">
+                Lernen
+              </Link>
+              <Link href="/settings" className="hover:text-foreground">
+                Einstellungen
+              </Link>
+            </nav>
+          </div>
           <form action={logoutAction}>
             <Button type="submit" variant="outline" size="default">
               Abmelden

@@ -19,5 +19,5 @@ export async function loginAction(formData: FormData): Promise<void> {
     redirect(`/login?error=${encodeURIComponent(result.error)}`);
   }
 
-  redirect('/settings');
+  redirect('/dashboard');
 }

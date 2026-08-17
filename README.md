@@ -4,11 +4,13 @@ DeutschFlow ist eine Plattform zum Deutschlernen von A1 bis C1 mit
 kostenpflichtigen Zusatzservices (echte Konversation, Tutor-Stunden,
 Bewerbungstraining, Prüfungsvorbereitung) für den Weg nach Deutschland/EU.
 
-Dieses Repository befindet sich in **Phase 2: Authentication & User
-Foundation**. Es enthält ein produktionsnahes Monorepo mit Registrierung,
-Login, Session-Verwaltung, E-Mail-Verifizierung, Passwort-Reset und einem
-Subscription-/Entitlement-Modell — noch keine vollständige Lernplattform,
-keine Zahlungen, keine KI-Integration und keine Fake-Daten.
+Dieses Repository befindet sich in **Phase 3: Learning Engine
+Foundation**. Es enthält Authentication/User-Management (Phase 2) sowie
+das technische Fundament des Lernsystems: Level → Course → Module →
+Lesson → Exercise, Übungsauswertung, Fortschrittstracking und ein
+Dashboard — noch kein fertiges A1–C1-Curriculum (nur wenige
+Beispiel-Lektionen zu Entwicklungszwecken), keine Zahlungen, keine
+KI-Integration und keine Fake-Daten in Production.
 
 ## Tech-Stack
 
@@ -58,8 +60,21 @@ deutschflow/
   Browser-Session direkt.
 - **Datenbank (`packages/database`):** Prisma-Schema mit `User`,
   `UserProfile`, `LearningProfile`, `Subscription`, `PasswordResetToken`,
-  `Session`, `Account`, `VerificationToken`. Das vollständige Lern- und
-  Marketplace-Datenmodell folgt in späteren Phasen.
+  `Session`, `Account`, `VerificationToken` sowie der Learning Engine
+  (`Level`, `Course`, `Module`, `Lesson`, `Exercise`, `Question`,
+  `Option`, `ExerciseAttempt`, `LessonProgress`, `UserSkillProgress`,
+  `Vocabulary`, `UserVocabulary`). Das vollständige Marketplace-Datenmodell
+  folgt in späteren Phasen.
+- **Learning Engine (`apps/api/src/modules/learning`):** Level → Course →
+  Module → Lesson → Exercise → Question → Option. Lesekörper unter
+  `/api/v1/levels`, `/courses`, `/lessons/:lesson[/exercises]`; Attempts
+  unter `POST /exercises/:id/attempts`; eigener Fortschritt unter
+  `GET /me/progress`. Grading ist rein regelbasiert (`exercises/grading.ts`)
+  — keine KI-Abhängigkeit (siehe
+  `docs/architecture-decisions/phase-3-learning-engine.md`). Die
+  Exercise-API liefert Optionen serverseitig geshuffelt und **ohne**
+  `isCorrect`/`correctAnswer`/`explanation`/`order`, damit ein Client die
+  richtige Antwort nicht aus der Response ablesen kann.
 - **Rollenmodell:** `STUDENT`, `TUTOR`, `CONTENT_EDITOR`, `SUPPORT`,
   `ADMIN` — zentral in `packages/types`, in Prisma als `Role`-Enum
   gespiegelt. `GUEST` ist bewusst keine DB-Rolle (Abwesenheit einer
@@ -144,9 +159,14 @@ pnpm build
 ## Datenbank
 
 ```bash
-pnpm db:generate      # Prisma Client generieren
-pnpm db:migrate       # Migration lokal anwenden (benötigt laufendes PostgreSQL)
+pnpm db:generate                                    # Prisma Client generieren
+pnpm db:migrate                                      # Migration lokal anwenden (benötigt laufendes PostgreSQL)
+pnpm --filter @deutschflow/database seed             # Dev/Test-Lerninhalte laden (A1, 1 Kurs, 2 Module, 4 Lektionen)
 ```
+
+Die Seed-Daten sind ausdrücklich **Entwicklungs-/Testdaten**, kein
+reales Curriculum (siehe `packages/database/prisma/seed.ts`) — der Seed
+verweigert die Ausführung, wenn `NODE_ENV=production` gesetzt ist.
 
 ## Sicherheitsregeln
 
@@ -159,9 +179,12 @@ pnpm db:migrate       # Migration lokal anwenden (benötigt laufendes PostgreSQL
 ## Status & Nicht-Ziele dieser Phase
 
 Bewusst **nicht** enthalten (folgt in späteren Phasen): Stripe/SEPA,
-Tutor-Marktplatz-Logik, Video/Audio, KI-Provider-Integration, vollständiges
-A1–C1-Curriculum, Admin-Dashboard, echter E-Mail-Versand (nur ein
-Dev-Console-Provider), Testdaten/Fake-Daten.
+Tutor-Marktplatz-Logik, Video-/Audio-Inhalte, KI-Provider-Integration,
+vollständiges A1–C1-Curriculum (nur wenige Beispiel-Lektionen für die
+Entwicklung), Content-Editor-Dashboard, Vocabulary-API, echter
+Spaced-Repetition-Algorithmus (nur die Datenfelder dafür), Admin-Dashboard,
+echter E-Mail-Versand (nur ein Dev-Console-Provider), Testdaten/Fake-Daten
+in Production.
 
 ## Architekturentscheidungen
 

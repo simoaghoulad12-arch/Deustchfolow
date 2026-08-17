@@ -5,3 +5,5 @@ export * from './booking-status';
 export * from './subscription';
 export * from './entitlement';
 export * from './auth';
+export * from './exercise';
+export * from './progress';
