@@ -1,9 +1,16 @@
-/** Lifecycle states of a tutor/session booking. Payment integration is a later phase. */
+/**
+ * Lifecycle states of a tutor booking. Payment integration (Stripe
+ * Connect) is Phase 6 — REFUND_PENDING/REFUNDED already exist in the
+ * shape so that phase doesn't need to reshape this enum.
+ */
 export const BookingStatus = {
-  REQUESTED: 'REQUESTED',
+  PENDING: 'PENDING',
   CONFIRMED: 'CONFIRMED',
-  CANCELLED: 'CANCELLED',
   COMPLETED: 'COMPLETED',
+  CANCELLED: 'CANCELLED',
+  NO_SHOW: 'NO_SHOW',
+  REFUND_PENDING: 'REFUND_PENDING',
+  REFUNDED: 'REFUNDED',
 } as const;
 
 export type BookingStatus = (typeof BookingStatus)[keyof typeof BookingStatus];
