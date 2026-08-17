@@ -25,6 +25,9 @@ export default async function AppLayout({ children }: { children: React.ReactNod
               <Link href="/learn" className="hover:text-foreground">
                 Lernen
               </Link>
+              <Link href="/tutors" className="hover:text-foreground">
+                Tutoren
+              </Link>
               <Link href="/ai-tutor" className="hover:text-foreground">
                 KI-Tutor
               </Link>
