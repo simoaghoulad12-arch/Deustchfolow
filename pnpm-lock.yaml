@@ -153,6 +153,9 @@ importers:
       jose:
         specifier: ^5.9.6
         version: 5.10.0
+      luxon:
+        specifier: ^3.7.2
+        version: 3.7.2
       next:
         specifier: 14.2.15
         version: 14.2.15(@babel/core@7.29.7)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -181,6 +184,9 @@ importers:
       '@types/jest':
         specifier: ^29.5.13
         version: 29.5.14
+      '@types/luxon':
+        specifier: ^3.7.4
+        version: 3.7.4
       '@types/node':
         specifier: ^20.16.11
         version: 20.19.43

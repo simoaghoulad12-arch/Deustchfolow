@@ -152,7 +152,7 @@ export default async function TutorsPage({ searchParams }: TutorsPageProps) {
             href={`/tutors/${tutor.userId}`}
             className="block rounded-lg border border-border p-5 transition-colors hover:border-primary/40"
           >
-            <div className="flex items-start justify-between gap-4">
+            <div className="flex flex-wrap items-start justify-between gap-4">
               <div className="space-y-1">
                 <p className="text-lg font-semibold">{tutor.displayName ?? 'DeutschFlow-Tutor'}</p>
                 {tutor.headline && <p className="text-sm text-muted-foreground">{tutor.headline}</p>}

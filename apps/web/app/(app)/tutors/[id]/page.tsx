@@ -3,8 +3,10 @@ import Link from 'next/link';
 import { notFound, redirect } from 'next/navigation';
 import { getSession } from '@/lib/auth/session';
 import { getTutorProfile } from '@/lib/api/tutors';
+import { getFreeSlots } from '@/lib/api/tutor-availability';
 import { SPECIALTY_LABELS, VERIFICATION_LABELS, formatPrice } from '@/lib/tutor-labels';
 import { Button } from '@/components/ui/button';
+import { FreeSlotsList } from './free-slots-list';
 
 interface TutorProfilePageProps {
   params: { id: string };
@@ -24,10 +26,18 @@ export default async function TutorProfilePage({ params }: TutorProfilePageProps
   const tutor = await getTutorProfile(session, params.id);
   if (!tutor) notFound();
 
+  const now = new Date();
+  const in7Days = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+  const freeSlots = await getFreeSlots(session, params.id, {
+    from: now.toISOString(),
+    to: in7Days.toISOString(),
+    durationMinutes: 30,
+  });
+
   return (
     <div className="mx-auto max-w-2xl space-y-8">
       <div className="space-y-3 rounded-lg border border-border p-6">
-        <div className="flex items-start justify-between gap-4">
+        <div className="flex flex-wrap items-start justify-between gap-4">
           <div className="space-y-1">
             <h1 className="text-2xl font-semibold">{tutor.displayName ?? 'DeutschFlow-Tutor'}</h1>
             {tutor.headline && <p className="text-muted-foreground">{tutor.headline}</p>}
@@ -87,6 +97,11 @@ export default async function TutorProfilePage({ params }: TutorProfilePageProps
             {tutor.yearsExperience !== null ? `${tutor.yearsExperience} Jahre` : '—'}
           </p>
         </div>
+      </section>
+
+      <section className="space-y-3">
+        <h2 className="text-sm font-medium uppercase text-muted-foreground">Nächste freie Termine</h2>
+        <FreeSlotsList slots={freeSlots} />
       </section>
 
       <section className="space-y-3">

@@ -36,6 +36,9 @@ describe('Tutors module authorization (e2e)', () => {
     ['/api/v1/tutors/me/profile'],
     ['/api/v1/tutors/me/offerings'],
     ['/api/v1/tutors/some-id/offerings'],
+    ['/api/v1/tutors/me/availability/rules'],
+    ['/api/v1/tutors/me/availability/exceptions'],
+    ['/api/v1/tutors/some-id/availability?from=2026-08-17T00:00:00.000Z&to=2026-08-18T00:00:00.000Z'],
   ])('rejects %s without a valid session token', async (path) => {
     await request(app.getHttpServer()).get(path).expect(401);
   });
@@ -58,6 +61,30 @@ describe('Tutors module authorization (e2e)', () => {
     await request(app.getHttpServer())
       .patch('/api/v1/tutors/me/offerings/some-id')
       .send({ title: 'x' })
+      .expect(401);
+  });
+
+  it('rejects POST /api/v1/tutors/me/availability/rules without a valid session token', async () => {
+    await request(app.getHttpServer())
+      .post('/api/v1/tutors/me/availability/rules')
+      .send({ weekday: 1, startMinute: 540, endMinute: 600 })
+      .expect(401);
+  });
+
+  it('rejects DELETE /api/v1/tutors/me/availability/rules/:id without a valid session token', async () => {
+    await request(app.getHttpServer()).delete('/api/v1/tutors/me/availability/rules/some-id').expect(401);
+  });
+
+  it('rejects POST /api/v1/tutors/me/availability/exceptions without a valid session token', async () => {
+    await request(app.getHttpServer())
+      .post('/api/v1/tutors/me/availability/exceptions')
+      .send({ startAt: '2026-09-01T00:00:00.000Z', endAt: '2026-09-02T00:00:00.000Z' })
+      .expect(401);
+  });
+
+  it('rejects DELETE /api/v1/tutors/me/availability/exceptions/:id without a valid session token', async () => {
+    await request(app.getHttpServer())
+      .delete('/api/v1/tutors/me/availability/exceptions/some-id')
       .expect(401);
   });
 });

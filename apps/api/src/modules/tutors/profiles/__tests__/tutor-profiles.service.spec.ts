@@ -160,8 +160,8 @@ describe('TutorProfilesService', () => {
 
       const results = await service.findMarketplace({});
 
-      expect(results[0].averageRating).toBeNull();
-      expect(results[0].reviewCount).toBe(0);
+      expect(results[0]!.averageRating).toBeNull();
+      expect(results[0]!.reviewCount).toBe(0);
     });
 
     it('filters by minRating in application code after fetching', async () => {
@@ -185,7 +185,7 @@ describe('TutorProfilesService', () => {
 
       const results = await service.findMarketplace({});
 
-      expect(results[0].verificationStatus).toBe('PENDING');
+      expect(results[0]!.verificationStatus).toBe('PENDING');
     });
   });
 

@@ -46,6 +46,24 @@ export interface TutorMarketplaceQuery {
   minRating?: number;
 }
 
+export interface OwnTutorProfile {
+  userId: string;
+  headline: string | null;
+  aboutMe: string | null;
+  languages: string[];
+  teachingLevels: CEFRLevel[];
+  specialties: TutorSpecialty[];
+  yearsExperience: number | null;
+  timezone: string;
+  verificationStatus: TutorVerificationStatus;
+}
+
+export async function getOwnTutorProfile(user: SessionUser): Promise<OwnTutorProfile | null> {
+  const response = await callNestApi('/tutors/me/profile', user);
+  if (!response.ok) return null;
+  return response.json();
+}
+
 export async function getTutors(
   user: SessionUser,
   query: TutorMarketplaceQuery,

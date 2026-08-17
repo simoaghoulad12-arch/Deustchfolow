@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
+import { UserRole } from '@deutschflow/types';
 import { getSession } from '@/lib/auth/session';
 import { logoutAction } from './actions';
 import { Button } from '@/components/ui/button';
@@ -28,6 +29,11 @@ export default async function AppLayout({ children }: { children: React.ReactNod
               <Link href="/tutors" className="hover:text-foreground">
                 Tutoren
               </Link>
+              {session.role === UserRole.TUTOR && (
+                <Link href="/tutor/availability" className="hover:text-foreground">
+                  Meine Verfügbarkeit
+                </Link>
+              )}
               <Link href="/ai-tutor" className="hover:text-foreground">
                 KI-Tutor
               </Link>
