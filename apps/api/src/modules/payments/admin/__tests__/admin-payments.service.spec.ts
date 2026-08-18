@@ -22,13 +22,13 @@ function buildPrismaMock(overrides?: {
 }
 
 describe('AdminPaymentsService', () => {
-  it('listPayments returns every Payment row ordered newest first', async () => {
+  it('listPayments returns Payment rows ordered newest first, capped at MAX_LIST_SIZE (Phase 6.5: no unbounded query)', async () => {
     const prisma = buildPrismaMock();
     const service = new AdminPaymentsService(prisma);
 
     await service.listPayments();
 
-    expect(prisma.client.payment.findMany).toHaveBeenCalledWith({ orderBy: { createdAt: 'desc' } });
+    expect(prisma.client.payment.findMany).toHaveBeenCalledWith({ orderBy: { createdAt: 'desc' }, take: 200 });
   });
 
   it('getPaymentDetail returns the payment with its refunds included, newest refund first', async () => {
@@ -52,16 +52,16 @@ describe('AdminPaymentsService', () => {
     await expect(service.getPaymentDetail('nonexistent')).rejects.toThrow(NotFoundException);
   });
 
-  it('listRefunds returns every Refund row ordered newest first', async () => {
+  it('listRefunds returns Refund rows ordered newest first, capped at MAX_LIST_SIZE', async () => {
     const prisma = buildPrismaMock();
     const service = new AdminPaymentsService(prisma);
 
     await service.listRefunds();
 
-    expect(prisma.client.refund.findMany).toHaveBeenCalledWith({ orderBy: { createdAt: 'desc' } });
+    expect(prisma.client.refund.findMany).toHaveBeenCalledWith({ orderBy: { createdAt: 'desc' }, take: 200 });
   });
 
-  it('listDisputes returns only Payment rows with disputedAt set, ordered by disputedAt descending', async () => {
+  it('listDisputes returns only Payment rows with disputedAt set, ordered by disputedAt descending, capped at MAX_LIST_SIZE', async () => {
     const prisma = buildPrismaMock();
     const service = new AdminPaymentsService(prisma);
 
@@ -70,6 +70,7 @@ describe('AdminPaymentsService', () => {
     expect(prisma.client.payment.findMany).toHaveBeenCalledWith({
       where: { disputedAt: { not: null } },
       orderBy: { disputedAt: 'desc' },
+      take: 200,
     });
   });
 });

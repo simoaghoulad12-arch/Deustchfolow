@@ -48,11 +48,14 @@ export class ReviewsService {
   }
 
   /** Public — part of a tutor's marketplace profile. Hidden (moderated) reviews never appear here, same filter TutorProfilesService's rating aggregate uses. */
+  /** Capped, not full pagination (Phase 6.5 audit finding — was an
+   * unbounded query). */
   async findVisibleForTutor(tutorId: string) {
     return this.prisma.client.review.findMany({
       where: { tutorId, isHidden: false },
       include: REVIEW_INCLUDE,
       orderBy: { createdAt: 'desc' },
+      take: 200,
     });
   }
 

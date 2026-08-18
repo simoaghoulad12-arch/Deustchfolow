@@ -72,6 +72,15 @@ describe('Tutors module authorization (e2e)', () => {
       .expect(401);
   });
 
+  it('rejects an offering priced below the Stripe EUR minimum charge (50 cents), with a valid token, via ValidationPipe', async () => {
+    const token = await signToken(UserRole.TUTOR);
+    await request(app.getHttpServer())
+      .post('/api/v1/tutors/me/offerings')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ title: 'x', category: 'CONVERSATION', durationMinutes: 30, priceCents: 10 })
+      .expect(400);
+  });
+
   it('rejects PATCH /api/v1/tutors/me/offerings/:id without a valid session token', async () => {
     await request(app.getHttpServer())
       .patch('/api/v1/tutors/me/offerings/some-id')

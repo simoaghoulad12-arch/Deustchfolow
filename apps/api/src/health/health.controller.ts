@@ -9,7 +9,7 @@ export class HealthController {
 
   @Public()
   @Get()
-  check(): HealthResponseDto {
+  check(): Promise<HealthResponseDto> {
     return this.healthService.check();
   }
 }

@@ -210,7 +210,7 @@ describe('TutorPayoutService', () => {
   });
 
   describe('getPayoutsForTutor', () => {
-    it('scopes the query to the given tutorId and orders newest first', async () => {
+    it('scopes the query to the given tutorId, orders newest first, and caps the result (Phase 6.5: no unbounded query)', async () => {
       const prisma = buildPrismaMock();
       const service = buildService(prisma);
 
@@ -219,6 +219,7 @@ describe('TutorPayoutService', () => {
       expect(prisma.client.tutorPayout.findMany).toHaveBeenCalledWith({
         where: { tutorId: 'tutor-1' },
         orderBy: { createdAt: 'desc' },
+        take: 200,
       });
     });
   });

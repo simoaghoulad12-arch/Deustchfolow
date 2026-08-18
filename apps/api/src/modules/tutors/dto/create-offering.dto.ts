@@ -20,9 +20,12 @@ export class CreateOfferingDto {
   @Max(180)
   durationMinutes!: number;
 
-  /** Integer minor units (cents) — never a float. No payment processing yet (Phase 6). */
+  /** Integer minor units (cents) — never a float. Min 50 (EUR 0.50) —
+   * Stripe's documented minimum charge amount for EUR; a lower value
+   * would be rejected at checkout time instead of at creation time
+   * (Phase 6.5 audit finding). */
   @IsInt()
-  @Min(0)
+  @Min(50)
   @Max(100_000)
   priceCents!: number;
 

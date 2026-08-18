@@ -109,19 +109,24 @@ export class BookingsService {
     }
   }
 
+  /** Capped, not full pagination (Phase 6.5 audit finding — a
+   * long-tenured student's booking history was an unbounded query). */
   async findOwnAsStudent(studentId: string) {
     return this.prisma.client.booking.findMany({
       where: { studentId },
       include: BOOKING_INCLUDE,
       orderBy: { startAt: 'desc' },
+      take: 200,
     });
   }
 
+  /** Capped — see findOwnAsStudent. */
   async findOwnAsTutor(tutorId: string) {
     return this.prisma.client.booking.findMany({
       where: { tutorId },
       include: BOOKING_INCLUDE,
       orderBy: { startAt: 'desc' },
+      take: 200,
     });
   }
 

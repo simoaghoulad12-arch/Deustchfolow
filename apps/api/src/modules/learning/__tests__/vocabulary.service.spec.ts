@@ -48,7 +48,7 @@ describe('VocabularyService', () => {
     await service.getUserVocabulary('user-1');
 
     expect(prisma.client.userVocabulary.findMany).toHaveBeenCalledWith(
-      expect.objectContaining({ where: { userId: 'user-1' } }),
+      expect.objectContaining({ where: { userId: 'user-1' }, take: 200 }),
     );
   });
 

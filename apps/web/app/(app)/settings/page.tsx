@@ -178,13 +178,17 @@ export default async function SettingsPage({
             Dein Konto wird deaktiviert. Zur Bestätigung gib dein aktuelles Passwort ein.
           </p>
           <form action={deleteAccountAction} className="space-y-3">
-            <Input
-              name="password"
-              type="password"
-              placeholder="Aktuelles Passwort"
-              autoComplete="current-password"
-              required
-            />
+            <div className="space-y-1.5">
+              <Label htmlFor="deleteAccountPassword">Aktuelles Passwort</Label>
+              <Input
+                id="deleteAccountPassword"
+                name="password"
+                type="password"
+                placeholder="Aktuelles Passwort"
+                autoComplete="current-password"
+                required
+              />
+            </div>
             {searchParams.deleteError && (
               <FormMessage type="error">{searchParams.deleteError}</FormMessage>
             )}

@@ -14,26 +14,33 @@ function buildPrismaMock(overrides?: {
   refund?: Partial<Record<string, jest.Mock>>;
   booking?: Partial<Record<string, jest.Mock>>;
 }) {
-  return {
-    client: {
-      payment: {
-        findUnique: jest.fn().mockResolvedValue(succeededPayment),
-        update: jest.fn().mockResolvedValue({}),
-        ...overrides?.payment,
-      },
-      refund: {
-        create: jest.fn().mockResolvedValue(createdRefund),
-        findUnique: jest.fn().mockResolvedValue(createdRefund),
-        update: jest.fn().mockResolvedValue({}),
-        aggregate: jest.fn().mockResolvedValue({ _sum: { amountCents: 0 } }),
-        ...overrides?.refund,
-      },
-      booking: {
-        update: jest.fn().mockResolvedValue({}),
-        ...overrides?.booking,
-      },
+  const client: Record<string, unknown> = {
+    payment: {
+      findUnique: jest.fn().mockResolvedValue(succeededPayment),
+      update: jest.fn().mockResolvedValue({}),
+      ...overrides?.payment,
     },
-  } as unknown as PrismaService;
+    refund: {
+      create: jest.fn().mockResolvedValue(createdRefund),
+      findUnique: jest.fn().mockResolvedValue(createdRefund),
+      update: jest.fn().mockResolvedValue({}),
+      aggregate: jest.fn().mockResolvedValue({ _sum: { amountCents: 0 } }),
+      ...overrides?.refund,
+    },
+    booking: {
+      update: jest.fn().mockResolvedValue({}),
+      ...overrides?.booking,
+    },
+  };
+  // initiateRefund runs its balance/limit checks + local Refund.create
+  // inside a $transaction — the mock invokes the callback with the same
+  // mocked client, which is enough to exercise the real branch logic
+  // (real Postgres SERIALIZABLE conflict behavior is not something a
+  // unit test can simulate; that guarantee is the database's, tested by
+  // the transaction actually being issued with the right isolation
+  // level, not re-proven here).
+  client.$transaction = jest.fn((fn: (tx: typeof client) => unknown) => fn(client));
+  return { client } as unknown as PrismaService;
 }
 
 function buildStripeMock(createSpy?: jest.Mock) {
@@ -105,6 +112,69 @@ describe('RefundService', () => {
       expect(prisma.client.refund.create).toHaveBeenCalledWith(
         expect.objectContaining({ data: expect.objectContaining({ requiredAdminApproval: false }) }),
       );
+    });
+
+    it('rejects a SUPPORT refund that would cumulatively exceed the limit across multiple prior SUPPORT refunds on the same payment', async () => {
+      // Two prior SUPPORT refunds already committed 400 cents; limit is
+      // 500. This request (200 cents) is individually within the limit
+      // but would push the SUPPORT-cumulative total to 600 — must be
+      // rejected even though no single request exceeds the limit alone.
+      const aggregate = jest.fn().mockResolvedValue({ _sum: { amountCents: 0 } });
+      // First call: committed-balance check (all roles) -> 400 already refunded.
+      // Second call: cumulative SUPPORT-only check -> same 400, all by SUPPORT.
+      aggregate.mockResolvedValueOnce({ _sum: { amountCents: 400 } });
+      aggregate.mockResolvedValueOnce({ _sum: { amountCents: 400 } });
+      const prisma = buildPrismaMock({ refund: { aggregate } });
+      const policy = buildPolicyMock({ supportRefundLimitCents: 500 });
+      const service = buildService({ prisma, policy });
+
+      await expect(
+        service.initiateRefund('support-1', RefundInitiatorRole.SUPPORT, 'payment-1', 200, undefined),
+      ).rejects.toBeInstanceOf(ForbiddenException);
+      expect(prisma.client.refund.create).not.toHaveBeenCalled();
+    });
+
+    it('allows a SUPPORT refund whose cumulative total (with prior SUPPORT refunds) stays within the limit', async () => {
+      // Default covers applyRefundOutcome's post-Stripe-success sum check;
+      // the two explicit once-values cover prepareRefund's balance and
+      // cumulative-SUPPORT checks specifically.
+      const aggregate = jest.fn().mockResolvedValue({ _sum: { amountCents: 500 } });
+      aggregate.mockResolvedValueOnce({ _sum: { amountCents: 300 } }); // committed-balance check
+      aggregate.mockResolvedValueOnce({ _sum: { amountCents: 300 } }); // cumulative SUPPORT check
+      const prisma = buildPrismaMock({ refund: { aggregate } });
+      const policy = buildPolicyMock({ supportRefundLimitCents: 500 });
+      const service = buildService({ prisma, policy });
+
+      await service.initiateRefund('support-1', RefundInitiatorRole.SUPPORT, 'payment-1', 200, undefined);
+
+      expect(prisma.client.refund.create).toHaveBeenCalled();
+    });
+
+    it('runs the balance/limit checks and refund creation inside a SERIALIZABLE transaction', async () => {
+      const prisma = buildPrismaMock();
+      const service = buildService({ prisma });
+
+      await service.initiateRefund('admin-1', RefundInitiatorRole.ADMIN, 'payment-1', 500, undefined);
+
+      expect(prisma.client.$transaction).toHaveBeenCalledWith(
+        expect.any(Function),
+        expect.objectContaining({ isolationLevel: 'Serializable' }),
+      );
+    });
+
+    it('maps a Postgres serialization conflict (P2034) to a clean 409 Conflict', async () => {
+      const { Prisma } = jest.requireActual('@deutschflow/database');
+      const conflictError = new Prisma.PrismaClientKnownRequestError('Transaction conflict', {
+        code: 'P2034',
+        clientVersion: '5.0.0',
+      });
+      const prisma = buildPrismaMock();
+      (prisma.client.$transaction as jest.Mock).mockRejectedValueOnce(conflictError);
+      const service = buildService({ prisma });
+
+      await expect(
+        service.initiateRefund('admin-1', RefundInitiatorRole.ADMIN, 'payment-1', 500, undefined),
+      ).rejects.toBeInstanceOf(ConflictException);
     });
 
     it('allows ADMIN to initiate above the SUPPORT limit, recording requiredAdminApproval=true for audit', async () => {

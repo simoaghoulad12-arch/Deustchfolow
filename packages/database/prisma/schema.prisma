@@ -1232,6 +1232,10 @@ model Payment {
   payouts TutorPayout[]
 
   @@index([status])
+  // Looked up on every transfer.created webhook (TutorPayoutService
+  // .recordTransfer) to correlate a payout back to its Payment — was a
+  // full table scan before this index (Phase 6.5 audit finding).
+  @@index([stripeChargeId])
   @@map("payments")
 }
 

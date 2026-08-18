@@ -49,11 +49,15 @@ export class VocabularyService {
     });
   }
 
-  /** Ownership is structural: the query is always filtered by userId. */
+  /** Ownership is structural: the query is always filtered by userId.
+   * Capped, not full pagination (Phase 6.5 audit finding — a long
+   * spaced-repetition history was an unbounded, unordered query). */
   async getUserVocabulary(userId: string) {
     return this.prisma.client.userVocabulary.findMany({
       where: { userId },
       include: { vocabulary: true },
+      orderBy: { createdAt: 'asc' },
+      take: 200,
     });
   }
 }

@@ -24,9 +24,10 @@ export class UpdateOfferingDto {
   @Max(180)
   durationMinutes?: number;
 
+  /** Min 50 (EUR 0.50) — see CreateOfferingDto. */
   @IsOptional()
   @IsInt()
-  @Min(0)
+  @Min(50)
   @Max(100_000)
   priceCents?: number;
 

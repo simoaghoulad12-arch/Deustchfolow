@@ -1,6 +1,7 @@
 import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../../common/prisma/prisma.service';
 import { LocalDocumentStorageProvider } from './document-storage.service';
+import { matchesDeclaredFileSignature } from './file-signature';
 import type { UploadVerificationDocumentDto } from '../dto/upload-verification-document.dto';
 import type { AdminVerificationDecisionDto } from '../dto/admin-verification-decision.dto';
 
@@ -30,6 +31,12 @@ export class TutorVerificationService {
     }
     if (buffer.byteLength === 0) {
       throw new BadRequestException('Document is empty.');
+    }
+    // A client-supplied contentType string proves nothing about the
+    // actual bytes — verify the file's real signature before storing
+    // it, since it will later be served `inline` to an admin reviewer.
+    if (!matchesDeclaredFileSignature(buffer, dto.contentType)) {
+      throw new BadRequestException('Die Datei entspricht nicht dem angegebenen Dateityp.');
     }
 
     const { storageKey } = await this.storage.save(buffer);

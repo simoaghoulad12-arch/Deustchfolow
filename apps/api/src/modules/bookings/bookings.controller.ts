@@ -1,11 +1,16 @@
-import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
 import { UserRole, type AuthenticatedUser } from '@deutschflow/types';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { BookingsService } from './bookings.service';
 import { CreateBookingDto } from './dto/create-booking.dto';
 import { CancelBookingDto } from './dto/cancel-booking.dto';
+import { BookingsThrottlerGuard } from './guards/bookings-throttler.guard';
 
+/** Every route here is burst-abuse-throttled (see BookingsThrottlerGuard
+ * and this module's ThrottlerModule.forRoot config) — Phase 6.5 audit
+ * finding: booking creation/mutation had no rate limiting at all. */
+@UseGuards(BookingsThrottlerGuard)
 @Controller('bookings')
 export class BookingsController {
   constructor(private readonly bookingsService: BookingsService) {}

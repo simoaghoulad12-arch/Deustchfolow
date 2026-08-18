@@ -26,7 +26,9 @@ export function buildSimulationSystemPrompt(
 ): string {
   const contextLines = [
     `Aktuelles CEFR-Level des Lernenden: ${context.currentLevel}`,
-    context.learningGoal ? `Lernziel: ${context.learningGoal}` : null,
+    // Quoted — see SAFETY_INSTRUCTIONS / tutor.prompt.ts for why
+    // (learningGoal is client-settable free text, Phase 6.5 audit).
+    context.learningGoal ? `Lernziel: "${context.learningGoal}"` : null,
   ].filter((line): line is string => line !== null);
 
   return [

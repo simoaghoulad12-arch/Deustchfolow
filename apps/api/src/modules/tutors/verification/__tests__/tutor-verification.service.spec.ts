@@ -50,7 +50,11 @@ function buildStorageMock(overrides?: Partial<Record<string, jest.Mock>>): Local
   } as unknown as LocalDocumentStorageProvider;
 }
 
-const validDto = { label: 'Goethe-Zertifikat C2', contentType: 'application/pdf' as const, dataBase64: Buffer.from('hello').toString('base64') };
+// Real PDF magic bytes (%PDF-) — Phase 6.5 hardened uploadDocument to
+// verify a file's actual signature against its declared contentType, so
+// fixture bytes must actually look like the declared type.
+const validPdfBytes = Buffer.from('%PDF-1.4 fake but signature-valid test content');
+const validDto = { label: 'Goethe-Zertifikat C2', contentType: 'application/pdf' as const, dataBase64: validPdfBytes.toString('base64') };
 
 describe('TutorVerificationService', () => {
   describe('uploadDocument', () => {
@@ -92,12 +96,22 @@ describe('TutorVerificationService', () => {
 
       await service.uploadDocument('tutor-1', validDto);
 
-      expect(storage.save).toHaveBeenCalledWith(Buffer.from('hello'));
+      expect(storage.save).toHaveBeenCalledWith(validPdfBytes);
       expect(prisma.client.tutorVerificationDocument.create).toHaveBeenCalledWith(
         expect.objectContaining({
           data: expect.objectContaining({ tutorId: 'tutor-1', storageKey: 'storage-key-1' }),
         }),
       );
+    });
+
+    it('rejects bytes whose real signature does not match the declared contentType (Phase 6.5: a claimed MIME type alone proves nothing)', async () => {
+      const prisma = buildPrismaMock();
+      const storage = buildStorageMock();
+      const service = new TutorVerificationService(prisma, storage);
+      const notActuallyAPdf = { ...validDto, dataBase64: Buffer.from('just some arbitrary bytes').toString('base64') };
+
+      await expect(service.uploadDocument('tutor-1', notActuallyAPdf)).rejects.toBeInstanceOf(BadRequestException);
+      expect(storage.save).not.toHaveBeenCalled();
     });
   });
 

@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { ThrottlerModule } from '@nestjs/throttler';
 import { TutorsModule } from '../tutors/tutors.module';
 import { BookingsController } from './bookings.controller';
 import { BookingsService } from './bookings.service';
@@ -11,7 +12,13 @@ import { BookingsService } from './bookings.service';
  * itself and needs no service dependency.
  */
 @Module({
-  imports: [TutorsModule],
+  imports: [
+    TutorsModule,
+    // Burst-abuse protection (Phase 6.5 audit finding — bookings had
+    // zero rate limiting). Same pattern/ceiling philosophy as the AI
+    // and Payments modules (see BookingsThrottlerGuard).
+    ThrottlerModule.forRoot([{ ttl: 60_000, limit: 30 }]),
+  ],
   controllers: [BookingsController],
   providers: [BookingsService],
   exports: [BookingsService],

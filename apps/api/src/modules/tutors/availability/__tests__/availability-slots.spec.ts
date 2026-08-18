@@ -191,6 +191,24 @@ describe('computeFreeSlots', () => {
     expect(DateTime.fromJSDate(slotsAfter[0]!.startAt).setZone(BERLIN).toFormat('HH:mm')).toBe('09:00');
   });
 
+  it('resolves a rule to the correct 09:00 wall-clock time ON the spring-forward transition day itself (Phase 6.5 regression: a fixed-elapsed-duration `.plus({minutes})` from local midnight silently drifts to 10:00 on this specific day, even though the week before/after are unaffected)', () => {
+    const dstSunday = lastSundayOf(2026, 3);
+    const sundayWeekday = 0;
+
+    const slots = computeFreeSlots({
+      timezone: BERLIN,
+      rules: [{ weekday: sundayWeekday, startMinute: 9 * 60, endMinute: 9 * 60 + 30 }],
+      busyRanges: [],
+      from: dstSunday.startOf('day').toJSDate(),
+      to: dstSunday.endOf('day').toJSDate(),
+      durationMinutes: 30,
+      now: dstSunday.minus({ days: 1 }).toJSDate(),
+    });
+
+    expect(slots).toHaveLength(1);
+    expect(DateTime.fromJSDate(slots[0]!.startAt).setZone(BERLIN).toFormat('HH:mm')).toBe('09:00');
+  });
+
   it('resolves a recurring rule to a UTC offset that shifts across the autumn DST transition (CEST -> CET)', () => {
     const dstSunday = lastSundayOf(2026, 10);
     const weekBefore = dstSunday.minus({ weeks: 1 });

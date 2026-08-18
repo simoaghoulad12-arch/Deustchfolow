@@ -115,7 +115,7 @@ describe('ReviewsService', () => {
       await service.findVisibleForTutor('tutor-1');
 
       expect(prisma.client.review.findMany).toHaveBeenCalledWith(
-        expect.objectContaining({ where: { tutorId: 'tutor-1', isHidden: false } }),
+        expect.objectContaining({ where: { tutorId: 'tutor-1', isHidden: false }, take: 200 }),
       );
     });
   });

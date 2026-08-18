@@ -6,7 +6,11 @@ export function buildTutorSystemPrompt(context: AiLearnerContext, depth: AiRespo
   const contextLines = [
     `Aktuelles CEFR-Level des Lernenden: ${context.currentLevel}`,
     context.targetLevel ? `Ziel-Level: ${context.targetLevel}` : null,
-    context.learningGoal ? `Lernziel: ${context.learningGoal}` : null,
+    // Quoted — a visual/structural marker (reinforced by SAFETY_INSTRUCTIONS
+    // above) that this is user-entered free text to interpret, not a
+    // system instruction, since learningGoal is client-settable via the
+    // learning-profile endpoint (Phase 6.5 audit finding).
+    context.learningGoal ? `Lernziel: "${context.learningGoal}"` : null,
     context.currentSkill ? `Aktueller Übungs-Fokus (Skill): ${context.currentSkill}` : null,
     context.currentLessonTitle ? `Aktuelle Lektion: ${context.currentLessonTitle}` : null,
     context.weakSkills.length > 0 ? `Schwächere Skills: ${context.weakSkills.join(', ')}` : null,

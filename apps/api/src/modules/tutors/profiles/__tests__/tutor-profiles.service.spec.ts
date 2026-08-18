@@ -137,6 +137,16 @@ describe('TutorProfilesService', () => {
       );
     });
 
+    it('excludes soft-deleted tutors from the marketplace WHERE clause (Phase 6.5: account deletion must be a real erasure from public view)', async () => {
+      const prisma = buildPrismaMock();
+      const service = new TutorProfilesService(prisma);
+
+      await service.findMarketplace({});
+
+      const call = (prisma.client.tutorProfile.findMany as jest.Mock).mock.calls[0][0];
+      expect(call.where).toEqual(expect.objectContaining({ user: { deletedAt: null } }));
+    });
+
     it('computes averageRating and completedSessions from real aggregates, never inventing a number', async () => {
       const prisma = buildPrismaMock({
         review: {
@@ -202,6 +212,20 @@ describe('TutorProfilesService', () => {
       const prisma = buildPrismaMock({
         tutorProfile: {
           findUnique: jest.fn().mockResolvedValue({ ...profileWithMarketplaceData, isActive: false }),
+        },
+      });
+      const service = new TutorProfilesService(prisma);
+
+      await expect(service.findPublicProfile('tutor-1')).rejects.toBeInstanceOf(NotFoundException);
+    });
+
+    it('throws NotFoundException for a soft-deleted tutor (account deletion is a real erasure from public view, not just an access cutoff)', async () => {
+      const prisma = buildPrismaMock({
+        tutorProfile: {
+          findUnique: jest.fn().mockResolvedValue({
+            ...profileWithMarketplaceData,
+            user: { ...profileWithMarketplaceData.user, deletedAt: new Date('2026-01-01') },
+          }),
         },
       });
       const service = new TutorProfilesService(prisma);

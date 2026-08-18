@@ -354,5 +354,16 @@ describe('BookingsService', () => {
         expect.objectContaining({ where: { tutorId: 'tutor-1' } }),
       );
     });
+
+    it('caps both queries rather than returning an unbounded result set (Phase 6.5 audit finding)', async () => {
+      const prisma = buildPrismaMock();
+      const service = new BookingsService(prisma, buildAvailabilityMock());
+
+      await service.findOwnAsStudent('student-1');
+      await service.findOwnAsTutor('tutor-1');
+
+      expect(prisma.client.booking.findMany).toHaveBeenNthCalledWith(1, expect.objectContaining({ take: 200 }));
+      expect(prisma.client.booking.findMany).toHaveBeenNthCalledWith(2, expect.objectContaining({ take: 200 }));
+    });
   });
 });

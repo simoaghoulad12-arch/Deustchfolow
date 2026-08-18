@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
+import { applySecurityHeaders } from './common/security-headers';
 
 async function bootstrap(): Promise<void> {
   // rawBody: true preserves the exact request bytes on `req.rawBody`
@@ -9,6 +10,8 @@ async function bootstrap(): Promise<void> {
   // re-serialized parsed object (see StripeWebhookController, Phase
   // 6.5). This does not disable JSON parsing for any other route.
   const app = await NestFactory.create(AppModule, { rawBody: true });
+
+  applySecurityHeaders(app);
 
   app.setGlobalPrefix('api/v1');
 

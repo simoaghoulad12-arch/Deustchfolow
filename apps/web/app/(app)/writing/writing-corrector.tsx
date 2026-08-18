@@ -38,6 +38,7 @@ export function WritingCorrector() {
       </div>
 
       <textarea
+        aria-label="Dein Text auf Deutsch"
         value={text}
         onChange={(event) => setText(event.target.value)}
         rows={6}

@@ -29,8 +29,14 @@ const MAX_RANGE_DAYS = 30;
  * rule to concrete UTC instants for a specific calendar date, which is
  * the one place DST correctness matters — the same rule (e.g. "9:00-17:00
  * Europe/Berlin") maps to a different UTC offset before/after a DST
- * transition, and `luxon`'s zone-aware arithmetic (not manual UTC-offset
- * math) is what gets that right automatically.
+ * transition. That resolution MUST use `DateTime.set({hour, minute})`
+ * (wall-clock-aware), never `.plus({minutes: N})` from local midnight —
+ * `.plus()` on sub-day units is always exact-elapsed-duration math in
+ * Luxon (unlike day/week/month/year units, which are calendar-aware), so
+ * "midnight + 540 minutes" silently drifts by an hour on a DST-changeover
+ * day instead of landing on the intended 09:00 wall-clock time (found and
+ * fixed in the Phase 6.5 audit — verified against Europe/Berlin's actual
+ * 2026-03-29 spring-forward transition).
  */
 export function computeFreeSlots(params: {
   timezone: string;
@@ -76,8 +82,8 @@ export function computeFreeSlots(params: {
     const todaysRules = rules.filter((rule) => rule.weekday === weekday);
 
     for (const rule of todaysRules) {
-      const windowStart = day.plus({ minutes: rule.startMinute });
-      const windowEnd = day.plus({ minutes: rule.endMinute });
+      const windowStart = day.set({ hour: Math.floor(rule.startMinute / 60), minute: rule.startMinute % 60, second: 0, millisecond: 0 });
+      const windowEnd = day.set({ hour: Math.floor(rule.endMinute / 60), minute: rule.endMinute % 60, second: 0, millisecond: 0 });
 
       let slotStart = windowStart;
       while (slotStart.plus({ minutes: durationMinutes }) <= windowEnd) {

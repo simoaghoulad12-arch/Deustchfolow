@@ -77,6 +77,11 @@ export class TutorProfilesService {
   async findMarketplace(query: QueryTutorsDto) {
     const where: Prisma.TutorProfileWhereInput = {
       isActive: true,
+      // A soft-deleted (deletedAt set) tutor must never remain publicly
+      // listed — this is the technical mechanism behind an account
+      // deletion actually being an erasure from public view, not just an
+      // internal access cutoff.
+      user: { deletedAt: null },
       ...(query.level ? { teachingLevels: { has: query.level } } : {}),
       ...(query.language ? { languages: { has: query.language } } : {}),
       ...(query.specialty ? { specialties: { has: query.specialty } } : {}),
@@ -117,7 +122,9 @@ export class TutorProfilesService {
       include: MARKETPLACE_INCLUDE,
     });
 
-    if (!profile || !profile.isActive) {
+    // Same erasure-from-public-view guarantee as findMarketplace() —
+    // a soft-deleted tutor's profile must 404, not remain fetchable by id.
+    if (!profile || !profile.isActive || profile.user.deletedAt) {
       throw new NotFoundException('Tutor not found.');
     }
 

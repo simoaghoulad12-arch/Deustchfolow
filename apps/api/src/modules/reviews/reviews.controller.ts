@@ -1,11 +1,16 @@
-import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
 import { UserRole, type AuthenticatedUser } from '@deutschflow/types';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { ReviewsService } from './reviews.service';
 import { CreateReviewDto } from './dto/create-review.dto';
 import { AdminModerateReviewDto } from './dto/admin-moderate-review.dto';
+import { ReviewsThrottlerGuard } from './guards/reviews-throttler.guard';
 
+/** Every route here is burst-abuse-throttled (see ReviewsThrottlerGuard
+ * and this module's ThrottlerModule.forRoot config) — Phase 6.5 audit
+ * finding: review creation had no rate limiting at all. */
+@UseGuards(ReviewsThrottlerGuard)
 @Controller()
 export class ReviewsController {
   constructor(private readonly reviewsService: ReviewsService) {}

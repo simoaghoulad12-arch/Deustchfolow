@@ -1,4 +1,5 @@
 import { BadRequestException, ConflictException, ForbiddenException, Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { Prisma } from '@deutschflow/database';
 import { RefundInitiatorRole } from '@deutschflow/types';
 import { PrismaService } from '../../../common/prisma/prisma.service';
 import { StripeService } from '../stripe/stripe.service';
@@ -13,16 +14,25 @@ const STRIPE_REFUND_STATUS_MAP: Record<string, string> = {
 
 const REFUNDABLE_PAYMENT_STATUSES = ['SUCCEEDED', 'PARTIALLY_REFUNDED'];
 
+/** Refund states that represent money already gone or still possibly
+ * going (PENDING can still resolve to SUCCEEDED via the async webhook
+ * confirmation) — both must count against a payment's remaining
+ * refundable balance so two concurrent/sequential requests can never
+ * jointly commit more than the payment's actual amount. FAILED/CANCELED
+ * refunds never took the money and must NOT count. */
+const COMMITTED_REFUND_STATUSES = ['SUCCEEDED', 'PENDING'];
+
 /**
  * Refund initiation is always a server-authenticated ADMIN/SUPPORT
  * action (never a raw client-triggered Stripe call). SUPPORT has a
- * standing authority up to PaymentPolicy.supportRefundLimitCents;
- * above that, only ADMIN can act at all — there is no "pending admin
- * approval" queue for a SUPPORT request that exceeds the limit, it is
- * simply rejected, and an admin has to initiate it themselves (see
- * phase-6 implementation notes for why this is simpler than a
- * two-step approval workflow and still satisfies "Größere ...
- * Refunds benötigen ADMIN-Freigabe").
+ * standing authority up to PaymentPolicy.supportRefundLimitCents,
+ * enforced cumulatively per payment (not just per individual request —
+ * see Phase 6.5 audit finding); above that, only ADMIN can act at all —
+ * there is no "pending admin approval" queue for a SUPPORT request that
+ * exceeds the limit, it is simply rejected, and an admin has to
+ * initiate it themselves (see phase-6 implementation notes for why this
+ * is simpler than a two-step approval workflow and still satisfies
+ * "Größere ... Refunds benötigen ADMIN-Freigabe").
  */
 @Injectable()
 export class RefundService {
@@ -34,6 +44,20 @@ export class RefundService {
     private readonly policy: PaymentPolicyService,
   ) {}
 
+  /**
+   * The balance check, cumulative-SUPPORT-limit check, and local Refund
+   * row creation all run inside one SERIALIZABLE transaction (Phase 6.5
+   * hardening — closes a real race: two concurrent requests could
+   * otherwise both read the same "remaining balance" before either had
+   * committed its own refund, and jointly over-refund the payment).
+   * Postgres detects the conflicting concurrent read/write and aborts
+   * the loser with a serialization failure (Prisma error code P2034),
+   * mapped below to a clean 409 — same "the database is the last line
+   * of defense" philosophy as the booking double-booking EXCLUDE
+   * constraint. The Stripe API call itself deliberately stays OUTSIDE
+   * the transaction — a DB transaction must never hold locks across a
+   * network call to an external service.
+   */
   async initiateRefund(
     initiatedByUserId: string,
     initiatedByRole: typeof RefundInitiatorRole.SUPPORT | typeof RefundInitiatorRole.ADMIN,
@@ -41,7 +65,43 @@ export class RefundService {
     amountCents: number,
     reason: string | undefined,
   ) {
-    const payment = await this.prisma.client.payment.findUnique({ where: { id: paymentId } });
+    const policy = await this.policy.get();
+
+    let prepared: { refundId: string; isFullRefund: boolean; stripePaymentIntentId: string };
+    try {
+      prepared = await this.prisma.client.$transaction(
+        (tx) => this.prepareRefund(tx, initiatedByUserId, initiatedByRole, paymentId, amountCents, reason, policy),
+        { isolationLevel: Prisma.TransactionIsolationLevel.Serializable },
+      );
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2034') {
+        throw new ConflictException(
+          'Diese Erstattung konnte aufgrund eines gleichzeitigen Zugriffs nicht verarbeitet werden. Bitte erneut versuchen.',
+        );
+      }
+      throw error;
+    }
+
+    const stripeRefund = await this.stripe.client.refunds.create(
+      { payment_intent: prepared.stripePaymentIntentId, amount: amountCents },
+      { idempotencyKey: `refund:${prepared.refundId}` },
+    );
+
+    await this.applyRefundOutcome(prepared.refundId, paymentId, stripeRefund.id, stripeRefund.status ?? 'pending');
+
+    return this.prisma.client.refund.findUnique({ where: { id: prepared.refundId } });
+  }
+
+  private async prepareRefund(
+    tx: Prisma.TransactionClient,
+    initiatedByUserId: string,
+    initiatedByRole: typeof RefundInitiatorRole.SUPPORT | typeof RefundInitiatorRole.ADMIN,
+    paymentId: string,
+    amountCents: number,
+    reason: string | undefined,
+    policy: { supportRefundLimitCents: number },
+  ): Promise<{ refundId: string; isFullRefund: boolean; stripePaymentIntentId: string }> {
+    const payment = await tx.payment.findUnique({ where: { id: paymentId } });
     if (!payment) {
       throw new NotFoundException('Payment not found.');
     }
@@ -49,23 +109,33 @@ export class RefundService {
       throw new ConflictException('Diese Zahlung kann nicht (weiter) erstattet werden.');
     }
 
-    const alreadyRefunded = await this.sumSucceededRefunds(paymentId);
-    const remaining = payment.amountCents - alreadyRefunded;
+    const committed = await this.sumRefunds(tx, paymentId, COMMITTED_REFUND_STATUSES);
+    const remaining = payment.amountCents - committed;
     if (amountCents > remaining) {
       throw new BadRequestException(`Der Erstattungsbetrag übersteigt den verbleibenden Betrag (${remaining} Cent).`);
     }
 
-    const policy = await this.policy.get();
     const requiredAdminApproval = amountCents > policy.supportRefundLimitCents;
-    if (initiatedByRole === RefundInitiatorRole.SUPPORT && requiredAdminApproval) {
-      throw new ForbiddenException(
-        `Dieser Betrag überschreitet die Freigabegrenze für Support (${policy.supportRefundLimitCents} Cent) und benötigt eine Admin-Freigabe.`,
-      );
+    if (initiatedByRole === RefundInitiatorRole.SUPPORT) {
+      if (requiredAdminApproval) {
+        throw new ForbiddenException(
+          `Dieser Betrag überschreitet die Freigabegrenze für Support (${policy.supportRefundLimitCents} Cent) und benötigt eine Admin-Freigabe.`,
+        );
+      }
+      // Cumulative check: several SUPPORT refunds each individually
+      // under the limit must not be able to drain a payment together —
+      // the limit is standing authority per payment, not per request.
+      const priorSupportCommitted = await this.sumRefunds(tx, paymentId, COMMITTED_REFUND_STATUSES, RefundInitiatorRole.SUPPORT);
+      if (priorSupportCommitted + amountCents > policy.supportRefundLimitCents) {
+        throw new ForbiddenException(
+          `Die kumulierte Erstattungssumme durch Support für diese Zahlung würde die Freigabegrenze (${policy.supportRefundLimitCents} Cent) überschreiten und benötigt eine Admin-Freigabe.`,
+        );
+      }
     }
 
     const isFullRefund = amountCents === remaining;
 
-    const localRefund = await this.prisma.client.refund.create({
+    const localRefund = await tx.refund.create({
       data: {
         paymentId,
         amountCents,
@@ -81,18 +151,11 @@ export class RefundService {
     // payment. Only set for a full refund — a partial refund never
     // changes Booking.status (the session still happened).
     if (isFullRefund) {
-      await this.prisma.client.payment.update({ where: { id: paymentId }, data: { status: 'REFUND_PENDING' } });
-      await this.setBookingStatusForPayment(paymentId, 'REFUND_PENDING');
+      await tx.payment.update({ where: { id: paymentId }, data: { status: 'REFUND_PENDING' } });
+      await tx.booking.update({ where: { id: payment.bookingId }, data: { status: 'REFUND_PENDING' } });
     }
 
-    const stripeRefund = await this.stripe.client.refunds.create(
-      { payment_intent: payment.stripePaymentIntentId, amount: amountCents },
-      { idempotencyKey: `refund:${localRefund.id}` },
-    );
-
-    await this.applyRefundOutcome(localRefund.id, paymentId, stripeRefund.id, stripeRefund.status ?? 'pending');
-
-    return this.prisma.client.refund.findUnique({ where: { id: localRefund.id } });
+    return { refundId: localRefund.id, isFullRefund, stripePaymentIntentId: payment.stripePaymentIntentId };
   }
 
   /** Webhook-driven (Phase 6.5 dispatcher, `refund.updated`) — the
@@ -137,7 +200,7 @@ export class RefundService {
     const payment = await this.prisma.client.payment.findUnique({ where: { id: paymentId } });
     if (!payment) return;
 
-    const totalRefunded = await this.sumSucceededRefunds(paymentId);
+    const totalRefunded = await this.sumRefunds(this.prisma.client, paymentId, ['SUCCEEDED']);
     if (totalRefunded >= payment.amountCents) {
       await this.prisma.client.payment.update({ where: { id: paymentId }, data: { status: 'REFUNDED' } });
       await this.setBookingStatusForPayment(paymentId, 'REFUNDED');
@@ -146,9 +209,16 @@ export class RefundService {
     }
   }
 
-  private async sumSucceededRefunds(paymentId: string): Promise<number> {
-    const result = await this.prisma.client.refund.aggregate({
-      where: { paymentId, status: 'SUCCEEDED' },
+  /** `client` is either the regular Prisma client or an open
+   * transaction's client — same aggregate shape either way. */
+  private async sumRefunds(
+    client: Prisma.TransactionClient | PrismaService['client'],
+    paymentId: string,
+    statuses: string[],
+    role?: typeof RefundInitiatorRole.SUPPORT | typeof RefundInitiatorRole.ADMIN,
+  ): Promise<number> {
+    const result = await client.refund.aggregate({
+      where: { paymentId, status: { in: statuses as never[] }, ...(role ? { initiatedByRole: role } : {}) },
       _sum: { amountCents: true },
     });
     return result._sum.amountCents ?? 0;

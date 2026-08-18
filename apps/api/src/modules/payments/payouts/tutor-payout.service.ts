@@ -92,11 +92,13 @@ export class TutorPayoutService {
   }
 
   /** Self-service only — see ConnectController for the same
-   * `@CurrentUser()`-scoped IDOR convention. */
+   * `@CurrentUser()`-scoped IDOR convention. Capped, not full pagination
+   * (Phase 6.5 audit finding — was an unbounded query). */
   async getPayoutsForTutor(tutorId: string) {
     return this.prisma.client.tutorPayout.findMany({
       where: { tutorId },
       orderBy: { createdAt: 'desc' },
+      take: 200,
     });
   }
 }

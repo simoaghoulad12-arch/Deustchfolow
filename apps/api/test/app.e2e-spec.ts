@@ -2,6 +2,7 @@ import { Test, type TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
 import { AppModule } from '../src/app.module';
+import { applySecurityHeaders } from '../src/common/security-headers';
 
 describe('AppModule (e2e)', () => {
   let app: INestApplication;
@@ -12,6 +13,7 @@ describe('AppModule (e2e)', () => {
     }).compile();
 
     app = moduleFixture.createNestApplication();
+    applySecurityHeaders(app);
     app.setGlobalPrefix('api/v1');
     await app.init();
   });
@@ -29,5 +31,11 @@ describe('AppModule (e2e)', () => {
 
     expect(response.status).toBe(200);
     expect(response.body.status).toBe('ok');
+  });
+
+  it('sets X-Content-Type-Options: nosniff on every response (Phase 6.5 hardening)', async () => {
+    const response = await request(app.getHttpServer()).get('/api/v1/health');
+
+    expect(response.headers['x-content-type-options']).toBe('nosniff');
   });
 });
