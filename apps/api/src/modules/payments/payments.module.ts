@@ -10,6 +10,8 @@ import { WebhookSignatureService } from './webhooks/webhook-signature.service';
 import { WebhookIdempotencyService } from './webhooks/webhook-idempotency.service';
 import { WebhookDispatcherService } from './webhooks/webhook-dispatcher.service';
 import { StripeWebhookController } from './webhooks/stripe-webhook.controller';
+import { ConnectAccountService } from './connect/connect-account.service';
+import { ConnectController } from './connect/connect.controller';
 
 /**
  * Payments & Monetization (Phase 6). Built up subphase by subphase —
@@ -27,7 +29,7 @@ import { StripeWebhookController } from './webhooks/stripe-webhook.controller';
     // legitimate checkout attempts are rare per user.
     ThrottlerModule.forRoot([{ ttl: 60_000, limit: 10 }]),
   ],
-  controllers: [PaymentsController, StripeWebhookController],
+  controllers: [PaymentsController, StripeWebhookController, ConnectController],
   providers: [
     StripeService,
     StripeCustomerService,
@@ -37,7 +39,15 @@ import { StripeWebhookController } from './webhooks/stripe-webhook.controller';
     WebhookSignatureService,
     WebhookIdempotencyService,
     WebhookDispatcherService,
+    ConnectAccountService,
   ],
-  exports: [StripeService, StripeCustomerService, PaymentPolicyService, SubscriptionService, CheckoutService],
+  exports: [
+    StripeService,
+    StripeCustomerService,
+    PaymentPolicyService,
+    SubscriptionService,
+    CheckoutService,
+    ConnectAccountService,
+  ],
 })
 export class PaymentsModule {}

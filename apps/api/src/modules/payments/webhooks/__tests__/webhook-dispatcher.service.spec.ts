@@ -1,11 +1,18 @@
 import type Stripe from 'stripe';
 import { WebhookDispatcherService } from '../webhook-dispatcher.service';
 import type { SubscriptionService } from '../../subscriptions/subscription.service';
+import type { ConnectAccountService } from '../../connect/connect-account.service';
 
 function buildSubscriptionsMock() {
   return {
     upsertFromStripeSubscription: jest.fn().mockResolvedValue(undefined),
   } as unknown as SubscriptionService;
+}
+
+function buildConnectAccountsMock() {
+  return {
+    upsertFromStripeAccount: jest.fn().mockResolvedValue(undefined),
+  } as unknown as ConnectAccountService;
 }
 
 function buildSubscriptionEvent(type: string, overrides?: Partial<Stripe.Subscription>): Stripe.Event {
@@ -31,7 +38,7 @@ describe('WebhookDispatcherService', () => {
     'dispatches %s to SubscriptionService.upsertFromStripeSubscription',
     async (type) => {
       const subscriptions = buildSubscriptionsMock();
-      const dispatcher = new WebhookDispatcherService(subscriptions);
+      const dispatcher = new WebhookDispatcherService(subscriptions, buildConnectAccountsMock());
 
       const handled = await dispatcher.dispatch(buildSubscriptionEvent(type));
 
@@ -49,7 +56,7 @@ describe('WebhookDispatcherService', () => {
 
   it('handles a Customer object passed instead of a customer id string (unexpanded vs expanded field)', async () => {
     const subscriptions = buildSubscriptionsMock();
-    const dispatcher = new WebhookDispatcherService(subscriptions);
+    const dispatcher = new WebhookDispatcherService(subscriptions, buildConnectAccountsMock());
 
     const event = buildSubscriptionEvent('customer.subscription.updated', {
       customer: { id: 'cus_expanded' } as unknown as string,
@@ -64,7 +71,7 @@ describe('WebhookDispatcherService', () => {
 
   it('returns false (not an error) for an event type it does not yet handle', async () => {
     const subscriptions = buildSubscriptionsMock();
-    const dispatcher = new WebhookDispatcherService(subscriptions);
+    const dispatcher = new WebhookDispatcherService(subscriptions, buildConnectAccountsMock());
 
     const handled = await dispatcher.dispatch({ id: 'evt_2', type: 'charge.succeeded', data: { object: {} } } as unknown as Stripe.Event);
 
@@ -74,7 +81,7 @@ describe('WebhookDispatcherService', () => {
 
   it('logs and skips (does not throw) a subscription event with no price on the first item', async () => {
     const subscriptions = buildSubscriptionsMock();
-    const dispatcher = new WebhookDispatcherService(subscriptions);
+    const dispatcher = new WebhookDispatcherService(subscriptions, buildConnectAccountsMock());
 
     const event = buildSubscriptionEvent('customer.subscription.updated', {
       items: { data: [] } as unknown as Stripe.Subscription['items'],
@@ -84,5 +91,48 @@ describe('WebhookDispatcherService', () => {
 
     expect(handled).toBe(true);
     expect(subscriptions.upsertFromStripeSubscription).not.toHaveBeenCalled();
+  });
+
+  it('dispatches account.updated to ConnectAccountService.upsertFromStripeAccount', async () => {
+    const connectAccounts = buildConnectAccountsMock();
+    const dispatcher = new WebhookDispatcherService(buildSubscriptionsMock(), connectAccounts);
+
+    const event = {
+      id: 'evt_3',
+      type: 'account.updated',
+      data: {
+        object: { id: 'acct_1', charges_enabled: true, payouts_enabled: false, details_submitted: true },
+      },
+    } as unknown as Stripe.Event;
+
+    const handled = await dispatcher.dispatch(event);
+
+    expect(handled).toBe(true);
+    expect(connectAccounts.upsertFromStripeAccount).toHaveBeenCalledWith({
+      stripeAccountId: 'acct_1',
+      chargesEnabled: true,
+      payoutsEnabled: false,
+      detailsSubmitted: true,
+    });
+  });
+
+  it('treats missing capability flags on account.updated as false rather than undefined', async () => {
+    const connectAccounts = buildConnectAccountsMock();
+    const dispatcher = new WebhookDispatcherService(buildSubscriptionsMock(), connectAccounts);
+
+    const event = {
+      id: 'evt_4',
+      type: 'account.updated',
+      data: { object: { id: 'acct_2' } },
+    } as unknown as Stripe.Event;
+
+    await dispatcher.dispatch(event);
+
+    expect(connectAccounts.upsertFromStripeAccount).toHaveBeenCalledWith({
+      stripeAccountId: 'acct_2',
+      chargesEnabled: false,
+      payoutsEnabled: false,
+      detailsSubmitted: false,
+    });
   });
 });

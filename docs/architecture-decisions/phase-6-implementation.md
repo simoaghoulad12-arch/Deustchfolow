@@ -67,3 +67,32 @@ to set `Subscription.status`, `Payment.status`, `Refund.status`, or
 fields funnels through webhook-driven service methods, never a directly-exposed PATCH
 endpoint accepting these fields from a client body. This is the concrete mechanism for
 "Geldstatus darf niemals ausschließlich aus Client-Daten kommen."
+
+## Phase 6.6 — Tutor Connect: design
+
+`ConnectAccountService` mirrors `StripeCustomerService`'s lazy get-or-create
+shape (1:1 `TutorProfile` <-> Stripe Connect Express account, created on
+first onboarding action, never at profile creation) plus a pure
+`deriveConnectStatus(chargesEnabled, payoutsEnabled, detailsSubmitted)`
+function for the capability-flags-to-status mapping — unit-tested standalone.
+
+**Where the "offerings must not be bookable" gate actually lives.** The
+quality-gate report (§3.3) said a tutor's offerings shouldn't be bookable
+before Connect is `ENABLED`. Two places could enforce that: `Booking`
+creation (Phase 5, already shipped and tested) or booking-payment checkout
+(Phase 6.7, not yet built). Chosen: **checkout**, not booking creation. A
+`Booking` row is still just a request in this model — nothing about
+requesting a session actually requires Stripe to be able to pay the tutor;
+only the *payment* does. Gating at checkout means Phase 5's `BookingsService`
+and its existing test suite need zero changes for this subphase, and the
+real constraint (Stripe's own destination-charge API would reject an
+`application_fee_amount` transfer to a non-`charges_enabled` account anyway)
+is enforced exactly where the money question first arises. `isBookable()`
+is exported now so Phase 6.7's checkout endpoint can call it directly.
+
+**Country fixed to `DE`.** Stripe Express account creation requires a
+country at creation time. DeutschFlow's current scope is German-language
+tutoring; multi-country tutor payouts are a real future expansion, not
+built speculatively now — every tutor gets a German Express account
+regardless of where they actually live, which is a known, accepted
+limitation for this phase, not an oversight.

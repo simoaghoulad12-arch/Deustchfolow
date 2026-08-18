@@ -97,4 +97,28 @@ describe('Payments module authorization (e2e)', () => {
       .send({ id: 'evt_fake', type: 'account.updated' })
       .expect(400);
   });
+
+  it('rejects POST /api/v1/payments/connect/onboarding-link without a valid session token', async () => {
+    await request(app.getHttpServer()).post('/api/v1/payments/connect/onboarding-link').expect(401);
+  });
+
+  it('rejects GET /api/v1/payments/connect/status without a valid session token', async () => {
+    await request(app.getHttpServer()).get('/api/v1/payments/connect/status').expect(401);
+  });
+
+  it('rejects a non-TUTOR token on POST /api/v1/payments/connect/onboarding-link (RolesGuard, not ownership)', async () => {
+    const token = await signToken(UserRole.STUDENT);
+    await request(app.getHttpServer())
+      .post('/api/v1/payments/connect/onboarding-link')
+      .set('Authorization', `Bearer ${token}`)
+      .expect(403);
+  });
+
+  it('rejects a non-TUTOR token on GET /api/v1/payments/connect/status', async () => {
+    const token = await signToken(UserRole.STUDENT);
+    await request(app.getHttpServer())
+      .get('/api/v1/payments/connect/status')
+      .set('Authorization', `Bearer ${token}`)
+      .expect(403);
+  });
 });

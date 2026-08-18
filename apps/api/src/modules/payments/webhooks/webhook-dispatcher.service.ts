@@ -1,6 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import type Stripe from 'stripe';
 import { SubscriptionService } from '../subscriptions/subscription.service';
+import { ConnectAccountService } from '../connect/connect-account.service';
 
 /**
  * Routes a verified, not-yet-processed Stripe event to the handler for
@@ -16,7 +17,10 @@ import { SubscriptionService } from '../subscriptions/subscription.service';
 export class WebhookDispatcherService {
   private readonly logger = new Logger('StripeWebhook');
 
-  constructor(private readonly subscriptions: SubscriptionService) {}
+  constructor(
+    private readonly subscriptions: SubscriptionService,
+    private readonly connectAccounts: ConnectAccountService,
+  ) {}
 
   /** Returns true if this event type was recognized and dispatched
    * (regardless of whether the underlying object represented a
@@ -41,6 +45,16 @@ export class WebhookDispatcherService {
           currentPeriodEnd: subscription.current_period_end,
           cancelAtPeriodEnd: subscription.cancel_at_period_end,
           priceId,
+        });
+        return true;
+      }
+      case 'account.updated': {
+        const account = event.data.object as Stripe.Account;
+        await this.connectAccounts.upsertFromStripeAccount({
+          stripeAccountId: account.id,
+          chargesEnabled: account.charges_enabled ?? false,
+          payoutsEnabled: account.payouts_enabled ?? false,
+          detailsSubmitted: account.details_submitted ?? false,
         });
         return true;
       }
