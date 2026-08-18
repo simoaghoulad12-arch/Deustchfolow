@@ -118,6 +118,16 @@ dieser Sandbox feuert und das Ergebnis ehrlich meldet — nicht Teil von
 `pnpm test`, aber tatsächlich in dieser Sitzung ausgeführt und im
 Completion Report mit echtem Ergebnis dokumentiert.
 
+**Ergebnis (Phase 5.4, tatsächlich ausgeführt):** `pnpm --filter
+@deutschflow/api booking:verify-concurrency` mit 8 parallelen
+`BookingsService.create()`-Aufrufen für exakt denselben Tutor/Zeitraum:
+genau 1 Erfolg, 7 x `ConflictException` (409) über die reale
+Postgres-`23P01`-Exclusion-Violation, exakt 1 aktive Buchungszeile in der
+DB. Zusätzlich live über den echten HTTP-Layer mit zwei parallelen `curl
+POST /bookings`-Requests verschiedener Studierender wiederholt (201 +
+409). Damit ist die Race-Condition-Garantie nicht nur behauptet, sondern
+gegen eine echte DB bewiesen.
+
 ## 7. Dokumenten-Storage: Interface + lokale Dev-Implementierung
 
 Gleiches Muster wie `AiProvider` aus Phase 4: ein `DocumentStorageProvider`-
@@ -139,3 +149,32 @@ Die Aufgabenstellung nennt keine expliziten Admin-Routen (anders als bei
 Admin-Dashboard-Frontend wird bewusst zurückgestellt und als offener
 Punkt im Completion Report vermerkt, statt spekulativ eine UI zu bauen,
 die niemand angefordert hat.
+
+## 9. Booking: serverseitige Verfügbarkeitsprüfung + DTO-Allowlist-Fix
+
+Zwei Entscheidungen aus Phase 5.4:
+
+**Verfügbarkeitsfenster-Validierung.** Eine Buchungsanfrage muss nicht
+nur kollisionsfrei sein (EXCLUDE-Constraint), sondern auch innerhalb der
+vom Tutor erklärten Zeiten liegen. Dafür eine neue reine Funktion
+`isSlotWithinRules` in `availability-slots.ts` (arbeitet mit einem
+beliebigen Start-/Endzeitpunkt, nicht mit dem festen Raster von
+`computeFreeSlots`) plus `overlapsBusyRange`, aufgerufen über
+`TutorAvailabilityService.assertBookable()` — dieselbe Pure-Function-first
+Architektur wie in 5.3, aus demselben Grund (DST-Korrektheit ohne
+Prisma-Mocking testbar).
+
+**DTO-Allowlist-Fix (während der Live-Verifikation gefunden).** Der
+erste Entwurf von `BookingsService`s `BOOKING_INCLUDE` nutzte
+`include: { user: { include: { profile: true } } }` für die verschachtelten
+Student-/Tutor-User-Objekte — das gibt die komplette `User`-Zeile zurück,
+inklusive `passwordHash`, `email`, `deletedAt`. Bei einer Buchung sehen
+sich Student und Tutor gegenseitig, sodass das Passwort-Hash der
+jeweils anderen Partei über `GET /bookings/me` bzw. `/bookings/tutor/me`
+sichtbar gewesen wäre — ein echtes DTO-Allowlist-Problem (Spec Abschnitt
+18), gefunden durch tatsächliches Anschauen der Live-API-Antwort, nicht
+nur durch Tests. Behoben durch `select` statt `include` mit einer echten
+Allowlist (`id`, `profile: { displayName, avatarUrl }`) für beide
+Parteien. Lehre: bei jeder neuen Ressource mit verschachtelten
+User-Relationen die tatsächliche JSON-Antwort inspizieren, nicht nur den
+Typescript-Typ vertrauen.

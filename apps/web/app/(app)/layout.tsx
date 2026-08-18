@@ -29,10 +29,18 @@ export default async function AppLayout({ children }: { children: React.ReactNod
               <Link href="/tutors" className="hover:text-foreground">
                 Tutoren
               </Link>
+              <Link href="/bookings" className="hover:text-foreground">
+                Meine Buchungen
+              </Link>
               {session.role === UserRole.TUTOR && (
-                <Link href="/tutor/availability" className="hover:text-foreground">
-                  Meine Verfügbarkeit
-                </Link>
+                <>
+                  <Link href="/tutor/availability" className="hover:text-foreground">
+                    Meine Verfügbarkeit
+                  </Link>
+                  <Link href="/tutor/bookings" className="hover:text-foreground">
+                    Buchungsanfragen
+                  </Link>
+                </>
               )}
               <Link href="/ai-tutor" className="hover:text-foreground">
                 KI-Tutor

@@ -1,4 +1,4 @@
-import type { TutorSpecialty, TutorVerificationStatus } from '@deutschflow/types';
+import type { BookingStatus, TutorSpecialty, TutorVerificationStatus } from '@deutschflow/types';
 
 export const SPECIALTY_LABELS: Record<TutorSpecialty, string> = {
   CONVERSATION: 'Deutsch-Konversation',
@@ -16,6 +16,16 @@ export const VERIFICATION_LABELS: Record<TutorVerificationStatus, string> = {
   UNDER_REVIEW: 'Verifizierung wird geprüft',
   VERIFIED: 'Verifiziert',
   REJECTED: 'Nicht verifiziert',
+};
+
+export const BOOKING_STATUS_LABELS: Record<BookingStatus, string> = {
+  PENDING: 'Ausstehend',
+  CONFIRMED: 'Bestätigt',
+  COMPLETED: 'Abgeschlossen',
+  CANCELLED: 'Storniert',
+  NO_SHOW: 'Nicht erschienen',
+  REFUND_PENDING: 'Rückerstattung ausstehend',
+  REFUNDED: 'Rückerstattet',
 };
 
 export function formatPrice(priceCents: number, currency: string): string {

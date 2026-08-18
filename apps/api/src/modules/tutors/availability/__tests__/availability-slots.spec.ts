@@ -1,5 +1,5 @@
 import { DateTime } from 'luxon';
-import { computeFreeSlots } from '../availability-slots';
+import { computeFreeSlots, isSlotWithinRules, overlapsBusyRange } from '../availability-slots';
 
 const BERLIN = 'Europe/Berlin';
 
@@ -221,5 +221,94 @@ describe('computeFreeSlots', () => {
 
     expect(offsetBeforeHours).toBe(2); // still CEST
     expect(offsetAfterHours).toBe(1); // back to CET
+  });
+});
+
+describe('isSlotWithinRules', () => {
+  const mondayRule = { weekday: 1, startMinute: 9 * 60, endMinute: 17 * 60 };
+
+  it('accepts an arbitrary start time fully inside the rule window', () => {
+    const result = isSlotWithinRules({
+      timezone: BERLIN,
+      rules: [mondayRule],
+      startAt: local('2026-08-17T10:15:00'), // Monday
+      endAt: local('2026-08-17T11:00:00'),
+    });
+    expect(result).toBe(true);
+  });
+
+  it('rejects a range that starts before the rule window opens', () => {
+    const result = isSlotWithinRules({
+      timezone: BERLIN,
+      rules: [mondayRule],
+      startAt: local('2026-08-17T08:30:00'),
+      endAt: local('2026-08-17T09:30:00'),
+    });
+    expect(result).toBe(false);
+  });
+
+  it('rejects a range that ends after the rule window closes', () => {
+    const result = isSlotWithinRules({
+      timezone: BERLIN,
+      rules: [mondayRule],
+      startAt: local('2026-08-17T16:30:00'),
+      endAt: local('2026-08-17T17:30:00'),
+    });
+    expect(result).toBe(false);
+  });
+
+  it('rejects a range on a weekday with no matching rule', () => {
+    const result = isSlotWithinRules({
+      timezone: BERLIN,
+      rules: [mondayRule],
+      startAt: local('2026-08-18T10:00:00'), // Tuesday
+      endAt: local('2026-08-18T10:30:00'),
+    });
+    expect(result).toBe(false);
+  });
+
+  it('rejects a range crossing local midnight even if the rule window would technically fit', () => {
+    const result = isSlotWithinRules({
+      timezone: BERLIN,
+      rules: [{ weekday: 1, startMinute: 0, endMinute: 1439 }],
+      startAt: local('2026-08-17T23:30:00'),
+      endAt: local('2026-08-18T00:30:00'),
+    });
+    expect(result).toBe(false);
+  });
+
+  it('rejects an inverted or empty range', () => {
+    const result = isSlotWithinRules({
+      timezone: BERLIN,
+      rules: [mondayRule],
+      startAt: local('2026-08-17T10:00:00'),
+      endAt: local('2026-08-17T10:00:00'),
+    });
+    expect(result).toBe(false);
+  });
+});
+
+describe('overlapsBusyRange', () => {
+  it('detects a genuine overlap', () => {
+    const result = overlapsBusyRange(
+      [{ start: local('2026-08-17T09:00:00'), end: local('2026-08-17T10:00:00') }],
+      local('2026-08-17T09:30:00'),
+      local('2026-08-17T10:30:00'),
+    );
+    expect(result).toBe(true);
+  });
+
+  it('does not flag adjacent (touching, non-overlapping) ranges', () => {
+    const result = overlapsBusyRange(
+      [{ start: local('2026-08-17T09:00:00'), end: local('2026-08-17T10:00:00') }],
+      local('2026-08-17T10:00:00'),
+      local('2026-08-17T11:00:00'),
+    );
+    expect(result).toBe(false);
+  });
+
+  it('returns false for an empty busy list', () => {
+    const result = overlapsBusyRange([], local('2026-08-17T09:00:00'), local('2026-08-17T10:00:00'));
+    expect(result).toBe(false);
   });
 });

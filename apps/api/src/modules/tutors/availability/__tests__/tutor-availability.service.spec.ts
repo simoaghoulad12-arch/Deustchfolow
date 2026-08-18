@@ -221,4 +221,63 @@ describe('TutorAvailabilityService', () => {
       );
     });
   });
+
+  describe('assertBookable', () => {
+    // rule fixture: Monday (weekday 1), 09:00-10:00 Europe/Berlin.
+    // 2026-08-17 is a Monday; Berlin is UTC+2 (CEST) in August.
+    const withinRule = {
+      start: new Date('2026-08-17T07:15:00.000Z'), // 09:15 Berlin
+      end: new Date('2026-08-17T07:45:00.000Z'), // 09:45 Berlin
+    };
+    const outsideRule = {
+      start: new Date('2026-08-17T11:00:00.000Z'), // 13:00 Berlin
+      end: new Date('2026-08-17T11:30:00.000Z'),
+    };
+
+    it('throws NotFoundException for a nonexistent tutor', async () => {
+      const prisma = buildPrismaMock({ tutorProfile: { findUnique: jest.fn().mockResolvedValue(null) } });
+      const service = new TutorAvailabilityService(prisma);
+
+      await expect(service.assertBookable('nope', withinRule.start, withinRule.end)).rejects.toBeInstanceOf(
+        NotFoundException,
+      );
+    });
+
+    it('resolves without throwing for a slot inside a declared rule window', async () => {
+      const prisma = buildPrismaMock();
+      const service = new TutorAvailabilityService(prisma);
+
+      await expect(
+        service.assertBookable('tutor-1', withinRule.start, withinRule.end),
+      ).resolves.toBeUndefined();
+    });
+
+    it('throws BadRequestException for a slot outside any declared rule window', async () => {
+      const prisma = buildPrismaMock();
+      const service = new TutorAvailabilityService(prisma);
+
+      await expect(service.assertBookable('tutor-1', outsideRule.start, outsideRule.end)).rejects.toBeInstanceOf(
+        BadRequestException,
+      );
+    });
+
+    it('throws BadRequestException for a slot overlapping a blocked exception, even inside a rule window', async () => {
+      const prisma = buildPrismaMock({
+        tutorAvailabilityException: {
+          findMany: jest.fn().mockResolvedValue([
+            {
+              ...exception,
+              startAt: new Date('2026-08-17T00:00:00.000Z'),
+              endAt: new Date('2026-08-18T00:00:00.000Z'),
+            },
+          ]),
+        },
+      });
+      const service = new TutorAvailabilityService(prisma);
+
+      await expect(service.assertBookable('tutor-1', withinRule.start, withinRule.end)).rejects.toBeInstanceOf(
+        BadRequestException,
+      );
+    });
+  });
 });

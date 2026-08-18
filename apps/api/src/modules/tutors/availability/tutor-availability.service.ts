@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../../common/prisma/prisma.service';
-import { computeFreeSlots } from './availability-slots';
+import { computeFreeSlots, isSlotWithinRules, overlapsBusyRange } from './availability-slots';
 import type { CreateAvailabilityRuleDto } from '../dto/create-availability-rule.dto';
 import type { CreateAvailabilityExceptionDto } from '../dto/create-availability-exception.dto';
 import type { QueryAvailabilityDto } from '../dto/query-availability.dto';
@@ -121,6 +121,43 @@ export class TutorAvailabilityService {
       to,
       durationMinutes: query.durationMinutes ?? DEFAULT_SLOT_DURATION_MINUTES,
     });
+  }
+
+  /**
+   * Booking-time validation: the requested [startAt, endAt) must fall
+   * inside one of the tutor's recurring rules and must not overlap a
+   * blocked exception. This is the "server-side check" half of
+   * double-booking prevention (spec section 6) — the other half is the
+   * database EXCLUDE constraint on the bookings table, which this method
+   * does not (and cannot) replace: it only rejects requests outside the
+   * tutor's declared hours, not concurrent requests for the same slot.
+   */
+  async assertBookable(tutorId: string, startAt: Date, endAt: Date): Promise<void> {
+    const profile = await this.prisma.client.tutorProfile.findUnique({ where: { userId: tutorId } });
+    if (!profile || !profile.isActive) {
+      throw new NotFoundException('Tutor not found.');
+    }
+
+    const [rules, blockedExceptions] = await Promise.all([
+      this.prisma.client.tutorAvailabilityRule.findMany({ where: { tutorId } }),
+      this.prisma.client.tutorAvailabilityException.findMany({
+        where: { tutorId, isBlocked: true, startAt: { lt: endAt }, endAt: { gt: startAt } },
+      }),
+    ]);
+
+    const withinRules = isSlotWithinRules({
+      timezone: profile.timezone,
+      rules: rules.map((r) => ({ weekday: r.weekday, startMinute: r.startMinute, endMinute: r.endMinute })),
+      startAt,
+      endAt,
+    });
+    if (!withinRules) {
+      throw new BadRequestException('Der gewählte Zeitraum liegt außerhalb der Verfügbarkeit des Tutors.');
+    }
+
+    if (overlapsBusyRange(blockedExceptions.map((e) => ({ start: e.startAt, end: e.endAt })), startAt, endAt)) {
+      throw new BadRequestException('Der gewählte Zeitraum ist blockiert.');
+    }
   }
 
   private async assertTutorProfileExists(tutorId: string): Promise<void> {

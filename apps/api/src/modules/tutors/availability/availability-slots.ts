@@ -104,3 +104,38 @@ export function computeFreeSlots(params: {
 
   return slots.sort((a, b) => a.startAt.getTime() - b.startAt.getTime());
 }
+
+/**
+ * Whether a single, arbitrary [startAt, endAt) instant range falls fully
+ * inside one of the tutor's recurring local-time rules — used for
+ * validating an actual booking request, which (unlike the discovery grid
+ * `computeFreeSlots` produces) does not have to start on a fixed-duration
+ * boundary.
+ */
+export function isSlotWithinRules(params: {
+  timezone: string;
+  rules: AvailabilityRule[];
+  startAt: Date;
+  endAt: Date;
+}): boolean {
+  const { timezone, rules } = params;
+  const start = DateTime.fromJSDate(params.startAt, { zone: timezone });
+  const end = DateTime.fromJSDate(params.endAt, { zone: timezone });
+
+  if (!start.isValid || !end.isValid || end <= start) return false;
+  // Rules are per single calendar day in the tutor's own timezone — a
+  // range crossing local midnight can never be a single rule's window.
+  if (!start.hasSame(end, 'day')) return false;
+
+  const weekday = start.weekday % 7;
+  const startMinute = start.hour * 60 + start.minute;
+  const endMinute = end.hour * 60 + end.minute;
+
+  return rules.some(
+    (rule) => rule.weekday === weekday && rule.startMinute <= startMinute && endMinute <= rule.endMinute,
+  );
+}
+
+export function overlapsBusyRange(busyRanges: BusyRange[], startAt: Date, endAt: Date): boolean {
+  return busyRanges.some((b) => startAt < b.end && endAt > b.start);
+}
