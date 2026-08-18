@@ -2,6 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import type Stripe from 'stripe';
 import { SubscriptionService } from '../subscriptions/subscription.service';
 import { ConnectAccountService } from '../connect/connect-account.service';
+import { BookingPaymentService } from '../booking-payments/booking-payment.service';
 
 /**
  * Routes a verified, not-yet-processed Stripe event to the handler for
@@ -20,6 +21,7 @@ export class WebhookDispatcherService {
   constructor(
     private readonly subscriptions: SubscriptionService,
     private readonly connectAccounts: ConnectAccountService,
+    private readonly bookingPayments: BookingPaymentService,
   ) {}
 
   /** Returns true if this event type was recognized and dispatched
@@ -55,6 +57,18 @@ export class WebhookDispatcherService {
           chargesEnabled: account.charges_enabled ?? false,
           payoutsEnabled: account.payouts_enabled ?? false,
           detailsSubmitted: account.details_submitted ?? false,
+        });
+        return true;
+      }
+      case 'payment_intent.succeeded':
+      case 'payment_intent.payment_failed':
+      case 'payment_intent.canceled':
+      case 'payment_intent.processing': {
+        const paymentIntent = event.data.object as Stripe.PaymentIntent;
+        await this.bookingPayments.upsertFromPaymentIntent({
+          id: paymentIntent.id,
+          status: paymentIntent.status,
+          bookingId: paymentIntent.metadata?.bookingId,
         });
         return true;
       }

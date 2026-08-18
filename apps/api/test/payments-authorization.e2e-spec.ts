@@ -57,6 +57,10 @@ describe('Payments module authorization (e2e)', () => {
       .expect(401);
   });
 
+  it('rejects POST /api/v1/payments/bookings/:bookingId/checkout without a valid session token', async () => {
+    await request(app.getHttpServer()).post('/api/v1/payments/bookings/some-id/checkout').expect(401);
+  });
+
   it('rejects a FREE plan (ValidationPipe — FREE is never checked out against Stripe)', async () => {
     const token = await signToken(UserRole.STUDENT);
     await request(app.getHttpServer())

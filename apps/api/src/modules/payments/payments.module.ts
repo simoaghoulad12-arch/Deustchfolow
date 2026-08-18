@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ThrottlerModule } from '@nestjs/throttler';
+import { ScheduleModule } from '@nestjs/schedule';
 import { StripeService } from './stripe/stripe.service';
 import { StripeCustomerService } from './customers/stripe-customer.service';
 import { PaymentPolicyService } from './policy/payment-policy.service';
@@ -12,6 +13,8 @@ import { WebhookDispatcherService } from './webhooks/webhook-dispatcher.service'
 import { StripeWebhookController } from './webhooks/stripe-webhook.controller';
 import { ConnectAccountService } from './connect/connect-account.service';
 import { ConnectController } from './connect/connect.controller';
+import { BookingPaymentService } from './booking-payments/booking-payment.service';
+import { AbandonedBookingCleanupService } from './booking-payments/abandoned-booking-cleanup.service';
 
 /**
  * Payments & Monetization (Phase 6). Built up subphase by subphase —
@@ -28,6 +31,9 @@ import { ConnectController } from './connect/connect.controller';
     // PaymentsThrottlerGuard) — a lower ceiling than AI's 20/min since
     // legitimate checkout attempts are rare per user.
     ThrottlerModule.forRoot([{ ttl: 60_000, limit: 10 }]),
+    // Registered once, here — the only module in this codebase using
+    // scheduled jobs (AbandonedBookingCleanupService).
+    ScheduleModule.forRoot(),
   ],
   controllers: [PaymentsController, StripeWebhookController, ConnectController],
   providers: [
@@ -40,6 +46,8 @@ import { ConnectController } from './connect/connect.controller';
     WebhookIdempotencyService,
     WebhookDispatcherService,
     ConnectAccountService,
+    BookingPaymentService,
+    AbandonedBookingCleanupService,
   ],
   exports: [
     StripeService,
@@ -48,6 +56,7 @@ import { ConnectController } from './connect/connect.controller';
     SubscriptionService,
     CheckoutService,
     ConnectAccountService,
+    BookingPaymentService,
   ],
 })
 export class PaymentsModule {}
