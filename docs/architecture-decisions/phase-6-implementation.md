@@ -280,3 +280,48 @@ would mean a user mid-grace-period sees "no active subscription" in their
 account page while still being granted PREMIUM features, which is more
 confusing than the current literal read. Reconciling that display is
 explicitly out of scope for this subphase.
+
+## Phase 6.12 — Payment Security Tests: design
+
+**Not a new feature pass — a targeted look at what 6.1–6.11's per-unit
+tests don't yet prove together.** Every collaborator (signature
+verification, idempotency ledger, dispatcher, each domain service) already
+has thorough unit coverage from its own subphase. What's still untested is
+the **composition** — the exact sequence the quality-gate report's §13
+threat table and §18 "Double Payment Prevention" describe as the actual
+defense, not any one piece of it:
+
+1. **`StripeWebhookController`'s full pipeline** (`stripe-webhook
+   .controller.spec.ts`, new) — verify → idempotency → dispatch → mark
+   outcome, as one unit with all four collaborators mocked. This is the
+   literal, end-to-end proof of "Webhook-Verarbeitung muss idempotent
+   sein": a duplicate event (`idempotency.recordIfNew` returning `false`)
+   must never reach `dispatcher.dispatch` at all — not "dispatch is
+   idempotent if called twice," but "dispatch is not called a second
+   time." Also covers the failure path (`dispatch` throws →
+   `markFailed` + rethrow, so Stripe's automatic retry gets a 500 and
+   tries again) and the ignored path (unrecognized event type →
+   `markIgnored`, still 200 so Stripe stops redelivering something
+   already looked at).
+2. **ValidationPipe as the first line against a forged client plan/status**
+   (extends `payments-authorization.e2e-spec.ts`) — the quality-gate
+   report's §13 mitigation for "client claims a plan it doesn't have" is
+   "no endpoint anywhere accepts it," which today is true by omission
+   (the DTOs simply don't declare a `status`/`plan` field for anything
+   but the one legitimate `plan` on subscription checkout). This phase
+   adds an explicit regression test: a subscription-checkout request
+   carrying an extra `status: 'ACTIVE'` field is rejected 400 by
+   `ValidationPipe({ forbidNonWhitelisted: true })` before any service
+   method runs — proving the mitigation at the wire, not just by reading
+   the DTO source.
+3. **A positive assertion that no client-triggered payout endpoint
+   exists.** `TutorPayoutService` (6.9) has no public write method at
+   all — `recordTransfer`/`recordPayoutOutcome` are only ever called from
+   `WebhookDispatcherService`. A route-level e2e probe (`POST
+   /tutors/me/payouts` → 404, since only `GET` is registered) turns "we
+   didn't build one" into a test that fails loudly if anyone ever adds
+   one without deliberately revisiting this constraint.
+
+No new pure functions, no new services — this subphase is entirely test
+code, matching the approval's "after each subsystem: lint, typecheck,
+tests" cadence applied one level up, to the subsystem boundary itself.

@@ -210,4 +210,43 @@ describe('Payments module authorization (e2e)', () => {
     const token = await signToken(UserRole.STUDENT);
     await request(app.getHttpServer()).get(path).set('Authorization', `Bearer ${token}`).expect(403);
   });
+
+  // --- Phase 6.12: composed security regressions, not per-unit checks ---
+  // (quality-gate report §13 "client claims a plan it doesn't have" and
+  // §18 double-payment prevention — see phase-6-implementation.md).
+
+  it('rejects a subscription checkout body smuggling an extra `status` field (ValidationPipe forbidNonWhitelisted, before any service runs)', async () => {
+    const token = await signToken(UserRole.STUDENT);
+    await request(app.getHttpServer())
+      .post('/api/v1/payments/subscriptions/checkout')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ plan: 'PREMIUM', status: 'ACTIVE' })
+      .expect(400);
+  });
+
+  it('rejects a refund body smuggling an extra `status` field — a client can never dictate a refund outcome', async () => {
+    const token = await signToken(UserRole.ADMIN);
+    await request(app.getHttpServer())
+      .post('/api/v1/payments/some-id/refund')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ amountCents: 500, status: 'SUCCEEDED' })
+      .expect(400);
+  });
+
+  it('rejects a policy update body with an unrecognized field (e.g. an attempt to retarget the singleton row via `id`)', async () => {
+    const token = await signToken(UserRole.ADMIN);
+    await request(app.getHttpServer())
+      .patch('/api/v1/payments/policy')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ commissionBasisPoints: 1500, id: 'not-default' })
+      .expect(400);
+  });
+
+  it('has no client-callable payout-creation endpoint — POST /tutors/me/payouts does not exist (only GET is registered)', async () => {
+    const token = await signToken(UserRole.TUTOR);
+    await request(app.getHttpServer())
+      .post('/api/v1/tutors/me/payouts')
+      .set('Authorization', `Bearer ${token}`)
+      .expect(404);
+  });
 });
