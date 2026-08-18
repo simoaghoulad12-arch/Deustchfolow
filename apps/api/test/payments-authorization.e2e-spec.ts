@@ -162,4 +162,52 @@ describe('Payments module authorization (e2e)', () => {
       .set('Authorization', `Bearer ${token}`)
       .expect(403);
   });
+
+  it('rejects POST /api/v1/payments/subscriptions/cancel without a valid session token', async () => {
+    await request(app.getHttpServer()).post('/api/v1/payments/subscriptions/cancel').expect(401);
+  });
+
+  it('rejects GET /api/v1/payments/policy without a valid session token', async () => {
+    await request(app.getHttpServer()).get('/api/v1/payments/policy').expect(401);
+  });
+
+  it('rejects a non-ADMIN/SUPPORT token on GET /api/v1/payments/policy', async () => {
+    const token = await signToken(UserRole.STUDENT);
+    await request(app.getHttpServer())
+      .get('/api/v1/payments/policy')
+      .set('Authorization', `Bearer ${token}`)
+      .expect(403);
+  });
+
+  it('rejects PATCH /api/v1/payments/policy without a valid session token', async () => {
+    await request(app.getHttpServer()).patch('/api/v1/payments/policy').send({ commissionBasisPoints: 1500 }).expect(401);
+  });
+
+  it('rejects a SUPPORT token on PATCH /api/v1/payments/policy — read-only for SUPPORT', async () => {
+    const token = await signToken(UserRole.SUPPORT);
+    await request(app.getHttpServer())
+      .patch('/api/v1/payments/policy')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ commissionBasisPoints: 1500 })
+      .expect(403);
+  });
+
+  it.each([
+    '/api/v1/payments/admin/payments',
+    '/api/v1/payments/admin/payments/some-id',
+    '/api/v1/payments/admin/refunds',
+    '/api/v1/payments/admin/disputes',
+  ])('rejects GET %s without a valid session token', async (path) => {
+    await request(app.getHttpServer()).get(path).expect(401);
+  });
+
+  it.each([
+    '/api/v1/payments/admin/payments',
+    '/api/v1/payments/admin/payments/some-id',
+    '/api/v1/payments/admin/refunds',
+    '/api/v1/payments/admin/disputes',
+  ])('rejects a non-ADMIN/SUPPORT token on GET %s', async (path) => {
+    const token = await signToken(UserRole.STUDENT);
+    await request(app.getHttpServer()).get(path).set('Authorization', `Bearer ${token}`).expect(403);
+  });
 });

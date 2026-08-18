@@ -8,6 +8,7 @@ import { CreateSubscriptionCheckoutDto } from './dto/create-subscription-checkou
 import { InitiateRefundDto } from './dto/initiate-refund.dto';
 import { BookingPaymentService } from './booking-payments/booking-payment.service';
 import { RefundService } from './refunds/refund.service';
+import { SubscriptionService } from './subscriptions/subscription.service';
 
 /** Every route here is burst-abuse-throttled (see PaymentsThrottlerGuard
  * and this module's ThrottlerModule.forRoot config) — checkout-session
@@ -20,6 +21,7 @@ export class PaymentsController {
     private readonly checkoutService: CheckoutService,
     private readonly bookingPayments: BookingPaymentService,
     private readonly refunds: RefundService,
+    private readonly subscriptions: SubscriptionService,
   ) {}
 
   /**
@@ -42,6 +44,18 @@ export class PaymentsController {
   @Post('bookings/:bookingId/checkout')
   createBookingCheckout(@CurrentUser() user: AuthenticatedUser, @Param('bookingId') bookingId: string) {
     return this.bookingPayments.createCheckout(user.id, bookingId);
+  }
+
+  /**
+   * Self-service cancel-at-period-end (never an immediate hard revoke —
+   * see quality-gate report §16). Only calls Stripe; the resulting
+   * `customer.subscription.updated` webhook is what actually updates
+   * `Subscription.cancelAtPeriodEnd` (SubscriptionService class doc).
+   */
+  @Post('subscriptions/cancel')
+  async cancelSubscription(@CurrentUser() user: AuthenticatedUser) {
+    await this.subscriptions.requestCancelAtPeriodEnd(user.id);
+    return { requested: true };
   }
 
   /**

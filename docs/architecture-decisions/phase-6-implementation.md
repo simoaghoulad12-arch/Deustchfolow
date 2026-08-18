@@ -184,3 +184,46 @@ Tutor-Auszahlung darf clientseitig ausgelöst werden."
 **`GET /tutors/me/payouts`** — `@Roles(TUTOR)`, `@CurrentUser()`-scoped
 only (same IDOR convention as `ConnectController`: a tutor only ever reads
 their own payout ledger, never a client-supplied tutorId).
+
+## Phase 6.10 — Admin/Support Payment Operations: design
+
+**Closes the quality-gate report's own §11 API-boundary gaps.** Three
+things the report specified but earlier subphases deliberately deferred
+(each with a "see Phase 6.10" pointer already left in the code):
+
+- `PaymentPolicyService.update()` (built in 6.1, never wired to a route) —
+  now exposed as `GET/PATCH /payments/policy`. **`GET` is `@Roles(ADMIN,
+  SUPPORT)`** (SUPPORT needs to see its own standing refund-authority
+  limit to know when a request is out of scope); **`PATCH` is
+  `@Roles(ADMIN)` only** — matches the approval's "innerhalb einer
+  konfigurierbaren Grenze; darüber ADMIN erforderlich" framing: SUPPORT
+  operates within the policy, only ADMIN edits it.
+- `SubscriptionService.requestCancelAtPeriodEnd()` (built in 6.3, never
+  wired to a route) — now exposed as `POST /payments/subscriptions/cancel`,
+  `@CurrentUser()`-scoped, any authenticated role. Self-service, not an
+  admin/support action, but it is the same "finish what an earlier
+  subphase intentionally left stubbed" work as the policy routes above, so
+  it lands in the same pass rather than staying orphaned indefinitely.
+- The report's §11 line `GET /payments/admin/... — Admin dashboards: all
+  payments, disputes, refund queue` — now three concrete read endpoints,
+  all `@Roles(ADMIN, SUPPORT)`:
+  - `GET /payments/admin/payments` — every `Payment` row, newest first.
+  - `GET /payments/admin/payments/:paymentId` — one payment plus its
+    `Refund[]` (the existing Prisma relation), 404 (never 403) if the id
+    doesn't exist — same convention as every ownership-checked lookup
+    elsewhere, even though there is no "ownership" here in the IDOR sense;
+    a not-found id should not distinguish "wrong id" from "no
+    permission" for a support agent's tooling any more than for a
+    student's.
+  - `GET /payments/admin/refunds` — every `Refund` row, newest first (the
+    report's own "queue" wording is reused as the route name only; there
+    is no separate pending-approval queue — see the 6.8 design note for
+    why that was rejected as its own workflow entity).
+  - `GET /payments/admin/disputes` — every `Payment` row with
+    `disputedAt` set, ordered by `disputedAt` descending.
+
+**No pagination.** Every other admin-role list endpoint in this codebase
+(`tutors/admin/verification/queue` from Phase 5.6, for one) returns an
+unpaginated list — matching that precedent instead of introducing a
+pagination convention nothing else here uses yet, for what is, at this
+phase's expected data volume, a small admin tool surface.

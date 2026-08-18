@@ -18,6 +18,9 @@ import { AbandonedBookingCleanupService } from './booking-payments/abandoned-boo
 import { RefundService } from './refunds/refund.service';
 import { TutorPayoutService } from './payouts/tutor-payout.service';
 import { PayoutsController } from './payouts/payouts.controller';
+import { AdminPaymentsService } from './admin/admin-payments.service';
+import { AdminPaymentsController } from './admin/admin-payments.controller';
+import { PaymentPolicyController } from './policy/payment-policy.controller';
 
 /**
  * Payments & Monetization (Phase 6). Built up subphase by subphase —
@@ -38,7 +41,14 @@ import { PayoutsController } from './payouts/payouts.controller';
     // scheduled jobs (AbandonedBookingCleanupService).
     ScheduleModule.forRoot(),
   ],
-  controllers: [PaymentsController, StripeWebhookController, ConnectController, PayoutsController],
+  controllers: [
+    PaymentsController,
+    StripeWebhookController,
+    ConnectController,
+    PayoutsController,
+    AdminPaymentsController,
+    PaymentPolicyController,
+  ],
   providers: [
     StripeService,
     StripeCustomerService,
@@ -53,6 +63,7 @@ import { PayoutsController } from './payouts/payouts.controller';
     AbandonedBookingCleanupService,
     RefundService,
     TutorPayoutService,
+    AdminPaymentsService,
   ],
   exports: [
     StripeService,
