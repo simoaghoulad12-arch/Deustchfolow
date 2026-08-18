@@ -128,17 +128,34 @@ POST /bookings`-Requests verschiedener Studierender wiederholt (201 +
 409). Damit ist die Race-Condition-Garantie nicht nur behauptet, sondern
 gegen eine echte DB bewiesen.
 
-## 7. Dokumenten-Storage: Interface + lokale Dev-Implementierung
+## 7. Dokumenten-Storage: Interface + lokale Dev-Implementierung (Phase 5.6, umgesetzt)
 
 Gleiches Muster wie `AiProvider` aus Phase 4: ein `DocumentStorageProvider`-
-Interface (upload/getSignedUrl/ownership-scoped), eine
-`LocalDocumentStorageProvider`-Implementierung (Dateien unter einem
-`.gitignore`ten lokalen Verzeichnis, "signierte" URLs als kurzlebige,
-serverseitig signierte Tokens statt echter Cloud-Signaturen). Kein echter
-S3/Bucket-Provider in dieser Phase — es sind keine Cloud-Credentials
-verfügbar (dieselbe Situation wie beim fehlenden `ANTHROPIC_API_KEY`), und
-ein echter Provider wäre ein reiner Adapter-Austausch hinter demselben
-Interface, kein Architektur-Rewrite.
+Interface (`save`/`read`, storageKey-basiert), eine
+`LocalDocumentStorageProvider`-Implementierung (Dateien unter dem
+`.gitignore`ten `apps/api/var/tutor-documents/`, niemals über einen
+Static-File-Server erreichbar). Kein echter S3/Bucket-Provider in dieser
+Phase — es sind keine Cloud-Credentials verfügbar (dieselbe Situation wie
+beim fehlenden `ANTHROPIC_API_KEY`), und ein echter Provider wäre ein
+reiner Adapter-Austausch hinter demselben Interface, kein
+Architektur-Rewrite.
+
+**Abweichung vom ursprünglichen Plan — "signierte URLs".** Statt eines
+separaten Query-Token-Schemas wird "signierte URL" hier durch das bereits
+bestehende Service-Token-Muster erfüllt: jede Dokument-Content-Route
+(`GET /tutors/me/verification/documents/:id/content`,
+`GET /tutors/admin/verification/documents/:id/content`) läuft durch
+denselben `AuthGuard`/`RolesGuard`/Ownership-Check wie jede andere
+Ressource in dieser API — ein frisch geminteter, ~60s gültiger
+Service-Token ist funktional bereits eine kurzlebige, signierte
+Zugriffsberechtigung. Ein zweites, paralleles Signatur-Schema nur für
+Dokumente hätte dieselbe Garantie dupliziert, ohne einen echten
+zusätzlichen Sicherheitsgewinn — und würde der Vorgabe "keine unnötige
+Änderung der bestehenden Architektur" widersprechen. Ein literales
+Query-String-Signatur-Schema ist sinnvoll, sobald ein echter
+Objektspeicher (S3-kompatibel) eingeführt wird, wo Downloads direkt vom
+Bucket (nicht durch die API) ausgeliefert werden sollen; bis dahin ist es
+vorgezogene Komplexität.
 
 ## 8. Keine Admin-Frontend-Oberfläche in dieser Phase
 

@@ -790,9 +790,12 @@ model TutorVerificationDocument {
   /// Tutor-supplied label (e.g. "Goethe-Zertifikat C2") — descriptive
   /// only, never itself proof of anything; verification is the admin
   /// decision recorded on TutorProfile.verificationStatus, not per-file.
-  label      String
-  storageKey String   @map("storage_key")
-  uploadedAt DateTime @default(now()) @map("uploaded_at")
+  label       String
+  storageKey  String   @map("storage_key")
+  /// MIME type of the stored bytes — needed to serve the file correctly
+  /// through the signed-URL download endpoint (Phase 5.6).
+  contentType String   @map("content_type")
+  uploadedAt  DateTime @default(now()) @map("uploaded_at")
 
   @@index([tutorId])
   @@map("tutor_verification_documents")

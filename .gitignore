@@ -47,3 +47,8 @@ Thumbs.db
 
 # Misc
 .vercel/
+
+# Local-dev document storage (apps/api/var/tutor-documents) — never
+# committed; the real deployment target is a private cloud bucket, this
+# directory only exists for the local DocumentStorageProvider (Phase 5.6).
+apps/api/var/

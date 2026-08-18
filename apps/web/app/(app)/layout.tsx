@@ -40,6 +40,9 @@ export default async function AppLayout({ children }: { children: React.ReactNod
                   <Link href="/tutor/bookings" className="hover:text-foreground">
                     Buchungsanfragen
                   </Link>
+                  <Link href="/tutor/verification" className="hover:text-foreground">
+                    Verifizierung
+                  </Link>
                 </>
               )}
               <Link href="/ai-tutor" className="hover:text-foreground">
