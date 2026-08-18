@@ -325,3 +325,59 @@ defense, not any one piece of it:
 No new pure functions, no new services — this subphase is entirely test
 code, matching the approval's "after each subsystem: lint, typecheck,
 tests" cadence applied one level up, to the subsystem boundary itself.
+
+## Phase 6.13 — Sandbox E2E: design
+
+**Mirrors the Phase 4.5 precedent exactly** (`scripts/ai-real-provider
+-test.ts` / `ai:eval`, blocked by no `ANTHROPIC_API_KEY`) and the §16c
+"Manual, non-CI Stripe test-mode verification script" the quality-gate
+report specified up front: a standalone script under `apps/api/scripts/`,
+never wired into CI (CI has no real Stripe test credentials and shouldn't
+need any to stay green — same reasoning as `booking:verify-concurrency`),
+runnable on demand by a human with real `sk_test_...` credentials.
+
+**`verify-stripe-sandbox.ts`** exercises the actual money flows against
+real Stripe **test-mode** API calls (never mocked), reporting each phase
+independently as PASS/FAIL/SKIP rather than one monolithic result:
+
+1. Create a test `Customer`.
+2. Subscription checkout — create a Checkout Session
+   (`mode: subscription`) against `STRIPE_PRICE_ID_PREMIUM`; verify a
+   session URL comes back. Skipped (not failed) if that price id isn't
+   configured, so a partial sandbox setup still yields a useful report.
+3. Booking payment (destination charge) — create a `Custom`-type
+   connected account with Stripe's documented test-mode values (test SSN,
+   test DOB, test ToS acceptance) so it reaches `charges_enabled` without
+   real KYC, then confirm a PaymentIntent with `application_fee_amount` +
+   `transfer_data.destination` against it using Stripe's `pm_card_visa`
+   test payment method, and assert it reaches `succeeded`. Uses `US` as
+   the test account's country specifically because Custom-account test
+   values are best-documented for `US` — this step verifies the
+   destination-charge *mechanics* (commission split, atomic transfer),
+   not DE-specific onboarding UX, which is out of scope for a mechanics
+   verification script.
+4. Refund — partially refund the PaymentIntent from step 3, assert the
+   refund reaches `succeeded`.
+5. Cleanup — delete the test customer and connected account regardless of
+   outcome (`finally`), same discipline as `verify-booking-concurrency`.
+
+**Aborts cleanly, exit code 0, the moment `StripeService.isConfigured()`
+is false** — identical wording pattern to `ai:eval`'s abort message: no
+phase is attempted, no result is fabricated. Added as
+`pnpm --filter @deutschflow/api payments:verify-sandbox`.
+
+**Run in this environment: BLOCKED.** Checked (same method as the Phase
+4.5 precedent): shell environment, `apps/api/.env`, `apps/api/.env
+.example`, every `.env*` file in the repo — no `STRIPE_SECRET_KEY`
+anywhere, real or placeholder-with-a-value. Running the script produces
+the clean abort described above; **no Stripe test-mode call of any kind
+was made, and no result in this report is fabricated.** Everything
+verifiable without real Stripe credentials — the full `pnpm lint` /
+`typecheck` / `test` / `build` gate across the monorepo (§16, run in
+Phase 6.14) and the entire unit/e2e suite built across 6.1–6.12 — is
+verified. The one thing that remains open, exactly as it did for Phase
+4.5's AI quality gate, is real Stripe test-mode confirmation: this phase
+cannot be verified end-to-end against live Stripe test infrastructure
+until a real `sk_test_...` key (plus `STRIPE_PRICE_ID_PREMIUM`/`_PRO` and
+the two webhook secrets) is provided and
+`payments:verify-sandbox` is run by a human with that credential.

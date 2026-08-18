@@ -14,7 +14,8 @@
     "clean": "rm -rf dist",
     "ai:real-test": "ts-node -T -P tsconfig.json scripts/ai-real-provider-test.ts",
     "ai:eval": "ts-node -T -P tsconfig.json scripts/ai-eval/run-eval.ts",
-    "booking:verify-concurrency": "ts-node -T -P tsconfig.json scripts/verify-booking-concurrency.ts"
+    "booking:verify-concurrency": "ts-node -T -P tsconfig.json scripts/verify-booking-concurrency.ts",
+    "payments:verify-sandbox": "ts-node -T -P tsconfig.json scripts/verify-stripe-sandbox.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.32.1",
