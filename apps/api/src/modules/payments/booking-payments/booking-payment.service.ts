@@ -10,6 +10,7 @@ export interface PaymentIntentEventData {
   id: string;
   status: string;
   bookingId: string | undefined; // from PaymentIntent.metadata.bookingId
+  chargeId?: string; // from PaymentIntent.latest_charge — needed to correlate Phase 6.9's transfer.created events back to this Payment
 }
 
 /** Integer basis-points commission, applied to integer cents, always
@@ -159,7 +160,7 @@ export class BookingPaymentService {
 
     await this.prisma.client.payment.update({
       where: { id: payment.id },
-      data: { status: status as never },
+      data: { status: status as never, ...(data.chargeId ? { stripeChargeId: data.chargeId } : {}) },
     });
 
     if (status === 'SUCCEEDED') {

@@ -4,6 +4,7 @@ import { SubscriptionService } from '../subscriptions/subscription.service';
 import { ConnectAccountService } from '../connect/connect-account.service';
 import { BookingPaymentService } from '../booking-payments/booking-payment.service';
 import { RefundService } from '../refunds/refund.service';
+import { TutorPayoutService } from '../payouts/tutor-payout.service';
 
 /**
  * Routes a verified, not-yet-processed Stripe event to the handler for
@@ -24,6 +25,7 @@ export class WebhookDispatcherService {
     private readonly connectAccounts: ConnectAccountService,
     private readonly bookingPayments: BookingPaymentService,
     private readonly refunds: RefundService,
+    private readonly payouts: TutorPayoutService,
   ) {}
 
   /** Returns true if this event type was recognized and dispatched
@@ -67,10 +69,15 @@ export class WebhookDispatcherService {
       case 'payment_intent.canceled':
       case 'payment_intent.processing': {
         const paymentIntent = event.data.object as Stripe.PaymentIntent;
+        const chargeId =
+          typeof paymentIntent.latest_charge === 'string'
+            ? paymentIntent.latest_charge
+            : paymentIntent.latest_charge?.id;
         await this.bookingPayments.upsertFromPaymentIntent({
           id: paymentIntent.id,
           status: paymentIntent.status,
           bookingId: paymentIntent.metadata?.bookingId,
+          chargeId,
         });
         return true;
       }
@@ -90,6 +97,32 @@ export class WebhookDispatcherService {
           return true;
         }
         await this.refunds.recordDispute(paymentIntentId, dispute.status);
+        return true;
+      }
+      case 'transfer.created': {
+        const transfer = event.data.object as Stripe.Transfer;
+        const stripeAccountId = typeof transfer.destination === 'string' ? transfer.destination : transfer.destination?.id;
+        const sourceChargeId =
+          typeof transfer.source_transaction === 'string' ? transfer.source_transaction : transfer.source_transaction?.id;
+        await this.payouts.recordTransfer({
+          stripeTransferId: transfer.id,
+          stripeAccountId,
+          sourceChargeId,
+          amountCents: transfer.amount,
+          currency: transfer.currency,
+        });
+        return true;
+      }
+      case 'payout.paid':
+      case 'payout.failed': {
+        const payout = event.data.object as Stripe.Payout;
+        await this.payouts.recordPayoutOutcome({
+          stripePayoutId: payout.id,
+          stripeAccountId: event.account,
+          amountCents: payout.amount,
+          currency: payout.currency,
+          status: event.type === 'payout.paid' ? 'PAID' : 'FAILED',
+        });
         return true;
       }
       default:

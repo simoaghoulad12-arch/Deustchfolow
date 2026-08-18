@@ -150,4 +150,16 @@ describe('Payments module authorization (e2e)', () => {
       .set('Authorization', `Bearer ${token}`)
       .expect(403);
   });
+
+  it('rejects GET /api/v1/tutors/me/payouts without a valid session token', async () => {
+    await request(app.getHttpServer()).get('/api/v1/tutors/me/payouts').expect(401);
+  });
+
+  it('rejects a non-TUTOR token on GET /api/v1/tutors/me/payouts', async () => {
+    const token = await signToken(UserRole.STUDENT);
+    await request(app.getHttpServer())
+      .get('/api/v1/tutors/me/payouts')
+      .set('Authorization', `Bearer ${token}`)
+      .expect(403);
+  });
 });

@@ -136,3 +136,51 @@ itself always reflects Stripe's latest). Matches the quality-gate report's
 own grouping (§30 discusses disputes under refunds/chargebacks) and avoids
 a fourth near-empty module for a handful of fields on the existing
 `Payment` row.
+
+## Phase 6.9 — Tutor Payouts: design
+
+**A reconciliation ledger, not an orchestration engine** (quality-gate
+report's own framing, §7). DeutschFlow never triggers a tutor payout — a
+destination charge's `transfer_data.destination` already moves the tutor's
+share into their connected account's Stripe balance atomically at charge
+time, and Stripe's own (Express/Standard account) payout schedule sweeps
+that balance to the tutor's bank on its own cadence. This phase only
+*records what Stripe reports happened*, via two independent Stripe object
+types, each becoming its own `TutorPayout` row rather than one merged
+"payout" concept:
+
+- **`transfer.created`** (platform-account event) — money for one specific
+  booking payment landed in the tutor's Connect balance. Correlated back to
+  the originating `Payment` via `Payment.stripeChargeId` (populated in this
+  subphase — see `PaymentIntentEventData.chargeId` /
+  `Payment.stripeChargeId`, sourced from the PaymentIntent's
+  `latest_charge`, itself matched against the Transfer's
+  `source_transaction`). Recorded with `status: PENDING` and
+  `stripeTransferId` set (unique, so redelivery is a no-op upsert).
+- **`payout.paid` / `payout.failed`** (Connect-account-scoped events,
+  `event.account` = the connected account id) — Stripe actually moved a
+  balance amount to the tutor's external bank account. Recorded with
+  `status: PAID`/`FAILED` and `stripePayoutId` set (also unique).
+
+**Deliberately not correlated 1:1.** Stripe's automatic payout schedule
+sweeps the *entire* available balance at payout time, which can bundle
+many transfers (across many bookings, sometimes many days) into one
+Payout — there is no Stripe-provided mapping from a Payout back to the
+exact set of Transfers it swept. Asserting a precise link here would mean
+either querying Stripe's balance-transaction history at payout time (real
+scope this phase does not need) or guessing (which the "never present fake
+payments as successful" instruction forbids by extension — a fabricated
+correlation is just as dishonest as a fabricated payment). Instead: each
+Stripe object type gets its own row, both queryable per tutor, and an
+admin/support reader can reconcile by amount and time window. This
+limitation is recorded here explicitly, not silently.
+
+**No payout amount is ever taken from the client.** Both event handlers
+are 100% webhook-driven (signature-verified, idempotent via the existing
+`stripeTransferId`/`stripePayoutId` unique constraints) — there is no
+client-callable "create payout" endpoint anywhere, consistent with "Keine
+Tutor-Auszahlung darf clientseitig ausgelöst werden."
+
+**`GET /tutors/me/payouts`** — `@Roles(TUTOR)`, `@CurrentUser()`-scoped
+only (same IDOR convention as `ConnectController`: a tutor only ever reads
+their own payout ledger, never a client-supplied tutorId).

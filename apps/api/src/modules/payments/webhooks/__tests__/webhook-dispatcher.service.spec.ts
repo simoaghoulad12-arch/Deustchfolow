@@ -4,12 +4,20 @@ import type { SubscriptionService } from '../../subscriptions/subscription.servi
 import type { ConnectAccountService } from '../../connect/connect-account.service';
 import type { BookingPaymentService } from '../../booking-payments/booking-payment.service';
 import type { RefundService } from '../../refunds/refund.service';
+import type { TutorPayoutService } from '../../payouts/tutor-payout.service';
 
 function buildRefundsMock() {
   return {
     upsertFromStripeRefund: jest.fn().mockResolvedValue(undefined),
     recordDispute: jest.fn().mockResolvedValue(undefined),
   } as unknown as RefundService;
+}
+
+function buildPayoutsMock() {
+  return {
+    recordTransfer: jest.fn().mockResolvedValue(undefined),
+    recordPayoutOutcome: jest.fn().mockResolvedValue(undefined),
+  } as unknown as TutorPayoutService;
 }
 
 function buildSubscriptionsMock() {
@@ -28,6 +36,22 @@ function buildBookingPaymentsMock() {
   return {
     upsertFromPaymentIntent: jest.fn().mockResolvedValue(undefined),
   } as unknown as BookingPaymentService;
+}
+
+function buildDispatcher(overrides?: {
+  subscriptions?: SubscriptionService;
+  connectAccounts?: ConnectAccountService;
+  bookingPayments?: BookingPaymentService;
+  refunds?: RefundService;
+  payouts?: TutorPayoutService;
+}) {
+  return new WebhookDispatcherService(
+    overrides?.subscriptions ?? buildSubscriptionsMock(),
+    overrides?.connectAccounts ?? buildConnectAccountsMock(),
+    overrides?.bookingPayments ?? buildBookingPaymentsMock(),
+    overrides?.refunds ?? buildRefundsMock(),
+    overrides?.payouts ?? buildPayoutsMock(),
+  );
 }
 
 function buildSubscriptionEvent(type: string, overrides?: Partial<Stripe.Subscription>): Stripe.Event {
@@ -53,7 +77,7 @@ describe('WebhookDispatcherService', () => {
     'dispatches %s to SubscriptionService.upsertFromStripeSubscription',
     async (type) => {
       const subscriptions = buildSubscriptionsMock();
-      const dispatcher = new WebhookDispatcherService(subscriptions, buildConnectAccountsMock(), buildBookingPaymentsMock(), buildRefundsMock());
+      const dispatcher = buildDispatcher({ subscriptions });
 
       const handled = await dispatcher.dispatch(buildSubscriptionEvent(type));
 
@@ -71,7 +95,7 @@ describe('WebhookDispatcherService', () => {
 
   it('handles a Customer object passed instead of a customer id string (unexpanded vs expanded field)', async () => {
     const subscriptions = buildSubscriptionsMock();
-    const dispatcher = new WebhookDispatcherService(subscriptions, buildConnectAccountsMock(), buildBookingPaymentsMock(), buildRefundsMock());
+    const dispatcher = buildDispatcher({ subscriptions });
 
     const event = buildSubscriptionEvent('customer.subscription.updated', {
       customer: { id: 'cus_expanded' } as unknown as string,
@@ -86,7 +110,7 @@ describe('WebhookDispatcherService', () => {
 
   it('returns false (not an error) for an event type it does not yet handle', async () => {
     const subscriptions = buildSubscriptionsMock();
-    const dispatcher = new WebhookDispatcherService(subscriptions, buildConnectAccountsMock(), buildBookingPaymentsMock(), buildRefundsMock());
+    const dispatcher = buildDispatcher({ subscriptions });
 
     const handled = await dispatcher.dispatch({ id: 'evt_2', type: 'charge.succeeded', data: { object: {} } } as unknown as Stripe.Event);
 
@@ -96,7 +120,7 @@ describe('WebhookDispatcherService', () => {
 
   it('logs and skips (does not throw) a subscription event with no price on the first item', async () => {
     const subscriptions = buildSubscriptionsMock();
-    const dispatcher = new WebhookDispatcherService(subscriptions, buildConnectAccountsMock(), buildBookingPaymentsMock(), buildRefundsMock());
+    const dispatcher = buildDispatcher({ subscriptions });
 
     const event = buildSubscriptionEvent('customer.subscription.updated', {
       items: { data: [] } as unknown as Stripe.Subscription['items'],
@@ -110,7 +134,7 @@ describe('WebhookDispatcherService', () => {
 
   it('dispatches account.updated to ConnectAccountService.upsertFromStripeAccount', async () => {
     const connectAccounts = buildConnectAccountsMock();
-    const dispatcher = new WebhookDispatcherService(buildSubscriptionsMock(), connectAccounts, buildBookingPaymentsMock(), buildRefundsMock());
+    const dispatcher = buildDispatcher({ connectAccounts });
 
     const event = {
       id: 'evt_3',
@@ -133,7 +157,7 @@ describe('WebhookDispatcherService', () => {
 
   it('treats missing capability flags on account.updated as false rather than undefined', async () => {
     const connectAccounts = buildConnectAccountsMock();
-    const dispatcher = new WebhookDispatcherService(buildSubscriptionsMock(), connectAccounts, buildBookingPaymentsMock(), buildRefundsMock());
+    const dispatcher = buildDispatcher({ connectAccounts });
 
     const event = {
       id: 'evt_4',
@@ -155,12 +179,12 @@ describe('WebhookDispatcherService', () => {
     'dispatches %s to BookingPaymentService.upsertFromPaymentIntent',
     async (type) => {
       const bookingPayments = buildBookingPaymentsMock();
-      const dispatcher = new WebhookDispatcherService(buildSubscriptionsMock(), buildConnectAccountsMock(), bookingPayments, buildRefundsMock());
+      const dispatcher = buildDispatcher({ bookingPayments });
 
       const event = {
         id: 'evt_5',
         type,
-        data: { object: { id: 'pi_1', status: 'succeeded', metadata: { bookingId: 'booking-1' } } },
+        data: { object: { id: 'pi_1', status: 'succeeded', metadata: { bookingId: 'booking-1' }, latest_charge: 'ch_1' } },
       } as unknown as Stripe.Event;
 
       const handled = await dispatcher.dispatch(event);
@@ -170,13 +194,14 @@ describe('WebhookDispatcherService', () => {
         id: 'pi_1',
         status: 'succeeded',
         bookingId: 'booking-1',
+        chargeId: 'ch_1',
       });
     },
   );
 
-  it('passes undefined bookingId through when a PaymentIntent has no metadata at all', async () => {
+  it('passes undefined bookingId and chargeId through when a PaymentIntent has no metadata/charge at all', async () => {
     const bookingPayments = buildBookingPaymentsMock();
-    const dispatcher = new WebhookDispatcherService(buildSubscriptionsMock(), buildConnectAccountsMock(), bookingPayments, buildRefundsMock());
+    const dispatcher = buildDispatcher({ bookingPayments });
 
     const event = {
       id: 'evt_6',
@@ -190,12 +215,30 @@ describe('WebhookDispatcherService', () => {
       id: 'pi_2',
       status: 'succeeded',
       bookingId: undefined,
+      chargeId: undefined,
     });
+  });
+
+  it('handles an expanded (object, not string) latest_charge on a payment_intent event', async () => {
+    const bookingPayments = buildBookingPaymentsMock();
+    const dispatcher = buildDispatcher({ bookingPayments });
+
+    const event = {
+      id: 'evt_10',
+      type: 'payment_intent.succeeded',
+      data: { object: { id: 'pi_3', status: 'succeeded', latest_charge: { id: 'ch_expanded' } } },
+    } as unknown as Stripe.Event;
+
+    await dispatcher.dispatch(event);
+
+    expect(bookingPayments.upsertFromPaymentIntent).toHaveBeenCalledWith(
+      expect.objectContaining({ chargeId: 'ch_expanded' }),
+    );
   });
 
   it('dispatches refund.updated to RefundService.upsertFromStripeRefund', async () => {
     const refunds = buildRefundsMock();
-    const dispatcher = new WebhookDispatcherService(buildSubscriptionsMock(), buildConnectAccountsMock(), buildBookingPaymentsMock(), refunds);
+    const dispatcher = buildDispatcher({ refunds });
 
     const event = {
       id: 'evt_7',
@@ -213,7 +256,7 @@ describe('WebhookDispatcherService', () => {
     'dispatches %s to RefundService.recordDispute with the payment_intent id',
     async (type) => {
       const refunds = buildRefundsMock();
-      const dispatcher = new WebhookDispatcherService(buildSubscriptionsMock(), buildConnectAccountsMock(), buildBookingPaymentsMock(), refunds);
+      const dispatcher = buildDispatcher({ refunds });
 
       const event = {
         id: 'evt_8',
@@ -230,7 +273,7 @@ describe('WebhookDispatcherService', () => {
 
   it('handles an expanded (object, not string) payment_intent on a dispute event', async () => {
     const refunds = buildRefundsMock();
-    const dispatcher = new WebhookDispatcherService(buildSubscriptionsMock(), buildConnectAccountsMock(), buildBookingPaymentsMock(), refunds);
+    const dispatcher = buildDispatcher({ refunds });
 
     const event = {
       id: 'evt_9',
@@ -241,5 +284,80 @@ describe('WebhookDispatcherService', () => {
     await dispatcher.dispatch(event);
 
     expect(refunds.recordDispute).toHaveBeenCalledWith('pi_expanded', 'needs_response');
+  });
+
+  it('dispatches transfer.created to TutorPayoutService.recordTransfer with a string destination/source_transaction', async () => {
+    const payouts = buildPayoutsMock();
+    const dispatcher = buildDispatcher({ payouts });
+
+    const event = {
+      id: 'evt_11',
+      type: 'transfer.created',
+      data: {
+        object: { id: 'tr_1', destination: 'acct_1', source_transaction: 'ch_1', amount: 4500, currency: 'eur' },
+      },
+    } as unknown as Stripe.Event;
+
+    const handled = await dispatcher.dispatch(event);
+
+    expect(handled).toBe(true);
+    expect(payouts.recordTransfer).toHaveBeenCalledWith({
+      stripeTransferId: 'tr_1',
+      stripeAccountId: 'acct_1',
+      sourceChargeId: 'ch_1',
+      amountCents: 4500,
+      currency: 'eur',
+    });
+  });
+
+  it('handles expanded (object, not string) destination/source_transaction on transfer.created', async () => {
+    const payouts = buildPayoutsMock();
+    const dispatcher = buildDispatcher({ payouts });
+
+    const event = {
+      id: 'evt_12',
+      type: 'transfer.created',
+      data: {
+        object: {
+          id: 'tr_2',
+          destination: { id: 'acct_expanded' },
+          source_transaction: { id: 'ch_expanded' },
+          amount: 1000,
+          currency: 'eur',
+        },
+      },
+    } as unknown as Stripe.Event;
+
+    await dispatcher.dispatch(event);
+
+    expect(payouts.recordTransfer).toHaveBeenCalledWith(
+      expect.objectContaining({ stripeAccountId: 'acct_expanded', sourceChargeId: 'ch_expanded' }),
+    );
+  });
+
+  it.each([
+    ['payout.paid', 'PAID'],
+    ['payout.failed', 'FAILED'],
+  ])('dispatches %s to TutorPayoutService.recordPayoutOutcome as %s', async (type, expectedStatus) => {
+    const payouts = buildPayoutsMock();
+    const dispatcher = buildDispatcher({ payouts });
+
+    const event = {
+      id: 'evt_13',
+      type,
+      account: 'acct_1',
+      data: { object: { id: 'po_1', amount: 9900, currency: 'eur' } },
+    } as unknown as Stripe.Event;
+
+    const handled = await dispatcher.dispatch(event);
+
+    expect(handled).toBe(true);
+    expect(payouts.recordPayoutOutcome).toHaveBeenCalledWith({
+      stripePayoutId: 'po_1',
+      stripeAccountId: 'acct_1',
+      amountCents: 9900,
+      currency: 'eur',
+      status: expectedStatus,
+    });
   });
 });

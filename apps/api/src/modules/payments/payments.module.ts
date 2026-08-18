@@ -16,6 +16,8 @@ import { ConnectController } from './connect/connect.controller';
 import { BookingPaymentService } from './booking-payments/booking-payment.service';
 import { AbandonedBookingCleanupService } from './booking-payments/abandoned-booking-cleanup.service';
 import { RefundService } from './refunds/refund.service';
+import { TutorPayoutService } from './payouts/tutor-payout.service';
+import { PayoutsController } from './payouts/payouts.controller';
 
 /**
  * Payments & Monetization (Phase 6). Built up subphase by subphase —
@@ -36,7 +38,7 @@ import { RefundService } from './refunds/refund.service';
     // scheduled jobs (AbandonedBookingCleanupService).
     ScheduleModule.forRoot(),
   ],
-  controllers: [PaymentsController, StripeWebhookController, ConnectController],
+  controllers: [PaymentsController, StripeWebhookController, ConnectController, PayoutsController],
   providers: [
     StripeService,
     StripeCustomerService,
@@ -50,6 +52,7 @@ import { RefundService } from './refunds/refund.service';
     BookingPaymentService,
     AbandonedBookingCleanupService,
     RefundService,
+    TutorPayoutService,
   ],
   exports: [
     StripeService,
@@ -60,6 +63,7 @@ import { RefundService } from './refunds/refund.service';
     ConnectAccountService,
     BookingPaymentService,
     RefundService,
+    TutorPayoutService,
   ],
 })
 export class PaymentsModule {}

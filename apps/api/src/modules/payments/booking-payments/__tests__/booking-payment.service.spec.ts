@@ -250,6 +250,20 @@ describe('BookingPaymentService', () => {
 
       expect(prisma.client.payment.update).not.toHaveBeenCalled();
     });
+
+    it('persists stripeChargeId when the event carries a charge id (needed for Phase 6.9 payout correlation)', async () => {
+      const prisma = buildPrismaMock({
+        payment: { findUnique: jest.fn().mockResolvedValue({ id: 'payment-1', status: 'PROCESSING' }) },
+      });
+      const service = buildService({ prisma });
+
+      await service.upsertFromPaymentIntent({ id: 'pi_1', status: 'succeeded', bookingId: 'booking-1', chargeId: 'ch_1' });
+
+      expect(prisma.client.payment.update).toHaveBeenCalledWith({
+        where: { id: 'payment-1' },
+        data: { status: 'SUCCEEDED', stripeChargeId: 'ch_1' },
+      });
+    });
   });
 
   describe('releaseAbandonedBookings', () => {
