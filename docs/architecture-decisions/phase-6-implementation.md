@@ -96,3 +96,43 @@ tutoring; multi-country tutor payouts are a real future expansion, not
 built speculatively now — every tutor gets a German Express account
 regardless of where they actually live, which is a known, accepted
 limitation for this phase, not an oversight.
+
+## Phase 6.8 — Refunds: design
+
+**No "pending admin approval" workflow.** The approval said "Support darf
+Refunds innerhalb definierter Grenzen anstoßen. Größere ... Refunds
+benötigen ADMIN-Freigabe." Two ways to build that: (a) SUPPORT submits a
+request that sits in a queue until an ADMIN approves it, or (b) SUPPORT
+simply cannot successfully call the endpoint above the limit — only ADMIN
+can. Chosen: **(b)**. It satisfies the requirement exactly (support has
+bounded standing authority, larger refunds require an admin to act) without
+inventing a new approval-queue entity/workflow this phase never asked for.
+`Refund.requiredAdminApproval` still records, for every refund regardless of
+who initiated it, whether the amount exceeded SUPPORT's standing limit — an
+audit fact ("this needed admin-level authority"), not a workflow gate.
+
+**Booking.status only moves on a FULL refund.** A partial refund never
+touches `Booking.status` — the session still happened, a partial credit
+doesn't change that. `REFUND_PENDING`/`REFUNDED` (the existing Phase 5
+enum values) are only set when a refund request covers the entire
+remaining refundable balance of the payment, checked at initiation time
+(`amountCents === remaining`), and confirmed once Stripe reports the
+refund `SUCCEEDED`.
+
+**No automatic reversal on a FAILED refund.** If a refund attempt fails
+after `Booking.status` was optimistically set to `REFUND_PENDING`, this
+phase does not automatically revert it — the failure is recorded
+(`Refund.status = FAILED`) and becomes visible to admin/support (Phase
+6.10) for manual follow-up. Building automatic state reversion would need
+tracking "what was the state before this refund attempt," which adds real
+complexity for a genuinely rare edge case (refund attempts on an
+already-successfully-charged payment method fail infrequently); documented
+here as a known, bounded limitation rather than solved speculatively.
+
+**Disputes are grouped into RefundService**, not a separate module —
+`recordDispute()` mirrors the `pastDueSince` pattern (set once, on first
+sight, never reset by later updates for the timestamp; the status string
+itself always reflects Stripe's latest). Matches the quality-gate report's
+own grouping (§30 discusses disputes under refunds/chargebacks) and avoids
+a fourth near-empty module for a handful of fields on the existing
+`Payment` row.

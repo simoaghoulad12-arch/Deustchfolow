@@ -3,6 +3,7 @@ import type Stripe from 'stripe';
 import { SubscriptionService } from '../subscriptions/subscription.service';
 import { ConnectAccountService } from '../connect/connect-account.service';
 import { BookingPaymentService } from '../booking-payments/booking-payment.service';
+import { RefundService } from '../refunds/refund.service';
 
 /**
  * Routes a verified, not-yet-processed Stripe event to the handler for
@@ -22,6 +23,7 @@ export class WebhookDispatcherService {
     private readonly subscriptions: SubscriptionService,
     private readonly connectAccounts: ConnectAccountService,
     private readonly bookingPayments: BookingPaymentService,
+    private readonly refunds: RefundService,
   ) {}
 
   /** Returns true if this event type was recognized and dispatched
@@ -70,6 +72,24 @@ export class WebhookDispatcherService {
           status: paymentIntent.status,
           bookingId: paymentIntent.metadata?.bookingId,
         });
+        return true;
+      }
+      case 'refund.updated': {
+        const refund = event.data.object as Stripe.Refund;
+        await this.refunds.upsertFromStripeRefund(refund.id, refund.status ?? 'pending');
+        return true;
+      }
+      case 'charge.dispute.created':
+      case 'charge.dispute.updated':
+      case 'charge.dispute.closed': {
+        const dispute = event.data.object as Stripe.Dispute;
+        const paymentIntentId =
+          typeof dispute.payment_intent === 'string' ? dispute.payment_intent : dispute.payment_intent?.id;
+        if (!paymentIntentId) {
+          this.logger.error(JSON.stringify({ event: 'dispute_missing_payment_intent', stripeDisputeId: dispute.id }));
+          return true;
+        }
+        await this.refunds.recordDispute(paymentIntentId, dispute.status);
         return true;
       }
       default:

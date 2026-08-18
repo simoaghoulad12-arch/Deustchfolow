@@ -61,6 +61,31 @@ describe('Payments module authorization (e2e)', () => {
     await request(app.getHttpServer()).post('/api/v1/payments/bookings/some-id/checkout').expect(401);
   });
 
+  it('rejects POST /api/v1/payments/:paymentId/refund without a valid session token', async () => {
+    await request(app.getHttpServer())
+      .post('/api/v1/payments/some-id/refund')
+      .send({ amountCents: 500 })
+      .expect(401);
+  });
+
+  it('rejects a non-ADMIN/SUPPORT token on POST /api/v1/payments/:paymentId/refund (RolesGuard, not ownership)', async () => {
+    const token = await signToken(UserRole.STUDENT);
+    await request(app.getHttpServer())
+      .post('/api/v1/payments/some-id/refund')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ amountCents: 500 })
+      .expect(403);
+  });
+
+  it('rejects a refund with a non-positive amountCents (ValidationPipe, before any database call)', async () => {
+    const token = await signToken(UserRole.ADMIN);
+    await request(app.getHttpServer())
+      .post('/api/v1/payments/some-id/refund')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ amountCents: 0 })
+      .expect(400);
+  });
+
   it('rejects a FREE plan (ValidationPipe — FREE is never checked out against Stripe)', async () => {
     const token = await signToken(UserRole.STUDENT);
     await request(app.getHttpServer())

@@ -15,6 +15,7 @@ import { ConnectAccountService } from './connect/connect-account.service';
 import { ConnectController } from './connect/connect.controller';
 import { BookingPaymentService } from './booking-payments/booking-payment.service';
 import { AbandonedBookingCleanupService } from './booking-payments/abandoned-booking-cleanup.service';
+import { RefundService } from './refunds/refund.service';
 
 /**
  * Payments & Monetization (Phase 6). Built up subphase by subphase —
@@ -48,6 +49,7 @@ import { AbandonedBookingCleanupService } from './booking-payments/abandoned-boo
     ConnectAccountService,
     BookingPaymentService,
     AbandonedBookingCleanupService,
+    RefundService,
   ],
   exports: [
     StripeService,
@@ -57,6 +59,7 @@ import { AbandonedBookingCleanupService } from './booking-payments/abandoned-boo
     CheckoutService,
     ConnectAccountService,
     BookingPaymentService,
+    RefundService,
   ],
 })
 export class PaymentsModule {}
