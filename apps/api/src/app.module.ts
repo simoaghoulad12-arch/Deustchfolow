@@ -12,6 +12,7 @@ import { AiModule } from './modules/ai/ai.module';
 import { TutorsModule } from './modules/tutors/tutors.module';
 import { BookingsModule } from './modules/bookings/bookings.module';
 import { ReviewsModule } from './modules/reviews/reviews.module';
+import { GermanyModule } from './modules/germany/germany.module';
 import { PaymentsModule } from './modules/payments/payments.module';
 
 @Module({
@@ -33,6 +34,7 @@ import { PaymentsModule } from './modules/payments/payments.module';
     TutorsModule,
     BookingsModule,
     ReviewsModule,
+    GermanyModule,
     PaymentsModule,
   ],
 })
