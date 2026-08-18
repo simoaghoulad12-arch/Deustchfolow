@@ -6,6 +6,10 @@ import { PaymentPolicyService } from './policy/payment-policy.service';
 import { SubscriptionService } from './subscriptions/subscription.service';
 import { CheckoutService } from './checkout/checkout.service';
 import { PaymentsController } from './payments.controller';
+import { WebhookSignatureService } from './webhooks/webhook-signature.service';
+import { WebhookIdempotencyService } from './webhooks/webhook-idempotency.service';
+import { WebhookDispatcherService } from './webhooks/webhook-dispatcher.service';
+import { StripeWebhookController } from './webhooks/stripe-webhook.controller';
 
 /**
  * Payments & Monetization (Phase 6). Built up subphase by subphase —
@@ -23,8 +27,17 @@ import { PaymentsController } from './payments.controller';
     // legitimate checkout attempts are rare per user.
     ThrottlerModule.forRoot([{ ttl: 60_000, limit: 10 }]),
   ],
-  controllers: [PaymentsController],
-  providers: [StripeService, StripeCustomerService, PaymentPolicyService, SubscriptionService, CheckoutService],
+  controllers: [PaymentsController, StripeWebhookController],
+  providers: [
+    StripeService,
+    StripeCustomerService,
+    PaymentPolicyService,
+    SubscriptionService,
+    CheckoutService,
+    WebhookSignatureService,
+    WebhookIdempotencyService,
+    WebhookDispatcherService,
+  ],
   exports: [StripeService, StripeCustomerService, PaymentPolicyService, SubscriptionService, CheckoutService],
 })
 export class PaymentsModule {}

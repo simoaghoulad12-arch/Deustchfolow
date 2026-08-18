@@ -29,6 +29,12 @@ describe('Payments module authorization (e2e)', () => {
 
   beforeAll(async () => {
     process.env.SERVICE_TOKEN_SECRET = SECRET;
+    // Dummy, non-secret test-only values so WebhookSignatureService can
+    // reach its "signature verification failed" branch (400) instead of
+    // a config-error 500 — same rationale as SERVICE_TOKEN_SECRET above.
+    process.env.STRIPE_SECRET_KEY ??= 'sk_test_dummy_for_e2e';
+    process.env.STRIPE_WEBHOOK_SECRET ??= 'whsec_dummy_for_e2e';
+    process.env.STRIPE_CONNECT_WEBHOOK_SECRET ??= 'whsec_connect_dummy_for_e2e';
 
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
@@ -66,6 +72,29 @@ describe('Payments module authorization (e2e)', () => {
       .post('/api/v1/payments/subscriptions/checkout')
       .set('Authorization', `Bearer ${token}`)
       .send({ plan: 'ULTRA_DELUXE' })
+      .expect(400);
+  });
+
+  it('rejects a webhook POST with no stripe-signature header — the endpoint is @Public() but never trusts an unverified body', async () => {
+    await request(app.getHttpServer())
+      .post('/api/v1/payments/webhooks/stripe')
+      .send({ id: 'evt_fake', type: 'customer.subscription.updated' })
+      .expect(400);
+  });
+
+  it('rejects a webhook POST with a forged stripe-signature header', async () => {
+    await request(app.getHttpServer())
+      .post('/api/v1/payments/webhooks/stripe')
+      .set('stripe-signature', 't=1,v1=not-a-real-signature')
+      .send({ id: 'evt_fake', type: 'customer.subscription.updated' })
+      .expect(400);
+  });
+
+  it('rejects a Connect webhook POST with a forged stripe-signature header on the separate Connect endpoint', async () => {
+    await request(app.getHttpServer())
+      .post('/api/v1/payments/webhooks/stripe-connect')
+      .set('stripe-signature', 't=1,v1=not-a-real-signature')
+      .send({ id: 'evt_fake', type: 'account.updated' })
       .expect(400);
   });
 });
