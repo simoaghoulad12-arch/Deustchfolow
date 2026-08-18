@@ -7,6 +7,7 @@ import { BookingTime } from '@/components/booking-time';
 import { Button } from '@/components/ui/button';
 import { FormMessage } from '@/components/ui/form-message';
 import { cancelBookingAction } from './actions';
+import { ReviewForm } from './review-form';
 
 export const metadata: Metadata = { title: 'Meine Buchungen – DeutschFlow' };
 
@@ -15,7 +16,7 @@ const CANCELLABLE_STATUSES = new Set(['PENDING', 'CONFIRMED']);
 export default async function BookingsPage({
   searchParams,
 }: {
-  searchParams: { created?: string; cancelled?: string; cancelError?: string };
+  searchParams: { created?: string; cancelled?: string; cancelError?: string; reviewed?: string; reviewError?: string };
 }) {
   const session = await getSession();
   if (!session) redirect('/login');
@@ -36,6 +37,8 @@ export default async function BookingsPage({
       )}
       {searchParams.cancelled && <FormMessage type="success">Buchung storniert.</FormMessage>}
       {searchParams.cancelError && <FormMessage type="error">{searchParams.cancelError}</FormMessage>}
+      {searchParams.reviewed && <FormMessage type="success">Danke für deine Bewertung!</FormMessage>}
+      {searchParams.reviewError && <FormMessage type="error">{searchParams.reviewError}</FormMessage>}
 
       {bookings.length === 0 && (
         <p className="text-sm text-muted-foreground">Du hast noch keine Termine gebucht.</p>
@@ -71,6 +74,10 @@ export default async function BookingsPage({
                   Stornieren
                 </Button>
               </form>
+            )}
+            {booking.status === 'COMPLETED' && !booking.review && <ReviewForm bookingId={booking.id} />}
+            {booking.status === 'COMPLETED' && booking.review && (
+              <p className="text-xs text-muted-foreground">Du hast diese Session bereits bewertet.</p>
             )}
           </li>
         ))}

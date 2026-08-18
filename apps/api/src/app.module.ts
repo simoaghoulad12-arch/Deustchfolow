@@ -11,6 +11,7 @@ import { ProgressModule } from './modules/progress/progress.module';
 import { AiModule } from './modules/ai/ai.module';
 import { TutorsModule } from './modules/tutors/tutors.module';
 import { BookingsModule } from './modules/bookings/bookings.module';
+import { ReviewsModule } from './modules/reviews/reviews.module';
 import { PaymentsModule } from './modules/payments/payments.module';
 
 @Module({
@@ -31,6 +32,7 @@ import { PaymentsModule } from './modules/payments/payments.module';
     ProgressModule,
     TutorsModule,
     BookingsModule,
+    ReviewsModule,
     PaymentsModule,
   ],
 })

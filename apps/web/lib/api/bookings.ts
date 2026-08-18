@@ -31,6 +31,7 @@ export interface Booking {
   offering: BookingOffering;
   tutor: { user: BookingParty };
   student: BookingParty;
+  review: { id: string } | null;
 }
 
 export interface CreateBookingInput {

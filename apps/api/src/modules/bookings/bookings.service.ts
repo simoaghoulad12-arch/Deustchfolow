@@ -37,6 +37,8 @@ const BOOKING_INCLUDE = {
   student: {
     select: { id: true, profile: { select: { displayName: true, avatarUrl: true } } },
   },
+  /** Presence only (id) — lets the student UI know whether "Bewerten" should still be offered, without exposing the review itself here. */
+  review: { select: { id: true } },
 } as const;
 
 @Injectable()

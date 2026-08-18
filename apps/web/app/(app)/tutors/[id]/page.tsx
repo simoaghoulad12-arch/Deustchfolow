@@ -4,6 +4,7 @@ import { notFound, redirect } from 'next/navigation';
 import { getSession } from '@/lib/auth/session';
 import { getTutorProfile } from '@/lib/api/tutors';
 import { getFreeSlots } from '@/lib/api/tutor-availability';
+import { getTutorReviews } from '@/lib/api/reviews';
 import { SPECIALTY_LABELS, VERIFICATION_LABELS, formatPrice } from '@/lib/tutor-labels';
 import { Button } from '@/components/ui/button';
 import { FreeSlotsList } from './free-slots-list';
@@ -33,6 +34,7 @@ export default async function TutorProfilePage({ params }: TutorProfilePageProps
     to: in7Days.toISOString(),
     durationMinutes: 30,
   });
+  const reviews = await getTutorReviews(session, params.id);
 
   return (
     <div className="mx-auto max-w-2xl space-y-8">
@@ -102,6 +104,29 @@ export default async function TutorProfilePage({ params }: TutorProfilePageProps
       <section className="space-y-3">
         <h2 className="text-sm font-medium uppercase text-muted-foreground">Nächste freie Termine</h2>
         <FreeSlotsList slots={freeSlots} />
+      </section>
+
+      <section className="space-y-3">
+        <h2 className="text-sm font-medium uppercase text-muted-foreground">Bewertungen</h2>
+        {reviews.length === 0 && (
+          <p className="text-sm text-muted-foreground">Noch keine Bewertungen für diesen Tutor.</p>
+        )}
+        <ul className="space-y-2">
+          {reviews.map((review) => (
+            <li key={review.id} className="rounded-lg border border-border p-4">
+              <div className="flex items-center justify-between gap-2">
+                <span className="text-sm font-medium">
+                  {'★'.repeat(review.rating)}
+                  {'☆'.repeat(5 - review.rating)}
+                </span>
+                <span className="text-xs text-muted-foreground">
+                  {review.student.profile?.displayName ?? 'Schüler:in'}
+                </span>
+              </div>
+              {review.comment && <p className="mt-2 text-sm">{review.comment}</p>}
+            </li>
+          ))}
+        </ul>
       </section>
 
       <section className="space-y-3">
