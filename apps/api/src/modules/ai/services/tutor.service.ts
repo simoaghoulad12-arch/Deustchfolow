@@ -23,6 +23,8 @@ export interface SendTutorMessageInput {
   message: string;
   sessionId?: string;
   lessonId?: string;
+  /** Only meaningful when starting a NEW session — ignored for an existing one, which keeps whatever it was started with. */
+  simulationId?: string;
 }
 
 @Injectable()
@@ -51,17 +53,18 @@ export class TutorService {
 
     const session = input.sessionId
       ? await this.getOwnedSession(userId, input.sessionId)
-      : await this.prisma.client.conversationSession.create({ data: { userId } });
+      : await this.createSession(userId, input.simulationId);
 
     const history = await this.getRecentHistory(session.id);
     const context = await this.contextBuilder.build(userId, { lessonId: input.lessonId });
+    const systemPrompt = await this.resolveSystemPrompt(session.simulationId, context, depth);
 
     let result: TutorResponse;
     let failed = false;
     try {
       result = await this.aiService.complete({
         feature: 'tutor',
-        systemPrompt: this.promptManager.buildTutorPrompt(context, depth),
+        systemPrompt,
         userMessage: input.message,
         history,
         schema: TutorResponseSchema,
@@ -155,6 +158,48 @@ export class TutorService {
     }
 
     return hasAdvanced ? 'advanced' : 'basic';
+  }
+
+  private async createSession(userId: string, simulationId?: string) {
+    if (!simulationId) {
+      return this.prisma.client.conversationSession.create({ data: { userId } });
+    }
+
+    const simulation = await this.prisma.client.simulation.findUnique({ where: { id: simulationId } });
+    if (!simulation || !simulation.isActive) {
+      throw new NotFoundException('Simulation not found.');
+    }
+
+    return this.prisma.client.conversationSession.create({
+      data: { userId, simulationId, title: simulation.title },
+    });
+  }
+
+  /** Real-Life Simulations (spec section 15) get a role-play system prompt instead of the general tutor one — same TutorResponseSchema contract either way, so nothing downstream needs to know which prompt produced a turn. */
+  private async resolveSystemPrompt(
+    simulationId: string | null,
+    context: Awaited<ReturnType<AiContextBuilder['build']>>,
+    depth: AiResponseDepth,
+  ): Promise<string> {
+    if (!simulationId) {
+      return this.promptManager.buildTutorPrompt(context, depth);
+    }
+
+    const simulation = await this.prisma.client.simulation.findUnique({ where: { id: simulationId } });
+    if (!simulation) {
+      // Session already exists with this simulationId — a data
+      // inconsistency, not a client error. Fall back to the general
+      // tutor framing rather than failing the whole turn.
+      return this.promptManager.buildTutorPrompt(context, depth);
+    }
+
+    return this.promptManager.buildSimulationPrompt(context, depth, {
+      title: simulation.title,
+      situation: simulation.situation,
+      goal: simulation.goal,
+      roles: simulation.roles,
+      cefrLevel: simulation.cefrLevel,
+    });
   }
 
   /** Ownership: a NotFoundException (not Forbidden) avoids confirming that another user's sessionId exists at all. */

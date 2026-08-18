@@ -12,11 +12,12 @@ import type { AiActionResult } from '@/lib/api/ai-shared';
 export async function sendTutorMessageAction(
   message: string,
   sessionId?: string,
+  simulationId?: string,
 ): Promise<AiActionResult<TutorTurnResult>> {
   const session = await getSession();
   if (!session) redirect('/login');
 
-  return sendTutorMessage(session, { message, sessionId });
+  return sendTutorMessage(session, { message, sessionId, simulationId });
 }
 
 export async function answerAiExerciseAction(

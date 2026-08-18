@@ -62,6 +62,9 @@ function buildDeps(options?: { hasBasic?: boolean; hasAdvanced?: boolean; maxInp
           .mockResolvedValueOnce({ id: 'user-message-1' })
           .mockResolvedValueOnce({ id: 'assistant-message-1' }),
       },
+      simulation: {
+        findUnique: jest.fn(),
+      },
     },
   } as unknown as PrismaService;
 
@@ -69,6 +72,7 @@ function buildDeps(options?: { hasBasic?: boolean; hasAdvanced?: boolean; maxInp
   const contextBuilder = { build: jest.fn().mockResolvedValue(fakeContext) } as unknown as AiContextBuilder;
   const promptManager = {
     buildTutorPrompt: jest.fn().mockReturnValue('a system prompt'),
+    buildSimulationPrompt: jest.fn().mockReturnValue('a simulation system prompt'),
   } as unknown as PromptManager;
   const usageService = {
     getUsageSummary: jest.fn().mockResolvedValue({
@@ -195,5 +199,96 @@ describe('TutorService', () => {
     expect((deps.promptManager.buildTutorPrompt as jest.Mock).mock.calls[0]).not.toContain(maliciousMessage);
     // The message is only ever passed as the separate `userMessage` field.
     expect((deps.aiService.complete as jest.Mock).mock.calls[0][0].userMessage).toBe(maliciousMessage);
+  });
+
+  describe('Real-Life Simulations (simulationId)', () => {
+    const simulation = {
+      id: 'sim-1',
+      title: 'Arzttermin vereinbaren',
+      situation: 'Du möchtest einen Arzttermin telefonisch vereinbaren.',
+      goal: 'Einen passenden Termin finden.',
+      roles: ['Arzthelferin'],
+      cefrLevel: 'A2',
+      isActive: true,
+    };
+
+    it('throws NotFoundException when starting a new session with a nonexistent simulationId', async () => {
+      const deps = buildDeps();
+      (deps.prisma.client.simulation.findUnique as jest.Mock).mockResolvedValue(null);
+      const service = buildService(deps);
+
+      await expect(
+        service.sendMessage('user-1', { message: 'Hallo', simulationId: 'nope' }),
+      ).rejects.toBeInstanceOf(NotFoundException);
+      expect(deps.prisma.client.conversationSession.create).not.toHaveBeenCalled();
+    });
+
+    it('throws NotFoundException for an inactive (deactivated) simulation', async () => {
+      const deps = buildDeps();
+      (deps.prisma.client.simulation.findUnique as jest.Mock).mockResolvedValue({
+        ...simulation,
+        isActive: false,
+      });
+      const service = buildService(deps);
+
+      await expect(
+        service.sendMessage('user-1', { message: 'Hallo', simulationId: 'sim-1' }),
+      ).rejects.toBeInstanceOf(NotFoundException);
+    });
+
+    it('creates the session with simulationId set and uses the simulation prompt, not the general tutor prompt', async () => {
+      const deps = buildDeps();
+      (deps.prisma.client.simulation.findUnique as jest.Mock).mockResolvedValue(simulation);
+      (deps.prisma.client.conversationSession.create as jest.Mock).mockResolvedValue({
+        id: 'session-1',
+        userId: 'user-1',
+        simulationId: 'sim-1',
+      });
+      (deps.aiService.complete as jest.Mock).mockResolvedValue(validTutorResponse);
+      const service = buildService(deps);
+
+      await service.sendMessage('user-1', { message: 'Hallo', simulationId: 'sim-1' });
+
+      expect(deps.prisma.client.conversationSession.create).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: expect.objectContaining({ userId: 'user-1', simulationId: 'sim-1' }),
+        }),
+      );
+      expect(deps.promptManager.buildSimulationPrompt).toHaveBeenCalledWith(
+        fakeContext,
+        'basic',
+        expect.objectContaining({ title: simulation.title, situation: simulation.situation }),
+      );
+      expect(deps.promptManager.buildTutorPrompt).not.toHaveBeenCalled();
+    });
+
+    it('reuses the simulation prompt for a follow-up turn on an existing simulation session, without simulationId in the input', async () => {
+      const deps = buildDeps();
+      (deps.prisma.client.conversationSession.findUnique as jest.Mock).mockResolvedValue({
+        id: 'session-1',
+        userId: 'user-1',
+        simulationId: 'sim-1',
+      });
+      (deps.prisma.client.simulation.findUnique as jest.Mock).mockResolvedValue(simulation);
+      (deps.aiService.complete as jest.Mock).mockResolvedValue(validTutorResponse);
+      const service = buildService(deps);
+
+      await service.sendMessage('user-1', { message: 'Guten Tag', sessionId: 'session-1' });
+
+      expect(deps.promptManager.buildSimulationPrompt).toHaveBeenCalled();
+      expect(deps.promptManager.buildTutorPrompt).not.toHaveBeenCalled();
+    });
+
+    it('uses the general tutor prompt for a plain session with no simulationId', async () => {
+      const deps = buildDeps();
+      (deps.aiService.complete as jest.Mock).mockResolvedValue(validTutorResponse);
+      const service = buildService(deps);
+
+      await service.sendMessage('user-1', { message: 'Hallo' });
+
+      expect(deps.promptManager.buildTutorPrompt).toHaveBeenCalled();
+      expect(deps.promptManager.buildSimulationPrompt).not.toHaveBeenCalled();
+      expect(deps.prisma.client.simulation.findUnique).not.toHaveBeenCalled();
+    });
   });
 });

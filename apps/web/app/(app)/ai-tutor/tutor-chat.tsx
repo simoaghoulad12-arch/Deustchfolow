@@ -21,7 +21,14 @@ interface ChatTurn {
 
 const SEVERITY_LABEL: Record<string, string> = { LOW: 'gering', MEDIUM: 'mittel', HIGH: 'hoch' };
 
-export function TutorChat({ initialLevel }: { initialLevel: CEFRLevel | null }) {
+export function TutorChat({
+  initialLevel,
+  simulation,
+}: {
+  initialLevel: CEFRLevel | null;
+  /** When set, the first message starts a Real-Life Simulation run (spec section 15) instead of a general tutor chat. */
+  simulation?: { id: string; title: string; situation: string; goal: string };
+}) {
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [messages, setMessages] = useState<ChatTurn[]>([]);
   const [input, setInput] = useState('');
@@ -38,7 +45,13 @@ export function TutorChat({ initialLevel }: { initialLevel: CEFRLevel | null }) 
     setInput('');
     setIsSubmitting(true);
 
-    const result = await sendTutorMessageAction(message, sessionId ?? undefined);
+    // simulationId only matters for starting a NEW session — once sessionId
+    // is set, the API keeps whatever the session was started with.
+    const result = await sendTutorMessageAction(
+      message,
+      sessionId ?? undefined,
+      sessionId ? undefined : simulation?.id,
+    );
     setIsSubmitting(false);
 
     if (!result.ok) {
@@ -83,7 +96,7 @@ export function TutorChat({ initialLevel }: { initialLevel: CEFRLevel | null }) 
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold">KI-Tutor</h1>
+        <h1 className="text-2xl font-semibold">{simulation ? simulation.title : 'KI-Tutor'}</h1>
         {level && (
           <span className="rounded-full border border-border px-3 py-1 text-xs uppercase text-muted-foreground">
             Level {level}
@@ -91,10 +104,22 @@ export function TutorChat({ initialLevel }: { initialLevel: CEFRLevel | null }) 
         )}
       </div>
 
-      {messages.length === 0 && (
+      {simulation && (
+        <div className="rounded-lg border border-border bg-muted/30 p-4 text-sm">
+          <p>{simulation.situation}</p>
+          <p className="mt-1 text-xs text-muted-foreground">Ziel: {simulation.goal}</p>
+        </div>
+      )}
+
+      {messages.length === 0 && !simulation && (
         <p className="text-sm text-muted-foreground">
           Stell eine Frage auf Deutsch oder schreib einen Satz — der Tutor antwortet und korrigiert bei
           Bedarf.
+        </p>
+      )}
+      {messages.length === 0 && simulation && (
+        <p className="text-sm text-muted-foreground">
+          Schreib deine erste Nachricht, um die Simulation zu starten.
         </p>
       )}
 

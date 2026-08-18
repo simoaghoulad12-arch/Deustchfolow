@@ -13,4 +13,9 @@ export class SendTutorMessageDto {
   @IsOptional()
   @IsUUID()
   lessonId?: string;
+
+  /** Starts a new session as a Real-Life Simulation run (spec section 15) — ignored when sessionId is also given (an existing session keeps whatever it was started with). */
+  @IsOptional()
+  @IsUUID()
+  simulationId?: string;
 }

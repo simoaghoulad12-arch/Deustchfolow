@@ -9,7 +9,14 @@
  * Refuses to run in production so this can never end up seeded into a
  * real environment by accident.
  */
-import { PrismaClient, ExerciseType, LearningSkill } from '@prisma/client';
+import {
+  PrismaClient,
+  ExerciseType,
+  LearningSkill,
+  CEFRLevel,
+  SimulationCategory,
+  CareerModuleType,
+} from '@prisma/client';
 
 if (process.env.NODE_ENV === 'production') {
   throw new Error('Refusing to run development seed data against a production environment.');
@@ -271,6 +278,184 @@ async function main() {
   }
 
   console.log('[seed] Development/test learning content seeded (A1, 1 course, 2 modules, 4 lessons).');
+
+  await seedSimulations();
+  await seedCareerModules();
+}
+
+/**
+ * A small, hand-written sample — one per emoji category from spec
+ * section 15 — not the real, comprehensive simulation catalog (same
+ * "development/test only" framing as the learning content above).
+ */
+async function seedSimulations() {
+  const simulations: Array<{
+    title: string;
+    category: SimulationCategory;
+    cefrLevel: CEFRLevel;
+    situation: string;
+    goal: string;
+    roles: string[];
+    expectedSkills: LearningSkill[];
+  }> = [
+    {
+      title: 'Wohnungsbesichtigung vereinbaren',
+      category: SimulationCategory.HOUSING,
+      cefrLevel: CEFRLevel.A2,
+      situation: 'Du rufst wegen einer Wohnungsanzeige an und möchtest einen Besichtigungstermin vereinbaren.',
+      goal: 'Einen Besichtigungstermin vereinbaren und die wichtigsten Eckdaten der Wohnung erfragen.',
+      roles: ['Vermieter:in'],
+      expectedSkills: [LearningSkill.SPEAKING, LearningSkill.LISTENING],
+    },
+    {
+      title: 'Arzttermin vereinbaren',
+      category: SimulationCategory.DOCTOR,
+      cefrLevel: CEFRLevel.A2,
+      situation: 'Du möchtest einen Arzttermin telefonisch vereinbaren.',
+      goal: 'Einen passenden Termin finden und die wichtigsten Informationen austauschen.',
+      roles: ['Arzthelferin'],
+      expectedSkills: [LearningSkill.SPEAKING, LearningSkill.LISTENING],
+    },
+    {
+      title: 'Konto eröffnen',
+      category: SimulationCategory.BANK,
+      cefrLevel: CEFRLevel.B1,
+      situation: 'Du bist bei der Bank und möchtest ein neues Girokonto eröffnen.',
+      goal: 'Die notwendigen Unterlagen und Schritte für eine Kontoeröffnung verstehen und erfragen.',
+      roles: ['Bankberater:in'],
+      expectedSkills: [LearningSkill.SPEAKING, LearningSkill.VOCABULARY],
+    },
+    {
+      title: 'Anmeldung beim Bürgeramt',
+      category: SimulationCategory.GOVERNMENT_OFFICE,
+      cefrLevel: CEFRLevel.B1,
+      situation: 'Du meldest deinen neuen Wohnsitz beim Bürgeramt an.',
+      goal: 'Die Anmeldung erfolgreich durchführen und verstehen, welche Unterlagen benötigt werden.',
+      roles: ['Sachbearbeiter:in'],
+      expectedSkills: [LearningSkill.SPEAKING, LearningSkill.LISTENING],
+    },
+    {
+      title: 'Fahrkarte am Schalter kaufen',
+      category: SimulationCategory.TRANSPORT,
+      cefrLevel: CEFRLevel.A1,
+      situation: 'Du kaufst am Bahnhofsschalter eine Fahrkarte für eine bestimmte Verbindung.',
+      goal: 'Die richtige Fahrkarte für dein Ziel kaufen.',
+      roles: ['Schalterangestellte:r'],
+      expectedSkills: [LearningSkill.SPEAKING, LearningSkill.VOCABULARY],
+    },
+    {
+      title: 'Im Supermarkt nach einem Produkt fragen',
+      category: SimulationCategory.SHOPPING,
+      cefrLevel: CEFRLevel.A1,
+      situation: 'Du findest ein Produkt im Supermarkt nicht und fragst eine Mitarbeiterin.',
+      goal: 'Herausfinden, wo sich das gesuchte Produkt befindet.',
+      roles: ['Mitarbeiter:in'],
+      expectedSkills: [LearningSkill.SPEAKING, LearningSkill.VOCABULARY],
+    },
+    {
+      title: 'Reklamation am Telefon',
+      category: SimulationCategory.PHONE_CALL,
+      cefrLevel: CEFRLevel.B1,
+      situation: 'Du rufst bei einem Kundenservice an, weil eine Bestellung nicht angekommen ist.',
+      goal: 'Das Problem klar schildern und eine Lösung erfragen.',
+      roles: ['Kundenservice-Mitarbeiter:in'],
+      expectedSkills: [LearningSkill.SPEAKING, LearningSkill.LISTENING],
+    },
+    {
+      title: 'Krankmeldung beim Arbeitgeber',
+      category: SimulationCategory.WORK,
+      cefrLevel: CEFRLevel.B1,
+      situation: 'Du bist krank und musst dich telefonisch bei deiner Vorgesetzten krankmelden.',
+      goal: 'Die Krankmeldung höflich und klar kommunizieren.',
+      roles: ['Vorgesetzte:r'],
+      expectedSkills: [LearningSkill.SPEAKING],
+    },
+    {
+      title: 'Sprechstunde an der Universität',
+      category: SimulationCategory.STUDY,
+      cefrLevel: CEFRLevel.B2,
+      situation: 'Du besuchst die Sprechstunde eines Professors, um eine Frage zu deiner Hausarbeit zu klären.',
+      goal: 'Deine Frage klar formulieren und die Antwort verstehen.',
+      roles: ['Professor:in'],
+      expectedSkills: [LearningSkill.SPEAKING, LearningSkill.LISTENING],
+    },
+    {
+      title: 'Paket bei der Postfiliale abholen',
+      category: SimulationCategory.PACKAGE,
+      cefrLevel: CEFRLevel.A1,
+      situation: 'Du holst ein Paket ab, das nicht zugestellt werden konnte, bei der Postfiliale ab.',
+      goal: 'Das Paket erfolgreich abholen.',
+      roles: ['Postmitarbeiter:in'],
+      expectedSkills: [LearningSkill.SPEAKING, LearningSkill.VOCABULARY],
+    },
+    {
+      title: 'Neue Nachbarn kennenlernen',
+      category: SimulationCategory.NEIGHBORS,
+      cefrLevel: CEFRLevel.A1,
+      situation: 'Du triffst deine neuen Nachbarn im Treppenhaus zum ersten Mal.',
+      goal: 'Dich vorstellen und ein kurzes, freundliches Gespräch führen.',
+      roles: ['Nachbar:in'],
+      expectedSkills: [LearningSkill.SPEAKING],
+    },
+  ];
+
+  for (const simulation of simulations) {
+    const existing = await prisma.simulation.findFirst({ where: { title: simulation.title } });
+    if (existing) continue;
+    await prisma.simulation.create({ data: simulation });
+  }
+
+  console.log(`[seed] ${simulations.length} development/test Real-Life Simulations seeded.`);
+}
+
+/** One prepared topic per CareerModuleType (spec section 16) — a guide to read, not an auto-generated document. */
+async function seedCareerModules() {
+  const modules: Array<{
+    type: CareerModuleType;
+    title: string;
+    description: string;
+    cefrLevel: CEFRLevel | null;
+  }> = [
+    {
+      type: CareerModuleType.CV,
+      title: 'Lebenslauf auf Deutsch',
+      description:
+        'Aufbau, übliche Abschnitte und typische Formulierungen für einen deutschen Lebenslauf (tabellarischer Lebenslauf).',
+      cefrLevel: CEFRLevel.B1,
+    },
+    {
+      type: CareerModuleType.COVER_LETTER,
+      title: 'Anschreiben verfassen',
+      description: 'Struktur und Sprache eines überzeugenden Anschreibens für eine Bewerbung in Deutschland.',
+      cefrLevel: CEFRLevel.B1,
+    },
+    {
+      type: CareerModuleType.INTERVIEW,
+      title: 'Vorstellungsgespräch vorbereiten',
+      description: 'Typische Fragen, Redewendungen und Verhaltensweisen für ein Vorstellungsgespräch auf Deutsch.',
+      cefrLevel: CEFRLevel.B2,
+    },
+    {
+      type: CareerModuleType.WORKPLACE_GERMAN,
+      title: 'Deutsch am Arbeitsplatz',
+      description: 'Alltägliche Kommunikation im Berufsleben: Meetings, Small Talk, E-Mails an Kolleg:innen.',
+      cefrLevel: CEFRLevel.B1,
+    },
+    {
+      type: CareerModuleType.PROFESSIONAL_EMAIL,
+      title: 'Professionelle E-Mails schreiben',
+      description: 'Anrede, Struktur und Register für formelle und halbformelle E-Mails im Berufskontext.',
+      cefrLevel: CEFRLevel.B1,
+    },
+  ];
+
+  for (const module of modules) {
+    const existing = await prisma.careerModule.findFirst({ where: { title: module.title } });
+    if (existing) continue;
+    await prisma.careerModule.create({ data: module });
+  }
+
+  console.log(`[seed] ${modules.length} development/test Career modules seeded.`);
 }
 
 async function upsertMultipleChoice(input: {

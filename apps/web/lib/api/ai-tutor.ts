@@ -18,7 +18,7 @@ export interface TutorTurnResult {
 
 export async function sendTutorMessage(
   user: SessionUser,
-  input: { message: string; sessionId?: string; lessonId?: string },
+  input: { message: string; sessionId?: string; lessonId?: string; simulationId?: string },
 ): Promise<AiActionResult<TutorTurnResult>> {
   const response = await callNestApi('/ai/tutor', user, {
     method: 'POST',

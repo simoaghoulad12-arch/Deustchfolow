@@ -195,3 +195,41 @@ Allowlist (`id`, `profile: { displayName, avatarUrl }`) für beide
 Parteien. Lehre: bei jeder neuen Ressource mit verschachtelten
 User-Relationen die tatsächliche JSON-Antwort inspizieren, nicht nur den
 Typescript-Typ vertrauen.
+
+## 10. Real-Life Simulations (Phase 5.8): `TutorService.sendMessage` erweitert statt eigene KI-Pipeline
+
+Konkrete Umsetzung der in Abschnitt 4 getroffenen Entscheidung.
+`SendTutorMessageInput` bekommt ein optionales `simulationId`. Beim
+Anlegen einer neuen `ConversationSession` (kein `sessionId` übergeben)
+wird, falls `simulationId` gesetzt ist, der zugehörige `Simulation`-
+Katalogeintrag geladen (404, wenn er fehlt oder `isActive: false` ist)
+und auf der Session gespeichert; danach entscheidet ausschließlich das
+gespeicherte `simulationId` der Session, welcher System-Prompt gebaut
+wird — der Client muss es bei Folgenachrichten nicht erneut mitsenden.
+`resolveSystemPrompt()` wählt zwischen `buildTutorPrompt` (Standard) und
+dem neuen `buildSimulationPrompt` (Rollenspiel mit `situation`/`goal`/
+`roles` aus dem Katalog); beide erzeugen exakt dasselbe
+`TutorResponseSchema`, sodass Korrektur-Anzeige, Speicherung und
+Frontend-Rendering unverändert bleiben. Es gibt keinen zweiten
+KI-Aufruf-Pfad — dieselbe `AiService`/`AiProviderFactory`/
+`AiUsageService`-Kette wird durchlaufen wie beim normalen Tutor-Chat,
+exakt wie von der Aufgabenstellung gefordert ("AI-Funktionen müssen über
+die bestehende AI-Abstraktion laufen").
+
+Wird eine Simulation nach Sessionstart aus dem Katalog entfernt
+(`isActive: false` oder gelöscht), fällt `resolveSystemPrompt()` für
+Folgenachrichten dieser Session still auf `buildTutorPrompt` zurück,
+statt einen Fehler zu werfen — das ist eine nachträgliche
+Dateninkonsistenz, kein Client-Fehler, und der Chat soll für den Nutzer
+nicht mitten in einer laufenden Konversation abbrechen.
+
+**Katalog-Inhalte (`Simulation`, `CareerModule`) sind Seed-Daten.**
+Wie schon die Lerninhalte aus Phase 2 werden Simulationen (11, eine pro
+`SimulationCategory`) und Karriere-Module (5, eine pro
+`CareerModuleType`) im bestehenden `seed.ts` angelegt statt über eine
+neue Admin-CRUD-Oberfläche — sie sind von DeutschFlow kuratierte,
+handgeschriebene Inhalte, nicht KI-generiert oder nutzergeneriert, und
+das Skript verweigert die Ausführung bei `NODE_ENV === 'production'`.
+Ein Karriere-Modul ist zudem bewusst ein statischer Leitfaden zum Lesen,
+keine KI-automatisierte Dokumentenerstellung — es gibt in dieser Phase
+keine erzwungene KI-Interaktion auf `/career`.

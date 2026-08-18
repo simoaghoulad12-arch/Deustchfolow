@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PROMPT_VERSION, type AiResponseDepth } from './shared';
 import { buildTutorSystemPrompt } from './tutor/tutor.prompt';
 import { buildWritingCorrectionSystemPrompt } from './writing/writing-correction.prompt';
+import { buildSimulationSystemPrompt, type SimulationPromptContent } from './simulation/simulation.prompt';
 import type { AiLearnerContext } from '../context/ai-context.types';
 
 /**
@@ -21,5 +22,13 @@ export class PromptManager {
 
   buildWritingCorrectionPrompt(context: AiLearnerContext, depth: AiResponseDepth): string {
     return buildWritingCorrectionSystemPrompt(context, depth);
+  }
+
+  buildSimulationPrompt(
+    context: AiLearnerContext,
+    depth: AiResponseDepth,
+    simulation: SimulationPromptContent,
+  ): string {
+    return buildSimulationSystemPrompt(context, depth, simulation);
   }
 }

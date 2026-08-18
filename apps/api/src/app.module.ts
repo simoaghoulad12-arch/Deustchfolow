@@ -13,6 +13,8 @@ import { TutorsModule } from './modules/tutors/tutors.module';
 import { BookingsModule } from './modules/bookings/bookings.module';
 import { ReviewsModule } from './modules/reviews/reviews.module';
 import { GermanyModule } from './modules/germany/germany.module';
+import { SimulationsModule } from './modules/simulations/simulations.module';
+import { CareerModule } from './modules/career/career.module';
 import { PaymentsModule } from './modules/payments/payments.module';
 
 @Module({
@@ -35,6 +37,8 @@ import { PaymentsModule } from './modules/payments/payments.module';
     BookingsModule,
     ReviewsModule,
     GermanyModule,
+    SimulationsModule,
+    CareerModule,
     PaymentsModule,
   ],
 })
