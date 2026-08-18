@@ -1,20 +1,35 @@
 import { Test, type TestingModule } from '@nestjs/testing';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import request from 'supertest';
+import { SignJWT } from 'jose';
+import { UserRole } from '@deutschflow/types';
 import { AppModule } from '../src/app.module';
+
+const SECRET = 'test-only-service-token-secret';
+
+async function signToken(role: string, sub = 'user-1') {
+  const secret = new TextEncoder().encode(SECRET);
+  return new SignJWT({ role })
+    .setProtectedHeader({ alg: 'HS256' })
+    .setSubject(sub)
+    .setIssuedAt()
+    .setExpirationTime('60s')
+    .sign(secret);
+}
 
 /**
  * Exercises the real AppModule's routing/guards for the Tutor Marketplace,
  * the same way learning-authorization.e2e-spec.ts and
  * ai-authorization.e2e-spec.ts do for their domains. No database is
- * touched: every case here is rejected by the global AuthGuard before any
- * controller method runs.
+ * touched: every case here is rejected either by the global AuthGuard (no
+ * token), the RolesGuard (wrong role), or the ValidationPipe (bad
+ * payload) before any controller method that would need Prisma runs.
  */
 describe('Tutors module authorization (e2e)', () => {
   let app: INestApplication;
 
   beforeAll(async () => {
-    process.env.SERVICE_TOKEN_SECRET ??= 'test-only-service-token-secret';
+    process.env.SERVICE_TOKEN_SECRET = SECRET;
 
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
@@ -93,5 +108,23 @@ describe('Tutors module authorization (e2e)', () => {
       .patch('/api/v1/tutors/admin/some-id/status')
       .send({ isActive: false })
       .expect(401);
+  });
+
+  it('rejects a non-ADMIN token on PATCH /api/v1/tutors/admin/:id/status (RolesGuard, not ownership)', async () => {
+    const token = await signToken(UserRole.TUTOR);
+    await request(app.getHttpServer())
+      .patch('/api/v1/tutors/admin/some-id/status')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ isActive: false })
+      .expect(403);
+  });
+
+  it('rejects an ADMIN token with a non-boolean isActive (ValidationPipe, before any database call)', async () => {
+    const token = await signToken(UserRole.ADMIN);
+    await request(app.getHttpServer())
+      .patch('/api/v1/tutors/admin/some-id/status')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ isActive: 'not-a-boolean' })
+      .expect(400);
   });
 });

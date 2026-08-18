@@ -266,6 +266,14 @@ describe('BookingsService', () => {
   });
 
   describe('complete', () => {
+    it('throws NotFoundException (never Forbidden) for a booking belonging to a different tutor', async () => {
+      const prisma = buildPrismaMock({ booking: { findFirst: jest.fn().mockResolvedValue(null) } });
+      const service = new BookingsService(prisma, buildAvailabilityMock());
+
+      await expect(service.complete('tutor-2', 'booking-1')).rejects.toBeInstanceOf(NotFoundException);
+      expect(prisma.client.booking.update).not.toHaveBeenCalled();
+    });
+
     it('rejects completing a booking whose session has not ended yet', async () => {
       const futureBooking = { ...booking, status: 'CONFIRMED', endAt: new Date(Date.now() + 60_000) };
       const prisma = buildPrismaMock({ booking: { findFirst: jest.fn().mockResolvedValue(futureBooking) } });
@@ -295,6 +303,14 @@ describe('BookingsService', () => {
   });
 
   describe('markNoShow', () => {
+    it('throws NotFoundException (never Forbidden) for a booking belonging to a different tutor', async () => {
+      const prisma = buildPrismaMock({ booking: { findFirst: jest.fn().mockResolvedValue(null) } });
+      const service = new BookingsService(prisma, buildAvailabilityMock());
+
+      await expect(service.markNoShow('tutor-2', 'booking-1')).rejects.toBeInstanceOf(NotFoundException);
+      expect(prisma.client.booking.update).not.toHaveBeenCalled();
+    });
+
     it('rejects marking no-show before the session has started', async () => {
       const futureBooking = { ...booking, status: 'CONFIRMED', startAt: new Date(Date.now() + 60_000) };
       const prisma = buildPrismaMock({ booking: { findFirst: jest.fn().mockResolvedValue(futureBooking) } });

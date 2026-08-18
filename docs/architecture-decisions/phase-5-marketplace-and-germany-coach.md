@@ -271,3 +271,61 @@ Nicht-Admin-Token → 403 (RolesGuard, kein IDOR-Fall — die Route
 existiert, die Rolle fehlt), nicht existierende Ressource mit
 Admin-Token → 404, ungültiger Body → 400, und die Deaktivierung eines
 Tutors macht dessen öffentliches Profil sofort zu einem 404.
+
+## 12. Phase 5.10: Testsuite-Audit für ganz Phase 5
+
+Ein gezielter Coverage-Audit (nicht "mehr Tests um der Zahl willen")
+über alle Phase-5-Module ergab einen sauberen Ausgangsbefund
+(357 Tests, alle grün) und drei konkrete, geschlossene Lücken:
+
+**IDOR-Lücke: `BookingsService.complete`/`markNoShow`.** Beide Methoden
+laufen durch denselben privaten `findOwnedByTutor()`-Helfer wie
+`confirm` (der bereits einen "fremder Tutor → 404"-Test hatte), aber
+`complete`/`markNoShow` selbst hatten keinen direkten Test dafür — nur
+Status-/Zeit-Ablehnungen. Ergänzt: je ein Test "wirft NotFoundException
+für eine Buchung eines anderen Tutors" für beide Methoden.
+
+**Cross-Role-IDOR-Lücke bei Bookings.** `GET /bookings/tutor/me` sowie
+`PATCH .../confirm|complete|no-show` sind `@Roles(TUTOR)`-geschützt,
+aber kein Test bestätigte bisher, dass ein gültiges STUDENT-Token dort
+403 bekommt (nur die generische Guard-Fixture in
+`authorization.e2e-spec.ts` bewies RolesGuard-Verhalten abstrakt, nie
+gegen die echten Booking-Routen). Ergänzt in
+`bookings-authorization.e2e-spec.ts`.
+
+**Validierungs-Lücke (repo-weit).** Keine einzige Zeile im Repo
+testete bisher, dass die `ValidationPipe` einen fehlerhaften Body
+tatsächlich mit 400 ablehnt — jeder bestehende Test schickte entweder
+gar keinen Token (401, Guard greift vor der Pipe) oder einen gültigen
+Body. Stichprobenartig ergänzt für vier repräsentative DTOs:
+`CreateBookingDto` (ungültige `offeringId`/`startAt`),
+`CreateReviewDto` (`rating` außerhalb 1–5),
+`AdminModerateReviewDto`/`AdminSetTutorStatusDto` (nicht-boolescher
+Wert). Diese Tests senden absichtlich ein gültiges, aber unpassend
+verifiziertes Token samt kaputtem Body — die Anfrage muss an der
+`ValidationPipe` scheitern, bevor der Controller (und damit Prisma)
+überhaupt erreicht wird, sodass weiterhin keine echte Datenbank in CI
+nötig ist (siehe Abschnitt 6/12-Vorgänger zur No-DB-in-CI-Strategie).
+
+**Technische Falle beim Testen mit echten Tokens (gefunden während
+der Umsetzung):** Die neuen Tests mussten zum ersten Mal echte,
+signierte Tokens gegen das echte `AppModule` senden (nicht nur
+"kein Token" prüfen). `apps/api/.env` setzt bereits ein
+`SERVICE_TOKEN_SECRET` für die lokale Entwicklung; die
+bestehenden `*-authorization.e2e-spec.ts`-Dateien setzen es defensiv
+mit `??=` (nur falls leer) — das war für reine 401-Tests unschädlich,
+weil dort nie ein Token signiert wurde. Sobald ein Test tatsächlich ein
+Token signiert und verifizieren lässt, muss der Test dieselbe Secret
+verwenden wie `verifyServiceToken()` zur Laufzeit tatsächlich liest —
+`??=` ist dafür falsch (das `.env`-Secret gewinnt bereits, das
+Test-Secret wird nie verwendet, Signaturen passen nicht zusammen →
+falsche 401 statt der erwarteten 403/400). Behoben durch eine
+unconditionale Zuweisung (`=` statt `??=`), wie es die
+Guard-Fixture-Datei `authorization.e2e-spec.ts` bereits vormacht.
+
+**Kein Automatisierungs-Gap beim Booking-Concurrency-Skript.**
+`scripts/verify-booking-concurrency.ts` ist absichtlich manuell/nicht
+CI-gebunden (siehe Abschnitt 6) — der Audit bestätigt, dass dies weiterhin
+so dokumentiert und beabsichtigt ist, keine übersehene Lücke.
+
+Ergebnis: 370 Tests, alle grün, lint/typecheck sauber.
