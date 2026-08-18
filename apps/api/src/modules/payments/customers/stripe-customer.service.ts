@@ -51,4 +51,15 @@ export class StripeCustomerService {
     const existing = await this.prisma.client.stripeCustomer.findUnique({ where: { userId } });
     return existing ? { stripeCustomerId: existing.stripeCustomerId } : null;
   }
+
+  /** Reverse lookup used by the webhook handler — a Stripe event carries
+   * a Customer id, never our internal userId. Null for a Stripe customer
+   * that (should never happen, but) has no local mirror row. */
+  async findUserIdByStripeCustomerId(stripeCustomerId: string): Promise<string | null> {
+    const existing = await this.prisma.client.stripeCustomer.findUnique({
+      where: { stripeCustomerId },
+      select: { userId: true },
+    });
+    return existing?.userId ?? null;
+  }
 }

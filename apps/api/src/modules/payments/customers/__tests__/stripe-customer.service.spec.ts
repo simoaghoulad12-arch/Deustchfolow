@@ -103,4 +103,24 @@ describe('StripeCustomerService', () => {
       expect(result).toEqual({ stripeCustomerId: 'cus_existing' });
     });
   });
+
+  describe('findUserIdByStripeCustomerId', () => {
+    it('returns null when no local mirror row exists for this Stripe customer id', async () => {
+      const prisma = buildPrismaMock({
+        stripeCustomer: { findUnique: jest.fn().mockResolvedValue(null) },
+      });
+      const service = new StripeCustomerService(prisma, buildStripeMock());
+
+      expect(await service.findUserIdByStripeCustomerId('cus_unknown')).toBeNull();
+    });
+
+    it('returns the mapped userId', async () => {
+      const prisma = buildPrismaMock({
+        stripeCustomer: { findUnique: jest.fn().mockResolvedValue({ userId: 'user-1' }) },
+      });
+      const service = new StripeCustomerService(prisma, buildStripeMock());
+
+      expect(await service.findUserIdByStripeCustomerId('cus_existing')).toBe('user-1');
+    });
+  });
 });
