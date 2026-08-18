@@ -28,10 +28,18 @@ enum SubscriptionPlan {
   PRO
 }
 
+/// Stripe's own subscription lifecycle, adopted verbatim (see phase-6
+/// implementation notes for why the previous 3-value enum was replaced
+/// rather than extended — it could not represent PAST_DUE/TRIALING/
+/// INCOMPLETE, which dunning logic and entitlement grace periods need).
 enum SubscriptionStatus {
+  INCOMPLETE
+  INCOMPLETE_EXPIRED
+  TRIALING
   ACTIVE
-  CANCELLED
-  EXPIRED
+  PAST_DUE
+  CANCELED
+  UNPAID
 }
 
 enum CEFRLevel {
@@ -113,10 +121,15 @@ model User {
   /// changes role never loses history (see architecture decision record).
   tutorProfile TutorProfile?
 
-  studentBookings Booking[]              @relation("StudentBookings")
-  reviewsWritten  Review[]
+  studentBookings      Booking[]             @relation("StudentBookings")
+  reviewsWritten       Review[]
   documentRequirements DocumentRequirement[]
-  germanyPath     GermanyPath?
+  germanyPath          GermanyPath?
+
+  /// 1:1 — created lazily on first checkout (subscription or booking),
+  /// never at registration (see phase-6 implementation notes).
+  stripeCustomer   StripeCustomer?
+  refundsInitiated Refund[]
 
   @@index([role])
   @@map("users")
@@ -160,6 +173,12 @@ model LearningProfile {
 /// real, first-class plan — every user has exactly one active Subscription.
 /// Entitlements are derived from `plan`, not stored here (see
 /// packages/types PLAN_ENTITLEMENTS).
+/// Written by two paths only: the FREE row created at registration
+/// (apps/web/lib/auth/register.ts, status always ACTIVE, no Stripe
+/// fields) and the Stripe webhook handler (Phase 6.5) for every paid
+/// plan. No other code path may set `plan` or `status` — see phase-6
+/// implementation notes for why this is the concrete mechanism behind
+/// "Entitlements dürfen nicht aus Client-Plan kommen."
 model Subscription {
   id     String @id @default(uuid()) @db.Uuid
   userId String @db.Uuid
@@ -167,6 +186,18 @@ model Subscription {
 
   plan   SubscriptionPlan   @default(FREE)
   status SubscriptionStatus @default(ACTIVE)
+
+  /// Null for the FREE plan (no Stripe object exists for it).
+  stripeSubscriptionId String?   @unique @map("stripe_subscription_id")
+  stripePriceId        String?   @map("stripe_price_id")
+  currentPeriodEnd     DateTime? @map("current_period_end") @db.Timestamptz
+  /// True once the user has requested cancellation but the paid period
+  /// hasn't ended yet — still entitled to the plan until then.
+  cancelAtPeriodEnd    Boolean   @default(false) @map("cancel_at_period_end")
+  /// Timestamp status first became PAST_DUE — the grace-period clock
+  /// (PaymentPolicy.pastDueGracePeriodDays) counts from here, never from
+  /// "now" at read time.
+  pastDueSince         DateTime? @map("past_due_since") @db.Timestamptz
 
   startedAt DateTime  @default(now()) @map("started_at")
   expiresAt DateTime? @map("expires_at")
@@ -755,12 +786,12 @@ model TutorProfile {
   /// frame for TutorAvailabilityRule (spec section 4: "Speichere intern
   /// UTC, zeige lokal in der Zeitzone des Nutzers" — this is the "local"
   /// side of that for the tutor).
-  timezone String
+  timezone        String
 
   verificationStatus TutorVerificationStatus @default(PENDING) @map("verification_status")
   /// Admin kill switch — deactivated tutors disappear from marketplace
   /// listings/search without deleting their history (bookings, reviews).
-  isActive Boolean @default(true) @map("is_active")
+  isActive           Boolean                 @default(true) @map("is_active")
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
@@ -769,8 +800,11 @@ model TutorProfile {
   availabilityRules      TutorAvailabilityRule[]
   availabilityExceptions TutorAvailabilityException[]
   offerings              Offering[]
-  bookings               Booking[]                     @relation("TutorBookings")
+  bookings               Booking[]                    @relation("TutorBookings")
   reviews                Review[]
+  /// 1:1 — created lazily when a tutor starts Connect onboarding, not at
+  /// profile creation (see phase-6 implementation notes, Phase 6.6).
+  connectedAccount       TutorConnectedAccount?
 
   @@index([verificationStatus])
   @@index([isActive])
@@ -854,15 +888,15 @@ model Offering {
   tutor   TutorProfile @relation(fields: [tutorId], references: [userId], onDelete: Cascade)
 
   title           String
-  description     String?          @db.Text
+  description     String?        @db.Text
   category        TutorSpecialty
-  durationMinutes Int              @map("duration_minutes")
+  durationMinutes Int            @map("duration_minutes")
   /// Integer minor units (cents), never a float — no payment processing
   /// yet (Phase 6), but the shape must already be Stripe-Connect-ready.
-  priceCents      Int              @map("price_cents")
-  currency        String           @default("EUR")
-  cefrLevels      CEFRLevel[]      @map("cefr_levels")
-  isActive        Boolean          @default(true) @map("is_active")
+  priceCents      Int            @map("price_cents")
+  currency        String         @default("EUR")
+  cefrLevels      CEFRLevel[]    @map("cefr_levels")
+  isActive        Boolean        @default(true) @map("is_active")
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
@@ -898,11 +932,11 @@ model Booking {
   offeringId String   @db.Uuid
   offering   Offering @relation(fields: [offeringId], references: [id])
 
-  startAt DateTime @map("start_at") @db.Timestamptz
-  endAt   DateTime @map("end_at") @db.Timestamptz
+  startAt         DateTime @map("start_at") @db.Timestamptz
+  endAt           DateTime @map("end_at") @db.Timestamptz
   /// IANA timezone the student booked in — display-only, never used for
   /// authorization or overlap logic (which always operates in UTC).
-  studentTimezone String @map("student_timezone")
+  studentTimezone String   @map("student_timezone")
 
   status BookingStatus @default(PENDING)
 
@@ -912,7 +946,9 @@ model Booking {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  review Review?
+  review  Review?
+  /// 1:1 — created when checkout starts for this booking (Phase 6.7).
+  payment Payment?
 
   @@index([tutorId, startAt])
   @@index([studentId])
@@ -994,13 +1030,13 @@ model DocumentRequirement {
   userId String @db.Uuid
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  documentType String                     @map("document_type")
+  documentType String                    @map("document_type")
   goal         GermanyGoalType
   context      String?
-  status       DocumentRequirementStatus  @default(MISSING)
-  sourceId     String?                    @db.Uuid @map("source_id")
-  source       OfficialSource?            @relation(fields: [sourceId], references: [id])
-  notes        String?                    @db.Text
+  status       DocumentRequirementStatus @default(MISSING)
+  sourceId     String?                   @map("source_id") @db.Uuid
+  source       OfficialSource?           @relation(fields: [sourceId], references: [id])
+  notes        String?                   @db.Text
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
@@ -1049,4 +1085,274 @@ model CareerModule {
 
   @@index([type])
   @@map("career_modules")
+}
+
+// ---------------------------------------------------------------------------
+// Phase 6 — Payments & Monetization (Stripe, TEST/SANDBOX only in this
+// phase). See docs/architecture-decisions/phase-6-payment-architecture-
+// quality-gate.md (approved design) and phase-6-implementation.md (running
+// per-subphase decisions) for the reasoning behind every shape below.
+//
+// The single rule every model here exists to enforce: money status is
+// never set by a client-facing write. Subscription.status, Payment.status,
+// Refund.status, and TutorConnectedAccount's capability flags are written
+// exclusively by the Stripe webhook handler (Phase 6.5) — no other code
+// path may set them, whatever a request body claims.
+// ---------------------------------------------------------------------------
+
+/// Mirrors a Stripe PaymentIntent's real lifecycle for a one-time
+/// marketplace booking payment. Deliberately NOT the same enum as
+/// Booking.status (which stays the small, UX-facing enum it already
+/// was in Phase 5) — Booking.status is derived FROM this, never the
+/// reverse.
+enum PaymentStatus {
+  REQUIRES_PAYMENT_METHOD
+  REQUIRES_CONFIRMATION
+  PROCESSING
+  SUCCEEDED
+  CANCELED
+  REFUND_PENDING
+  PARTIALLY_REFUNDED
+  REFUNDED
+  DISPUTED
+}
+
+enum RefundStatus {
+  PENDING
+  SUCCEEDED
+  FAILED
+  CANCELED
+}
+
+/// Who/what initiated a refund attempt. Deliberately its own enum, not a
+/// reuse of Role — SYSTEM covers a future automated path (e.g. an
+/// abandoned-booking auto-release), which is not a human role.
+enum RefundInitiatorRole {
+  STUDENT
+  SUPPORT
+  ADMIN
+  SYSTEM
+}
+
+/// Mirrors the Tutor Connect onboarding/capability lifecycle (quality-gate
+/// report §3.3). A tutor's offerings are only bookable once this reaches
+/// ENABLED — a gate that did not exist before Phase 6.
+enum TutorConnectAccountStatus {
+  ONBOARDING_INCOMPLETE
+  RESTRICTED
+  ENABLED
+}
+
+enum TutorPayoutStatus {
+  PENDING
+  IN_TRANSIT
+  PAID
+  FAILED
+  CANCELED
+}
+
+/// PENDING -> PROCESSED | FAILED | IGNORED. IGNORED is for event types we
+/// deliberately don't handle — still recorded, never silently dropped, so
+/// the webhook ledger stays a complete audit trail of everything Stripe
+/// ever sent us.
+enum WebhookProcessingStatus {
+  PENDING
+  PROCESSED
+  FAILED
+  IGNORED
+}
+
+/// 1:1 mirror of a Stripe Customer object. Created lazily on first
+/// checkout (subscription OR booking payment) — never at registration,
+/// to avoid creating Stripe objects for users who never pay.
+model StripeCustomer {
+  userId String @id @db.Uuid
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  stripeCustomerId String @unique @map("stripe_customer_id")
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("stripe_customers")
+}
+
+/// 1:1 mirror of a Stripe Connect Express account per tutor. Created
+/// lazily when a tutor starts onboarding (Phase 6.6), not at
+/// TutorProfile creation. Holds capability flags only — never funds;
+/// actual money lives in Stripe, this table exists to answer "can this
+/// tutor accept bookings" without a live Stripe API call on every
+/// marketplace page render.
+model TutorConnectedAccount {
+  tutorId String       @id @db.Uuid
+  tutor   TutorProfile @relation(fields: [tutorId], references: [userId], onDelete: Cascade)
+
+  stripeAccountId  String                    @unique @map("stripe_account_id")
+  status           TutorConnectAccountStatus @default(ONBOARDING_INCOMPLETE)
+  chargesEnabled   Boolean                   @default(false) @map("charges_enabled")
+  payoutsEnabled   Boolean                   @default(false) @map("payouts_enabled")
+  detailsSubmitted Boolean                   @default(false) @map("details_submitted")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  payouts TutorPayout[]
+
+  @@index([status])
+  @@map("tutor_connected_accounts")
+}
+
+/// One row per marketplace booking payment (1:1 with Booking). The
+/// authoritative record Booking.status's payment-related transitions are
+/// derived from — see PaymentStatus doc comment.
+model Payment {
+  id String @id @default(uuid()) @db.Uuid
+
+  bookingId String  @unique @db.Uuid
+  booking   Booking @relation(fields: [bookingId], references: [id], onDelete: Restrict)
+
+  stripePaymentIntentId String  @unique @map("stripe_payment_intent_id")
+  stripeChargeId        String? @map("stripe_charge_id")
+
+  amountCents         Int    @map("amount_cents")
+  /// Platform commission actually charged on this payment, in cents —
+  /// captured at charge time from PaymentPolicy.commissionBasisPoints so
+  /// a later policy change never rewrites historical payments.
+  applicationFeeCents Int    @map("application_fee_cents")
+  currency            String @default("EUR")
+
+  status PaymentStatus @default(REQUIRES_PAYMENT_METHOD)
+
+  disputedAt    DateTime? @map("disputed_at") @db.Timestamptz
+  disputeStatus String?   @map("dispute_status")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  refunds Refund[]
+  payouts TutorPayout[]
+
+  @@index([status])
+  @@map("payments")
+}
+
+/// One row per refund ATTEMPT against a Payment — a Payment may have more
+/// than one (e.g. a partial refund followed later by the remainder).
+model Refund {
+  id String @id @default(uuid()) @db.Uuid
+
+  paymentId String  @db.Uuid
+  payment   Payment @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+
+  /// Null until Stripe assigns one — the row is created locally first
+  /// (status PENDING) so the intent to refund is recorded even if the
+  /// subsequent Stripe API call fails.
+  stripeRefundId String?      @unique @map("stripe_refund_id")
+  amountCents    Int          @map("amount_cents")
+  status         RefundStatus @default(PENDING)
+  reason         String?
+
+  initiatedByUserId     String              @map("initiated_by_user_id") @db.Uuid
+  initiatedByUser       User                @relation(fields: [initiatedByUserId], references: [id])
+  initiatedByRole       RefundInitiatorRole @map("initiated_by_role")
+  /// True when this refund exceeded PaymentPolicy.supportRefundLimitCents
+  /// (or was otherwise exceptional) and therefore required ADMIN approval
+  /// rather than SUPPORT's standing authority — an audit trail of WHY an
+  /// escalation happened, not just that it did.
+  requiredAdminApproval Boolean             @default(false) @map("required_admin_approval")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([paymentId])
+  @@map("refunds")
+}
+
+/// Local reconciliation ledger for money moving from the platform's
+/// Stripe balance to a tutor's connected account / bank. Stripe itself
+/// (via Connect's automatic payout schedule) actually moves the money —
+/// this table is a read-only mirror populated by Connect webhook events,
+/// never an orchestration engine, and never writable via any
+/// client-triggerable endpoint (see quality-gate report §13: "Keine
+/// Tutor-Auszahlung darf clientseitig ausgelöst werden").
+model TutorPayout {
+  id String @id @default(uuid()) @db.Uuid
+
+  tutorId      String                @db.Uuid
+  tutorAccount TutorConnectedAccount @relation(fields: [tutorId], references: [tutorId], onDelete: Cascade)
+
+  paymentId String?  @db.Uuid
+  payment   Payment? @relation(fields: [paymentId], references: [id])
+
+  stripeTransferId String? @unique @map("stripe_transfer_id")
+  stripePayoutId   String? @unique @map("stripe_payout_id")
+
+  amountCents Int               @map("amount_cents")
+  currency    String            @default("EUR")
+  status      TutorPayoutStatus @default(PENDING)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([tutorId])
+  @@map("tutor_payouts")
+}
+
+/// Append-only ledger, one row per RECEIVED Stripe event id. The entire
+/// idempotency guarantee for the whole payment system lives in the
+/// unique constraint on stripeEventId below — a duplicate/replayed
+/// webhook is absorbed here before any business logic runs (see
+/// quality-gate report §5).
+model StripeWebhookEvent {
+  id String @id @default(uuid()) @db.Uuid
+
+  stripeEventId String @unique @map("stripe_event_id")
+  type          String
+  /// Full raw event JSON from Stripe — retained only for a short window
+  /// per the data-minimization note in the quality-gate report §23; the
+  /// derived rows in Payment/Subscription/Refund/TutorPayout are the
+  /// long-lived record, not this payload.
+  payload       Json
+
+  status          WebhookProcessingStatus @default(PENDING)
+  processingError String?                 @map("processing_error")
+
+  receivedAt  DateTime  @default(now()) @map("received_at")
+  processedAt DateTime? @map("processed_at")
+
+  @@index([type])
+  @@index([status])
+  @@map("stripe_webhook_events")
+}
+
+/// Singleton config row (id is always the fixed string "default") holding
+/// every business rule the Phase 6 approval explicitly required be
+/// configurable rather than hardcoded: commission rate, SUPPORT's refund
+/// authority limit, the subscription past-due grace period, and the
+/// abandoned-booking TTL. Every consumer reads this row — nothing here is
+/// a `const` in application code. Admin-editable (Phase 6.10); reads are
+/// unauthenticated-safe internally (server-only) since the values
+/// themselves aren't secret, only writable by ADMIN.
+model PaymentPolicy {
+  id String @id @default("default")
+
+  /// Platform commission on a tutor booking, in basis points (2000 =
+  /// 20.00%). Default matches the approved Phase 6 decision.
+  commissionBasisPoints Int @default(2000) @map("commission_basis_points")
+
+  /// Max refund amount (cents) a SUPPORT-role user may initiate without
+  /// ADMIN approval. Above this, ADMIN is required.
+  supportRefundLimitCents Int @default(5000) @map("support_refund_limit_cents")
+
+  /// Days a subscription may stay PAST_DUE before entitlements are
+  /// server-side paused back to FREE (Phase 6.11).
+  pastDueGracePeriodDays Int @default(7) @map("past_due_grace_period_days")
+
+  /// Minutes an unpaid PENDING booking holds its slot before being
+  /// auto-released (Phase 6.7).
+  abandonedBookingTtlMinutes Int @default(15) @map("abandoned_booking_ttl_minutes")
+
+  updatedAt       DateTime @updatedAt @map("updated_at")
+  updatedByUserId String?  @map("updated_by_user_id") @db.Uuid
+
+  @@map("payment_policies")
 }

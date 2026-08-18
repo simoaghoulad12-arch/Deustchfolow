@@ -12,3 +12,4 @@ export * from './tutor';
 export * from './germany';
 export * from './simulation';
 export * from './career';
+export * from './payment';
