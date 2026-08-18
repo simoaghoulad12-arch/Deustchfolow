@@ -329,3 +329,26 @@ CI-gebunden (siehe Abschnitt 6) — der Audit bestätigt, dass dies weiterhin
 so dokumentiert und beabsichtigt ist, keine übersehene Lücke.
 
 Ergebnis: 370 Tests, alle grün, lint/typecheck sauber.
+
+## 13. Phase 5.11: Mobile-UX-Pass (375/390/430px) für alle Phase-5-Seiten
+
+Live-Sweep mit echten Fixture-Daten (Tutor-Profil inkl. Angebot,
+Verfügbarkeitsregel, abgeschlossene Buchung, Bewertung) über alle
+Phase-5-Seiten — `/tutors`, `/tutors/:id`, `/tutors/:id/book`,
+`/bookings`, `/germany/my-path`, `/practice/real-life` (inkl.
+Kategorie-Filter), `/practice/real-life/:id`, `/career`,
+`/tutor/availability`, `/tutor/bookings`, `/tutor/verification` — bei
+allen drei geforderten Breakpoints (375/390/430px), sowohl als Student-
+als auch als Tutor-Rolle: 33/33 Prüfungen bestanden, keine horizontale
+Überlaufung, keine defekten Seiten.
+
+**Ein echter Bug im Prüfskript selbst gefunden (nicht in der App):**
+Der erste Sweep-Lauf prüfte nur `scrollWidth > clientWidth`, nicht den
+HTTP-Status — `/tutors/:id/book` ohne den erforderlichen
+`?offeringId=`-Query-Parameter liefert korrekt eine 404-Seite (die App
+verhält sich richtig: eine Buchungsseite ohne bekanntes Angebot ergibt
+keinen Sinn), aber eine 404-Seite hat trivialerweise keinen
+horizontalen Überlauf und wurde fälschlich als "ok" gewertet. Das
+Prüfskript wurde um eine HTTP-Status-Prüfung (≥400 zählt als Fehler)
+ergänzt und mit dem korrekten Query-Parameter erneut ausgeführt — echte
+33/33 grün, keine Anwendungsänderung nötig.
