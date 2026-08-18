@@ -126,6 +126,24 @@ export class TutorProfilesService {
     return this.toPublicProfileView(profile, summary);
   }
 
+  /**
+   * Admin kill switch (spec section 18). Deactivating a tutor pulls them
+   * from marketplace listings/search and the public profile immediately
+   * (both already filter on `isActive`) without deleting their booking or
+   * review history.
+   */
+  async adminSetActive(tutorId: string, isActive: boolean) {
+    const profile = await this.prisma.client.tutorProfile.findUnique({ where: { userId: tutorId } });
+    if (!profile) {
+      throw new NotFoundException('Tutor profile not found.');
+    }
+    const updated = await this.prisma.client.tutorProfile.update({
+      where: { userId: tutorId },
+      data: { isActive },
+    });
+    return this.toOwnProfileView(updated);
+  }
+
   private async ratingSummariesFor(tutorIds: string[]): Promise<Map<string, RatingSummary>> {
     if (tutorIds.length === 0) return new Map();
 

@@ -35,6 +35,7 @@ function buildPrismaMock(overrides?: {
         findUnique: jest.fn().mockResolvedValue(null),
         create: jest.fn().mockResolvedValue(review),
         findMany: jest.fn().mockResolvedValue([review]),
+        update: jest.fn().mockResolvedValue({ ...review, isHidden: true }),
         ...overrides?.review,
       },
     },
@@ -115,6 +116,32 @@ describe('ReviewsService', () => {
 
       expect(prisma.client.review.findMany).toHaveBeenCalledWith(
         expect.objectContaining({ where: { tutorId: 'tutor-1', isHidden: false } }),
+      );
+    });
+  });
+
+  describe('adminSetHidden', () => {
+    it('throws NotFoundException for a nonexistent review', async () => {
+      const prisma = buildPrismaMock({ review: { findUnique: jest.fn().mockResolvedValue(null) } });
+      const service = new ReviewsService(prisma);
+
+      await expect(service.adminSetHidden('nope', true)).rejects.toBeInstanceOf(NotFoundException);
+      expect(prisma.client.review.update).not.toHaveBeenCalled();
+    });
+
+    it('updates isHidden without deleting the review', async () => {
+      const prisma = buildPrismaMock({
+        review: {
+          findUnique: jest.fn().mockResolvedValue(review),
+          update: jest.fn().mockResolvedValue({ ...review, isHidden: true }),
+        },
+      });
+      const service = new ReviewsService(prisma);
+
+      await service.adminSetHidden('review-1', true);
+
+      expect(prisma.client.review.update).toHaveBeenCalledWith(
+        expect.objectContaining({ where: { id: 'review-1' }, data: { isHidden: true } }),
       );
     });
   });

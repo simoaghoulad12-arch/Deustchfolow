@@ -33,4 +33,11 @@ describe('Reviews module authorization (e2e)', () => {
   it('rejects GET /api/v1/tutors/:id/reviews without a valid session token', async () => {
     await request(app.getHttpServer()).get('/api/v1/tutors/some-id/reviews').expect(401);
   });
+
+  it('rejects PATCH /api/v1/tutors/admin/reviews/:id without a valid session token', async () => {
+    await request(app.getHttpServer())
+      .patch('/api/v1/tutors/admin/reviews/some-id')
+      .send({ isHidden: true })
+      .expect(401);
+  });
 });

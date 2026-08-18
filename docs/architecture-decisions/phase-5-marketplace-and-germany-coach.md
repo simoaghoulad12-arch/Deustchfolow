@@ -233,3 +233,41 @@ das Skript verweigert die Ausführung bei `NODE_ENV === 'production'`.
 Ein Karriere-Modul ist zudem bewusst ein statischer Leitfaden zum Lesen,
 keine KI-automatisierte Dokumentenerstellung — es gibt in dieser Phase
 keine erzwungene KI-Interaktion auf `/career`.
+
+## 11. Phase 5.9: Admin-Moderation + RBAC/IDOR-Härtungspass
+
+**Härtungspass-Ergebnis: keine Regression gefunden.** Eine gezielte
+Durchsicht aller Ownership-Checks in `bookings`, `reviews`, `tutors`,
+`germany`, `ai`, `simulations` und `career` bestätigt, dass jede einzelne
+"gehört nicht mir"/"existiert nicht"-Situation durchgängig
+`NotFoundException` wirft, nie `ForbiddenException` — die einzigen
+`ForbiddenException`-Vorkommen im gesamten Repo sind Plan-/Entitlement-
+Limits (`ai/services/tutor.service.ts`, `correction.service.ts`), nicht
+Ownership. Keine Zeile musste als Folge des Passes geändert werden.
+
+**Zwei echte Lücken gefunden und geschlossen.** `Review.isHidden` und
+`TutorProfile.isActive` existierten bereits im Schema und wurden bereits
+beim Lesen gefiltert (`findVisibleForTutor`, `findMarketplace`,
+`findPublicProfile`) — aber es gab keinen einzigen Endpunkt, der diese
+Felder tatsächlich setzen konnte. Behoben durch zwei neue,
+`@Roles(ADMIN)`-geschützte Routen nach demselben Muster wie
+`germany/sources` (Abschnitt 1) und `tutors/admin/verification/...`:
+
+- `PATCH tutors/admin/reviews/:reviewId` (`{ isHidden: boolean }`) —
+  versteckt/zeigt eine Bewertung, ohne sie zu löschen (Bewertungshistorie
+  bleibt erhalten).
+- `PATCH tutors/admin/:tutorId/status` (`{ isActive: boolean }`) —
+  Admin-Kill-Switch, entfernt einen Tutor sofort aus Marktplatz-Listing
+  und öffentlichem Profil (beide filtern bereits auf `isActive`), ohne
+  Buchungs-/Bewertungshistorie zu löschen.
+
+Beide Routen liegen bewusst unter demselben `tutors/admin/...`-Präfix wie
+die bestehende Verifikations-Admin-Fläche, in unterschiedlichen
+Controllern (`ReviewsController`, `TutorProfilesController`) — die
+Pfad-Segmentformen (`admin/reviews/:id` vs. `admin/verification/:id` vs.
+`admin/:id/status`) unterscheiden sich an der dritten bzw. vierten
+Stelle, sodass keine Routing-Kollision entsteht. Live verifiziert:
+Nicht-Admin-Token → 403 (RolesGuard, kein IDOR-Fall — die Route
+existiert, die Rolle fehlt), nicht existierende Ressource mit
+Admin-Token → 404, ungültiger Body → 400, und die Deaktivierung eines
+Tutors macht dessen öffentliches Profil sofort zu einem 404.

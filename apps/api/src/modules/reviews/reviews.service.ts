@@ -55,4 +55,17 @@ export class ReviewsService {
       orderBy: { createdAt: 'desc' },
     });
   }
+
+  /** Admin content moderation (spec section 18). Hides/unhides a review without deleting it — the underlying rating history stays intact. */
+  async adminSetHidden(reviewId: string, isHidden: boolean) {
+    const review = await this.prisma.client.review.findUnique({ where: { id: reviewId } });
+    if (!review) {
+      throw new NotFoundException('Review not found.');
+    }
+    return this.prisma.client.review.update({
+      where: { id: reviewId },
+      data: { isHidden },
+      include: REVIEW_INCLUDE,
+    });
+  }
 }

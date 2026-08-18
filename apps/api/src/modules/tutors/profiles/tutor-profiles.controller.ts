@@ -1,10 +1,11 @@
-import { Body, Controller, Get, Param, Put, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Put, Query } from '@nestjs/common';
 import { UserRole, type AuthenticatedUser } from '@deutschflow/types';
 import { CurrentUser } from '../../auth/decorators/current-user.decorator';
 import { Roles } from '../../auth/decorators/roles.decorator';
 import { TutorProfilesService } from './tutor-profiles.service';
 import { QueryTutorsDto } from '../dto/query-tutors.dto';
 import { UpsertTutorProfileDto } from '../dto/upsert-tutor-profile.dto';
+import { AdminSetTutorStatusDto } from '../dto/admin-set-tutor-status.dto';
 
 @Controller('tutors')
 export class TutorProfilesController {
@@ -43,5 +44,12 @@ export class TutorProfilesController {
   @Get(':tutorId')
   findPublicProfile(@Param('tutorId') tutorId: string) {
     return this.tutorProfilesService.findPublicProfile(tutorId);
+  }
+
+  /** Admin kill switch — deactivate/reactivate a tutor without deleting their history (spec section 18). */
+  @Patch('admin/:tutorId/status')
+  @Roles(UserRole.ADMIN)
+  adminSetStatus(@Param('tutorId') tutorId: string, @Body() dto: AdminSetTutorStatusDto) {
+    return this.tutorProfilesService.adminSetActive(tutorId, dto.isActive);
   }
 }

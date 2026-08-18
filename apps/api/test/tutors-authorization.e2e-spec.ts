@@ -87,4 +87,11 @@ describe('Tutors module authorization (e2e)', () => {
       .delete('/api/v1/tutors/me/availability/exceptions/some-id')
       .expect(401);
   });
+
+  it('rejects PATCH /api/v1/tutors/admin/:id/status without a valid session token', async () => {
+    await request(app.getHttpServer())
+      .patch('/api/v1/tutors/admin/some-id/status')
+      .send({ isActive: false })
+      .expect(401);
+  });
 });

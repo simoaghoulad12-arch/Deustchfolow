@@ -45,6 +45,7 @@ function buildPrismaMock(overrides?: {
         upsert: jest.fn().mockResolvedValue(baseProfile),
         findUnique: jest.fn().mockResolvedValue(baseProfile),
         findMany: jest.fn().mockResolvedValue([profileWithMarketplaceData]),
+        update: jest.fn().mockResolvedValue({ ...baseProfile, isActive: false }),
         ...overrides?.tutorProfile,
       },
       review: {
@@ -217,6 +218,27 @@ describe('TutorProfilesService', () => {
       const result = await service.findPublicProfile('tutor-1');
 
       expect(result).not.toHaveProperty('timezone');
+    });
+  });
+
+  describe('adminSetActive', () => {
+    it('throws NotFoundException for a nonexistent tutor profile', async () => {
+      const prisma = buildPrismaMock({ tutorProfile: { findUnique: jest.fn().mockResolvedValue(null) } });
+      const service = new TutorProfilesService(prisma);
+
+      await expect(service.adminSetActive('nope', false)).rejects.toBeInstanceOf(NotFoundException);
+      expect(prisma.client.tutorProfile.update).not.toHaveBeenCalled();
+    });
+
+    it('updates isActive scoped to the given tutorId, never deleting the profile', async () => {
+      const prisma = buildPrismaMock();
+      const service = new TutorProfilesService(prisma);
+
+      await service.adminSetActive('tutor-1', false);
+
+      expect(prisma.client.tutorProfile.update).toHaveBeenCalledWith(
+        expect.objectContaining({ where: { userId: 'tutor-1' }, data: { isActive: false } }),
+      );
     });
   });
 });
