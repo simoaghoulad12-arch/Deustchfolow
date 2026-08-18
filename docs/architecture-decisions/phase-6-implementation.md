@@ -227,3 +227,56 @@ things the report specified but earlier subphases deliberately deferred
 unpaginated list — matching that precedent instead of introducing a
 pagination convention nothing else here uses yet, for what is, at this
 phase's expected data volume, a small admin tool surface.
+
+## Phase 6.11 — Entitlements Integration: design
+
+**The shape was already decided in 6.1.** `ENTITLED_SUBSCRIPTION_STATUSES
+= ['ACTIVE', 'TRIALING']` and `Subscription.pastDueSince` /
+`PaymentPolicy.pastDueGracePeriodDays` were built with doc comments
+pointing at "Phase 6.11" specifically — this subphase is that comment's
+payoff, not a new design.
+
+**`EntitlementsService.getActivePlan()` changes from a single query to a
+two-step, still-read-only lookup:**
+
+1. Most recent `Subscription` with `status IN (ACTIVE, TRIALING)` → if
+   found, that plan is active. (Covers the ordinary case, including a
+   still-honored subscription mid-cancellation via `cancelAtPeriodEnd` —
+   Stripe keeps `status: active` until the period actually ends, so no
+   separate check is needed for that.)
+2. Otherwise, most recent `Subscription` with `status: PAST_DUE` → if its
+   `pastDueSince` is within `PaymentPolicy.pastDueGracePeriodDays` of now,
+   the plan is **still** active (the approval's "configurable grace
+   period, default 7 days" — a lapsed card doesn't cut a student off
+   mid-grace-period). Once the grace period elapses, this branch stops
+   matching and step 3 applies.
+3. Otherwise (no ACTIVE/TRIALING row, and no PAST_DUE row still in grace)
+   → `SubscriptionPlan.FREE`.
+
+**The "pause to FREE" is computed at read time, not written anywhere.**
+`SubscriptionService`'s own class doc comment (6.3) is explicit:
+"Owns every write to `Subscription.status`... only ever called from the
+webhook handler" — the concrete mechanism behind "Entitlements dürfen
+nicht aus Client-Plan kommen." Adding a second writer (e.g., a scheduled
+job that flips `status` once grace expires) would violate that invariant
+for no benefit: `getActivePlan()` already re-evaluates the grace window on
+every call, so "pause" simply means the next `canAccess()` call stops
+matching branch 2 above — no row ever needs to change. If Stripe recovers
+the payment later, the ordinary `customer.subscription.updated` webhook
+puts the row back to ACTIVE and access resumes automatically.
+
+**Grace-period math lives in a pure function**
+(`entitlements/past-due-grace-period.ts`,
+`isWithinPastDueGracePeriod(pastDueSince, graceDays, now)`), same
+pure-function-first pattern as `isAbandoned` (6.7) — unit-testable without
+a clock mock or a database.
+
+**`GET /users/me/subscription` (`SubscriptionController`) is intentionally
+left untouched.** The quality-gate report's own API-boundary table marks
+it "existing, unchanged," and it answers a different question ("what does
+the user's subscription record currently say") than entitlements do
+("does the user get PREMIUM/PRO features right now") — conflating the two
+would mean a user mid-grace-period sees "no active subscription" in their
+account page while still being granted PREMIUM features, which is more
+confusing than the current literal read. Reconciling that display is
+explicitly out of scope for this subphase.
