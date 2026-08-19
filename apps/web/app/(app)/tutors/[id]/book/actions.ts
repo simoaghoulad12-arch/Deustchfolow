@@ -33,5 +33,5 @@ export async function createBookingAction(formData: FormData): Promise<void> {
     );
   }
 
-  redirect('/bookings?created=1');
+  redirect(`/bookings/${result.booking.id}/pay`);
 }

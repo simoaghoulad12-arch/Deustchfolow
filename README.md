@@ -159,6 +159,7 @@ Es werden **niemals echte Secrets committet** — `.env`-Dateien sind in
 | `APP_URL` | `apps/web` | server-only (Links in E-Mails) |
 | `NEST_API_URL` | `apps/web` | server-only (Next.js → NestJS, nie der Browser) |
 | `NEXT_PUBLIC_API_URL` | `apps/web` | öffentlich (Browser) |
+| `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | `apps/web` | öffentlich (Browser) — Stripe Elements für die Buchungszahlung |
 | `AI_PROVIDER` | `apps/api` | server-only (Providerwahl, aktuell nur `claude`) |
 | `ANTHROPIC_API_KEY` | `apps/api` | server-only — niemals in `apps/web`, NEXT_PUBLIC_*, Repo oder Logs |
 | `ANTHROPIC_MODEL` | `apps/api` | server-only (optional, Default siehe `claude.provider.ts`) |

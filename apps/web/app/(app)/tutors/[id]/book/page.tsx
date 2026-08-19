@@ -45,8 +45,7 @@ export default async function BookTutorPage({ params, searchParams }: BookPagePr
         </p>
         <p className="mt-1 font-medium">{formatPrice(offering.priceCents, offering.currency)}</p>
         <p className="mt-2 text-xs text-muted-foreground">
-          Es findet noch keine Zahlungsabwicklung statt — dies ist eine Buchungsanfrage, die der Tutor
-          bestätigen muss.
+          Der Termin wird für dich reserviert, sobald du im nächsten Schritt die Zahlung abschließt.
         </p>
       </div>
 

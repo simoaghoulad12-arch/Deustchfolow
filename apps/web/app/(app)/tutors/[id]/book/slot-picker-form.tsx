@@ -92,7 +92,7 @@ export function SlotPickerForm({
       </div>
 
       <Button type="submit" disabled={!selected}>
-        Termin anfragen
+        Weiter zur Zahlung
       </Button>
     </form>
   );

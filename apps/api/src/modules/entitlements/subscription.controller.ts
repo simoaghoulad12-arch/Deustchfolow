@@ -28,6 +28,8 @@ export class SubscriptionController {
       status: subscription.status,
       startedAt: subscription.startedAt,
       expiresAt: subscription.expiresAt,
+      currentPeriodEnd: subscription.currentPeriodEnd,
+      cancelAtPeriodEnd: subscription.cancelAtPeriodEnd,
     };
   }
 }

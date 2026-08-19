@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Link from 'next/link';
 import { getSession } from '@/lib/auth/session';
 import { getMyProfile } from '@/lib/api/profile';
 import { getMyLearningProfile } from '@/lib/api/learning-profile';
@@ -160,10 +161,11 @@ export default async function SettingsPage({
             ))}
           </ul>
         )}
-        <p className="text-xs text-muted-foreground">
-          Premium-Upgrades sind noch nicht verkäuflich — diese Ansicht zeigt nur den aktuellen
-          Stand.
-        </p>
+        <Link href="/settings/billing">
+          <Button type="button" variant="outline">
+            Abo & Zahlung verwalten
+          </Button>
+        </Link>
       </section>
 
       <section className="space-y-4 border-t border-border pt-8">

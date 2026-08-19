@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { getSession } from '@/lib/auth/session';
 import { getMyBookingsAsStudent } from '@/lib/api/bookings';
@@ -16,7 +17,13 @@ const CANCELLABLE_STATUSES = new Set(['PENDING', 'CONFIRMED']);
 export default async function BookingsPage({
   searchParams,
 }: {
-  searchParams: { created?: string; cancelled?: string; cancelError?: string; reviewed?: string; reviewError?: string };
+  searchParams: {
+    cancelled?: string;
+    cancelError?: string;
+    reviewed?: string;
+    reviewError?: string;
+    paid?: string;
+  };
 }) {
   const session = await getSession();
   if (!session) redirect('/login');
@@ -30,9 +37,10 @@ export default async function BookingsPage({
         <p className="text-sm text-muted-foreground">Deine Termine bei DeutschFlow-Tutoren.</p>
       </div>
 
-      {searchParams.created && (
+      {searchParams.paid && (
         <FormMessage type="success">
-          Buchungsanfrage gesendet. Der Tutor muss den Termin noch bestätigen.
+          Zahlung erhalten. Deine Buchung wird bestätigt, sobald Stripe die Zahlung final verarbeitet
+          hat.
         </FormMessage>
       )}
       {searchParams.cancelled && <FormMessage type="success">Buchung storniert.</FormMessage>}
@@ -66,6 +74,13 @@ export default async function BookingsPage({
             </p>
             {booking.cancellationReason && (
               <p className="text-xs text-muted-foreground">Grund: {booking.cancellationReason}</p>
+            )}
+            {booking.status === 'PENDING' && (
+              <Link href={`/bookings/${booking.id}/pay`}>
+                <Button type="button" size="default">
+                  Jetzt bezahlen
+                </Button>
+              </Link>
             )}
             {CANCELLABLE_STATUSES.has(booking.status) && (
               <form action={cancelBookingAction}>
