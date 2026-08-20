@@ -1,4 +1,4 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, Param, ParseUUIDPipe } from '@nestjs/common';
 import { UserRole } from '@deutschflow/types';
 import { Roles } from '../../auth/decorators/roles.decorator';
 import { AdminPaymentsService } from './admin-payments.service';
@@ -17,7 +17,7 @@ export class AdminPaymentsController {
   }
 
   @Get('payments/:paymentId')
-  getPaymentDetail(@Param('paymentId') paymentId: string) {
+  getPaymentDetail(@Param('paymentId', ParseUUIDPipe) paymentId: string) {
     return this.adminPayments.getPaymentDetail(paymentId);
   }
 

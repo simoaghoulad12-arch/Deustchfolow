@@ -116,11 +116,16 @@ this as a soft-cap, cost-only risk, not a hard security boundary.
 - Money fields are consistently `@IsInt` cents with `@Min`/`@Max`; enums
   consistently `@IsEnum`/`@IsIn`; free-text fields consistently
   `@MaxLength`-bounded.
-- **Risk (MEDIUM, not fixed):** no controller uses `ParseUUIDPipe` on id
-  path params — a malformed UUID reaches Postgres raw and surfaces as a
-  generic 500 instead of a clean 400. No data leak (no global exception
-  filter echoes DB details), but a correctness/observability gap worth a
-  follow-up pass.
+- **Fixed this follow-up pass:** every controller id path param that maps
+  to a real database UUID (`bookingId`, `paymentId`, `tutorId`, `userId`,
+  `reviewId`, `sessionId`, `documentId`, `ruleId`, `exceptionId`,
+  `offeringId`, `sourceId`, `requirementId`, `moduleId`, `simulationId`)
+  now goes through `@Param(name, ParseUUIDPipe)`. A malformed id is now a
+  clean 400 before any database call, not a generic 500. Slug-based params
+  (`course`, `lesson`, `exercise`, `level`) and the entitlements `key`
+  enum param were deliberately left as plain strings — they were never
+  UUIDs. Regression-tested in `bookings-authorization.e2e-spec.ts` and
+  `tutors-authorization.e2e-spec.ts`.
 
 ## Rate Limiting
 

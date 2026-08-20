@@ -1,4 +1,4 @@
-import { Body, Controller, Param, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Param, ParseUUIDPipe, Post, UseGuards } from '@nestjs/common';
 import { UserRole, RefundInitiatorRole, type AuthenticatedUser } from '@deutschflow/types';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { Roles } from '../auth/decorators/roles.decorator';
@@ -42,7 +42,7 @@ export class PaymentsController {
    * student is a 404, not a 403.
    */
   @Post('bookings/:bookingId/checkout')
-  createBookingCheckout(@CurrentUser() user: AuthenticatedUser, @Param('bookingId') bookingId: string) {
+  createBookingCheckout(@CurrentUser() user: AuthenticatedUser, @Param('bookingId', ParseUUIDPipe) bookingId: string) {
     return this.bookingPayments.createCheckout(user.id, bookingId);
   }
 
@@ -71,7 +71,7 @@ export class PaymentsController {
   @Roles(UserRole.ADMIN, UserRole.SUPPORT)
   initiateRefund(
     @CurrentUser() user: AuthenticatedUser,
-    @Param('paymentId') paymentId: string,
+    @Param('paymentId', ParseUUIDPipe) paymentId: string,
     @Body() dto: InitiateRefundDto,
   ) {
     const role = user.role as typeof RefundInitiatorRole.SUPPORT | typeof RefundInitiatorRole.ADMIN;

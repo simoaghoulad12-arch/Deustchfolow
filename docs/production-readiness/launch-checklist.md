@@ -66,9 +66,10 @@ resolved before launch. **MEDIUM** = can be planned post-launch.
 
 ## MEDIUM — can be planned post-launch
 
-1. No `ParseUUIDPipe` on id path params — malformed ids surface as a
-   generic 500 instead of a clean 400 (no data leak, just noisy/imprecise
-   error handling).
+1. ~~No `ParseUUIDPipe` on id path params~~ — **fixed in this follow-up
+   pass.** Every real UUID id param across all controllers now rejects a
+   malformed id as a clean 400 before any database call. See
+   `security.md`.
 2. No global exception filter — currently safe by construction, but
    implicit rather than designed.
 3. Several admin/list endpoints (payments, refunds, disputes, payouts,

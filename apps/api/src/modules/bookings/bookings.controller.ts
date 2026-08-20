@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, ParseUUIDPipe, Patch, Post, UseGuards } from '@nestjs/common';
 import { UserRole, type AuthenticatedUser } from '@deutschflow/types';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { Roles } from '../auth/decorators/roles.decorator';
@@ -33,14 +33,14 @@ export class BookingsController {
 
   @Patch(':bookingId/confirm')
   @Roles(UserRole.TUTOR)
-  confirm(@CurrentUser() user: AuthenticatedUser, @Param('bookingId') bookingId: string) {
+  confirm(@CurrentUser() user: AuthenticatedUser, @Param('bookingId', ParseUUIDPipe) bookingId: string) {
     return this.bookingsService.confirm(user.id, bookingId);
   }
 
   @Patch(':bookingId/cancel')
   cancel(
     @CurrentUser() user: AuthenticatedUser,
-    @Param('bookingId') bookingId: string,
+    @Param('bookingId', ParseUUIDPipe) bookingId: string,
     @Body() dto: CancelBookingDto,
   ) {
     return this.bookingsService.cancel(user.id, bookingId, dto);
@@ -48,13 +48,13 @@ export class BookingsController {
 
   @Patch(':bookingId/complete')
   @Roles(UserRole.TUTOR)
-  complete(@CurrentUser() user: AuthenticatedUser, @Param('bookingId') bookingId: string) {
+  complete(@CurrentUser() user: AuthenticatedUser, @Param('bookingId', ParseUUIDPipe) bookingId: string) {
     return this.bookingsService.complete(user.id, bookingId);
   }
 
   @Patch(':bookingId/no-show')
   @Roles(UserRole.TUTOR)
-  markNoShow(@CurrentUser() user: AuthenticatedUser, @Param('bookingId') bookingId: string) {
+  markNoShow(@CurrentUser() user: AuthenticatedUser, @Param('bookingId', ParseUUIDPipe) bookingId: string) {
     return this.bookingsService.markNoShow(user.id, bookingId);
   }
 }

@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseUUIDPipe, Post, Query } from '@nestjs/common';
 import { UserRole, type AuthenticatedUser } from '@deutschflow/types';
 import { CurrentUser } from '../../auth/decorators/current-user.decorator';
 import { Roles } from '../../auth/decorators/roles.decorator';
@@ -25,7 +25,7 @@ export class TutorAvailabilityController {
 
   @Delete('tutors/me/availability/rules/:ruleId')
   @Roles(UserRole.TUTOR)
-  deleteRule(@CurrentUser() user: AuthenticatedUser, @Param('ruleId') ruleId: string) {
+  deleteRule(@CurrentUser() user: AuthenticatedUser, @Param('ruleId', ParseUUIDPipe) ruleId: string) {
     return this.availabilityService.deleteRule(user.id, ruleId);
   }
 
@@ -43,13 +43,13 @@ export class TutorAvailabilityController {
 
   @Delete('tutors/me/availability/exceptions/:exceptionId')
   @Roles(UserRole.TUTOR)
-  deleteException(@CurrentUser() user: AuthenticatedUser, @Param('exceptionId') exceptionId: string) {
+  deleteException(@CurrentUser() user: AuthenticatedUser, @Param('exceptionId', ParseUUIDPipe) exceptionId: string) {
     return this.availabilityService.deleteException(user.id, exceptionId);
   }
 
   /** Public — free/busy slots, not sensitive data (part of the booking flow). */
   @Get('tutors/:tutorId/availability')
-  findFreeSlots(@Param('tutorId') tutorId: string, @Query() query: QueryAvailabilityDto) {
+  findFreeSlots(@Param('tutorId', ParseUUIDPipe) tutorId: string, @Query() query: QueryAvailabilityDto) {
     return this.availabilityService.findFreeSlots(tutorId, query);
   }
 }

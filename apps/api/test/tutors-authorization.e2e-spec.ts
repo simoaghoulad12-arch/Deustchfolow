@@ -136,4 +136,20 @@ describe('Tutors module authorization (e2e)', () => {
       .send({ isActive: 'not-a-boolean' })
       .expect(400);
   });
+
+  it('rejects GET /api/v1/tutors/:tutorId with a non-UUID id as a clean 400, not a 500 (ParseUUIDPipe, before any database call)', async () => {
+    const token = await signToken(UserRole.STUDENT);
+    await request(app.getHttpServer())
+      .get('/api/v1/tutors/not-a-uuid')
+      .set('Authorization', `Bearer ${token}`)
+      .expect(400);
+  });
+
+  it('rejects DELETE /api/v1/tutors/me/availability/rules/:id with a non-UUID id as a clean 400 (ParseUUIDPipe, before any database call)', async () => {
+    const token = await signToken(UserRole.TUTOR);
+    await request(app.getHttpServer())
+      .delete('/api/v1/tutors/me/availability/rules/not-a-uuid')
+      .set('Authorization', `Bearer ${token}`)
+      .expect(400);
+  });
 });

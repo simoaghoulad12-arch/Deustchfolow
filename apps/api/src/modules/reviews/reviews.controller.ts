@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, ParseUUIDPipe, Patch, Post, UseGuards } from '@nestjs/common';
 import { UserRole, type AuthenticatedUser } from '@deutschflow/types';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { Roles } from '../auth/decorators/roles.decorator';
@@ -18,7 +18,7 @@ export class ReviewsController {
   @Post('bookings/:bookingId/review')
   create(
     @CurrentUser() user: AuthenticatedUser,
-    @Param('bookingId') bookingId: string,
+    @Param('bookingId', ParseUUIDPipe) bookingId: string,
     @Body() dto: CreateReviewDto,
   ) {
     return this.reviewsService.create(user.id, bookingId, dto);
@@ -26,14 +26,14 @@ export class ReviewsController {
 
   /** Public — part of the tutor's marketplace profile. */
   @Get('tutors/:tutorId/reviews')
-  findVisibleForTutor(@Param('tutorId') tutorId: string) {
+  findVisibleForTutor(@Param('tutorId', ParseUUIDPipe) tutorId: string) {
     return this.reviewsService.findVisibleForTutor(tutorId);
   }
 
   /** Content moderation — hide/unhide a review (spec section 18). */
   @Patch('tutors/admin/reviews/:reviewId')
   @Roles(UserRole.ADMIN)
-  adminModerate(@Param('reviewId') reviewId: string, @Body() dto: AdminModerateReviewDto) {
+  adminModerate(@Param('reviewId', ParseUUIDPipe) reviewId: string, @Body() dto: AdminModerateReviewDto) {
     return this.reviewsService.adminSetHidden(reviewId, dto.isHidden);
   }
 }

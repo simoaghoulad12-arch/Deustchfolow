@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch, Post, Res, StreamableFile } from '@nestjs/common';
+import { Body, Controller, Get, Param, ParseUUIDPipe, Patch, Post, Res, StreamableFile } from '@nestjs/common';
 import type { Response } from 'express';
 import { UserRole, type AuthenticatedUser } from '@deutschflow/types';
 import { CurrentUser } from '../../auth/decorators/current-user.decorator';
@@ -27,7 +27,7 @@ export class TutorVerificationController {
   @Roles(UserRole.TUTOR)
   async getOwnDocumentContent(
     @CurrentUser() user: AuthenticatedUser,
-    @Param('documentId') documentId: string,
+    @Param('documentId', ParseUUIDPipe) documentId: string,
     @Res({ passthrough: true }) res: Response,
   ): Promise<StreamableFile> {
     const { buffer, contentType } = await this.verificationService.getOwnDocumentContent(user.id, documentId);
@@ -49,14 +49,14 @@ export class TutorVerificationController {
 
   @Get('tutors/admin/verification/:tutorId/documents')
   @Roles(UserRole.ADMIN)
-  adminListDocumentsForTutor(@Param('tutorId') tutorId: string) {
+  adminListDocumentsForTutor(@Param('tutorId', ParseUUIDPipe) tutorId: string) {
     return this.verificationService.adminListDocumentsForTutor(tutorId);
   }
 
   @Get('tutors/admin/verification/documents/:documentId/content')
   @Roles(UserRole.ADMIN)
   async getDocumentContentForAdmin(
-    @Param('documentId') documentId: string,
+    @Param('documentId', ParseUUIDPipe) documentId: string,
     @Res({ passthrough: true }) res: Response,
   ): Promise<StreamableFile> {
     const { buffer, contentType } = await this.verificationService.getDocumentContentForAdmin(documentId);
@@ -66,7 +66,7 @@ export class TutorVerificationController {
 
   @Patch('tutors/admin/verification/:tutorId')
   @Roles(UserRole.ADMIN)
-  adminDecide(@Param('tutorId') tutorId: string, @Body() dto: AdminVerificationDecisionDto) {
+  adminDecide(@Param('tutorId', ParseUUIDPipe) tutorId: string, @Body() dto: AdminVerificationDecisionDto) {
     return this.verificationService.adminDecide(tutorId, dto);
   }
 }

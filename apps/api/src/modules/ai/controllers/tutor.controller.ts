@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, ParseUUIDPipe, Post, UseGuards } from '@nestjs/common';
 import type { AuthenticatedUser } from '@deutschflow/types';
 import { CurrentUser } from '../../auth/decorators/current-user.decorator';
 import { TutorService } from '../services/tutor.service';
@@ -35,7 +35,7 @@ export class TutorController {
   }
 
   @Get('sessions/:sessionId')
-  getSession(@CurrentUser() user: AuthenticatedUser, @Param('sessionId') sessionId: string) {
+  getSession(@CurrentUser() user: AuthenticatedUser, @Param('sessionId', ParseUUIDPipe) sessionId: string) {
     return this.tutorService.getSessionWithMessages(user.id, sessionId);
   }
 }

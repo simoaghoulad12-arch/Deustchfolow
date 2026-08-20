@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, ParseUUIDPipe, Patch, Post } from '@nestjs/common';
 import { UserRole, type AuthenticatedUser } from '@deutschflow/types';
 import { CurrentUser } from '../../auth/decorators/current-user.decorator';
 import { Roles } from '../../auth/decorators/roles.decorator';
@@ -26,7 +26,7 @@ export class OfferingsController {
   @Roles(UserRole.TUTOR)
   update(
     @CurrentUser() user: AuthenticatedUser,
-    @Param('offeringId') offeringId: string,
+    @Param('offeringId', ParseUUIDPipe) offeringId: string,
     @Body() dto: UpdateOfferingDto,
   ) {
     return this.offeringsService.update(user.id, offeringId, dto);
@@ -34,7 +34,7 @@ export class OfferingsController {
 
   /** Public — part of the tutor's marketplace profile, not sensitive data. */
   @Get('tutors/:tutorId/offerings')
-  findActiveForTutor(@Param('tutorId') tutorId: string) {
+  findActiveForTutor(@Param('tutorId', ParseUUIDPipe) tutorId: string) {
     return this.offeringsService.findActiveForTutor(tutorId);
   }
 }

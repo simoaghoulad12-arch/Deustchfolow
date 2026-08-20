@@ -3,6 +3,7 @@ import {
   Get,
   Patch,
   Param,
+  ParseUUIDPipe,
   Body,
   UseGuards,
   NotFoundException,
@@ -79,7 +80,7 @@ export class UsersController {
    */
   @Get(':userId/profile')
   @UseGuards(OwnershipGuard)
-  async profileForUser(@Param('userId') userId: string) {
+  async profileForUser(@Param('userId', ParseUUIDPipe) userId: string) {
     const profile = await this.prisma.client.userProfile.findUnique({ where: { userId } });
     if (!profile) {
       throw new NotFoundException('Profile not found.');

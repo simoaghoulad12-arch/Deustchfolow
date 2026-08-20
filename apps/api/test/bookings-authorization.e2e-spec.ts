@@ -107,4 +107,13 @@ describe('Bookings module authorization (e2e)', () => {
       .send({ offeringId: '11111111-1111-1111-1111-111111111111', startAt: 'not-a-date', studentTimezone: 'Europe/Berlin' })
       .expect(400);
   });
+
+  it('rejects PATCH /api/v1/bookings/:bookingId/cancel with a non-UUID bookingId as a clean 400 (ParseUUIDPipe, before any database call)', async () => {
+    const token = await signToken(UserRole.STUDENT);
+    await request(app.getHttpServer())
+      .patch('/api/v1/bookings/not-a-uuid/cancel')
+      .set('Authorization', `Bearer ${token}`)
+      .send({})
+      .expect(400);
+  });
 });

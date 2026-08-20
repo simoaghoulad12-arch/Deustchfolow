@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseUUIDPipe, Patch, Post } from '@nestjs/common';
 import type { AuthenticatedUser } from '@deutschflow/types';
 import { CurrentUser } from '../../auth/decorators/current-user.decorator';
 import { DocumentChecklistService } from './document-checklist.service';
@@ -22,14 +22,14 @@ export class DocumentChecklistController {
   @Patch(':requirementId')
   update(
     @CurrentUser() user: AuthenticatedUser,
-    @Param('requirementId') requirementId: string,
+    @Param('requirementId', ParseUUIDPipe) requirementId: string,
     @Body() dto: UpdateDocumentRequirementDto,
   ) {
     return this.documentService.update(user.id, requirementId, dto);
   }
 
   @Delete(':requirementId')
-  remove(@CurrentUser() user: AuthenticatedUser, @Param('requirementId') requirementId: string) {
+  remove(@CurrentUser() user: AuthenticatedUser, @Param('requirementId', ParseUUIDPipe) requirementId: string) {
     return this.documentService.remove(user.id, requirementId);
   }
 }

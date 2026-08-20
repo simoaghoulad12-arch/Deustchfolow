@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch, Put, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, ParseUUIDPipe, Patch, Put, Query } from '@nestjs/common';
 import { UserRole, type AuthenticatedUser } from '@deutschflow/types';
 import { CurrentUser } from '../../auth/decorators/current-user.decorator';
 import { Roles } from '../../auth/decorators/roles.decorator';
@@ -42,14 +42,14 @@ export class TutorProfilesController {
    * sensitive data (verification documents, later) are ownership-scoped.
    */
   @Get(':tutorId')
-  findPublicProfile(@Param('tutorId') tutorId: string) {
+  findPublicProfile(@Param('tutorId', ParseUUIDPipe) tutorId: string) {
     return this.tutorProfilesService.findPublicProfile(tutorId);
   }
 
   /** Admin kill switch — deactivate/reactivate a tutor without deleting their history (spec section 18). */
   @Patch('admin/:tutorId/status')
   @Roles(UserRole.ADMIN)
-  adminSetStatus(@Param('tutorId') tutorId: string, @Body() dto: AdminSetTutorStatusDto) {
+  adminSetStatus(@Param('tutorId', ParseUUIDPipe) tutorId: string, @Body() dto: AdminSetTutorStatusDto) {
     return this.tutorProfilesService.adminSetActive(tutorId, dto.isActive);
   }
 }

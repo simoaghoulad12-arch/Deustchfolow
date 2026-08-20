@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
+import { Controller, Get, Param, ParseUUIDPipe, Query } from '@nestjs/common';
 import { CareerService } from './career.service';
 import { QueryCareerModulesDto } from './dto/query-career-modules.dto';
 
@@ -12,7 +12,7 @@ export class CareerController {
   }
 
   @Get(':moduleId')
-  findOne(@Param('moduleId') moduleId: string) {
+  findOne(@Param('moduleId', ParseUUIDPipe) moduleId: string) {
     return this.careerService.findOne(moduleId);
   }
 }

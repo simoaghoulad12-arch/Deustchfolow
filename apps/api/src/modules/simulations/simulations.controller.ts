@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
+import { Controller, Get, Param, ParseUUIDPipe, Query } from '@nestjs/common';
 import { SimulationsService } from './simulations.service';
 import { QuerySimulationsDto } from './dto/query-simulations.dto';
 
@@ -12,7 +12,7 @@ export class SimulationsController {
   }
 
   @Get(':simulationId')
-  findOne(@Param('simulationId') simulationId: string) {
+  findOne(@Param('simulationId', ParseUUIDPipe) simulationId: string) {
     return this.simulationsService.findOne(simulationId);
   }
 }

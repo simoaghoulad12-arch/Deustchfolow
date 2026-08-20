@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, ParseUUIDPipe, Patch, Post, Query } from '@nestjs/common';
 import { UserRole } from '@deutschflow/types';
 import { Roles } from '../../auth/decorators/roles.decorator';
 import { GermanySourceService } from './germany-source.service';
@@ -23,7 +23,7 @@ export class GermanySourceController {
 
   @Patch(':sourceId')
   @Roles(UserRole.ADMIN)
-  update(@Param('sourceId') sourceId: string, @Body() dto: UpdateOfficialSourceDto) {
+  update(@Param('sourceId', ParseUUIDPipe) sourceId: string, @Body() dto: UpdateOfficialSourceDto) {
     return this.sourceService.adminUpdate(sourceId, dto);
   }
 }
