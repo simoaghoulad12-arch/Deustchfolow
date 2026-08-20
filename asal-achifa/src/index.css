@@ -1,0 +1,63 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-ink-950 text-gold-100 antialiased;
+    background-color: #0a0603;
+    font-family: 'Jost', sans-serif;
+    overflow-x: hidden;
+  }
+
+  ::selection {
+    background: rgba(217, 178, 106, 0.35);
+    color: #f3e2b3;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #0a0603;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #c69a4e, #8a642c);
+    border-radius: 999px;
+  }
+}
+
+@layer components {
+  .glass-card {
+    @apply relative rounded-2xl border border-gold-500/20 bg-gradient-to-br from-white/[0.06] to-white/[0.01] backdrop-blur-xl;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  }
+
+  .gold-text {
+    background: linear-gradient(120deg, #f3e2b3 0%, #d9b26a 40%, #a87c37 60%, #f3e2b3 100%);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .gold-line {
+    @apply h-px w-16 bg-gradient-to-r from-transparent via-gold-400 to-transparent;
+  }
+
+  .section-eyebrow {
+    @apply mb-4 inline-flex items-center gap-3 text-xs font-medium uppercase tracking-[0.35em] text-gold-400/80;
+  }
+
+  .btn-gold {
+    @apply relative inline-flex items-center justify-center overflow-hidden rounded-full px-8 py-3.5 text-sm font-medium uppercase tracking-[0.2em] text-ink-950 transition-transform duration-300 hover:scale-[1.03] active:scale-[0.98];
+    background: linear-gradient(120deg, #f3e2b3, #d9b26a 45%, #c69a4e 55%, #f3e2b3);
+    background-size: 220% auto;
+    box-shadow: 0 10px 30px -8px rgba(217, 178, 106, 0.55);
+    animation: shimmer 5s linear infinite;
+  }
+}
