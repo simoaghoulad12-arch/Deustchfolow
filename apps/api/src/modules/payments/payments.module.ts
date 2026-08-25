@@ -22,6 +22,7 @@ import { PayoutsController } from './payouts/payouts.controller';
 import { AdminPaymentsService } from './admin/admin-payments.service';
 import { AdminPaymentsController } from './admin/admin-payments.controller';
 import { LiveLessonQuotaService } from './live-lessons/live-lesson-quota.service';
+import { LiveLessonQuotaController } from './live-lessons/live-lesson-quota.controller';
 
 /**
  * Payments & Monetization (Phase 6). Built up subphase by subphase —
@@ -51,7 +52,14 @@ import { LiveLessonQuotaService } from './live-lessons/live-lesson-quota.service
     // depends on the leaf PaymentPolicyModule, not back on this module.
     EntitlementsModule,
   ],
-  controllers: [PaymentsController, StripeWebhookController, ConnectController, PayoutsController, AdminPaymentsController],
+  controllers: [
+    PaymentsController,
+    StripeWebhookController,
+    ConnectController,
+    PayoutsController,
+    AdminPaymentsController,
+    LiveLessonQuotaController,
+  ],
   providers: [
     StripeService,
     StripeCustomerService,

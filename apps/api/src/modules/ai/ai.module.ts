@@ -15,6 +15,7 @@ import { ExerciseGenerationService } from './services/exercise-generation.servic
 import { TutorService } from './services/tutor.service';
 import { TutorController } from './controllers/tutor.controller';
 import { WritingController } from './controllers/writing.controller';
+import { AiUsageController } from './controllers/usage.controller';
 
 /**
  * The AI layer. Depends on the Learning Engine (via ProgressService, for
@@ -32,7 +33,7 @@ import { WritingController } from './controllers/writing.controller';
     // control is AiUsageService's daily cap.
     ThrottlerModule.forRoot([{ ttl: 60_000, limit: 20 }]),
   ],
-  controllers: [TutorController, WritingController],
+  controllers: [TutorController, WritingController, AiUsageController],
   providers: [
     ClaudeProvider,
     AiProviderFactory,
