@@ -32,11 +32,24 @@ export class EntitlementsService {
    * step 2 once the grace window elapses, re-evaluated on every call.
    */
   async getActivePlan(userId: string): Promise<SubscriptionPlan> {
+    const row = await this.getActiveSubscriptionRow(userId);
+    return row?.plan ?? SubscriptionPlan.FREE;
+  }
+
+  /**
+   * The single Subscription row (if any) that currently drives the
+   * user's entitlements — same ACTIVE/TRIALING-then-grace-period-PAST_DUE
+   * lookup as `getActivePlan`, but returning the full row so callers that
+   * need to *display* the plan (settings, billing, pricing pages) don't
+   * hand-roll a narrower, `ACTIVE`-only query that would incorrectly show
+   * FREE for a TRIALING or still-in-grace-period PAST_DUE user.
+   */
+  async getActiveSubscriptionRow(userId: string) {
     const entitled = await this.prisma.client.subscription.findFirst({
       where: { userId, status: { in: [...ENTITLED_SUBSCRIPTION_STATUSES] as SubscriptionStatus[] } },
       orderBy: { createdAt: 'desc' },
     });
-    if (entitled) return entitled.plan;
+    if (entitled) return entitled;
 
     const pastDue = await this.prisma.client.subscription.findFirst({
       where: { userId, status: SubscriptionStatus.PAST_DUE },
@@ -45,11 +58,11 @@ export class EntitlementsService {
     if (pastDue) {
       const policy = await this.paymentPolicy.get();
       if (isWithinPastDueGracePeriod(pastDue.pastDueSince, policy.pastDueGracePeriodDays)) {
-        return pastDue.plan;
+        return pastDue;
       }
     }
 
-    return SubscriptionPlan.FREE;
+    return null;
   }
 
   async getEntitlements(userId: string): Promise<Entitlement[]> {

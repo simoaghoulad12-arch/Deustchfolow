@@ -1,4 +1,6 @@
 import type { Metadata } from 'next';
+import Link from 'next/link';
+import { PLAN_DISPLAY_NAME, SubscriptionPlan } from '@deutschflow/types';
 import { getSession } from '@/lib/auth/session';
 import { getMyProfile } from '@/lib/api/profile';
 import { getMyLearningProfile } from '@/lib/api/learning-profile';
@@ -146,7 +148,10 @@ export default async function SettingsPage({
       <section className="space-y-4 border-t border-border pt-8">
         <h2 className="text-lg font-semibold">Plan</h2>
         <p className="text-sm text-muted-foreground">
-          Aktueller Plan: <span className="font-medium text-foreground">{subscription?.plan ?? 'FREE'}</span>
+          Aktueller Plan:{' '}
+          <span className="font-medium text-foreground">
+            {PLAN_DISPLAY_NAME[subscription?.plan ?? SubscriptionPlan.FREE]}
+          </span>
         </p>
         {entitlements.length > 0 && (
           <ul className="flex flex-wrap gap-2 text-xs">
@@ -160,10 +165,11 @@ export default async function SettingsPage({
             ))}
           </ul>
         )}
-        <p className="text-xs text-muted-foreground">
-          Premium-Upgrades sind noch nicht verkäuflich — diese Ansicht zeigt nur den aktuellen
-          Stand.
-        </p>
+        <Link href="/settings/billing">
+          <Button type="button" variant="outline">
+            Preise &amp; Plan verwalten
+          </Button>
+        </Link>
       </section>
 
       <section className="space-y-4 border-t border-border pt-8">

@@ -8,6 +8,7 @@ export interface SubscriptionData {
   status: SubscriptionStatus;
   startedAt: string;
   expiresAt: string | null;
+  cancelAtPeriodEnd: boolean;
 }
 
 export async function getMySubscription(user: SessionUser): Promise<SubscriptionData | null> {
