@@ -1,8 +1,12 @@
 import type { BookingStatus, TutorSpecialty, TutorVerificationStatus } from '@deutschflow/types';
 
 export const SPECIALTY_LABELS: Record<TutorSpecialty, string> = {
-  CONVERSATION: 'Deutsch-Konversation',
+  CONVERSATION: 'Sprechen',
+  GRAMMAR: 'Grammatik',
+  VOCABULARY: 'Vokabeltraining',
   EXAM_PREPARATION: 'Prüfungsvorbereitung',
+  CONSULTATION: 'Individuelle Deutschberatung',
+  REGULAR_LESSONS: 'Regulärer Deutschunterricht',
   APPLICATION_COACHING: 'Bewerbung',
   PRONUNCIATION: 'Aussprache',
   BUSINESS_GERMAN: 'Business Deutsch',

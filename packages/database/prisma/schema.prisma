@@ -675,9 +675,15 @@ enum TutorVerificationStatus {
 /// Coarse marketplace categories a tutor/offering can be filtered and
 /// discovered by. Deliberately a fixed enum (not free text) so
 /// marketplace filters are exact-match, indexable queries.
+/// GRAMMAR/VOCABULARY/CONSULTATION/REGULAR_LESSONS added in Phase 7 —
+/// purely additive, no existing value renamed or removed.
 enum TutorSpecialty {
   CONVERSATION
+  GRAMMAR
+  VOCABULARY
   EXAM_PREPARATION
+  CONSULTATION
+  REGULAR_LESSONS
   APPLICATION_COACHING
   PRONUNCIATION
   BUSINESS_GERMAN
