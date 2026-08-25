@@ -1,4 +1,4 @@
-import type { BookingStatus, TutorSpecialty, TutorVerificationStatus } from '@deutschflow/types';
+import type { BookingStatus, TutorPayoutStatus, TutorSpecialty, TutorVerificationStatus } from '@deutschflow/types';
 
 export const SPECIALTY_LABELS: Record<TutorSpecialty, string> = {
   CONVERSATION: 'Sprechen',
@@ -30,6 +30,14 @@ export const BOOKING_STATUS_LABELS: Record<BookingStatus, string> = {
   NO_SHOW: 'Nicht erschienen',
   REFUND_PENDING: 'Rückerstattung ausstehend',
   REFUNDED: 'Rückerstattet',
+};
+
+export const PAYOUT_STATUS_LABELS: Record<TutorPayoutStatus, string> = {
+  PENDING: 'Ausstehend',
+  IN_TRANSIT: 'Unterwegs',
+  PAID: 'Ausgezahlt',
+  FAILED: 'Fehlgeschlagen',
+  CANCELED: 'Storniert',
 };
 
 export function formatPrice(priceCents: number, currency: string): string {
