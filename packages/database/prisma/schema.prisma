@@ -131,6 +131,8 @@ model User {
   stripeCustomer   StripeCustomer?
   refundsInitiated Refund[]
 
+  liveLessonQuotaConsumptions LiveLessonQuotaConsumption[]
+
   @@index([role])
   @@map("users")
 }
@@ -946,9 +948,13 @@ model Booking {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  review  Review?
+  review           Review?
   /// 1:1 — created when checkout starts for this booking (Phase 6.7).
-  payment Payment?
+  payment          Payment?
+  /// 1:1 — present only when this booking was covered by the student's
+  /// PRO/MAX weekly live-lesson quota instead of a paid Stripe checkout
+  /// (Phase 7). A booking has at most one of {payment, quotaConsumption}.
+  quotaConsumption LiveLessonQuotaConsumption?
 
   @@index([tutorId, startAt])
   @@index([studentId])
@@ -1355,8 +1361,58 @@ model PaymentPolicy {
   /// auto-released (Phase 6.7).
   abandonedBookingTtlMinutes Int @default(15) @map("abandoned_booking_ttl_minutes")
 
+  /// Weekly live-lesson minutes included in the PREMIUM plan (product
+  /// name "Pro") — deliberately configurable, not hardcoded in
+  /// application code (Phase 7 "PRO/MAX Live-Kontingente"). 0 disables
+  /// the quota (every booking falls back to paid checkout) without a
+  /// code change.
+  premiumWeeklyLiveMinutes Int @default(60) @map("premium_weekly_live_minutes")
+
+  /// Weekly live-lesson minutes included in the PRO plan (product name
+  /// "Max") — same configurability as above.
+  proWeeklyLiveMinutes Int @default(120) @map("pro_weekly_live_minutes")
+
   updatedAt       DateTime @updatedAt @map("updated_at")
   updatedByUserId String?  @map("updated_by_user_id") @db.Uuid
 
   @@map("payment_policies")
+}
+
+/// Weekly PRO/MAX live-lesson quota ledger (Phase 7). One row per
+/// booking that was covered by quota instead of a paid Stripe checkout
+/// — `bookingId` is unique, so a booking can never be quota-covered
+/// twice (the DB itself prevents double-counting, not just application
+/// logic). Rows are never deleted: a cancellation flips `status` to
+/// RELEASED so the quota is given back for that week while the
+/// consumption stays auditable. `weekStart` is always the Monday
+/// 00:00 UTC of the ISO week containing the booking's `startAt` — see
+/// apps/api LiveLessonQuotaService / quota-week.ts for why this is
+/// computed purely in UTC (no wall-clock/DST hazard, unlike
+/// TutorAvailabilityRule's local-time slot generation).
+model LiveLessonQuotaConsumption {
+  id     String @id @default(uuid()) @db.Uuid
+  userId String @db.Uuid
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  bookingId String  @unique @db.Uuid
+  booking   Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+  /// The offering's durationMinutes at the moment quota was consumed —
+  /// never re-derived from the offering later, so a subsequent price/
+  /// duration change on the offering can't retroactively alter history.
+  minutesConsumed Int @map("minutes_consumed")
+
+  weekStart DateTime                         @map("week_start") @db.Timestamptz
+  status    LiveLessonQuotaConsumptionStatus @default(ACTIVE)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([userId, weekStart, status])
+  @@map("live_lesson_quota_consumptions")
+}
+
+enum LiveLessonQuotaConsumptionStatus {
+  ACTIVE
+  RELEASED
 }

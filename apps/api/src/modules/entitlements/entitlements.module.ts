@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { PaymentsModule } from '../payments/payments.module';
+import { PaymentPolicyModule } from '../payments/policy/payment-policy.module';
 import { EntitlementsService } from './entitlements.service';
 import { EntitlementsController } from './entitlements.controller';
 import { SubscriptionController } from './subscription.controller';
@@ -9,11 +9,15 @@ import { SubscriptionController } from './subscription.controller';
  * record, section 1). Deliberately its own module: distinct from
  * `users` (identity) and from `payments` (the Stripe integration itself)
  * — Subscription/Entitlements is a separate concern from both. Imports
- * PaymentsModule (Phase 6.11) only for PaymentPolicyService — the
- * PAST_DUE grace-period length is configurable, never hardcoded here.
+ * only PaymentPolicyModule (Phase 6.11), not the whole PaymentsModule —
+ * the PAST_DUE grace-period length and the PRO/MAX weekly live-lesson
+ * quota are configurable, never hardcoded here. Importing all of
+ * PaymentsModule would create a circular module import once
+ * PaymentsModule needs EntitlementsService in turn (Phase 7's booking
+ * flow) — see payment-policy.module.ts for the full reasoning.
  */
 @Module({
-  imports: [PaymentsModule],
+  imports: [PaymentPolicyModule],
   controllers: [EntitlementsController, SubscriptionController],
   providers: [EntitlementsService],
   exports: [EntitlementsService],

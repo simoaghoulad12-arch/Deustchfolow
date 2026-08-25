@@ -22,4 +22,16 @@ export class UpdatePaymentPolicyDto {
   @IsInt()
   @Min(1)
   abandonedBookingTtlMinutes?: number;
+
+  /** Weekly live-lesson minutes included in the PREMIUM plan ("Pro"). 0 disables the quota. */
+  @IsOptional()
+  @IsInt()
+  @Min(0)
+  premiumWeeklyLiveMinutes?: number;
+
+  /** Weekly live-lesson minutes included in the PRO plan ("Max"). 0 disables the quota. */
+  @IsOptional()
+  @IsInt()
+  @Min(0)
+  proWeeklyLiveMinutes?: number;
 }

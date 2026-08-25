@@ -7,6 +7,8 @@ const defaultPolicy = {
   supportRefundLimitCents: 5000,
   pastDueGracePeriodDays: 7,
   abandonedBookingTtlMinutes: 15,
+  premiumWeeklyLiveMinutes: 60,
+  proWeeklyLiveMinutes: 120,
   updatedAt: new Date(),
   updatedByUserId: null,
 };
@@ -68,6 +70,18 @@ describe('PaymentPolicyService', () => {
       expect(prisma.client.paymentPolicy.update).toHaveBeenCalledWith(
         expect.objectContaining({ data: expect.objectContaining({ updatedByUserId: 'admin-2' }) }),
       );
+    });
+
+    it('updates the PRO/MAX weekly live-lesson quotas — never hardcoded elsewhere', async () => {
+      const prisma = buildPrismaMock();
+      const service = new PaymentPolicyService(prisma);
+
+      await service.update({ premiumWeeklyLiveMinutes: 90, proWeeklyLiveMinutes: 180 }, 'admin-3');
+
+      expect(prisma.client.paymentPolicy.update).toHaveBeenCalledWith({
+        where: { id: 'default' },
+        data: { premiumWeeklyLiveMinutes: 90, proWeeklyLiveMinutes: 180, updatedByUserId: 'admin-3' },
+      });
     });
   });
 });

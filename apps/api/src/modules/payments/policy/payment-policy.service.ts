@@ -50,6 +50,12 @@ export class PaymentPolicyService {
         ...(dto.abandonedBookingTtlMinutes !== undefined
           ? { abandonedBookingTtlMinutes: dto.abandonedBookingTtlMinutes }
           : {}),
+        ...(dto.premiumWeeklyLiveMinutes !== undefined
+          ? { premiumWeeklyLiveMinutes: dto.premiumWeeklyLiveMinutes }
+          : {}),
+        ...(dto.proWeeklyLiveMinutes !== undefined
+          ? { proWeeklyLiveMinutes: dto.proWeeklyLiveMinutes }
+          : {}),
         updatedByUserId,
       },
     });

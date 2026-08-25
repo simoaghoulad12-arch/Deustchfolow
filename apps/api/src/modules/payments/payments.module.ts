@@ -1,9 +1,10 @@
 import { Module } from '@nestjs/common';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { ScheduleModule } from '@nestjs/schedule';
+import { EntitlementsModule } from '../entitlements/entitlements.module';
+import { PaymentPolicyModule } from './policy/payment-policy.module';
 import { StripeService } from './stripe/stripe.service';
 import { StripeCustomerService } from './customers/stripe-customer.service';
-import { PaymentPolicyService } from './policy/payment-policy.service';
 import { SubscriptionService } from './subscriptions/subscription.service';
 import { CheckoutService } from './checkout/checkout.service';
 import { PaymentsController } from './payments.controller';
@@ -20,7 +21,7 @@ import { TutorPayoutService } from './payouts/tutor-payout.service';
 import { PayoutsController } from './payouts/payouts.controller';
 import { AdminPaymentsService } from './admin/admin-payments.service';
 import { AdminPaymentsController } from './admin/admin-payments.controller';
-import { PaymentPolicyController } from './policy/payment-policy.controller';
+import { LiveLessonQuotaService } from './live-lessons/live-lesson-quota.service';
 
 /**
  * Payments & Monetization (Phase 6). Built up subphase by subphase —
@@ -40,19 +41,20 @@ import { PaymentPolicyController } from './policy/payment-policy.controller';
     // Registered once, here — the only module in this codebase using
     // scheduled jobs (AbandonedBookingCleanupService).
     ScheduleModule.forRoot(),
+    // Its own module (not folded in here) so EntitlementsModule can
+    // depend on just this, not all of PaymentsModule — see
+    // payment-policy.module.ts.
+    PaymentPolicyModule,
+    // For LiveLessonQuotaService's callers (Phase 7): the booking flow
+    // needs the student's resolved plan before deciding quota vs. paid
+    // checkout. Safe to import here — EntitlementsModule itself only
+    // depends on the leaf PaymentPolicyModule, not back on this module.
+    EntitlementsModule,
   ],
-  controllers: [
-    PaymentsController,
-    StripeWebhookController,
-    ConnectController,
-    PayoutsController,
-    AdminPaymentsController,
-    PaymentPolicyController,
-  ],
+  controllers: [PaymentsController, StripeWebhookController, ConnectController, PayoutsController, AdminPaymentsController],
   providers: [
     StripeService,
     StripeCustomerService,
-    PaymentPolicyService,
     SubscriptionService,
     CheckoutService,
     WebhookSignatureService,
@@ -64,17 +66,18 @@ import { PaymentPolicyController } from './policy/payment-policy.controller';
     RefundService,
     TutorPayoutService,
     AdminPaymentsService,
+    LiveLessonQuotaService,
   ],
   exports: [
     StripeService,
     StripeCustomerService,
-    PaymentPolicyService,
     SubscriptionService,
     CheckoutService,
     ConnectAccountService,
     BookingPaymentService,
     RefundService,
     TutorPayoutService,
+    LiveLessonQuotaService,
   ],
 })
 export class PaymentsModule {}
