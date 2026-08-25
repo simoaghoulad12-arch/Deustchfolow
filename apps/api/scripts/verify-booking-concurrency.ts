@@ -4,6 +4,8 @@ import { ConflictException } from '@nestjs/common';
 import { PrismaService } from '../src/common/prisma/prisma.service';
 import { TutorAvailabilityService } from '../src/modules/tutors/availability/tutor-availability.service';
 import { BookingsService } from '../src/modules/bookings/bookings.service';
+import { PaymentPolicyService } from '../src/modules/payments/policy/payment-policy.service';
+import { LiveLessonQuotaService } from '../src/modules/payments/live-lessons/live-lesson-quota.service';
 
 /**
  * Manual, opt-in proof that the double-booking guarantee (spec section
@@ -29,7 +31,9 @@ const CONCURRENCY = 8;
 async function main(): Promise<void> {
   const prisma = new PrismaService();
   const availability = new TutorAvailabilityService(prisma);
-  const bookings = new BookingsService(prisma, availability);
+  const paymentPolicy = new PaymentPolicyService(prisma);
+  const liveLessonQuota = new LiveLessonQuotaService(prisma, paymentPolicy);
+  const bookings = new BookingsService(prisma, availability, liveLessonQuota);
 
   console.log(`[verify-booking-concurrency] Setting up fixtures against ${maskDbUrl()}...`);
 

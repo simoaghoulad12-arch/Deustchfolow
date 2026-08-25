@@ -4,6 +4,8 @@ import { StripeService } from '../stripe/stripe.service';
 import { StripeCustomerService } from '../customers/stripe-customer.service';
 import { ConnectAccountService } from '../connect/connect-account.service';
 import { PaymentPolicyService } from '../policy/payment-policy.service';
+import { LiveLessonQuotaService } from '../live-lessons/live-lesson-quota.service';
+import { EntitlementsService } from '../../entitlements/entitlements.service';
 import { isAbandoned } from './abandoned-booking';
 
 export interface PaymentIntentEventData {
@@ -46,6 +48,8 @@ export class BookingPaymentService {
     private readonly stripeCustomers: StripeCustomerService,
     private readonly connectAccounts: ConnectAccountService,
     private readonly policy: PaymentPolicyService,
+    private readonly liveLessonQuota: LiveLessonQuotaService,
+    private readonly entitlements: EntitlementsService,
   ) {}
 
   /**
@@ -53,8 +57,16 @@ export class BookingPaymentService {
    * booking belonging to a different student, or that doesn't exist at
    * all, is always a 404, never a 403 (same IDOR-defense convention as
    * every other resource in this codebase).
+   *
+   * Phase 7: before starting a Stripe checkout at all, tries the
+   * student's PRO/MAX weekly live-lesson quota first. When it covers
+   * this booking's duration, the booking is confirmed directly — no
+   * PaymentIntent, no card, nothing to charge — and the caller gets
+   * `{ quotaCovered: true }` instead of a `clientSecret`. Falls through
+   * to the existing paid flow unchanged whenever the plan has no quota
+   * or the remaining quota doesn't cover it.
    */
-  async createCheckout(studentId: string, bookingId: string): Promise<{ clientSecret: string }> {
+  async createCheckout(studentId: string, bookingId: string): Promise<{ clientSecret: string } | { quotaCovered: true }> {
     const booking = await this.prisma.client.booking.findFirst({
       where: { id: bookingId, studentId },
       include: { offering: true },
@@ -83,6 +95,19 @@ export class BookingPaymentService {
         return { clientSecret: intent.client_secret };
       }
       throw new ConflictException('Diese Buchung wurde bereits bezahlt oder die Zahlung wird verarbeitet.');
+    }
+
+    const plan = await this.entitlements.getActivePlan(studentId);
+    const quotaConsumption = await this.liveLessonQuota.tryConsumeForBooking({
+      userId: studentId,
+      plan,
+      bookingId: booking.id,
+      startAt: booking.startAt,
+      minutesNeeded: booking.offering.durationMinutes,
+    });
+    if (quotaConsumption) {
+      await this.prisma.client.booking.update({ where: { id: booking.id }, data: { status: 'CONFIRMED' } });
+      return { quotaCovered: true };
     }
 
     const isBookable = await this.connectAccounts.isBookable(booking.tutorId);

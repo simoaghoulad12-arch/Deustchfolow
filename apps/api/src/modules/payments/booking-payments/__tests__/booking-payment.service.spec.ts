@@ -1,13 +1,23 @@
 import { BadRequestException, ConflictException, NotFoundException } from '@nestjs/common';
+import { SubscriptionPlan } from '@deutschflow/types';
 import { BookingPaymentService, computeApplicationFeeCents } from '../booking-payment.service';
 import type { PrismaService } from '../../../../common/prisma/prisma.service';
 import type { StripeService } from '../../stripe/stripe.service';
 import type { StripeCustomerService } from '../../customers/stripe-customer.service';
 import type { ConnectAccountService } from '../../connect/connect-account.service';
 import type { PaymentPolicyService } from '../../policy/payment-policy.service';
+import type { LiveLessonQuotaService } from '../../live-lessons/live-lesson-quota.service';
+import type { EntitlementsService } from '../../../entitlements/entitlements.service';
 
-const offering = { id: 'offering-1', priceCents: 2000, currency: 'EUR', tutorId: 'tutor-1' };
-const booking = { id: 'booking-1', studentId: 'student-1', tutorId: 'tutor-1', status: 'PENDING', offering };
+const offering = { id: 'offering-1', priceCents: 2000, currency: 'EUR', tutorId: 'tutor-1', durationMinutes: 30 };
+const booking = {
+  id: 'booking-1',
+  studentId: 'student-1',
+  tutorId: 'tutor-1',
+  status: 'PENDING',
+  startAt: new Date('2026-08-26T10:00:00.000Z'),
+  offering,
+};
 const tutorAccount = { tutorId: 'tutor-1', stripeAccountId: 'acct_1' };
 const defaultPolicy = { commissionBasisPoints: 2000, abandonedBookingTtlMinutes: 15 };
 
@@ -62,12 +72,26 @@ function buildPolicyMock(overrides?: Partial<typeof defaultPolicy>) {
   return { get: jest.fn().mockResolvedValue({ ...defaultPolicy, ...overrides }) } as unknown as PaymentPolicyService;
 }
 
+/** Defaults to "no quota" (null) so every existing paid-flow test below
+ * exercises exactly the same Stripe path as before Phase 7. */
+function buildQuotaMock(tryConsumeResult: unknown = null) {
+  return {
+    tryConsumeForBooking: jest.fn().mockResolvedValue(tryConsumeResult),
+  } as unknown as LiveLessonQuotaService;
+}
+
+function buildEntitlementsMock(plan: SubscriptionPlan = SubscriptionPlan.FREE) {
+  return { getActivePlan: jest.fn().mockResolvedValue(plan) } as unknown as EntitlementsService;
+}
+
 function buildService(deps?: {
   prisma?: PrismaService;
   stripe?: StripeService;
   stripeCustomers?: StripeCustomerService;
   connectAccounts?: ConnectAccountService;
   policy?: PaymentPolicyService;
+  liveLessonQuota?: LiveLessonQuotaService;
+  entitlements?: EntitlementsService;
 }) {
   return new BookingPaymentService(
     deps?.prisma ?? buildPrismaMock(),
@@ -75,6 +99,8 @@ function buildService(deps?: {
     deps?.stripeCustomers ?? buildStripeCustomersMock(),
     deps?.connectAccounts ?? buildConnectAccountsMock(),
     deps?.policy ?? buildPolicyMock(),
+    deps?.liveLessonQuota ?? buildQuotaMock(),
+    deps?.entitlements ?? buildEntitlementsMock(),
   );
 }
 
@@ -176,6 +202,56 @@ describe('BookingPaymentService', () => {
       const service = buildService({ prisma });
 
       await expect(service.createCheckout('student-1', 'booking-1')).rejects.toBeInstanceOf(ConflictException);
+    });
+
+    describe('Phase 7: PRO/MAX live-lesson quota', () => {
+      it('confirms the booking directly via quota, never touching Stripe, when the quota covers it', async () => {
+        const createSpy = jest.fn();
+        const stripe = buildStripeMock({ create: createSpy });
+        const prisma = buildPrismaMock();
+        const quota = buildQuotaMock({ id: 'consumption-1', bookingId: 'booking-1', status: 'ACTIVE' });
+        const entitlements = buildEntitlementsMock(SubscriptionPlan.PREMIUM);
+        const service = buildService({ prisma, stripe, liveLessonQuota: quota, entitlements });
+
+        const result = await service.createCheckout('student-1', 'booking-1');
+
+        expect(result).toEqual({ quotaCovered: true });
+        expect(createSpy).not.toHaveBeenCalled();
+        expect(prisma.client.payment.create).not.toHaveBeenCalled();
+        expect(prisma.client.booking.update).toHaveBeenCalledWith({
+          where: { id: 'booking-1' },
+          data: { status: 'CONFIRMED' },
+        });
+      });
+
+      it('passes the resolved plan, the offering duration, and the booking start time to the quota check', async () => {
+        const quota = buildQuotaMock(null);
+        const entitlements = buildEntitlementsMock(SubscriptionPlan.PRO);
+        const service = buildService({ liveLessonQuota: quota, entitlements });
+
+        await service.createCheckout('student-1', 'booking-1');
+
+        expect(quota.tryConsumeForBooking).toHaveBeenCalledWith({
+          userId: 'student-1',
+          plan: SubscriptionPlan.PRO,
+          bookingId: 'booking-1',
+          startAt: booking.startAt,
+          minutesNeeded: 30,
+        });
+      });
+
+      it('falls back to the paid Stripe flow unchanged when the quota does not cover the booking', async () => {
+        const createSpy = jest.fn().mockResolvedValue({ id: 'pi_1', client_secret: 'secret_1' });
+        const stripe = buildStripeMock({ create: createSpy });
+        const quota = buildQuotaMock(null); // plan has quota, but not enough remaining
+        const entitlements = buildEntitlementsMock(SubscriptionPlan.PREMIUM);
+        const service = buildService({ stripe, liveLessonQuota: quota, entitlements });
+
+        const result = await service.createCheckout('student-1', 'booking-1');
+
+        expect(createSpy).toHaveBeenCalled();
+        expect(result).toEqual({ clientSecret: 'secret_1' });
+      });
     });
   });
 

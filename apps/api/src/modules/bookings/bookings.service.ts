@@ -2,6 +2,7 @@ import { BadRequestException, ConflictException, Injectable, NotFoundException }
 import { IANAZone } from 'luxon';
 import { PrismaService } from '../../common/prisma/prisma.service';
 import { TutorAvailabilityService } from '../tutors/availability/tutor-availability.service';
+import { LiveLessonQuotaService } from '../payments/live-lessons/live-lesson-quota.service';
 import type { CreateBookingDto } from './dto/create-booking.dto';
 import type { CancelBookingDto } from './dto/cancel-booking.dto';
 
@@ -46,6 +47,7 @@ export class BookingsService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly availabilityService: TutorAvailabilityService,
+    private readonly liveLessonQuota: LiveLessonQuotaService,
   ) {}
 
   async create(studentId: string, dto: CreateBookingDto) {
@@ -142,7 +144,14 @@ export class BookingsService {
     });
   }
 
-  /** Either the booking's student or its tutor may cancel — both are "owners" of the cancellation decision. */
+  /**
+   * Either the booking's student or its tutor may cancel — both are
+   * "owners" of the cancellation decision. Always releases any PRO/MAX
+   * weekly live-lesson quota this booking consumed (Phase 7) — a no-op,
+   * not an error, for a booking that was never quota-covered (paid
+   * bookings, or a plan with no quota), so this is safe to call
+   * unconditionally on every cancellation.
+   */
   async cancel(userId: string, bookingId: string, dto: CancelBookingDto) {
     const booking = await this.prisma.client.booking.findFirst({
       where: { id: bookingId, OR: [{ studentId: userId }, { tutorId: userId }] },
@@ -154,11 +163,15 @@ export class BookingsService {
       throw new ConflictException('Diese Buchung kann nicht mehr storniert werden.');
     }
 
-    return this.prisma.client.booking.update({
+    const updated = await this.prisma.client.booking.update({
       where: { id: bookingId },
       data: { status: 'CANCELLED', cancellationReason: dto.reason },
       include: BOOKING_INCLUDE,
     });
+
+    await this.liveLessonQuota.releaseForBooking(bookingId);
+
+    return updated;
   }
 
   async complete(tutorId: string, bookingId: string) {

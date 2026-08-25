@@ -2,6 +2,7 @@ import { BadRequestException, ConflictException, NotFoundException } from '@nest
 import { BookingsService } from '../bookings.service';
 import type { PrismaService } from '../../../common/prisma/prisma.service';
 import type { TutorAvailabilityService } from '../../tutors/availability/tutor-availability.service';
+import type { LiveLessonQuotaService } from '../../payments/live-lessons/live-lesson-quota.service';
 
 const offering = {
   id: 'offering-1',
@@ -56,12 +57,19 @@ function buildAvailabilityMock(overrides?: Partial<Record<string, jest.Mock>>): 
   } as unknown as TutorAvailabilityService;
 }
 
+function buildQuotaMock(overrides?: Partial<Record<string, jest.Mock>>): LiveLessonQuotaService {
+  return {
+    releaseForBooking: jest.fn().mockResolvedValue(undefined),
+    ...overrides,
+  } as unknown as LiveLessonQuotaService;
+}
+
 describe('BookingsService', () => {
   describe('create', () => {
     it('rejects an invalid IANA timezone before touching the database', async () => {
       const prisma = buildPrismaMock();
       const availability = buildAvailabilityMock();
-      const service = new BookingsService(prisma, availability);
+      const service = new BookingsService(prisma, availability, buildQuotaMock());
 
       await expect(
         service.create('student-1', { offeringId: 'offering-1', startAt: futureStart, studentTimezone: 'Not/AZone' }),
@@ -72,7 +80,7 @@ describe('BookingsService', () => {
     it('throws NotFoundException for a nonexistent or inactive offering', async () => {
       const prisma = buildPrismaMock({ offering: { findUnique: jest.fn().mockResolvedValue(null) } });
       const availability = buildAvailabilityMock();
-      const service = new BookingsService(prisma, availability);
+      const service = new BookingsService(prisma, availability, buildQuotaMock());
 
       await expect(
         service.create('student-1', {
@@ -86,7 +94,7 @@ describe('BookingsService', () => {
     it('rejects a tutor booking their own offering', async () => {
       const prisma = buildPrismaMock();
       const availability = buildAvailabilityMock();
-      const service = new BookingsService(prisma, availability);
+      const service = new BookingsService(prisma, availability, buildQuotaMock());
 
       await expect(
         service.create('tutor-1', {
@@ -100,7 +108,7 @@ describe('BookingsService', () => {
     it('rejects a startAt in the past', async () => {
       const prisma = buildPrismaMock();
       const availability = buildAvailabilityMock();
-      const service = new BookingsService(prisma, availability);
+      const service = new BookingsService(prisma, availability, buildQuotaMock());
 
       await expect(
         service.create('student-1', {
@@ -114,7 +122,7 @@ describe('BookingsService', () => {
     it('delegates availability-window validation to TutorAvailabilityService.assertBookable', async () => {
       const prisma = buildPrismaMock();
       const availability = buildAvailabilityMock();
-      const service = new BookingsService(prisma, availability);
+      const service = new BookingsService(prisma, availability, buildQuotaMock());
 
       await service.create('student-1', {
         offeringId: 'offering-1',
@@ -130,7 +138,7 @@ describe('BookingsService', () => {
       const availability = buildAvailabilityMock({
         assertBookable: jest.fn().mockRejectedValue(new BadRequestException('outside hours')),
       });
-      const service = new BookingsService(prisma, availability);
+      const service = new BookingsService(prisma, availability, buildQuotaMock());
 
       await expect(
         service.create('student-1', {
@@ -145,7 +153,7 @@ describe('BookingsService', () => {
     it('returns a friendly 409 when an overlapping active booking already exists (pre-check)', async () => {
       const prisma = buildPrismaMock({ booking: { findFirst: jest.fn().mockResolvedValue(booking) } });
       const availability = buildAvailabilityMock();
-      const service = new BookingsService(prisma, availability);
+      const service = new BookingsService(prisma, availability, buildQuotaMock());
 
       await expect(
         service.create('student-1', {
@@ -167,7 +175,7 @@ describe('BookingsService', () => {
         },
       });
       const availability = buildAvailabilityMock();
-      const service = new BookingsService(prisma, availability);
+      const service = new BookingsService(prisma, availability, buildQuotaMock());
 
       await expect(
         service.create('student-1', {
@@ -181,7 +189,7 @@ describe('BookingsService', () => {
     it('creates the booking as PENDING, scoped to the calling student and the offering tutor', async () => {
       const prisma = buildPrismaMock();
       const availability = buildAvailabilityMock();
-      const service = new BookingsService(prisma, availability);
+      const service = new BookingsService(prisma, availability, buildQuotaMock());
 
       await service.create('student-1', {
         offeringId: 'offering-1',
@@ -200,7 +208,7 @@ describe('BookingsService', () => {
   describe('confirm', () => {
     it('throws NotFoundException (never Forbidden) for a booking belonging to a different tutor', async () => {
       const prisma = buildPrismaMock({ booking: { findFirst: jest.fn().mockResolvedValue(null) } });
-      const service = new BookingsService(prisma, buildAvailabilityMock());
+      const service = new BookingsService(prisma, buildAvailabilityMock(), buildQuotaMock());
 
       await expect(service.confirm('tutor-2', 'booking-1')).rejects.toBeInstanceOf(NotFoundException);
     });
@@ -209,7 +217,7 @@ describe('BookingsService', () => {
       const prisma = buildPrismaMock({
         booking: { findFirst: jest.fn().mockResolvedValue({ ...booking, status: 'CONFIRMED' }) },
       });
-      const service = new BookingsService(prisma, buildAvailabilityMock());
+      const service = new BookingsService(prisma, buildAvailabilityMock(), buildQuotaMock());
 
       await expect(service.confirm('tutor-1', 'booking-1')).rejects.toBeInstanceOf(ConflictException);
       expect(prisma.client.booking.update).not.toHaveBeenCalled();
@@ -217,7 +225,7 @@ describe('BookingsService', () => {
 
     it('confirms a PENDING booking owned by the calling tutor', async () => {
       const prisma = buildPrismaMock({ booking: { findFirst: jest.fn().mockResolvedValue(booking) } });
-      const service = new BookingsService(prisma, buildAvailabilityMock());
+      const service = new BookingsService(prisma, buildAvailabilityMock(), buildQuotaMock());
 
       await service.confirm('tutor-1', 'booking-1');
 
@@ -230,14 +238,14 @@ describe('BookingsService', () => {
   describe('cancel', () => {
     it('throws NotFoundException when the caller is neither the student nor the tutor', async () => {
       const prisma = buildPrismaMock({ booking: { findFirst: jest.fn().mockResolvedValue(null) } });
-      const service = new BookingsService(prisma, buildAvailabilityMock());
+      const service = new BookingsService(prisma, buildAvailabilityMock(), buildQuotaMock());
 
       await expect(service.cancel('someone-else', 'booking-1', {})).rejects.toBeInstanceOf(NotFoundException);
     });
 
     it('allows the student to cancel their own PENDING booking', async () => {
       const prisma = buildPrismaMock({ booking: { findFirst: jest.fn().mockResolvedValue(booking) } });
-      const service = new BookingsService(prisma, buildAvailabilityMock());
+      const service = new BookingsService(prisma, buildAvailabilityMock(), buildQuotaMock());
 
       await service.cancel('student-1', 'booking-1', { reason: 'Termin passt nicht mehr' });
 
@@ -248,27 +256,39 @@ describe('BookingsService', () => {
 
     it('allows the tutor to cancel a booking owned by them', async () => {
       const prisma = buildPrismaMock({ booking: { findFirst: jest.fn().mockResolvedValue(booking) } });
-      const service = new BookingsService(prisma, buildAvailabilityMock());
+      const service = new BookingsService(prisma, buildAvailabilityMock(), buildQuotaMock());
 
       await service.cancel('tutor-1', 'booking-1', {});
 
       expect(prisma.client.booking.update).toHaveBeenCalled();
     });
 
+    it('always releases any PRO/MAX live-lesson quota the cancelled booking held (Phase 7) — a no-op for a never-quota-covered booking is fine, it must still be called', async () => {
+      const prisma = buildPrismaMock({ booking: { findFirst: jest.fn().mockResolvedValue(booking) } });
+      const quota = buildQuotaMock();
+      const service = new BookingsService(prisma, buildAvailabilityMock(), quota);
+
+      await service.cancel('student-1', 'booking-1', {});
+
+      expect(quota.releaseForBooking).toHaveBeenCalledWith('booking-1');
+    });
+
     it('rejects cancelling an already-completed booking', async () => {
       const prisma = buildPrismaMock({
         booking: { findFirst: jest.fn().mockResolvedValue({ ...booking, status: 'COMPLETED' }) },
       });
-      const service = new BookingsService(prisma, buildAvailabilityMock());
+      const quota = buildQuotaMock();
+      const service = new BookingsService(prisma, buildAvailabilityMock(), quota);
 
       await expect(service.cancel('student-1', 'booking-1', {})).rejects.toBeInstanceOf(ConflictException);
+      expect(quota.releaseForBooking).not.toHaveBeenCalled();
     });
   });
 
   describe('complete', () => {
     it('throws NotFoundException (never Forbidden) for a booking belonging to a different tutor', async () => {
       const prisma = buildPrismaMock({ booking: { findFirst: jest.fn().mockResolvedValue(null) } });
-      const service = new BookingsService(prisma, buildAvailabilityMock());
+      const service = new BookingsService(prisma, buildAvailabilityMock(), buildQuotaMock());
 
       await expect(service.complete('tutor-2', 'booking-1')).rejects.toBeInstanceOf(NotFoundException);
       expect(prisma.client.booking.update).not.toHaveBeenCalled();
@@ -277,7 +297,7 @@ describe('BookingsService', () => {
     it('rejects completing a booking whose session has not ended yet', async () => {
       const futureBooking = { ...booking, status: 'CONFIRMED', endAt: new Date(Date.now() + 60_000) };
       const prisma = buildPrismaMock({ booking: { findFirst: jest.fn().mockResolvedValue(futureBooking) } });
-      const service = new BookingsService(prisma, buildAvailabilityMock());
+      const service = new BookingsService(prisma, buildAvailabilityMock(), buildQuotaMock());
 
       await expect(service.complete('tutor-1', 'booking-1')).rejects.toBeInstanceOf(BadRequestException);
     });
@@ -285,7 +305,7 @@ describe('BookingsService', () => {
     it('completes a CONFIRMED booking whose session has ended', async () => {
       const pastBooking = { ...booking, status: 'CONFIRMED', endAt: new Date(Date.now() - 60_000) };
       const prisma = buildPrismaMock({ booking: { findFirst: jest.fn().mockResolvedValue(pastBooking) } });
-      const service = new BookingsService(prisma, buildAvailabilityMock());
+      const service = new BookingsService(prisma, buildAvailabilityMock(), buildQuotaMock());
 
       await service.complete('tutor-1', 'booking-1');
 
@@ -296,7 +316,7 @@ describe('BookingsService', () => {
 
     it('rejects completing a booking that was never confirmed', async () => {
       const prisma = buildPrismaMock({ booking: { findFirst: jest.fn().mockResolvedValue(booking) } });
-      const service = new BookingsService(prisma, buildAvailabilityMock());
+      const service = new BookingsService(prisma, buildAvailabilityMock(), buildQuotaMock());
 
       await expect(service.complete('tutor-1', 'booking-1')).rejects.toBeInstanceOf(ConflictException);
     });
@@ -305,7 +325,7 @@ describe('BookingsService', () => {
   describe('markNoShow', () => {
     it('throws NotFoundException (never Forbidden) for a booking belonging to a different tutor', async () => {
       const prisma = buildPrismaMock({ booking: { findFirst: jest.fn().mockResolvedValue(null) } });
-      const service = new BookingsService(prisma, buildAvailabilityMock());
+      const service = new BookingsService(prisma, buildAvailabilityMock(), buildQuotaMock());
 
       await expect(service.markNoShow('tutor-2', 'booking-1')).rejects.toBeInstanceOf(NotFoundException);
       expect(prisma.client.booking.update).not.toHaveBeenCalled();
@@ -314,7 +334,7 @@ describe('BookingsService', () => {
     it('rejects marking no-show before the session has started', async () => {
       const futureBooking = { ...booking, status: 'CONFIRMED', startAt: new Date(Date.now() + 60_000) };
       const prisma = buildPrismaMock({ booking: { findFirst: jest.fn().mockResolvedValue(futureBooking) } });
-      const service = new BookingsService(prisma, buildAvailabilityMock());
+      const service = new BookingsService(prisma, buildAvailabilityMock(), buildQuotaMock());
 
       await expect(service.markNoShow('tutor-1', 'booking-1')).rejects.toBeInstanceOf(BadRequestException);
     });
@@ -322,7 +342,7 @@ describe('BookingsService', () => {
     it('marks a started CONFIRMED booking as NO_SHOW', async () => {
       const startedBooking = { ...booking, status: 'CONFIRMED', startAt: new Date(Date.now() - 60_000) };
       const prisma = buildPrismaMock({ booking: { findFirst: jest.fn().mockResolvedValue(startedBooking) } });
-      const service = new BookingsService(prisma, buildAvailabilityMock());
+      const service = new BookingsService(prisma, buildAvailabilityMock(), buildQuotaMock());
 
       await service.markNoShow('tutor-1', 'booking-1');
 
@@ -335,7 +355,7 @@ describe('BookingsService', () => {
   describe('findOwnAsStudent / findOwnAsTutor', () => {
     it('scopes the student query to studentId', async () => {
       const prisma = buildPrismaMock();
-      const service = new BookingsService(prisma, buildAvailabilityMock());
+      const service = new BookingsService(prisma, buildAvailabilityMock(), buildQuotaMock());
 
       await service.findOwnAsStudent('student-1');
 
@@ -346,7 +366,7 @@ describe('BookingsService', () => {
 
     it('scopes the tutor query to tutorId', async () => {
       const prisma = buildPrismaMock();
-      const service = new BookingsService(prisma, buildAvailabilityMock());
+      const service = new BookingsService(prisma, buildAvailabilityMock(), buildQuotaMock());
 
       await service.findOwnAsTutor('tutor-1');
 
@@ -357,7 +377,7 @@ describe('BookingsService', () => {
 
     it('caps both queries rather than returning an unbounded result set (Phase 6.5 audit finding)', async () => {
       const prisma = buildPrismaMock();
-      const service = new BookingsService(prisma, buildAvailabilityMock());
+      const service = new BookingsService(prisma, buildAvailabilityMock(), buildQuotaMock());
 
       await service.findOwnAsStudent('student-1');
       await service.findOwnAsTutor('tutor-1');
