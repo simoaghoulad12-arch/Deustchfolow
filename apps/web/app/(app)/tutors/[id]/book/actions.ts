@@ -33,5 +33,9 @@ export async function createBookingAction(formData: FormData): Promise<void> {
     );
   }
 
-  redirect('/bookings?created=1');
+  // The booking exists but is still PENDING — /bookings/[bookingId]/pay
+  // starts the actual payment (or, for a PRO/MAX student, tries the
+  // weekly live-lesson quota first and confirms immediately if it
+  // covers this booking).
+  redirect(`/bookings/${encodeURIComponent(result.booking.id)}/pay`);
 }

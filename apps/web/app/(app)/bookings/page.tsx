@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { getSession } from '@/lib/auth/session';
 import { getMyBookingsAsStudent } from '@/lib/api/bookings';
@@ -16,7 +17,14 @@ const CANCELLABLE_STATUSES = new Set(['PENDING', 'CONFIRMED']);
 export default async function BookingsPage({
   searchParams,
 }: {
-  searchParams: { created?: string; cancelled?: string; cancelError?: string; reviewed?: string; reviewError?: string };
+  searchParams: {
+    created?: string;
+    confirmed?: string;
+    cancelled?: string;
+    cancelError?: string;
+    reviewed?: string;
+    reviewError?: string;
+  };
 }) {
   const session = await getSession();
   if (!session) redirect('/login');
@@ -33,6 +41,18 @@ export default async function BookingsPage({
       {searchParams.created && (
         <FormMessage type="success">
           Buchungsanfrage gesendet. Der Tutor muss den Termin noch bestätigen.
+        </FormMessage>
+      )}
+      {searchParams.confirmed === 'quota' && (
+        <FormMessage type="success">
+          Termin bestätigt — abgedeckt durch dein wöchentliches Live-Unterrichtskontingent, keine Zahlung
+          nötig.
+        </FormMessage>
+      )}
+      {searchParams.confirmed === 'payment' && (
+        <FormMessage type="success">
+          Zahlung erhalten. Dein Termin wird bestätigt, sobald Stripe die Zahlung final verarbeitet hat —
+          das dauert meist nur wenige Sekunden.
         </FormMessage>
       )}
       {searchParams.cancelled && <FormMessage type="success">Buchung storniert.</FormMessage>}
@@ -67,14 +87,23 @@ export default async function BookingsPage({
             {booking.cancellationReason && (
               <p className="text-xs text-muted-foreground">Grund: {booking.cancellationReason}</p>
             )}
-            {CANCELLABLE_STATUSES.has(booking.status) && (
-              <form action={cancelBookingAction}>
-                <input type="hidden" name="bookingId" value={booking.id} />
-                <Button type="submit" variant="outline" size="default">
-                  Stornieren
-                </Button>
-              </form>
-            )}
+            <div className="flex flex-wrap gap-2">
+              {booking.status === 'PENDING' && (
+                <Link href={`/bookings/${booking.id}/pay`}>
+                  <Button type="button" size="default">
+                    Zahlung abschließen
+                  </Button>
+                </Link>
+              )}
+              {CANCELLABLE_STATUSES.has(booking.status) && (
+                <form action={cancelBookingAction}>
+                  <input type="hidden" name="bookingId" value={booking.id} />
+                  <Button type="submit" variant="outline" size="default">
+                    Stornieren
+                  </Button>
+                </form>
+              )}
+            </div>
             {booking.status === 'COMPLETED' && !booking.review && <ReviewForm bookingId={booking.id} />}
             {booking.status === 'COMPLETED' && booking.review && (
               <p className="text-xs text-muted-foreground">Du hast diese Session bereits bewertet.</p>
