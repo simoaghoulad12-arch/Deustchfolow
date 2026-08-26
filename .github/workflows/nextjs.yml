@@ -2,14 +2,23 @@
 #
 # To get started with Next.js see: https://nextjs.org/docs/getting-started
 #
+# DISABLED (staging-deployment audit, see DEPLOYMENT_STAGING.md): this
+# generic template is incompatible with apps/web as it exists today —
+# it runs plain `npm ci` / `next build` against the repo root (no pnpm,
+# no workspace awareness, no `apps/web` cd) and expects a static
+# `./out` export, but apps/web uses Server Actions, cookies/sessions,
+# and direct database access, none of which a static export supports.
+# It would fail on every push. Left in place (not deleted) with only
+# its automatic trigger removed, per the audit's "don't delete without
+# necessity" instruction — `workflow_dispatch` still allows a manual,
+# deliberate run from the Actions tab if ever needed. The real staging
+# target is Vercel (apps/web) + Railway/Render (apps/api), not GitHub
+# Pages — see DEPLOYMENT_STAGING.md.
 name: Deploy Next.js site to Pages
 
 on:
-  # Runs on pushes targeting the default branch
-  push:
-    branches: ["claude/deutschflow-platform-architecture-dpms2y"]
-
-  # Allows you to run this workflow manually from the Actions tab
+  # Automatic push trigger intentionally removed — see comment above.
+  # Manual-only for now:
   workflow_dispatch:
 
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages

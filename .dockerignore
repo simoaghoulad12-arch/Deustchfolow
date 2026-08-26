@@ -1,0 +1,18 @@
+# Used by apps/api/Dockerfile (build context = repository root).
+# Never affects git — see .gitignore for that.
+
+node_modules
+**/node_modules
+**/.next
+**/dist
+**/coverage
+**/.turbo
+.git
+.github
+docs
+**/var/tutor-documents
+
+.env
+.env.*
+
+*.log
