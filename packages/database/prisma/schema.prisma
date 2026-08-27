@@ -5,7 +5,13 @@
 // a central PLAN_ENTITLEMENTS config (see packages/types).
 
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
+  // "native" covers local dev; "debian-openssl-3.0.x" is added explicitly
+  // because Railway's build and runtime layers can report slightly
+  // different OpenSSL detection than a plain Docker build alone, which
+  // otherwise leaves the Query Engine binary unresolvable at container
+  // start (PrismaClientInitializationError).
+  binaryTargets = ["native", "debian-openssl-3.0.x"]
 }
 
 datasource db {
