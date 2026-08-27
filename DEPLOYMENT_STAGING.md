@@ -2,6 +2,26 @@
 
 Ziel-Setup: **Web → Vercel**, **API → Railway (oder Render)**, **PostgreSQL → Managed Postgres**, **Stripe → Test Mode**.
 
+## Stand (live verifiziert)
+
+- **Railway-Projekt `shimmering-spirit`**: Postgres **Online**, `@deutschflow/api`
+  **Active**, öffentliche Domain generiert.
+- Verifiziert von außen:
+  ```
+  GET https://deutschflowapi-production.up.railway.app/api/v1/health
+  → HTTP 200 {"status":"ok","database":"ok"}
+  ```
+- Noch offen: `SERVICE_TOKEN_SECRET` (API-Seite) generieren, `APP_URL` auf
+  der API setzen (erst möglich, sobald die Vercel-URL feststeht), Stripe
+  Test-Mode-Variablen, Vercel-Setup (`apps/web`), Aufräumen der
+  Railway-Nebenprodukte (siehe unten).
+- **Zwei Aufräumpunkte in Railway, unabhängig vom Code:** (1) ein
+  ungewollt mitgebauter `@deutschflow/web`-Service im selben Projekt
+  (Web soll ja auf Vercel laufen) — kann entfernt werden. (2) ein leeres
+  Duplikat-Projekt aus einem versehentlichen zweiten „New Project"-Klick
+  beim ersten Verbinden — falls wirklich leer, ebenfalls entfernbar. Beides
+  nur über das Railway-Dashboard möglich, nicht von hier aus.
+
 Dieses Dokument beschreibt ausschließlich das **Staging**-Setup. Es enthält
 keine echten Secrets, keine Live-Keys, keine Produktions-Konfiguration.
 Alle Werte unten sind Platzhalter/Variablennamen — reale Werte gehören
@@ -71,6 +91,51 @@ pnpm --filter @deutschflow/api run start:prod
 ```
 Beides sind die **bereits vorhandenen, unveränderten** package.json-Scripts
 — es wurde keine neue Migrations- oder Start-Logik erfunden.
+
+### Drei reale Railway-Eigenheiten (beim ersten Deploy entdeckt)
+
+Diese drei haben den ersten echten Deploy-Versuch blockiert — für Render
+vermutlich nicht 1:1 relevant, aber gut zu kennen:
+
+1. **Railway erkennt Monorepos automatisch und kann pro erkannter App
+   einen eigenen Service anlegen** — beim Verbinden des Repos entstanden
+   automatisch `@deutschflow/web` **und** `@deutschflow/api` als zwei
+   Services im selben Projekt, ungefragt. Nur `api` brauchen wir hier;
+   `web` sollte entfernt werden (s. „Stand" oben).
+2. **„Custom Start Command" kann das Dockerfile-`CMD` überschreiben —
+   auch wenn `Builder: Dockerfile` gesetzt ist.** Railway hatte
+   automatisch `pnpm --filter @deutschflow/api start` eingetragen (den
+   **Dev**-Befehl, `nest start`, kein Production-Build, keine Migration).
+   Das lief tatsächlich statt unseres `CMD` und ließ den Healthcheck
+   fehlschlagen. **Fix:** Service Settings → „Deploy" → „Custom Start
+   Command" **komplett leeren**, damit das Dockerfile-`CMD` greift.
+3. **„Watch Paths" kann automatischen Redeploy verhindern.** Railway
+   hatte den `api`-Service automatisch auf `/apps/api/**` beschränkt —
+   ein Push, der nur `apps/web/` oder das Root-Lockfile ändert (wie ein
+   monorepo-weiter Dependency-Fix), löste dadurch **keinen** neuen Build
+   aus. Bei diesem Setup (ein gemeinsames Lockfile, Dockerfile-Build mit
+   vollem Repo-Kontext) sollte **Watch Paths komplett geleert** werden,
+   damit jeder Push zuverlässig triggert.
+   - Nebeneffekt: „Redeploy" auf einer bestehenden Deployment-Karte baut
+     immer **exakt denselben alten Commit** neu, nie den neuesten Stand.
+     Um nach einem Fix wirklich den neuesten Commit zu deployen, hilft
+     ein neuer (ggf. leerer) Commit + Push, sobald Watch Paths korrekt
+     sind — nicht „Redeploy" auf einem alten Eintrag.
+
+### Prisma auf Railway: `binaryTargets`
+
+Vierter, unabhängiger Fehler nach den drei oben: Der Container startete,
+aber crashte beim ersten DB-Zugriff mit
+`PrismaClientInitializationError: ... Query Engine for runtime
+"debian-openssl-3.0.x"`. Railways Build- und Runtime-Layer erkennen
+offenbar ein anderes OpenSSL als eine reine Docker-Build-Auto-Erkennung
+liefert. **Fix (bereits im Repo, `packages/database/prisma/schema.prisma`):**
+```prisma
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-3.0.x"]
+}
+```
 
 ### Alternative: Render
 
@@ -297,6 +362,11 @@ ausgeschlossen.
 | Stripe verweigert den Key | `sk_live_...` versehentlich statt `sk_test_...` gesetzt — `StripeService` blockt das absichtlich |
 | Webhook-Events kommen nicht an | Endpoint-URL im Stripe-Dashboard falsch, oder Endpoint vor dem ersten API-Deploy angelegt (noch keine öffentliche URL vorhanden) |
 | Registrierter Testaccount kann sich nicht einloggen | Passwort-Hash nicht mit `bcryptjs`/Cost-Faktor 12 erzeugt (s. Abschnitt 10) |
+| Build läuft mit `nest start` statt Dockerfile-`CMD`, Healthcheck rot trotz erfolgreichem Build | „Custom Start Command" in Railway-Settings gesetzt und überschreibt das Dockerfile — leeren (s. Abschnitt 3) |
+| Push löst keinen neuen Build aus | „Watch Paths" auf einen Unterordner beschränkt (z. B. `/apps/api/**`) — bei gemeinsamem Lockfile komplett leeren |
+| „Redeploy" baut nicht den neuesten Commit | Redeploy pinnt auf den Commit der jeweiligen Deployment-Karte — für den neuesten Stand neu pushen, nicht redeployen |
+| `PrismaClientInitializationError: ... Query Engine for runtime "debian-openssl-3.0.x"` | `binaryTargets` in `schema.prisma` fehlte — bereits gefixt (s. Abschnitt 3) |
+| Zwei Railway-Projekte für dasselbe Repo | Beim ersten „New Project"-Flow versehentlich zweimal durchgeklickt — leeres Duplikat im Dashboard löschen |
 
 ---
 
