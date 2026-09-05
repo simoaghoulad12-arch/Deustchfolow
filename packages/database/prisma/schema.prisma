@@ -5,13 +5,16 @@
 // a central PLAN_ENTITLEMENTS config (see packages/types).
 
 generator client {
-  provider      = "prisma-client-js"
-  // "native" covers local dev; "debian-openssl-3.0.x" is added explicitly
-  // because Railway's build and runtime layers can report slightly
-  // different OpenSSL detection than a plain Docker build alone, which
-  // otherwise leaves the Query Engine binary unresolvable at container
-  // start (PrismaClientInitializationError).
-  binaryTargets = ["native", "debian-openssl-3.0.x"]
+  provider = "prisma-client-js"
+  // "native" covers local dev. "debian-openssl-3.0.x" is for Railway
+  // (apps/api's Docker build/runtime). "rhel-openssl-1.0.x" and
+  // "rhel-openssl-3.0.x" are for Vercel's Amazon-Linux-based Node.js
+  // serverless runtime (apps/web) — different Vercel Node versions have
+  // reported different OpenSSL detection there, so both are included
+  // rather than guessing one. Without the right target for wherever
+  // this actually runs, the Query Engine binary is unresolvable at
+  // request time (PrismaClientInitializationError).
+  binaryTargets = ["native", "debian-openssl-3.0.x", "rhel-openssl-1.0.x", "rhel-openssl-3.0.x"]
 }
 
 datasource db {
