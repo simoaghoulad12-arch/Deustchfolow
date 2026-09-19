@@ -21,7 +21,7 @@ export function Navigation() {
   return (
     <>
       <header className="fixed inset-x-0 top-0 z-30 flex items-center justify-between px-5 py-4 sm:px-8 sm:py-6">
-        <Link href="/" aria-label="NS home" className="h-7 w-7 text-bone transition hover:text-gold sm:h-8 sm:w-8">
+        <Link href="/" aria-label="NS home" className="h-7 w-7 sm:h-8 sm:w-8">
           <Logo />
         </Link>
         <div className="flex items-center gap-5 text-xs uppercase tracking-widest2 sm:gap-8">
@@ -56,7 +56,7 @@ export function Navigation() {
             transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
           >
             <div className="flex items-center justify-between">
-              <span className="h-7 w-7 text-bone">
+              <span className="h-7 w-7">
                 <Logo />
               </span>
               <button

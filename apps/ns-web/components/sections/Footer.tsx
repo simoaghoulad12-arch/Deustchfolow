@@ -28,7 +28,7 @@ export function Footer() {
 
       <div className="relative flex flex-col gap-12 sm:flex-row sm:justify-between">
         <div className="max-w-sm">
-          <span className="block h-10 w-10 text-bone">
+          <span className="block h-10 w-10">
             <Logo />
           </span>
           <p className="mt-4 text-xs uppercase tracking-widest2 text-smoke">Nattysimo</p>

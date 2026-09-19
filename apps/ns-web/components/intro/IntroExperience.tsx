@@ -37,7 +37,7 @@ export function IntroExperience() {
           transition={{ duration: reducedMotion ? 0.15 : 0.6, ease: [0.16, 1, 0.3, 1] }}
         >
           <motion.div
-            className="h-24 w-24 text-bone sm:h-32 sm:w-32"
+            className="h-24 w-24 sm:h-32 sm:w-32"
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{
               opacity: 1,
@@ -50,7 +50,7 @@ export function IntroExperience() {
                 : { duration: 0.15 },
             }}
           >
-            <Logo variant="hero" />
+            <Logo />
           </motion.div>
 
           <AnimatePresence>

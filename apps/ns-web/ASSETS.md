@@ -4,25 +4,25 @@ This app runs today with placeholder visuals wherever a real asset hasn't
 been supplied, and real photography where it has. Drop in files at the
 paths below and no code changes are needed.
 
-## Logo — still pending an isolated file
+## Logo — resolved
 
-Every reference supplied so far (an embroidered crest photo, garment
-close-ups, and AI-generated mood boards) shows the mark in context —
-photographed or rendered into a scene — not as a clean, isolated
-vector/transparent file. Per the brief's own rule, the logo must never be
-redrawn or reinterpreted, so `components/brand/Logo.tsx` intentionally
-keeps rendering a generic, clearly-labeled placeholder mark (not an
-attempt to recreate the real crown+monogram from photos) until an actual
-source file exists.
+The official mark is the **simple NS garment mark**: the intertwined N/S
+monogram with crown, no lions/jewels/shield. `public/brand/logo.png` is a
+direct, unaltered crop of that exact mark from
+`public/brand/reference/moodboard-natsissimo-02.png` (108,8)–(312,252) —
+cropped only, never redrawn, resimplified, or recreated in CSS/SVG/text.
+`components/brand/Logo.tsx` renders this one file everywhere the mark
+appears (nav, intro, footer), and `app/icon.png` (the site favicon) is the
+same crop padded to a square.
 
-Reference material saved for whoever produces that file:
-`public/brand/reference/` (embroidered crest photo, three mood-board
-renders, three flat-lay mockups).
+The ornate gold crest with lions/jewels (`public/brand/reference/logo-crest.png`)
+is reference material only and must never be used as the site's logo —
+it stays out of the component tree unless explicitly requested as a
+separate decorative/editorial asset.
 
-1. Place the official file at `public/brand/logo.svg` (or `.png` with a
-   transparent background).
-2. In `components/brand/Logo.tsx`, flip `HAS_OFFICIAL_LOGO` to `true` and
-   update the `<img>` tag's extension if it's not an `.svg`.
+If a true vector file (SVG) of the mark becomes available later, swap the
+`src` in `components/brand/Logo.tsx` — everything else about the
+component (sizing, usage) stays the same.
 
 ## Product photography — partially real
 
