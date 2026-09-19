@@ -43,7 +43,7 @@ export function ProductStory({ product }: { product: Product }) {
         </div>
 
         <div className="lg:pt-4">
-          <p className="text-xs uppercase tracking-widest2 text-gold">{product.category}</p>
+          <p className="text-xs uppercase tracking-widest2 text-gold">{product.tier}</p>
           <h1 className="mt-2 font-display text-3xl sm:text-4xl">{product.name}</h1>
           <p className="mt-2 text-lg">{formatPrice(product.priceCents)}</p>
           <p className="mt-6 max-w-md text-sm leading-relaxed text-smoke">{product.story}</p>
@@ -76,7 +76,7 @@ export function ProductStory({ product }: { product: Product }) {
                   key={s}
                   onClick={() => setSize(s)}
                   aria-pressed={s === size}
-                  className={`h-11 w-11 border text-xs transition ${
+                  className={`h-11 min-w-11 border px-2 text-xs transition ${
                     s === size ? 'border-gold text-gold' : 'border-bone/30 hover:border-bone'
                   }`}
                 >

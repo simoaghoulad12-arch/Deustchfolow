@@ -87,7 +87,7 @@ export function Navigation() {
               ))}
             </nav>
 
-            <p className="text-xs uppercase tracking-widest2 text-smoke">Discipline becomes identity.</p>
+            <p className="text-xs uppercase tracking-widest2 text-smoke">Discipline builds freedom.</p>
           </motion.div>
         ) : null}
       </AnimatePresence>

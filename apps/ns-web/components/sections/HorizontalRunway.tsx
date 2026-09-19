@@ -3,10 +3,10 @@
 import { useRef } from 'react';
 import Link from 'next/link';
 import { motion, useScroll, useTransform } from 'framer-motion';
-import { PlaceholderArt } from '@/components/ui/PlaceholderArt';
+import { ProductVisual } from '@/components/product/ProductVisual';
 import { products, formatPrice, type ProductCategory } from '@/data/products';
 
-const FEATURED_CATEGORIES: ProductCategory[] = ['tee', 'hoodie', 'shorts', 'pants'];
+const FEATURED_CATEGORIES: ProductCategory[] = ['tanktop', 'hoodie', 'shorts', 'bag'];
 const runwayProducts = FEATURED_CATEGORIES.map(
   (category) => products.find((product) => product.category === category)!
 );
@@ -29,7 +29,13 @@ export function HorizontalRunway() {
               href={`/product/${product.slug}`}
               className="group relative flex h-full w-full flex-shrink-0 flex-col justify-end p-6 sm:p-12"
             >
-              <PlaceholderArt category={product.category} className="absolute inset-0" />
+              <ProductVisual
+                src={product.images.hero}
+                alt={product.name}
+                category={product.category}
+                className="absolute inset-0"
+                sizes="100vw"
+              />
               <div className="relative z-10 max-w-sm">
                 <h3 className="font-display text-3xl transition group-hover:text-gold sm:text-5xl">
                   {product.name}

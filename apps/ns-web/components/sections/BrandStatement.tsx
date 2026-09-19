@@ -11,8 +11,8 @@ export function BrandStatement() {
   const disciplineScale = useTransform(scrollYProgress, [0, 0.5], [1, 1.4]);
   const disciplineTracking = useTransform(scrollYProgress, [0, 0.5], [0, 0.4]);
 
-  const identityOpacity = useTransform(scrollYProgress, [0.5, 0.65, 1], [0, 1, 1]);
-  const identityScale = useTransform(scrollYProgress, [0.5, 1], [0.85, 1]);
+  const freedomOpacity = useTransform(scrollYProgress, [0.5, 0.65, 1], [0, 1, 1]);
+  const freedomScale = useTransform(scrollYProgress, [0.5, 1], [0.85, 1]);
 
   return (
     <section ref={ref} className="relative h-[220vh] bg-ink">
@@ -24,10 +24,10 @@ export function BrandStatement() {
           Discipline
         </motion.h2>
         <motion.h2
-          style={{ opacity: identityOpacity, scale: identityScale }}
+          style={{ opacity: freedomOpacity, scale: freedomScale }}
           className="absolute font-display text-[15vw] uppercase leading-none text-gold sm:text-[11vw]"
         >
-          Identity
+          Freedom
         </motion.h2>
       </div>
     </section>

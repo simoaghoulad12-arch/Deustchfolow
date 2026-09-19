@@ -54,6 +54,20 @@ export function IntroExperience() {
           </motion.div>
 
           <AnimatePresence>
+            {!entering ? (
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ delay: reducedMotion ? 0 : 0.6, duration: 0.8 }}
+                className="mt-5 text-xs uppercase tracking-widest2 text-smoke/70"
+              >
+                Nattysimo
+              </motion.p>
+            ) : null}
+          </AnimatePresence>
+
+          <AnimatePresence>
             {ready && !entering ? (
               <motion.button
                 initial={{ opacity: 0, y: 12 }}

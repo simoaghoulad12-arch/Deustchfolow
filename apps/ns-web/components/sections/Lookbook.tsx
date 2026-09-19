@@ -1,12 +1,12 @@
-import { products } from '@/data/products';
-import { PlaceholderArt } from '@/components/ui/PlaceholderArt';
+import { getProductBySlug } from '@/data/products';
+import { ProductVisual } from '@/components/product/ProductVisual';
 
 const tiles = [
-  { product: products[0]!, span: 'sm:col-span-7 sm:row-span-2', tone: 'ink' as const },
-  { product: products[2]!, span: 'sm:col-span-5', tone: 'bone' as const },
-  { product: products[4]!, span: 'sm:col-span-5', tone: 'ink' as const },
-  { product: products[3]!, span: 'sm:col-span-6', tone: 'ink' as const },
-  { product: products[5]!, span: 'sm:col-span-6', tone: 'bone' as const },
+  { product: getProductBySlug('ns-tanktop-performance')!, span: 'sm:col-span-7 sm:row-span-2' },
+  { product: getProductBySlug('ns-hoodie-premium')!, span: 'sm:col-span-5' },
+  { product: getProductBySlug('ns-shorts-training')!, span: 'sm:col-span-5' },
+  { product: getProductBySlug('ns-jogger-comfort')!, span: 'sm:col-span-6' },
+  { product: getProductBySlug('ns-gym-bag-elite')!, span: 'sm:col-span-6' },
 ];
 
 export function Lookbook() {
@@ -18,9 +18,14 @@ export function Lookbook() {
       </div>
 
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-12">
-        {tiles.map(({ product, span, tone }) => (
+        {tiles.map(({ product, span }) => (
           <div key={product.slug} className={`relative aspect-[4/5] overflow-hidden ${span}`}>
-            <PlaceholderArt category={product.category} tone={tone} className="h-full w-full" showLabel={false} />
+            <ProductVisual
+              src={product.images.hero}
+              alt={product.name}
+              category={product.category}
+              sizes="(min-width: 640px) 55vw, 100vw"
+            />
             <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-void/70 to-transparent p-4">
               <p className="text-xs uppercase tracking-widest2 text-bone">{product.name}</p>
             </div>

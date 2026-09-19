@@ -19,6 +19,8 @@ const COLUMNS = [
   },
 ];
 
+const MANIFESTO = ['Train', 'Grow', 'Evolve', 'NS'];
+
 export function Footer() {
   return (
     <footer id="contact" className="relative overflow-hidden bg-void px-5 pb-10 pt-24 sm:px-8 sm:pt-32">
@@ -29,7 +31,8 @@ export function Footer() {
           <span className="block h-10 w-10 text-bone">
             <Logo />
           </span>
-          <p className="mt-6 font-display text-2xl sm:text-3xl">Discipline becomes identity.</p>
+          <p className="mt-4 text-xs uppercase tracking-widest2 text-smoke">Nattysimo</p>
+          <p className="mt-3 font-display text-2xl sm:text-3xl">Discipline builds freedom.</p>
         </div>
 
         <div className="flex gap-16">
@@ -47,11 +50,22 @@ export function Footer() {
               </ul>
             </div>
           ))}
+
+          <div>
+            <p className="mb-4 text-xs uppercase tracking-widest2 text-smoke">Manifesto</p>
+            <ul className="space-y-2">
+              {MANIFESTO.map((word) => (
+                <li key={word} className="text-sm uppercase tracking-widest2 text-smoke">
+                  {word}
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       </div>
 
       <div className="relative mt-20 flex flex-col items-start justify-between gap-4 border-t border-stone/20 pt-6 text-xs text-smoke sm:flex-row sm:items-center">
-        <p>© {new Date().getFullYear()} NS. All rights reserved.</p>
+        <p>© {new Date().getFullYear()} Nattysimo. All rights reserved.</p>
         <a
           href="https://instagram.com"
           target="_blank"

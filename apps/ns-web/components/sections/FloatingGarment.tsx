@@ -9,10 +9,10 @@ import {
   useSpring,
   useTransform,
 } from 'framer-motion';
-import { PlaceholderArt } from '@/components/ui/PlaceholderArt';
+import { ProductVisual } from '@/components/product/ProductVisual';
 import { getProductBySlug, formatPrice } from '@/data/products';
 
-const product = getProductBySlug('ns-essential-tee')!;
+const product = getProductBySlug('ns-tanktop-performance')!;
 
 export function FloatingGarment() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -58,9 +58,14 @@ export function FloatingGarment() {
         >
           <motion.div
             style={{ scale, rotateX, rotateY }}
-            className="relative h-[46vh] w-[64vw] max-w-md [transform-style:preserve-3d]"
+            className="relative h-[46vh] w-[64vw] max-w-md overflow-hidden [transform-style:preserve-3d]"
           >
-            <PlaceholderArt category={product.category} className="h-full w-full" />
+            <ProductVisual
+              src={product.images.hero}
+              alt={product.name}
+              category={product.category}
+              sizes="64vw"
+            />
           </motion.div>
         </div>
 

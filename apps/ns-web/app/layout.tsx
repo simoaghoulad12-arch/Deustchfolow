@@ -17,8 +17,9 @@ const sans = Inter({
 });
 
 export const metadata: Metadata = {
-  title: 'NS — Discipline Becomes Identity',
-  description: 'NS is a sportswear identity built on discipline, movement, and self-development.',
+  title: 'NATTYSIMO — Discipline Builds Freedom',
+  description:
+    'Nattysimo (NS) is a sportswear identity built on discipline, movement, and self-development.',
 };
 
 export const viewport: Viewport = {

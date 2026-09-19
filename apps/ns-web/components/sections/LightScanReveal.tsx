@@ -5,7 +5,7 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import { PlaceholderArt } from '@/components/ui/PlaceholderArt';
 import { getProductBySlug } from '@/data/products';
 
-const product = getProductBySlug('ns-training-hoodie')!;
+const product = getProductBySlug('ns-hoodie-premium')!;
 
 const LABELS = [
   { text: 'NS LOGO', range: [0.15, 0.35] as const },
