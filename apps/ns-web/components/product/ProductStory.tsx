@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { ProductVisual } from '@/components/product/ProductVisual';
+import { PlaceholderArt } from '@/components/ui/PlaceholderArt';
 import { formatPrice, type Product } from '@/data/products';
 import { useCart } from '@/lib/cart-context';
 
@@ -119,31 +120,45 @@ export function ProductStory({ product }: { product: Product }) {
         </div>
       </div>
 
-      {/* Editorial detail story — optional to explore further. */}
-      <div className="mt-24 space-y-3 px-5 sm:mt-32 sm:px-8">
-        <p className="mb-6 text-xs uppercase tracking-widest2 text-smoke">The Details</p>
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-          {product.images.gallery.map((src, index) => (
-            <motion.div
-              key={src}
-              initial={{ opacity: 0, y: 32 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-10%' }}
-              transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-              className={`relative aspect-[4/5] overflow-hidden bg-ink ${
-                index === 0 ? 'sm:col-span-2 sm:aspect-[16/9]' : ''
-              }`}
-            >
-              <ProductVisual
-                src={src}
-                alt={`${product.name} — ${GALLERY_LABELS[index] ?? 'detail'}`}
-                category={product.category}
-                sizes="(min-width: 640px) 50vw, 100vw"
-              />
-            </motion.div>
-          ))}
+      {/* Editorial detail story — only shown once real photography exists. */}
+      {product.hasPhotography ? (
+        <div className="mt-24 space-y-3 px-5 sm:mt-32 sm:px-8">
+          <p className="mb-6 text-xs uppercase tracking-widest2 text-smoke">The Details</p>
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            {product.images.gallery.map((src, index) => (
+              <motion.div
+                key={src}
+                initial={{ opacity: 0, y: 32 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: '-10%' }}
+                transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+                className={`relative aspect-[4/5] overflow-hidden bg-ink ${
+                  index === 0 ? 'sm:col-span-2 sm:aspect-[16/9]' : ''
+                }`}
+              >
+                <ProductVisual
+                  src={src}
+                  alt={`${product.name} — ${GALLERY_LABELS[index] ?? 'detail'}`}
+                  category={product.category}
+                  sizes="(min-width: 640px) 50vw, 100vw"
+                />
+              </motion.div>
+            ))}
+          </div>
         </div>
-      </div>
+      ) : (
+        <div className="mt-24 px-5 sm:mt-32 sm:px-8">
+          <div className="relative aspect-[21/9] overflow-hidden">
+            <PlaceholderArt category={product.category} showLabel={false} className="h-full w-full" />
+            <div className="absolute inset-0 flex flex-col items-center justify-end gap-2 pb-10 text-center">
+              <p className="text-xs uppercase tracking-widest2 text-gold">Coming soon</p>
+              <p className="max-w-xs text-sm text-smoke">
+                Full detail photography for the {product.name} is in production.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

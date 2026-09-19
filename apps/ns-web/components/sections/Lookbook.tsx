@@ -1,12 +1,22 @@
 import { getProductBySlug } from '@/data/products';
 import { ProductVisual } from '@/components/product/ProductVisual';
 
+/**
+ * Explicit heights per row, not aspect-ratio-per-cell — mixing aspect-ratio
+ * with differently-sized grid columns (and row-span) produces mismatched
+ * implicit row tracks, which used to break this layout badly. Varied
+ * aspect ratios across cells of equal height is how real editorial bento
+ * grids work anyway.
+ */
+const ROW_1_HEIGHT = 'aspect-[4/5] sm:aspect-auto sm:h-[420px] lg:h-[560px]';
+const ROW_2_HEIGHT = 'aspect-[4/5] sm:aspect-auto sm:h-[300px] lg:h-[380px]';
+
 const tiles = [
-  { product: getProductBySlug('ns-tanktop-performance')!, span: 'sm:col-span-7 sm:row-span-2' },
-  { product: getProductBySlug('ns-hoodie-premium')!, span: 'sm:col-span-5' },
-  { product: getProductBySlug('ns-shorts-training')!, span: 'sm:col-span-5' },
-  { product: getProductBySlug('ns-jogger-comfort')!, span: 'sm:col-span-6' },
-  { product: getProductBySlug('ns-gym-bag-elite')!, span: 'sm:col-span-6' },
+  { product: getProductBySlug('ns-tanktop-performance')!, span: 'sm:col-span-7', height: ROW_1_HEIGHT },
+  { product: getProductBySlug('ns-hoodie-premium')!, span: 'sm:col-span-5', height: ROW_1_HEIGHT },
+  { product: getProductBySlug('ns-shorts-training')!, span: 'sm:col-span-4', height: ROW_2_HEIGHT },
+  { product: getProductBySlug('ns-jogger-comfort')!, span: 'sm:col-span-4', height: ROW_2_HEIGHT },
+  { product: getProductBySlug('ns-gym-bag-elite')!, span: 'sm:col-span-4', height: ROW_2_HEIGHT },
 ];
 
 export function Lookbook() {
@@ -18,8 +28,8 @@ export function Lookbook() {
       </div>
 
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-12">
-        {tiles.map(({ product, span }) => (
-          <div key={product.slug} className={`relative aspect-[4/5] overflow-hidden ${span}`}>
+        {tiles.map(({ product, span, height }) => (
+          <div key={product.slug} className={`relative overflow-hidden ${height} ${span}`}>
             <ProductVisual
               src={product.images.hero}
               alt={product.name}

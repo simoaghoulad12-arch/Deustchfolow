@@ -39,24 +39,34 @@ export function PlaceholderArt({ category, className, tone = 'ink', showLabel = 
         className
       )}
     >
+      {/* Spotlight — reads as a lit podium rather than empty flat space. */}
       <div
         className={cn(
           'absolute inset-0',
           isDark
-            ? 'bg-[radial-gradient(circle_at_50%_35%,rgba(183,155,106,0.12),transparent_60%)]'
-            : 'bg-[radial-gradient(circle_at_50%_35%,rgba(58,58,56,0.08),transparent_60%)]'
+            ? 'bg-[radial-gradient(ellipse_60%_55%_at_50%_42%,rgba(183,155,106,0.16),transparent_70%)]'
+            : 'bg-[radial-gradient(ellipse_60%_55%_at_50%_42%,rgba(58,58,56,0.1),transparent_70%)]'
+        )}
+      />
+      <div
+        className={cn(
+          'absolute inset-0',
+          isDark
+            ? 'bg-[radial-gradient(circle_at_50%_50%,transparent_45%,rgba(0,0,0,0.55)_100%)]'
+            : 'bg-[radial-gradient(circle_at_50%_50%,transparent_45%,rgba(0,0,0,0.08)_100%)]'
         )}
       />
       <svg
         viewBox="0 0 100 100"
-        className="relative h-[70%] w-[70%]"
+        className="relative h-[85%] w-[85%]"
         aria-hidden="true"
       >
+        <ellipse cx="50" cy="92" rx="26" ry="4" fill={isDark ? '#000000' : '#0a0a0a'} opacity={isDark ? 0.5 : 0.12} />
         <path
           d={SILHOUETTES[category]}
           fill="none"
           stroke={isDark ? '#e9e6dd' : '#0a0a0a'}
-          strokeOpacity={0.28}
+          strokeOpacity={0.32}
           strokeWidth={1.1}
         />
       </svg>

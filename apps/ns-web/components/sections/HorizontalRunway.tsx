@@ -33,9 +33,10 @@ export function HorizontalRunway() {
                 src={product.images.hero}
                 alt={product.name}
                 category={product.category}
-                className="absolute inset-0"
+                className="absolute inset-0 object-[30%_25%]"
                 sizes="100vw"
               />
+              <div className="absolute inset-0 bg-gradient-to-t from-void/80 via-void/10 to-transparent" />
               <div className="relative z-10 max-w-sm">
                 <h3 className="font-display text-3xl transition group-hover:text-gold sm:text-5xl">
                   {product.name}

@@ -32,6 +32,13 @@ export interface Product {
   care?: string;
   fit?: string;
   images: ProductImageSet;
+  /**
+   * True once real photography exists for this product. Drives whether the
+   * PDP shows a detail gallery (real photos only) or a single honest
+   * "coming soon" panel — never a repeated placeholder pretending to be
+   * five different detail shots. Flip this when real images land.
+   */
+  hasPhotography: boolean;
 }
 
 function placeholderImages(slug: string): ProductImageSet {
@@ -61,6 +68,7 @@ export const products: Product[] = [
       hero: '/images/real/tanktop-front.png',
       gallery: ['/images/real/tanktop-front.png', '/images/real/tanktop-shorts-side.png'],
     },
+    hasPhotography: true,
   },
   {
     slug: 'ns-tshirt-essential',
@@ -72,6 +80,7 @@ export const products: Product[] = [
     sizes: ['XS', 'S', 'M', 'L', 'XL'],
     story: 'The foundation. Built to disappear into your discipline, not distract from it.',
     images: placeholderImages('ns-tshirt-essential'),
+    hasPhotography: false,
   },
   {
     slug: 'ns-longsleeve-compression',
@@ -83,6 +92,7 @@ export const products: Product[] = [
     sizes: ['XS', 'S', 'M', 'L', 'XL'],
     story: 'A second skin. Engineered for movement, made for the work no one sees.',
     images: placeholderImages('ns-longsleeve-compression'),
+    hasPhotography: false,
   },
   {
     slug: 'ns-hoodie-premium',
@@ -94,6 +104,7 @@ export const products: Product[] = [
     sizes: ['S', 'M', 'L', 'XL'],
     story: 'Quiet weight. Worn by people who don’t need to explain themselves.',
     images: placeholderImages('ns-hoodie-premium'),
+    hasPhotography: false,
   },
   {
     slug: 'ns-zip-hoodie-essential',
@@ -105,6 +116,7 @@ export const products: Product[] = [
     sizes: ['S', 'M', 'L', 'XL'],
     story: 'Armor for the hours before anyone else is awake.',
     images: placeholderImages('ns-zip-hoodie-essential'),
+    hasPhotography: false,
   },
   {
     slug: 'ns-jogger-comfort',
@@ -116,6 +128,7 @@ export const products: Product[] = [
     sizes: ['XS', 'S', 'M', 'L', 'XL'],
     story: 'Discipline has a silhouette. This is it.',
     images: placeholderImages('ns-jogger-comfort'),
+    hasPhotography: false,
   },
   {
     slug: 'ns-shorts-training',
@@ -130,6 +143,7 @@ export const products: Product[] = [
       hero: '/images/real/tanktop-shorts-side.png',
       gallery: ['/images/real/tanktop-shorts-side.png', '/images/real/tanktop-front.png'],
     },
+    hasPhotography: true,
   },
   {
     slug: 'ns-cap-signature',
@@ -141,6 +155,7 @@ export const products: Product[] = [
     sizes: ['One Size'],
     story: 'The mark, forward and center. For the walk to the gym, not just the work in it.',
     images: placeholderImages('ns-cap-signature'),
+    hasPhotography: false,
   },
   {
     slug: 'ns-gym-bag-elite',
@@ -152,6 +167,7 @@ export const products: Product[] = [
     sizes: ['One Size'],
     story: 'Everything you need for the session. Nothing you don’t.',
     images: placeholderImages('ns-gym-bag-elite'),
+    hasPhotography: false,
   },
   {
     slug: 'ns-socks-performance',
@@ -163,6 +179,7 @@ export const products: Product[] = [
     sizes: ['S/M', 'L/XL'],
     story: 'The last detail. Built with the same discipline as everything above it.',
     images: placeholderImages('ns-socks-performance'),
+    hasPhotography: false,
   },
 ];
 

@@ -20,9 +20,9 @@ export function LightScanReveal() {
   const beamX = useTransform(scrollYProgress, [0, 1], ['-20%', '120%']);
 
   return (
-    <section ref={ref} className="relative h-[220vh] bg-void">
+    <section ref={ref} className="film-grain relative h-[220vh] bg-void">
       <div className="sticky top-0 flex h-[100svh] items-center justify-center overflow-hidden">
-        <div className="relative h-[55vh] w-[70vw] max-w-lg">
+        <div className="relative h-[75vh] w-[88vw] max-w-2xl">
           <PlaceholderArt category={product.category} className="h-full w-full" showLabel={false} />
 
           <motion.div

@@ -14,9 +14,15 @@ export function BrandStatement() {
   const freedomOpacity = useTransform(scrollYProgress, [0.5, 0.65, 1], [0, 1, 1]);
   const freedomScale = useTransform(scrollYProgress, [0.5, 1], [0.85, 1]);
 
+  const glowX = useTransform(scrollYProgress, [0, 1], ['15%', '85%']);
+
   return (
     <section ref={ref} className="relative h-[220vh] bg-ink">
-      <div className="sticky top-0 flex h-[100svh] items-center justify-center overflow-hidden px-6 text-center">
+      <div className="film-grain sticky top-0 flex h-[100svh] items-center justify-center overflow-hidden px-6 text-center">
+        <motion.div
+          style={{ left: glowX }}
+          className="pointer-events-none absolute top-1/2 h-[70vh] w-[40vw] -translate-x-1/2 -translate-y-1/2 rounded-full bg-gold/10 blur-[100px]"
+        />
         <motion.h2
           style={{ opacity: disciplineOpacity, scale: disciplineScale, letterSpacing: disciplineTracking }}
           className="absolute font-display text-[15vw] uppercase leading-none sm:text-[11vw]"

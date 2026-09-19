@@ -21,6 +21,7 @@ export function Navigation() {
   return (
     <>
       <header className="fixed inset-x-0 top-0 z-30 flex items-center justify-between px-5 py-4 sm:px-8 sm:py-6">
+        <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-28 bg-gradient-to-b from-void/70 via-void/25 to-transparent" />
         <Link href="/" aria-label="NS home" className="h-7 w-7 sm:h-8 sm:w-8">
           <Logo />
         </Link>

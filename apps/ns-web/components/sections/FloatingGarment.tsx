@@ -58,13 +58,14 @@ export function FloatingGarment() {
         >
           <motion.div
             style={{ scale, rotateX, rotateY }}
-            className="relative h-[46vh] w-[64vw] max-w-md overflow-hidden [transform-style:preserve-3d]"
+            className="relative aspect-[3/4] h-[58vh] max-h-[640px] overflow-hidden shadow-2xl shadow-void [transform-style:preserve-3d] sm:h-[64vh]"
           >
             <ProductVisual
               src={product.images.hero}
               alt={product.name}
               category={product.category}
-              sizes="64vw"
+              className="object-[50%_18%]"
+              sizes="(min-width: 640px) 48vh, 58vh"
             />
           </motion.div>
         </div>

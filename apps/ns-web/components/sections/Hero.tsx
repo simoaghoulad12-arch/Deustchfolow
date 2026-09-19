@@ -21,7 +21,7 @@ export function Hero() {
           fill
           priority
           sizes="100vw"
-          className="object-cover object-[50%_75%] opacity-70"
+          className="origin-bottom scale-[1.75] object-cover object-[50%_75%] opacity-70 sm:scale-100"
         />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_30%,rgba(183,155,106,0.14),transparent_55%)]" />
         <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/60 to-ink/20" />
