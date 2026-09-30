@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
 import type { Product } from '@/lib/commerce/types';
-import { findVariant } from '@/lib/commerce/catalog';
+import { availability, findVariant } from '@/lib/commerce/catalog';
 import { formatPrice } from '@/lib/commerce/provider';
 import { useStore } from '@/lib/commerce/store';
 import { WORLDS } from '@/lib/brand';
@@ -30,11 +30,16 @@ export function PurchasePanel({ product }: { product: Product }) {
   useEffect(() => {
     const el = ctaRef.current;
     if (!el) return;
-    const io = new IntersectionObserver(([entry]) => entry && setBarVisible(!entry.isIntersecting && entry.boundingClientRect.top < 0), { threshold: 0 });
+    const io = new IntersectionObserver(
+      ([entry]) =>
+        entry && setBarVisible(!entry.isIntersecting && entry.boundingClientRect.top < 0),
+      { threshold: 0 },
+    );
     io.observe(el);
     return () => io.disconnect();
   }, []);
 
+  const stock = availability(product, color, size);
   const soldOut = (s: string) => findVariant(product, color, s)?.inventory === 0;
 
   const add = (thenCheckout: boolean) => {
@@ -65,12 +70,26 @@ export function PurchasePanel({ product }: { product: Product }) {
           <p className="label text-accent">
             {world.name} · {product.line}
           </p>
-          <h1 className="mt-3 font-display text-[2.6rem] leading-[1] sm:text-5xl">{product.name}</h1>
+          <h1 className="mt-3 font-display text-[2.6rem] leading-[1] sm:text-5xl">
+            {product.name}
+          </h1>
         </div>
         <WishButton slug={product.slug} name={product.name} className="-mr-2 -mt-1 shrink-0" />
       </div>
       <p className="mt-4 text-lg tabular-nums">{formatPrice(product.price.amountCents)}</p>
-      <p className="mt-1 text-xs text-fog">Incl. VAT, plus shipping</p>
+      <p className="mt-3 flex items-center gap-2 text-xs text-mist">
+        <span
+          aria-hidden
+          className={cn(
+            'h-1.5 w-1.5 rounded-full',
+            stock.tone === 'ok' && 'bg-emerald-400',
+            stock.tone === 'low' && 'bg-amber-400',
+            stock.tone === 'out' && 'bg-fog',
+            stock.tone === 'unknown' && 'bg-accent',
+          )}
+        />
+        {stock.label}
+      </p>
 
       <p className="mt-7 max-w-md text-[15px] leading-relaxed text-ivory/80">{product.story}</p>
 
@@ -88,9 +107,15 @@ export function PurchasePanel({ product }: { product: Product }) {
               onClick={() => setColor(c.name)}
               aria-pressed={color === c.name}
               aria-label={c.name}
-              className={cn('flex h-11 w-11 items-center justify-center rounded-full border transition-colors', color === c.name ? 'border-accent' : 'border-white/15 hover:border-white/40')}
+              className={cn(
+                'flex h-11 w-11 items-center justify-center rounded-full border transition-colors',
+                color === c.name ? 'border-accent' : 'border-white/15 hover:border-white/40',
+              )}
             >
-              <span className="h-7 w-7 rounded-full border border-white/10" style={{ backgroundColor: c.hex }} />
+              <span
+                className="h-7 w-7 rounded-full border border-white/10"
+                style={{ backgroundColor: c.hex }}
+              />
             </button>
           ))}
         </div>
@@ -100,8 +125,14 @@ export function PurchasePanel({ product }: { product: Product }) {
       {!oneSize && (
         <fieldset ref={sizesRef} className="mt-8">
           <legend className="label flex w-full items-center justify-between text-mist">
-            <span className={cn(needSize && !size && 'text-accent')}>{needSize && !size ? 'Select a size' : 'Size'}</span>
-            <button type="button" onClick={() => setGuideOpen(true)} className="flex items-center gap-2 text-ivory underline-offset-4 hover:underline">
+            <span className={cn(needSize && !size && 'text-accent')}>
+              {needSize && !size ? 'Select a size' : 'Size'}
+            </span>
+            <button
+              type="button"
+              onClick={() => setGuideOpen(true)}
+              className="flex items-center gap-2 text-ivory underline-offset-4 hover:underline"
+            >
               <Icon name="ruler" className="h-4 w-4" /> Size guide
             </button>
           </legend>
@@ -120,8 +151,10 @@ export function PurchasePanel({ product }: { product: Product }) {
                   aria-pressed={size === s}
                   className={cn(
                     'h-12 border text-xs tracking-[0.12em] transition-colors duration-300',
-                    size === s ? 'border-ivory bg-ivory text-ink' : 'border-white/15 text-ivory hover:border-white/50',
-                    out && 'cursor-not-allowed text-fog line-through'
+                    size === s
+                      ? 'border-ivory bg-ivory text-ink'
+                      : 'border-white/15 text-ivory hover:border-white/50',
+                    out && 'cursor-not-allowed text-fog line-through',
                   )}
                 >
                   {s}
@@ -141,9 +174,18 @@ export function PurchasePanel({ product }: { product: Product }) {
         </button>
       </div>
 
-      <ul className="mt-8 space-y-2 text-xs text-mist">
-        <li>Free standard shipping in Germany over {formatPrice(10000)}</li>
-        <li>Collection 01 · Designed in Düsseldorf</li>
+      <ul className="mt-8 grid grid-cols-2 gap-px bg-white/[0.07] text-[11px] leading-snug text-mist">
+        {[
+          ['Delivery', 'Morocco & Europe'],
+          ['Size guide', 'Body measurements'],
+          ['Returns', 'Policy published at launch'],
+          ['Support', 'Direct via Instagram'],
+        ].map(([k, v]) => (
+          <li key={k} className="bg-ink px-3 py-3">
+            <span className="label block text-ivory/80">{k}</span>
+            <span className="mt-1 block">{v}</span>
+          </li>
+        ))}
       </ul>
 
       <SizeGuide product={product} open={guideOpen} onClose={() => setGuideOpen(false)} />
@@ -165,7 +207,11 @@ export function PurchasePanel({ product }: { product: Product }) {
                   {size ? ` · ${size}` : ''}
                 </p>
               </div>
-              <button type="button" onClick={() => add(false)} className="btn-solid min-h-[48px] px-6">
+              <button
+                type="button"
+                onClick={() => add(false)}
+                className="btn-solid min-h-[48px] px-6"
+              >
                 {size ? 'Add to bag' : 'Select size'}
               </button>
             </div>

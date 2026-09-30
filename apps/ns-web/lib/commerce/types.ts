@@ -6,18 +6,11 @@ import type { WorldId } from '@/lib/brand';
  * UI components. Nothing here claims a live backend exists.
  */
 
-export type Money = { amountCents: number; currency: 'EUR' };
+/** Minor units (centimes). 24900 MAD = 249 DH. */
+export type Money = { amountCents: number; currency: 'MAD' };
 
 export type ProductCategory =
-  | 'tank'
-  | 'tee'
-  | 'long-sleeve'
-  | 'shorts'
-  | 'hoodie'
-  | 'jogger'
-  | 'cap'
-  | 'bag'
-  | 'socks';
+  'tank' | 'tee' | 'long-sleeve' | 'shorts' | 'hoodie' | 'jogger' | 'cap' | 'bag' | 'socks';
 
 export type ImageRole = 'model' | 'front' | 'back' | 'detail' | 'flatlay' | 'lifestyle';
 
@@ -26,11 +19,13 @@ export interface ProductImage {
   alt: string;
   role: ImageRole;
   /**
-   * `photo` = real photography of the product.
-   * `concept` = brand concept visual from the NATYSIMO moodboards; labelled
-   * as such on the product page until real photography replaces it.
+   * `photo`   = real photography of the produced product.
+   * `render`  = product mock-up / render (the flat lays). Labelled "Product
+   *             render"; may differ in detail from the produced garment.
+   * `concept` = campaign concept visual from the moodboards. Labelled
+   *             "Concept visual".
    */
-  kind: 'photo' | 'concept';
+  kind: 'photo' | 'render' | 'concept';
   width: number;
   height: number;
   position?: string;
@@ -92,7 +87,8 @@ export interface ShippingMethod {
   id: string;
   label: string;
   eta: string;
-  priceCents: number;
+  /** `null` = rate not confirmed yet; shown as "Confirmed at launch". */
+  priceCents: number | null;
   /** Free above this subtotal (cents). */
   freeAboveCents?: number;
 }
@@ -115,7 +111,8 @@ export interface Address {
   phone?: string;
 }
 
-export type OrderStatus = 'pending_payment' | 'paid' | 'fulfilled' | 'shipped' | 'delivered' | 'cancelled' | 'refunded';
+export type OrderStatus =
+  'pending_payment' | 'paid' | 'fulfilled' | 'shipped' | 'delivered' | 'cancelled' | 'refunded';
 
 export interface Order {
   id: string;

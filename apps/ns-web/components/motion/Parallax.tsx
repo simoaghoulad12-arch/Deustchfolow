@@ -4,7 +4,15 @@ import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion
 import { useRef, type ReactNode } from 'react';
 
 /** Subtle vertical parallax on the child relative to its frame. */
-export function Parallax({ children, className, strength = 10 }: { children: ReactNode; className?: string; strength?: number }) {
+export function Parallax({
+  children,
+  className,
+  strength = 10,
+}: {
+  children: ReactNode;
+  className?: string;
+  strength?: number;
+}) {
   const ref = useRef<HTMLDivElement>(null);
   const reduce = useReducedMotion();
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end start'] });

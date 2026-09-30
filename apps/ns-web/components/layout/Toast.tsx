@@ -6,7 +6,10 @@ import { useStore } from '@/lib/commerce/store';
 export function Toast() {
   const { toast } = useStore();
   return (
-    <div aria-live="polite" className="pointer-events-none fixed inset-x-0 bottom-24 z-[60] flex justify-center lg:bottom-8">
+    <div
+      aria-live="polite"
+      className="pointer-events-none fixed inset-x-0 bottom-24 z-[60] flex justify-center lg:bottom-8"
+    >
       <AnimatePresence>
         {toast && (
           <motion.p

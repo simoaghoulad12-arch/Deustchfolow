@@ -30,7 +30,17 @@ export function Reveal({ children, delay = 0, y = 28, as = 'div', ...rest }: Rev
 }
 
 /** Line-by-line masked text reveal for display headlines. */
-export function TextReveal({ lines, className, delay = 0, lineClassName }: { lines: ReactNode[]; className?: string; delay?: number; lineClassName?: string }) {
+export function TextReveal({
+  lines,
+  className,
+  delay = 0,
+  lineClassName,
+}: {
+  lines: ReactNode[];
+  className?: string;
+  delay?: number;
+  lineClassName?: string;
+}) {
   const reduce = useReducedMotion();
   return (
     <span className={className}>
@@ -52,7 +62,15 @@ export function TextReveal({ lines, className, delay = 0, lineClassName }: { lin
 }
 
 /** Image curtain reveal: the frame opens from the bottom, the image settles from a slight scale. */
-export function ImageReveal({ children, className, delay = 0 }: { children: ReactNode; className?: string; delay?: number }) {
+export function ImageReveal({
+  children,
+  className,
+  delay = 0,
+}: {
+  children: ReactNode;
+  className?: string;
+  delay?: number;
+}) {
   const reduce = useReducedMotion();
   return (
     <motion.div

@@ -8,6 +8,8 @@ import { PurchasePanel } from '@/components/product/PurchasePanel';
 import { ProductCard } from '@/components/product/ProductCard';
 import { Mark } from '@/components/brand/Mark';
 import { Reveal } from '@/components/motion/Reveal';
+import { setsContaining } from '@/lib/commerce/sets';
+import { formatPrice } from '@/lib/commerce/provider';
 
 interface Props {
   params: { slug: string };
@@ -25,7 +27,11 @@ export function generateMetadata({ params }: Props): Metadata {
     title: `${product.name} — ${world.name}`,
     description: product.story,
     alternates: { canonical: `/product/${product.slug}` },
-    openGraph: { title: `${product.name} — NATYSIMO ${world.name}`, description: product.story, images: [{ url: product.images[0].src }] },
+    openGraph: {
+      title: `${product.name} — NATYSIMO ${world.name}`,
+      description: product.story,
+      images: [{ url: product.images[0].src }],
+    },
   };
 }
 
@@ -34,7 +40,8 @@ export default function ProductPage({ params }: Props) {
   if (!product) notFound();
   const world = WORLDS[product.world];
   const related = relatedProducts(product);
-  const hasConcept = product.images.some((i) => i.kind === 'concept');
+  const hasConcept = product.images.some((i) => i.kind !== 'photo');
+  const sets = setsContaining(product.slug);
 
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -54,7 +61,10 @@ export default function ProductPage({ params }: Props) {
 
   return (
     <div data-world={product.world} className="pb-10 pt-16 sm:pt-[72px]">
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
 
       <nav aria-label="Breadcrumb" className="mx-auto hidden max-w-[1600px] px-8 py-5 lg:block">
         <ol className="label flex gap-3 text-fog">
@@ -83,7 +93,8 @@ export default function ProductPage({ params }: Props) {
             <div className="mt-12 border-t border-white/[0.07]">
               <details className="group border-b border-white/[0.07]" open>
                 <summary className="label flex cursor-pointer list-none items-center justify-between py-5">
-                  Design details <span className="text-lg transition-transform group-open:rotate-45">+</span>
+                  Design details{' '}
+                  <span className="text-lg transition-transform group-open:rotate-45">+</span>
                 </summary>
                 <ul className="space-y-2.5 pb-6 text-sm text-ivory/80">
                   {product.details.map((d) => (
@@ -96,35 +107,76 @@ export default function ProductPage({ params }: Props) {
               </details>
               <details className="group border-b border-white/[0.07]">
                 <summary className="label flex cursor-pointer list-none items-center justify-between py-5">
-                  Material &amp; care <span className="text-lg transition-transform group-open:rotate-45">+</span>
+                  Fit &amp; material{' '}
+                  <span className="text-lg transition-transform group-open:rotate-45">+</span>
                 </summary>
-                <div className="pb-6 text-sm leading-relaxed text-ivory/80">
-                  {product.specs?.material || product.specs?.care ? (
-                    <>
-                      {product.specs.material && <p>{product.specs.material}</p>}
-                      {product.specs.care && <p className="mt-2">{product.specs.care}</p>}
-                    </>
-                  ) : (
-                    <p>Full material composition and care instructions are published with the Collection 01 launch.</p>
-                  )}
-                </div>
+                <dl className="grid grid-cols-[88px_1fr] gap-y-3 pb-6 text-sm">
+                  <dt className="text-mist">Fit</dt>
+                  <dd className="text-ivory/80">
+                    {product.specs?.fit ??
+                      'Fit notes and model sizing are published with the launch photography.'}
+                  </dd>
+                  <dt className="text-mist">Material</dt>
+                  <dd className="text-ivory/80">
+                    {product.specs?.material ??
+                      'Composition confirmed by the supplier and published at launch.'}
+                  </dd>
+                  <dt className="text-mist">Care</dt>
+                  <dd className="text-ivory/80">
+                    {product.specs?.care ?? 'Care label details published at launch.'}
+                  </dd>
+                </dl>
               </details>
               <details className="group border-b border-white/[0.07]">
                 <summary className="label flex cursor-pointer list-none items-center justify-between py-5">
-                  Shipping &amp; returns <span className="text-lg transition-transform group-open:rotate-45">+</span>
+                  Delivery &amp; returns{' '}
+                  <span className="text-lg transition-transform group-open:rotate-45">+</span>
                 </summary>
-                <p className="pb-6 text-sm leading-relaxed text-ivory/80">
-                  Shipping from Germany across the EU. Final rates, delivery times and the returns window are confirmed at checkout when the store opens.{' '}
-                  <Link href="/legal/shipping" className="underline underline-offset-4">
-                    Details
-                  </Link>
-                </p>
+                <div className="space-y-3 pb-6 text-sm leading-relaxed text-ivory/80">
+                  <p>
+                    Delivery across Morocco, plus Germany and the EU. Rates and delivery times are
+                    confirmed at checkout when the store opens.
+                  </p>
+                  <p>
+                    Returns and exchanges follow the policy published before launch.{' '}
+                    <Link href="/legal/returns" className="underline underline-offset-4">
+                      Returns
+                    </Link>{' '}
+                    ·{' '}
+                    <Link href="/legal/shipping" className="underline underline-offset-4">
+                      Delivery
+                    </Link>
+                  </p>
+                </div>
               </details>
             </div>
 
+            {sets.length > 0 && (
+              <div className="mt-8">
+                <p className="label text-mist">Part of a set</p>
+                <ul className="mt-3 space-y-2">
+                  {sets.map((set) => (
+                    <li key={set.slug}>
+                      <Link
+                        href={`/sets/${set.slug}`}
+                        className="group flex items-center justify-between border border-white/10 px-4 py-4 transition-colors hover:border-accent/50"
+                      >
+                        <span>
+                          <span className="block text-sm">{set.name}</span>
+                          <span className="mt-1 block text-xs text-mist">{set.tagline}</span>
+                        </span>
+                        <span className="text-sm tabular-nums">{formatPrice(set.priceCents)}</span>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
             {hasConcept && (
               <p className="mt-6 text-[11px] leading-relaxed text-fog">
-                Images marked “Concept visual” are NATYSIMO campaign concepts. Final product photography replaces them at launch.
+                “Product render” and “Concept visual” images are not photographs of the finished
+                piece and may differ in detail. Final product photography replaces them at launch.
               </p>
             )}
           </div>
@@ -138,7 +190,9 @@ export default function ProductPage({ params }: Props) {
             <Mark world={product.world} sizes="80px" />
           </div>
           <p className="label text-accent">NATYSIMO {world.name}</p>
-          <p className="max-w-lg font-display text-3xl leading-tight sm:text-4xl">{world.headline}</p>
+          <p className="max-w-lg font-display text-3xl leading-tight sm:text-4xl">
+            {world.headline}
+          </p>
           <Link href={`/worlds/${product.world}`} className="btn-line">
             Enter {world.name}
           </Link>

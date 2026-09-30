@@ -33,7 +33,8 @@ export function SiteFooter() {
                 {WORLDS[id].name}
               </FooterLink>
             ))}
-            <FooterLink href="/shop">Collection 01</FooterLink>
+            <FooterLink href="/collection">Collection 01</FooterLink>
+            <FooterLink href="/sets">The Sets</FooterLink>
           </FooterCol>
 
           <FooterCol title="House">
@@ -43,16 +44,19 @@ export function SiteFooter() {
           </FooterCol>
 
           <FooterCol title="Service">
-            <FooterLink href="/legal/shipping">Shipping &amp; Returns</FooterLink>
-            <FooterLink href="/legal/imprint">Imprint</FooterLink>
-            <FooterLink href="/legal/privacy">Privacy</FooterLink>
-            <FooterLink href="/legal/terms">Terms</FooterLink>
+            <FooterLink href="/legal/faq">FAQ</FooterLink>
+            <FooterLink href="/legal/contact">Contact</FooterLink>
+            <FooterLink href="/legal/shipping">Delivery</FooterLink>
+            <FooterLink href="/legal/returns">Returns · Widerruf</FooterLink>
+            <FooterLink href="/legal/imprint">Imprint · Impressum</FooterLink>
+            <FooterLink href="/legal/privacy">Privacy · Datenschutz</FooterLink>
+            <FooterLink href="/legal/terms">Terms · AGB</FooterLink>
           </FooterCol>
         </div>
 
         <div className="mt-20 flex flex-col gap-4 border-t border-white/[0.07] pt-8 text-[11px] uppercase tracking-[0.24em] text-fog sm:flex-row sm:items-center sm:justify-between">
           <p>
-            © {new Date().getFullYear()} {BRAND.name} · {BRAND.origin}
+            © {new Date().getFullYear()} {BRAND.name} · {BRAND.roots}
           </p>
           <p>{BRAND.manifesto.join(' · ')}</p>
         </div>

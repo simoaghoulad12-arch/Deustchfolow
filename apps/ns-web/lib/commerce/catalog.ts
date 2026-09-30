@@ -4,8 +4,9 @@ import type { NonEmpty, Product, ProductColor, ProductImage, Variant } from './t
 /**
  * COLLECTION 01 catalog.
  *
- * - Prices are set by the brand here (EUR cents) and are the only source of
- *   truth for the storefront.
+ * - Prices are in Moroccan dirham, stored in centimes (24900 = 249 DH). They
+ *   follow the pricing architecture in docs/PRICING.md and are the only
+ *   source of truth for the storefront.
  * - `specs` is intentionally empty on every product: no fabric, weight or
  *   technical claims until the brand confirms them.
  * - `details` lists only what is visible in the supplied imagery.
@@ -21,42 +22,85 @@ const BOTTOMS: NonEmpty<string> = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
 const IMG = {
   gymMirror: { src: '/images/photo/gym-tank-mirror.jpg', width: 1086, height: 1448, kind: 'photo' },
   gymSide: { src: '/images/photo/gym-tank-shorts.jpg', width: 1086, height: 1448, kind: 'photo' },
-  flatTank: { src: '/images/photo/flatlay-tank-shorts.jpg', width: 896, height: 1195, kind: 'photo' },
-  flatEssential: { src: '/images/photo/flatlay-essential-tee.jpg', width: 896, height: 1195, kind: 'photo' },
-  flatApparel: { src: '/images/photo/flatlay-apparel-tee.jpg', width: 896, height: 1195, kind: 'photo' },
-  founder: { src: '/images/photo/founder-duesseldorf.jpg', width: 1086, height: 1358, kind: 'photo' },
-  compression: { src: '/images/concept/compression-ls.jpg', width: 237, height: 442, kind: 'concept' },
+  flatTank: {
+    src: '/images/render/flatlay-tank-shorts.jpg',
+    width: 896,
+    height: 1195,
+    kind: 'render',
+  },
+  flatEssential: {
+    src: '/images/render/flatlay-essential-tee.jpg',
+    width: 896,
+    height: 1195,
+    kind: 'render',
+  },
+  flatApparel: {
+    src: '/images/render/flatlay-apparel-tee.jpg',
+    width: 896,
+    height: 1195,
+    kind: 'render',
+  },
+  founder: {
+    src: '/images/photo/founder-duesseldorf.jpg',
+    width: 1086,
+    height: 1358,
+    kind: 'photo',
+  },
+  compression: {
+    src: '/images/concept/compression-ls.jpg',
+    width: 237,
+    height: 442,
+    kind: 'concept',
+  },
   teeShorts: { src: '/images/concept/tee-shorts.jpg', width: 242, height: 442, kind: 'concept' },
-  hoodieJogger: { src: '/images/concept/hoodie-jogger.jpg', width: 256, height: 442, kind: 'concept' },
-  ivoryHoodie: { src: '/images/concept/ivory-hoodie-bag.jpg', width: 250, height: 442, kind: 'concept' },
+  hoodieJogger: {
+    src: '/images/concept/hoodie-jogger.jpg',
+    width: 256,
+    height: 442,
+    kind: 'concept',
+  },
+  ivoryHoodie: {
+    src: '/images/concept/ivory-hoodie-bag.jpg',
+    width: 250,
+    height: 442,
+    kind: 'concept',
+  },
   cap: { src: '/images/concept/web-cap.jpg', width: 174, height: 170, kind: 'concept' },
   bag: { src: '/images/concept/web-bag.jpg', width: 125, height: 170, kind: 'concept' },
-  drawcord: { src: '/images/concept/detail-drawcord.jpg', width: 160, height: 142, kind: 'concept' },
+  drawcord: {
+    src: '/images/concept/detail-drawcord.jpg',
+    width: 160,
+    height: 142,
+    kind: 'concept',
+  },
 } as const satisfies Record<string, Omit<ProductImage, 'alt' | 'role'>>;
 
-function img(key: keyof typeof IMG, role: ProductImage['role'], alt: string, position?: string): ProductImage {
+function img(
+  key: keyof typeof IMG,
+  role: ProductImage['role'],
+  alt: string,
+  position?: string,
+): ProductImage {
   return { ...IMG[key], role, alt, position };
 }
 
 function variants(slug: string, colors: ProductColor[], sizes: string[]): Variant[] {
-  const prefix = slug.toUpperCase().replace(/-/g, '').slice(0, 10);
+  const prefix = slug.toUpperCase();
   return colors.flatMap((color) =>
     sizes.map((size) => ({
       sku: `NS01-${prefix}-${color.name.slice(0, 3).toUpperCase()}-${size.replace(/\W/g, '')}`,
       color: color.name,
       size,
       inventory: null,
-    }))
+    })),
   );
 }
 
-function product(
-  input: Omit<Product, 'variants' | 'price'> & { priceCents: number }
-): Product {
+function product(input: Omit<Product, 'variants' | 'price'> & { priceCents: number }): Product {
   const { priceCents, ...rest } = input;
   return {
     ...rest,
-    price: { amountCents: priceCents, currency: 'EUR' },
+    price: { amountCents: priceCents, currency: 'MAD' },
     variants: variants(input.slug, input.colors, input.sizes),
   };
 }
@@ -69,7 +113,7 @@ export const products: Product[] = [
     world: 'sports',
     category: 'tank',
     line: 'Performance',
-    priceCents: 4500,
+    priceCents: 24900,
     colors: [BLACK],
     sizes: TOPS,
     sizeGuide: 'tops',
@@ -77,15 +121,17 @@ export const products: Product[] = [
     story:
       'The piece the brand was built in. Deep armholes, silver contour lines running the length of the body and the crown monogram at the chest — made for the set nobody is filming.',
     details: [
-      'Crown monogram at the chest',
-      'Twin silver contour lines, front',
-      'Textured side panels',
-      'Curved drop hem',
-      'Monogram hem tab',
+      'Crown monogram, left chest',
+      'Silver contour lines, front and sides',
+      'Racer-cut armholes',
     ],
     images: [
       img('gymMirror', 'model', 'Performance Tank worn in the gym, front view', '50% 45%'),
-      img('flatTank', 'flatlay', 'Performance Tank laid flat with the crown monogram and silver contour lines'),
+      img(
+        'flatTank',
+        'flatlay',
+        'Performance Tank laid flat with the crown monogram and silver contour lines',
+      ),
       img('gymSide', 'model', 'Performance Tank and Training Shorts worn together', '50% 45%'),
     ],
   }),
@@ -95,18 +141,28 @@ export const products: Product[] = [
     world: 'sports',
     category: 'shorts',
     line: 'Training',
-    priceCents: 5500,
+    priceCents: 29900,
     colors: [BLACK],
     sizes: BOTTOMS,
     sizeGuide: 'bottoms',
     featured: true,
     story:
-      'Nothing extra. Only what movement requires — an elastic waist, a clean split hem and the monogram at the leg. Pairs with the Performance Tank as one line.',
-    details: ['Elastic waistband', 'Split side hem', 'Monogram at the left leg', 'Silver contour detailing'],
+      'Nothing extra. Only what movement requires — silver contour print and the crown monogram at the leg. Pairs with the Performance Tank as one line.',
+    details: ['Crown monogram at the leg', 'Silver contour print', 'Above-knee length'],
     images: [
       img('gymSide', 'model', 'Training Shorts worn in the gym', '50% 70%'),
-      img('flatTank', 'flatlay', 'Training Shorts laid flat beside the Performance Tank', '80% 80%'),
-      img('gymMirror', 'model', 'Training Shorts with the Performance Tank, mirror view', '50% 70%'),
+      img(
+        'flatTank',
+        'flatlay',
+        'Training Shorts laid flat beside the Performance Tank',
+        '80% 80%',
+      ),
+      img(
+        'gymMirror',
+        'model',
+        'Training Shorts with the Performance Tank, mirror view',
+        '50% 70%',
+      ),
     ],
   }),
   product({
@@ -115,11 +171,12 @@ export const products: Product[] = [
     world: 'sports',
     category: 'long-sleeve',
     line: 'Compression',
-    priceCents: 5900,
+    priceCents: 34900,
     colors: [BLACK],
     sizes: TOPS,
     sizeGuide: 'tops',
-    story: 'A second skin for cold mornings and heavy sessions. Close to the body, monogram at the chest, nothing to catch on.',
+    story:
+      'A second skin for cold mornings and heavy sessions. Close to the body, monogram at the chest, nothing to catch on.',
     details: ['Close, body-contoured cut', 'Crown monogram at the chest', 'Full-length sleeves'],
     images: [img('compression', 'model', 'Compression Long Sleeve, concept visual')],
   }),
@@ -129,11 +186,12 @@ export const products: Product[] = [
     world: 'sports',
     category: 'tee',
     line: 'Performance',
-    priceCents: 4900,
+    priceCents: 29900,
     colors: [BLACK],
     sizes: TOPS,
     sizeGuide: 'tops',
-    story: 'The training tee, cut athletic through the shoulders. Monogram at the chest — the standard, repeated daily.',
+    story:
+      'The training tee, cut athletic through the shoulders. Monogram at the chest — the standard, repeated daily.',
     details: ['Athletic cut through the shoulders', 'Crown monogram at the chest', 'Crew neck'],
     images: [img('teeShorts', 'model', 'Performance Tee, concept visual')],
   }),
@@ -145,33 +203,48 @@ export const products: Product[] = [
     world: 'clothing',
     category: 'tee',
     line: 'Essential',
-    priceCents: 4500,
+    priceCents: 24900,
     colors: [BLACK],
     sizes: TOPS,
     sizeGuide: 'tops',
     featured: true,
     story:
-      'The foundation of the wardrobe. A clean black tee carrying the crown monogram and the NATYSIMO wordmark at the chest — worn on Königsallee, built for every day after.',
-    details: ['Crown monogram with wordmark, left chest', 'Crew neck', 'Straight, clean hem'],
+      'The foundation of the wardrobe. A clean black tee carrying the NS crown mark and NATYSIMO wordmark at the chest — worn on Königsallee, built for every day after.',
+    details: ['NS crown mark with NATYSIMO wordmark, left chest', 'Crew neck'],
     images: [
-      img('flatEssential', 'flatlay', 'Essential Tee folded, monogram at the chest, beside the NATYSIMO box'),
       img('founder', 'lifestyle', 'Essential Tee worn in Düsseldorf', '50% 30%'),
+      img(
+        'flatEssential',
+        'flatlay',
+        'Essential Tee folded, monogram at the chest, beside the NATYSIMO box',
+      ),
     ],
   }),
   product({
-    slug: 'apparel-graphic-tee',
-    name: 'Apparel Graphic Tee',
+    slug: 'graphic-tee',
+    name: 'Graphic Tee',
     world: 'clothing',
     category: 'tee',
     line: 'Oversized',
-    priceCents: 5500,
+    priceCents: 32900,
     colors: [BLACK],
     sizes: TOPS,
     sizeGuide: 'tops',
     featured: true,
-    story: 'Oversized statement tee. A wire-mesh wave graphic over the NATYSIMO APPAREL wordmark — the brand said out loud.',
-    details: ['Wire-mesh wave graphic, front', 'NATYSIMO APPAREL wordmark', 'Relaxed, oversized cut'],
-    images: [img('flatApparel', 'flatlay', 'Apparel Graphic Tee folded, showing the wave graphic and NATYSIMO APPAREL wordmark')],
+    story:
+      'Oversized statement tee. A wire-mesh wave graphic over the NATYSIMO APPAREL wordmark — the brand said out loud.',
+    details: [
+      'Wire-mesh wave graphic, front',
+      'NATYSIMO APPAREL wordmark',
+      'Relaxed, oversized cut',
+    ],
+    images: [
+      img(
+        'flatApparel',
+        'flatlay',
+        'Apparel Graphic Tee folded, showing the wave graphic and NATYSIMO APPAREL wordmark',
+      ),
+    ],
   }),
   product({
     slug: 'premium-hoodie',
@@ -179,13 +252,19 @@ export const products: Product[] = [
     world: 'clothing',
     category: 'hoodie',
     line: 'Premium',
-    priceCents: 10900,
+    priceCents: 54900,
     colors: [IVORY, BLACK],
     sizes: ['S', 'M', 'L', 'XL', 'XXL'],
     sizeGuide: 'tops',
     featured: true,
-    story: 'Quiet weight. The monogram in tone at the chest, a kangaroo pocket and a hood that frames without shouting.',
-    details: ['Crown monogram at the chest', 'Kangaroo pocket', 'Drawcord hood', 'Ribbed cuffs and hem'],
+    story:
+      'Quiet weight. The monogram in tone at the chest, a kangaroo pocket and a hood that frames without shouting.',
+    details: [
+      'Crown monogram at the chest',
+      'Kangaroo pocket',
+      'Drawcord hood',
+      'Ribbed cuffs and hem',
+    ],
     images: [img('ivoryHoodie', 'model', 'Premium Hoodie in ivory, concept visual')],
   }),
   product({
@@ -194,11 +273,12 @@ export const products: Product[] = [
     world: 'clothing',
     category: 'cap',
     line: 'Signature',
-    priceCents: 3500,
+    priceCents: 19900,
     colors: [BLACK],
     sizes: ['One Size'],
     sizeGuide: 'one-size',
-    story: 'The mark, forward and centre. Black on black with the crown monogram at the front panel.',
+    story:
+      'The mark, forward and centre. Black on black with the crown monogram at the front panel.',
     details: ['Crown monogram, front panel', 'Curved peak'],
     images: [img('cap', 'model', 'Signature Cap, concept visual')],
   }),
@@ -210,13 +290,18 @@ export const products: Product[] = [
     world: 'hybrid',
     category: 'jogger',
     line: 'Comfort',
-    priceCents: 8900,
+    priceCents: 44900,
     colors: [BLACK],
     sizes: BOTTOMS,
     sizeGuide: 'bottoms',
     featured: true,
-    story: 'Discipline has a silhouette. Tapered to the ankle, cuffed, monogram at the thigh — from warm-up to the walk home.',
-    details: ['Tapered leg, cuffed ankle', 'Drawcord waist with monogram aglets', 'Monogram at the thigh'],
+    story:
+      'Discipline has a silhouette. Tapered to the ankle, cuffed, monogram at the thigh — from warm-up to the walk home.',
+    details: [
+      'Tapered leg, cuffed ankle',
+      'Drawcord waist with monogram aglets',
+      'Monogram at the thigh',
+    ],
     images: [
       img('hoodieJogger', 'model', 'Jogger worn with the hoodie, concept visual'),
       img('drawcord', 'detail', 'Drawcord with monogram aglets, concept detail'),
@@ -228,7 +313,7 @@ export const products: Product[] = [
     world: 'hybrid',
     category: 'bag',
     line: 'Elite',
-    priceCents: 7900,
+    priceCents: 39900,
     colors: [BLACK],
     sizes: ['One Size'],
     sizeGuide: 'one-size',
@@ -236,7 +321,12 @@ export const products: Product[] = [
     details: ['Crown monogram, front', 'Carry handles'],
     images: [
       img('bag', 'front', 'Gym Bag, concept visual'),
-      img('ivoryHoodie', 'lifestyle', 'Gym Bag carried with the Premium Hoodie, concept visual', '50% 80%'),
+      img(
+        'ivoryHoodie',
+        'lifestyle',
+        'Gym Bag carried with the Premium Hoodie, concept visual',
+        '50% 80%',
+      ),
     ],
   }),
   product({
@@ -245,13 +335,16 @@ export const products: Product[] = [
     world: 'hybrid',
     category: 'bag',
     line: 'Signature',
-    priceCents: 5900,
+    priceCents: 24900,
     colors: [BLACK],
     sizes: ['One Size'],
     sizeGuide: 'one-size',
-    story: 'Phone, keys, card — worn across the body from the gym to the city. Crown monogram and wordmark on the front.',
-    details: ['Crown monogram with wordmark, front', 'Crossbody strap'],
-    images: [img('founder', 'lifestyle', 'Crossbody Bag worn across the body in Düsseldorf', '45% 55%')],
+    story:
+      'Phone, keys, card — worn across the body from the gym to the city. NS crown mark and wordmark on the front.',
+    details: ['NS crown mark with NATYSIMO wordmark, front', 'Crossbody strap'],
+    images: [
+      img('founder', 'lifestyle', 'Crossbody Bag worn across the body in Düsseldorf', '45% 55%'),
+    ],
   }),
   product({
     slug: 'essential-shorts',
@@ -259,13 +352,16 @@ export const products: Product[] = [
     world: 'hybrid',
     category: 'shorts',
     line: 'Essential',
-    priceCents: 4900,
+    priceCents: 24900,
     colors: [BLACK],
     sizes: BOTTOMS,
     sizeGuide: 'bottoms',
-    story: 'The off-duty short. Clean black, monogram and wordmark at the leg — matches the Essential Tee as a set.',
-    details: ['Crown monogram with wordmark, left leg', 'Clean hem'],
-    images: [img('founder', 'lifestyle', 'Essential Shorts worn with the Essential Tee', '50% 70%')],
+    story:
+      'The off-duty short. Clean black, NS mark and wordmark at the leg — matches the Essential Tee as a set.',
+    details: ['NS crown mark with NATYSIMO wordmark, leg'],
+    images: [
+      img('founder', 'lifestyle', 'Essential Shorts worn with the Essential Tee', '50% 70%'),
+    ],
   }),
   product({
     slug: 'crew-socks',
@@ -273,12 +369,13 @@ export const products: Product[] = [
     world: 'hybrid',
     category: 'socks',
     line: 'Performance',
-    priceCents: 1900,
+    priceCents: 7900,
     colors: [BLACK],
     sizes: ['39–42', '43–46'],
     sizeGuide: 'socks',
-    story: 'The last detail, built to the same standard as everything above it. Crown monogram at the ankle.',
-    details: ['Crown monogram at the ankle', 'Crew height'],
+    story:
+      'The last detail, built to the same standard as everything above it. NS crown mark at the ankle.',
+    details: ['NS crown mark at the ankle', 'Crew height'],
     images: [img('founder', 'lifestyle', 'Crew Socks worn with black trainers', '50% 92%')],
   }),
 ];
@@ -340,3 +437,22 @@ export const SIZE_GUIDES = {
   },
   'one-size': null,
 } as const;
+
+export type Availability = { label: string; tone: 'ok' | 'low' | 'out' | 'unknown' };
+
+/**
+ * Stock status for the selected variant (or the product when no size is
+ * chosen). Untracked inventory (`null`) never pretends to be "in stock".
+ */
+export function availability(product: Product, color: string, size: string | null): Availability {
+  const pool = product.variants.filter(
+    (v) => v.color === color && (size === null || v.size === size),
+  );
+  if (pool.length === 0 || pool.every((v) => v.inventory === null)) {
+    return { label: 'Collection 01 · availability confirmed at launch', tone: 'unknown' };
+  }
+  const units = pool.reduce((n, v) => n + (v.inventory ?? 0), 0);
+  if (units === 0) return { label: size ? 'Sold out in this size' : 'Sold out', tone: 'out' };
+  if (units <= 5) return { label: `Only ${units} left`, tone: 'low' };
+  return { label: 'In stock', tone: 'ok' };
+}

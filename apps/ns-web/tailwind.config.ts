@@ -19,7 +19,8 @@ const config: Config = {
         ivory: '#efe8da',
         mist: '#a19d94',
         fog: '#6c6a65',
-        gold: { DEFAULT: '#c9a26b', soft: '#e0c596', deep: '#8a6a3f' },
+        /** Brand gold ≈ #D4AF37, warmed slightly to sit with the bronze-gold Clothing logo. */
+        gold: { DEFAULT: '#d1ad5b', soft: '#e4cc8f', deep: '#8f7132' },
         silver: { DEFAULT: '#cfd3d8', soft: '#e8eaed', deep: '#8b9097' },
         accent: 'rgb(var(--accent) / <alpha-value>)',
         'accent-2': 'rgb(var(--accent-2) / <alpha-value>)',
@@ -27,6 +28,7 @@ const config: Config = {
       fontFamily: {
         display: ['var(--font-display)', 'Georgia', 'serif'],
         sans: ['var(--font-sans)', 'system-ui', 'sans-serif'],
+        mono: ['var(--font-mono)', 'ui-monospace', 'monospace'],
       },
       letterSpacing: {
         label: '0.28em',

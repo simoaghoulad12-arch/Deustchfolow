@@ -21,7 +21,14 @@ interface MarkProps {
  * pixels exactly; the marks are designed for — and should stay on — dark
  * surfaces.
  */
-export function Mark({ world, variant = 'mark', className, priority, sizes = '160px', alt }: MarkProps) {
+export function Mark({
+  world,
+  variant = 'mark',
+  className,
+  priority,
+  sizes = '160px',
+  alt,
+}: MarkProps) {
   const asset: LogoAsset = world ? WORLDS[world][variant] : MASTER_MARK;
   const label = alt ?? (world ? `NATYSIMO ${WORLDS[world].name}` : 'NATYSIMO');
   return (

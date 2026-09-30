@@ -30,7 +30,11 @@ export function Hero() {
   });
 
   return (
-    <section ref={ref} className="relative h-[100svh] min-h-[640px] overflow-hidden bg-ink" aria-label="NATYSIMO">
+    <section
+      ref={ref}
+      className="relative h-[100svh] min-h-[640px] overflow-hidden bg-ink"
+      aria-label="NATYSIMO"
+    >
       <motion.div className="absolute inset-0" style={reduce ? undefined : { y: imgY }}>
         <motion.div
           className="absolute inset-0"
@@ -63,7 +67,10 @@ export function Hero() {
           transition={{ duration: 1.6, delay: 0.5, ease: EASE }}
         >
           <Mark priority sizes="104px" alt="NATYSIMO crown monogram" />
-          <span aria-hidden className="pointer-events-none absolute inset-y-0 left-0 w-1/2 animate-sheen bg-gradient-to-r from-transparent via-white/25 to-transparent mix-blend-overlay [animation-delay:1.4s]" />
+          <span
+            aria-hidden
+            className="pointer-events-none absolute inset-y-0 left-0 w-1/2 animate-sheen bg-gradient-to-r from-transparent via-white/25 to-transparent mix-blend-overlay [animation-delay:1.4s]"
+          />
         </motion.div>
 
         <h1 className="mt-7 overflow-hidden">
@@ -77,11 +84,18 @@ export function Hero() {
           </motion.span>
         </h1>
 
-        <motion.p {...rise(1.25)} className="mt-5 font-display text-xl italic text-gold sm:text-2xl">
+        <motion.p
+          {...rise(1.25)}
+          className="mt-5 font-display text-xl italic text-gold sm:text-2xl"
+        >
           {BRAND.tagline}
         </motion.p>
 
-        <motion.ul {...rise(1.45)} className="label mt-6 flex items-center gap-3 text-ivory/70 sm:gap-5" aria-label="Pillars">
+        <motion.ul
+          {...rise(1.45)}
+          className="label mt-6 flex items-center gap-3 text-ivory/70 sm:gap-5"
+          aria-label="Pillars"
+        >
           {BRAND.pillars.map((p, i) => (
             <li key={p} className="flex items-center gap-3 sm:gap-5">
               {i > 0 && <span className="h-px w-4 bg-ivory/30" aria-hidden />}
@@ -90,12 +104,15 @@ export function Hero() {
           ))}
         </motion.ul>
 
-        <motion.div {...rise(1.65)} className="mt-9 flex w-full max-w-[420px] flex-col gap-2.5 sm:w-auto sm:max-w-none sm:flex-row sm:gap-3">
+        <motion.div
+          {...rise(1.65)}
+          className="mt-9 flex w-full max-w-[420px] flex-col gap-2.5 sm:w-auto sm:max-w-none sm:flex-row sm:gap-3"
+        >
           <Link href="/shop" className="btn-solid">
-            Shop Collection 01 <Icon name="arrow" className="h-4 w-4" />
+            Shop Collection <Icon name="arrow" className="h-4 w-4" />
           </Link>
           <Link href="#worlds" className="btn-line">
-            Discover NATYSIMO
+            Explore Worlds
           </Link>
         </motion.div>
       </motion.div>

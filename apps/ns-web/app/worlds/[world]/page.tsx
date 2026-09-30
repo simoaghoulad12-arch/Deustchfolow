@@ -4,6 +4,8 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { WORLDS, WORLD_ORDER, isWorldId } from '@/lib/brand';
 import { productsByWorld, products } from '@/lib/commerce/catalog';
+import { ImageKindTag } from '@/components/product/ProductImage';
+import { kindOf } from '@/lib/images';
 import { Mark } from '@/components/brand/Mark';
 import { ProductCard } from '@/components/product/ProductCard';
 import { Reveal, TextReveal } from '@/components/motion/Reveal';
@@ -46,6 +48,7 @@ export default function WorldPage({ params }: Props) {
           className={`object-cover brightness-[0.5] contrast-[1.1] ${world.id === 'sports' ? 'grayscale' : 'saturate-[0.7]'}`}
           style={{ objectPosition: world.image.position }}
         />
+        <ImageKindTag kind={kindOf(world.image.src)} className="left-4 top-20" />
         <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/50 to-ink/30" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_40%,rgb(var(--accent)/0.14),transparent_70%)]" />
 
@@ -53,20 +56,34 @@ export default function WorldPage({ params }: Props) {
           <Reveal className="w-28 sm:w-36" y={30}>
             <Mark world={world.id} priority sizes="144px" />
           </Reveal>
-          <p className="label mt-8 text-accent">
-            World {world.index}
-          </p>
+          <p className="label mt-8 text-accent">World {world.index}</p>
           <h1 className="mt-5 font-display text-6xl leading-none sm:text-8xl lg:text-9xl">
-            <TextReveal lines={[<span key="n" className="metal-text">{world.name}</span>]} />
+            <TextReveal
+              lines={[
+                <span key="n" className="metal-text">
+                  {world.name}
+                </span>,
+              ]}
+            />
           </h1>
           <Reveal delay={0.2}>
-            <p className="mt-6 font-display text-2xl italic text-ivory/85 sm:text-3xl">{world.headline}</p>
+            <p className="mt-6 font-display text-2xl italic text-ivory/85 sm:text-3xl">
+              {world.headline}
+            </p>
             <p className="label mt-5 text-ivory/60">{world.descriptor}</p>
-            <p className="mx-auto mt-6 max-w-lg text-sm leading-relaxed text-ivory/70">{world.intro}</p>
+            <p className="mx-auto mt-6 max-w-lg text-sm leading-relaxed text-ivory/70">
+              {world.intro}
+            </p>
             <div className="mt-8 flex justify-center gap-2" aria-label={`${world.name} palette`}>
               {world.palette.map((c) => (
-                <span key={c.name} className="label flex items-center gap-2 border border-white/10 px-3 py-2 text-ivory/70">
-                  <span className="h-2.5 w-2.5 rounded-full border border-white/20" style={{ backgroundColor: c.hex }} />
+                <span
+                  key={c.name}
+                  className="label flex items-center gap-2 border border-white/10 px-3 py-2 text-ivory/70"
+                >
+                  <span
+                    className="h-2.5 w-2.5 rounded-full border border-white/20"
+                    style={{ backgroundColor: c.hex }}
+                  />
                   {c.name}
                 </span>
               ))}
@@ -75,7 +92,10 @@ export default function WorldPage({ params }: Props) {
         </div>
       </section>
 
-      <section className="mx-auto max-w-[1600px] px-5 py-20 sm:px-8 sm:py-28" aria-labelledby="world-pieces">
+      <section
+        className="mx-auto max-w-[1600px] px-5 py-20 sm:px-8 sm:py-28"
+        aria-labelledby="world-pieces"
+      >
         <div className="flex items-end justify-between border-b border-white/10 pb-6">
           <h2 id="world-pieces" className="font-display text-4xl sm:text-5xl">
             The pieces
@@ -104,7 +124,11 @@ export default function WorldPage({ params }: Props) {
                 <p className="label text-accent">World {WORLDS[id].index}</p>
                 <p className="mt-3 font-display text-4xl sm:text-5xl">{WORLDS[id].name}</p>
                 <p className="label mt-3 inline-flex items-center gap-2 text-ivory/60">
-                  Enter <Icon name="arrow" className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                  Enter{' '}
+                  <Icon
+                    name="arrow"
+                    className="h-4 w-4 transition-transform group-hover:translate-x-1"
+                  />
                 </p>
               </div>
               <span className="w-16 sm:w-20">

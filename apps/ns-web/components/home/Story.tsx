@@ -2,25 +2,52 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Parallax } from '@/components/motion/Parallax';
 import { Reveal, TextReveal } from '@/components/motion/Reveal';
+import { SOCIAL } from '@/lib/brand';
 
-/** Brand story. Copy comes from the brand's own German statement (kept verbatim as the pull-quote). */
+/** Brand story — grounded in what the Instagram export confirms (see docs/BRAND_AUDIT.md). */
 export function Story() {
   return (
-    <section data-world="clothing" className="relative bg-coal py-24 sm:py-36" aria-labelledby="story-title">
+    <section
+      data-world="clothing"
+      className="relative bg-coal py-24 sm:py-36"
+      aria-labelledby="story-title"
+    >
       <div className="mx-auto grid max-w-[1600px] gap-12 px-5 sm:px-8 lg:grid-cols-2 lg:items-center lg:gap-24">
         <Reveal className="order-2 lg:order-1">
-          <p className="label text-accent">Our story</p>
-          <h2 id="story-title" className="mt-6 font-display text-[2.6rem] leading-[1.02] sm:text-7xl">
-            <TextReveal lines={['Same dreams.', <span key="b" className="italic text-gold">Different work ethic.</span>]} />
+          <p className="label text-mist">Our story</p>
+          <h2
+            id="story-title"
+            className="mt-6 font-display text-[2.6rem] leading-[1.02] sm:text-7xl"
+          >
+            <TextReveal
+              lines={[
+                'Same dreams.',
+                <span key="b" className="italic text-gold">
+                  Different work ethic.
+                </span>,
+              ]}
+            />
           </h2>
           <div className="mt-8 max-w-lg space-y-5 text-[15px] leading-relaxed text-ivory/80">
             <p>
-              NATYSIMO is more than a clothing brand. It is a mindset — born from discipline, hard work and the will never to stand still.
+              NATYSIMO started as {SOCIAL.instagramHandle}: training, filmed and shared between
+              Morocco and Germany. No shortcuts — sessions, reels, a training plan, and a community
+              that grew around the discipline.
             </p>
-            <p>We connect performance with style, for everyone who wants more. The gym is where it starts. The street is where it shows.</p>
+            <p>
+              The clothing is the next step of the same mindset. The gym is where it starts. The
+              street is where it shows.
+            </p>
           </div>
-          <blockquote lang="de" className="mt-10 border-l border-gold/60 pl-5 font-display text-xl italic leading-snug text-ivory/70">
-            „Wir verbinden Performance mit Stil – für alle, die mehr wollen.“
+          <blockquote
+            lang="ar"
+            dir="rtl"
+            className="mt-10 border-r border-gold/60 pr-5 text-right font-display text-2xl leading-snug text-ivory/75"
+          >
+            القرار كرجع ليك
+            <footer lang="en" dir="ltr" className="label mt-2 text-left text-fog">
+              “The decision comes back to you.”
+            </footer>
           </blockquote>
           <Link href="/story" className="btn-line mt-10">
             Read the story

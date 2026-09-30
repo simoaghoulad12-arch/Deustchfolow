@@ -12,11 +12,14 @@ export default function AccountPage() {
       <div className="w-16">
         <Mark sizes="64px" />
       </div>
-      <p className="label mt-10 text-gold">Account</p>
-      <h1 className="mt-4 font-display text-5xl leading-none sm:text-6xl">Members open at launch.</h1>
+      <p className="label mt-10 text-mist">Account</p>
+      <h1 className="mt-4 font-display text-5xl leading-none sm:text-6xl">
+        Members open at launch.
+      </h1>
       {COMMERCE.accountsEnabled ? null : (
         <p className="mt-6 text-sm leading-relaxed text-mist">
-          Customer accounts, order history and saved addresses go live with the Collection 01 store. Until then your bag and wishlist are kept on this device.
+          Customer accounts, order history and saved addresses go live with the Collection 01 store.
+          Until then your bag and wishlist are kept on this device.
         </p>
       )}
       <div className="mt-10 flex w-full flex-col gap-2.5 sm:w-auto sm:flex-row">

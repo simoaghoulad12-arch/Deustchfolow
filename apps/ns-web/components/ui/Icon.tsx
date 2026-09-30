@@ -19,12 +19,21 @@ const PATHS = {
     </>
   ),
   chevron: <path d="M9 6l6 6-6 6" />,
+  search: <path d="M10.5 17a6.5 6.5 0 100-13 6.5 6.5 0 000 13zm4.6-1.9L20 20" />,
   ruler: <path d="M3 15l12-12 6 6-12 12-6-6zm4-4l2 2m1-5l2 2m1-5l2 2" />,
 } as const;
 
 export type IconName = keyof typeof PATHS;
 
-export function Icon({ name, className, filled }: { name: IconName; className?: string; filled?: boolean }) {
+export function Icon({
+  name,
+  className,
+  filled,
+}: {
+  name: IconName;
+  className?: string;
+  filled?: boolean;
+}) {
   return (
     <svg
       viewBox="0 0 24 24"

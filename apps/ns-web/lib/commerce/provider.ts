@@ -13,27 +13,45 @@ export const COMMERCE = {
   provider: process.env.NEXT_PUBLIC_COMMERCE_PROVIDER ?? null,
   paymentsEnabled: process.env.NEXT_PUBLIC_PAYMENTS_ENABLED === 'true',
   accountsEnabled: process.env.NEXT_PUBLIC_ACCOUNTS_ENABLED === 'true',
-  currency: 'EUR' as const,
-  locale: 'de-DE',
+  /** Primary market: Morocco (79.6 % of the audience, see docs/BRAND_AUDIT.md). */
+  currency: 'MAD' as const,
+  locale: 'fr-MA',
 };
 
 /**
- * Shipping options shown at checkout. Rates are the brand's planned
- * structure and are flagged "final at launch" in the UI until a shipping
- * backend confirms them.
+ * Delivery options. Rates and delivery times are NOT confirmed yet (no
+ * carrier contract in the project), so `priceCents` is `null` and the UI says
+ * "Confirmed at launch" instead of showing an invented number.
  */
-export const DEFAULT_SHIPPING: ShippingMethod = { id: 'de-standard', label: 'Standard — Germany', eta: '2–4 business days', priceCents: 495, freeAboveCents: 10000 };
+export const DEFAULT_SHIPPING: ShippingMethod = {
+  id: 'ma-standard',
+  label: 'Delivery — Morocco',
+  eta: 'All cities · timing confirmed at launch',
+  priceCents: null,
+};
 
 export const SHIPPING_METHODS: ShippingMethod[] = [
   DEFAULT_SHIPPING,
-  { id: 'eu-standard', label: 'Standard — EU', eta: '4–8 business days', priceCents: 1295 },
+  {
+    id: 'eu-standard',
+    label: 'Delivery — Europe',
+    eta: 'Germany & EU · timing confirmed at launch',
+    priceCents: null,
+  },
 ];
 
-export type ProviderResult<T> = { ok: true; data: T } | { ok: false; reason: 'not_configured' | 'invalid' | 'error'; message: string };
+export type ProviderResult<T> =
+  | { ok: true; data: T }
+  | { ok: false; reason: 'not_configured' | 'invalid' | 'error'; message: string };
 
 export interface CommerceProvider {
   validateDiscount(code: string): Promise<ProviderResult<Discount>>;
-  createCheckout(input: { lines: CartLine[]; shippingId: string; discount?: string; address?: Address }): Promise<ProviderResult<{ redirectUrl: string }>>;
+  createCheckout(input: {
+    lines: CartLine[];
+    shippingId: string;
+    discount?: string;
+    address?: Address;
+  }): Promise<ProviderResult<{ redirectUrl: string }>>;
   getOrders(customerId: string): Promise<ProviderResult<Order[]>>;
 }
 
@@ -49,7 +67,10 @@ export const offlineProvider: CommerceProvider = {
     return { ...NOT_CONFIGURED, message: 'Discount codes activate when the store opens.' };
   },
   async createCheckout() {
-    return { ...NOT_CONFIGURED, message: 'Payments are not connected yet. No order has been placed and nothing was charged.' };
+    return {
+      ...NOT_CONFIGURED,
+      message: 'Payments are not connected yet. No order has been placed and nothing was charged.',
+    };
   },
   async getOrders() {
     return { ...NOT_CONFIGURED, message: 'Customer accounts open with the Collection 01 launch.' };
@@ -61,10 +82,20 @@ export function getCommerceProvider(): CommerceProvider {
   return offlineProvider;
 }
 
+/** 24900 → "249 DH". Whole dirhams are shown without decimals. */
 export function formatPrice(cents: number): string {
-  return new Intl.NumberFormat(COMMERCE.locale, { style: 'currency', currency: COMMERCE.currency }).format(cents / 100);
+  const dh = cents / 100;
+  const text = new Intl.NumberFormat(COMMERCE.locale, {
+    minimumFractionDigits: Number.isInteger(dh) ? 0 : 2,
+    maximumFractionDigits: 2,
+  }).format(dh);
+  return `${text.replace(/\u202f|\u00a0/g, ' ')} DH`;
 }
 
-export function shippingFor(method: ShippingMethod, subtotalCents: number): number {
-  return method.freeAboveCents !== undefined && subtotalCents >= method.freeAboveCents ? 0 : method.priceCents;
+/** Shipping cost for a method, or `null` when the rate is not confirmed. */
+export function shippingFor(method: ShippingMethod, subtotalCents: number): number | null {
+  if (method.priceCents === null) return null;
+  return method.freeAboveCents !== undefined && subtotalCents >= method.freeAboveCents
+    ? 0
+    : method.priceCents;
 }

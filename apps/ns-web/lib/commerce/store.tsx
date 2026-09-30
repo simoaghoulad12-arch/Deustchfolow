@@ -1,6 +1,14 @@
 'use client';
 
-import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+  type ReactNode,
+} from 'react';
 import type { CartLine } from './types';
 
 /**
@@ -28,7 +36,7 @@ interface StoreValue {
 }
 
 const StoreContext = createContext<StoreValue | null>(null);
-const CART_KEY = 'natysimo.cart.v2';
+const CART_KEY = 'natysimo.cart.v3'; // v3: MAD pricing + full-slug SKUs
 const WISH_KEY = 'natysimo.wishlist.v1';
 
 function read<T>(key: string, fallback: T): T {
@@ -57,7 +65,9 @@ export function StoreProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const storedLines = read<CartLine[]>(CART_KEY, []);
-    setLines(Array.isArray(storedLines) ? storedLines.filter((l) => l && typeof l.sku === 'string') : []);
+    setLines(
+      Array.isArray(storedLines) ? storedLines.filter((l) => l && typeof l.sku === 'string') : [],
+    );
     const storedWish = read<string[]>(WISH_KEY, []);
     setWishlist(Array.isArray(storedWish) ? storedWish : []);
     setHydrated(true);
@@ -80,7 +90,10 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const addLine = useCallback<StoreValue['addLine']>((line, quantity = 1) => {
     setLines((prev) => {
       const existing = prev.find((l) => l.sku === line.sku);
-      if (existing) return prev.map((l) => (l.sku === line.sku ? { ...l, quantity: Math.min(l.quantity + quantity, 10) } : l));
+      if (existing)
+        return prev.map((l) =>
+          l.sku === line.sku ? { ...l, quantity: Math.min(l.quantity + quantity, 10) } : l,
+        );
       return [...prev, { ...line, quantity }];
     });
     setCartOpen(true);
@@ -88,11 +101,16 @@ export function StoreProvider({ children }: { children: ReactNode }) {
 
   const setQuantity = useCallback((sku: string, quantity: number) => {
     setLines((prev) =>
-      quantity <= 0 ? prev.filter((l) => l.sku !== sku) : prev.map((l) => (l.sku === sku ? { ...l, quantity: Math.min(quantity, 10) } : l))
+      quantity <= 0
+        ? prev.filter((l) => l.sku !== sku)
+        : prev.map((l) => (l.sku === sku ? { ...l, quantity: Math.min(quantity, 10) } : l)),
     );
   }, []);
 
-  const removeLine = useCallback((sku: string) => setLines((prev) => prev.filter((l) => l.sku !== sku)), []);
+  const removeLine = useCallback(
+    (sku: string) => setLines((prev) => prev.filter((l) => l.sku !== sku)),
+    [],
+  );
   const clearCart = useCallback(() => setLines([]), []);
 
   const toggleWish = useCallback((slug: string) => {
@@ -120,7 +138,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       toggleWish,
       toast,
     }),
-    [lines, cartOpen, addLine, setQuantity, removeLine, clearCart, wishlist, toggleWish, toast]
+    [lines, cartOpen, addLine, setQuantity, removeLine, clearCart, wishlist, toggleWish, toast],
   );
 
   return <StoreContext.Provider value={value}>{children}</StoreContext.Provider>;

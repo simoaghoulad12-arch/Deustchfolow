@@ -13,7 +13,9 @@ export function WishlistView() {
   if (items.length === 0) {
     return (
       <div className="mt-16 max-w-md">
-        <p className="text-sm leading-relaxed text-mist">Nothing saved yet. Tap the heart on any piece to keep it here.</p>
+        <p className="text-sm leading-relaxed text-mist">
+          Nothing saved yet. Tap the heart on any piece to keep it here.
+        </p>
         <Link href="/shop" className="btn-solid mt-8">
           Shop Collection 01
         </Link>

@@ -8,33 +8,61 @@ import { Reveal } from '@/components/motion/Reveal';
 import { cn } from '@/lib/cn';
 
 /**
- * Product anatomy of the Performance Tank — the brand's origin piece.
- * Only visible design details are annotated; no fabric or tech claims.
- * Hotspot coordinates are % of the flat-lay photograph.
+ * Product anatomy of the Training Set, on real photography of the produced
+ * Performance Tank and Training Shorts. Only visible design details are
+ * annotated — no fabric or tech claims. Coordinates are % of the photo.
  */
 const POINTS = [
-  { x: 62, y: 33, title: 'Crown monogram', body: 'The NS crown monogram, centred on the chest. The mark every piece is built around.' },
-  { x: 30, y: 52, title: 'Twin contour lines', body: 'Two silver lines run the length of the body, tracing the torso and drawing the eye down.' },
-  { x: 18, y: 41, title: 'Textured side panels', body: 'Tonal patterned panels at the sides — black on black, visible only up close.' },
-  { x: 15, y: 55, title: 'Open side vents', body: 'Open-knit panels at the lower sides, set beneath the contour lines.' },
-  { x: 24, y: 64, title: 'Curved drop hem', body: 'A curved hem line, cut longer at the sides for a clean athletic silhouette.' },
-  { x: 41, y: 74, title: 'Monogram hem tab', body: 'A small tab carrying the monogram at the hem — the quiet signature.' },
+  {
+    x: 37,
+    y: 50,
+    title: 'Crown monogram',
+    body: 'The intertwined NS beneath the crown, left chest. The mark every piece is built around.',
+  },
+  {
+    x: 22,
+    y: 53,
+    title: 'Contour lines',
+    body: 'Silver lines trace the body from the armhole down — the signature of the Sports world.',
+  },
+  {
+    x: 28,
+    y: 41,
+    title: 'Racer cut',
+    body: 'Deep armholes and narrow straps, cut to leave the shoulders free.',
+  },
+  {
+    x: 20,
+    y: 70,
+    title: 'Contour print',
+    body: 'The same silver line language carried onto the Training Shorts.',
+  },
+  {
+    x: 43,
+    y: 76.5,
+    title: 'Leg monogram',
+    body: 'The crown monogram at the leg of the shorts — the set reads as one line.',
+  },
 ];
 
 export function Anatomy() {
   const [active, setActive] = useState(0);
 
   return (
-    <section data-world="sports" className="relative bg-ink py-24 sm:py-36" aria-labelledby="anatomy-title">
+    <section
+      data-world="sports"
+      className="relative bg-ink py-24 sm:py-36"
+      aria-labelledby="anatomy-title"
+    >
       <div className="mx-auto grid max-w-[1600px] gap-12 px-5 sm:px-8 lg:grid-cols-[1.1fr_1fr] lg:items-center lg:gap-20">
         <Reveal className="relative">
-          <div className="relative aspect-[896/1195] overflow-hidden bg-graphite">
+          <div className="relative aspect-[1086/1448] overflow-hidden bg-graphite">
             <Image
-              src="/images/photo/flatlay-tank-shorts.jpg"
-              alt="Performance Tank and Training Shorts laid flat on concrete"
+              src="/images/photo/gym-tank-mirror.jpg"
+              alt="The Performance Tank and Training Shorts worn in the gym"
               fill
               sizes="(min-width: 1024px) 50vw, 100vw"
-              className="object-cover grayscale-[0.3]"
+              className="object-cover grayscale-[0.5] brightness-[0.85]"
             />
             <div className="absolute inset-0 bg-ink/10" />
             {POINTS.map((p, i) => (
@@ -48,8 +76,17 @@ export function Anatomy() {
                 className="absolute flex h-11 w-11 -translate-x-1/2 -translate-y-1/2 items-center justify-center"
                 style={{ left: `${p.x}%`, top: `${p.y}%` }}
               >
-                <span className={cn('absolute h-7 w-7 rounded-full border transition-all duration-500', active === i ? 'scale-125 border-accent bg-ink/70' : 'border-white/60 bg-ink/40')} />
-                {active === i && <span className="absolute h-7 w-7 animate-ping rounded-full border border-accent/60" />}
+                <span
+                  className={cn(
+                    'absolute h-7 w-7 rounded-full border transition-all duration-500',
+                    active === i
+                      ? 'scale-125 border-accent bg-ink/70'
+                      : 'border-white/60 bg-ink/40',
+                  )}
+                />
+                {active === i && (
+                  <span className="absolute h-7 w-7 animate-ping rounded-full border border-accent/60" />
+                )}
                 <span className="relative text-[10px] font-medium tabular-nums">{i + 1}</span>
               </button>
             ))}
@@ -58,22 +95,42 @@ export function Anatomy() {
 
         <div>
           <Reveal>
-            <p className="label text-accent">Product anatomy · NS/001</p>
+            <p className="label text-accent">Product anatomy · The Training Set</p>
             <h2 id="anatomy-title" className="mt-5 font-display text-5xl leading-[1] sm:text-7xl">
-              The Performance Tank.
+              Tank &amp; Shorts.
             </h2>
             <p className="mt-6 max-w-md text-sm leading-relaxed text-mist">
-              The piece NATYSIMO was built in. Six details, each one deliberate — tap a number to read the garment.
+              The set NATYSIMO was built in, as worn. Five details, each one deliberate — tap a number to
+              read the garment.
             </p>
           </Reveal>
 
           <ol className="mt-10 border-t border-white/10">
             {POINTS.map((p, i) => (
               <li key={p.title} className="border-b border-white/10">
-                <button type="button" onClick={() => setActive(i)} className="flex w-full items-baseline gap-5 py-5 text-left" aria-expanded={active === i}>
-                  <span className={cn('label tabular-nums transition-colors', active === i ? 'text-accent' : 'text-fog')}>0{i + 1}</span>
+                <button
+                  type="button"
+                  onClick={() => setActive(i)}
+                  className="flex w-full items-baseline gap-5 py-5 text-left"
+                  aria-expanded={active === i}
+                >
+                  <span
+                    className={cn(
+                      'label tabular-nums transition-colors',
+                      active === i ? 'text-accent' : 'text-fog',
+                    )}
+                  >
+                    0{i + 1}
+                  </span>
                   <span className="flex-1">
-                    <span className={cn('block font-display text-2xl transition-colors sm:text-3xl', active === i ? 'text-ivory' : 'text-ivory/50')}>{p.title}</span>
+                    <span
+                      className={cn(
+                        'block font-display text-2xl transition-colors sm:text-3xl',
+                        active === i ? 'text-ivory' : 'text-ivory/50',
+                      )}
+                    >
+                      {p.title}
+                    </span>
                     <motion.span
                       initial={false}
                       animate={{ height: active === i ? 'auto' : 0, opacity: active === i ? 1 : 0 }}
@@ -89,8 +146,8 @@ export function Anatomy() {
           </ol>
 
           <Reveal className="mt-10">
-            <Link href="/product/performance-tank" className="btn-solid">
-              Shop the Performance Tank
+            <Link href="/sets/training-set" className="btn-solid">
+              Shop the Training Set
             </Link>
           </Reveal>
         </div>
