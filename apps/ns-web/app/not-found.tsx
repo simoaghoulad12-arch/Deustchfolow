@@ -1,20 +1,18 @@
 import Link from 'next/link';
-import { Navigation } from '@/components/navigation/Navigation';
+import { Mark } from '@/components/brand/Mark';
 
 export default function NotFound() {
   return (
-    <>
-      <Navigation />
-      <main className="flex min-h-[100svh] flex-col items-center justify-center px-6 text-center">
-        <p className="text-xs uppercase tracking-widest2 text-gold">404</p>
-        <h1 className="mt-4 font-display text-3xl sm:text-5xl">This page doesn&rsquo;t exist.</h1>
-        <Link
-          href="/"
-          className="mt-8 border border-bone/30 px-6 py-3 text-xs uppercase tracking-widest2 transition hover:border-gold hover:text-gold"
-        >
-          Return home
-        </Link>
-      </main>
-    </>
+    <div className="flex min-h-[90svh] flex-col items-center justify-center px-5 text-center">
+      <div className="w-16">
+        <Mark sizes="64px" />
+      </div>
+      <p className="label mt-10 text-gold">404</p>
+      <h1 className="mt-4 font-display text-5xl sm:text-6xl">Off the path.</h1>
+      <p className="mt-4 text-sm text-mist">This page doesn’t exist. The discipline does.</p>
+      <Link href="/" className="btn-solid mt-10">
+        Back to NATYSIMO
+      </Link>
+    </div>
   );
 }

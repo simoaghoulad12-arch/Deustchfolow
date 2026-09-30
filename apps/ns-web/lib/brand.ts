@@ -1,0 +1,128 @@
+/**
+ * NATYSIMO brand system — single source of truth for naming, worlds and
+ * logo assets. Logo files are unaltered crops of the official logo sheet
+ * (brand-source/reference/logo-system-three-worlds.png). Never redraw them,
+ * never set them as text — see ASSETS.md.
+ */
+
+export const BRAND = {
+  name: 'NATYSIMO',
+  monogram: 'NS',
+  tagline: 'Discipline builds freedom.',
+  pillars: ['Performance.', 'Identity.', 'Lifestyle.'],
+  manifesto: ['Train', 'Grow', 'Evolve'],
+  origin: 'Düsseldorf',
+  url: process.env.NEXT_PUBLIC_SITE_URL ?? 'https://natysimo.com',
+} as const;
+
+/**
+ * Social destinations. The Instagram handle is the one place to update when
+ * the official account is confirmed — every CTA on the site reads from here.
+ */
+export const SOCIAL = {
+  instagram: process.env.NEXT_PUBLIC_INSTAGRAM_URL ?? 'https://www.instagram.com/natysimo',
+  instagramHandle: process.env.NEXT_PUBLIC_INSTAGRAM_HANDLE ?? '@natysimo',
+  tiktok: process.env.NEXT_PUBLIC_TIKTOK_URL,
+  youtube: process.env.NEXT_PUBLIC_YOUTUBE_URL,
+} as const;
+
+export type WorldId = 'sports' | 'clothing' | 'hybrid';
+
+export interface LogoAsset {
+  src: string;
+  width: number;
+  height: number;
+}
+
+export interface World {
+  id: WorldId;
+  name: string;
+  /** Short index label, e.g. "01". */
+  index: string;
+  headline: string;
+  descriptor: string;
+  intro: string;
+  focus: string[];
+  palette: { name: string; hex: string }[];
+  mark: LogoAsset;
+  lockup: LogoAsset;
+  /** Hero image for the world landing + homepage world panel. */
+  image: { src: string; alt: string; position?: string };
+}
+
+export const MASTER_MARK: LogoAsset = { src: '/brand/logos/clothing-mark.png', width: 241, height: 326 };
+
+export const WORLDS: Record<WorldId, World> = {
+  sports: {
+    id: 'sports',
+    name: 'Sports',
+    index: '01',
+    headline: 'Performance builds freedom.',
+    descriptor: 'Performance · Training · Athletes',
+    intro:
+      'The training floor. Pieces cut for the set, the sprint and the session nobody films — silver lines on black, nothing that slows you down.',
+    focus: ['Performance', 'Training', 'Athletes'],
+    palette: [
+      { name: 'Black', hex: '#060606' },
+      { name: 'Silver', hex: '#cfd3d8' },
+      { name: 'White', hex: '#ffffff' },
+    ],
+    mark: { src: '/brand/logos/sports-mark.png', width: 303, height: 307 },
+    lockup: { src: '/brand/logos/sports-lockup.png', width: 437, height: 485 },
+    image: {
+      src: '/images/photo/gym-tank-mirror.jpg',
+      alt: 'Athlete in the NATYSIMO performance tank and training shorts, mid-session in the gym',
+      position: '50% 40%',
+    },
+  },
+  clothing: {
+    id: 'clothing',
+    name: 'Clothing',
+    index: '02',
+    headline: 'Discipline builds freedom.',
+    descriptor: 'Streetwear · Lifestyle · Apparel',
+    intro:
+      'After the work. The crown monogram carried into the street — gold on black, ivory for contrast, cut to be worn every day.',
+    focus: ['Streetwear', 'Lifestyle', 'Apparel'],
+    palette: [
+      { name: 'Black', hex: '#060606' },
+      { name: 'Gold', hex: '#c9a26b' },
+      { name: 'Ivory', hex: '#efe8da' },
+    ],
+    mark: { src: '/brand/logos/clothing-mark.png', width: 241, height: 326 },
+    lockup: { src: '/brand/logos/clothing-lockup.png', width: 454, height: 487 },
+    image: {
+      src: '/images/photo/flatlay-essential-tee.jpg',
+      alt: 'NATYSIMO essential tee folded on concrete beside the monogram gift box',
+      position: '50% 55%',
+    },
+  },
+  hybrid: {
+    id: 'hybrid',
+    name: 'Hybrid',
+    index: '03',
+    headline: 'Stronger than yesterday.',
+    descriptor: 'Gym · Street · Everyday',
+    intro:
+      'Where the two meet. Gym-to-street pieces that carry you from the first rep to the last meeting — gold and silver, one standard.',
+    focus: ['Strength', 'Fitness', 'Discipline'],
+    palette: [
+      { name: 'Black', hex: '#060606' },
+      { name: 'Gold', hex: '#c9a26b' },
+      { name: 'Silver', hex: '#cfd3d8' },
+    ],
+    mark: { src: '/brand/logos/hybrid-mark.png', width: 266, height: 339 },
+    lockup: { src: '/brand/logos/hybrid-lockup.png', width: 439, height: 514 },
+    image: {
+      src: '/images/photo/founder-duesseldorf.jpg',
+      alt: 'The NATYSIMO founder on Königsallee, Düsseldorf, in the essential tee, shorts, crossbody bag and socks',
+      position: '50% 30%',
+    },
+  },
+};
+
+export const WORLD_ORDER: WorldId[] = ['sports', 'clothing', 'hybrid'];
+
+export function isWorldId(value: string): value is WorldId {
+  return value === 'sports' || value === 'clothing' || value === 'hybrid';
+}

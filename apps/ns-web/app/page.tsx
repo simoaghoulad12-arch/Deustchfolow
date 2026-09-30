@@ -1,31 +1,34 @@
-import { IntroExperience } from '@/components/intro/IntroExperience';
-import { Navigation } from '@/components/navigation/Navigation';
-import { Hero } from '@/components/sections/Hero';
-import { BrandStatement } from '@/components/sections/BrandStatement';
-import { FloatingGarment } from '@/components/sections/FloatingGarment';
-import { LightScanReveal } from '@/components/sections/LightScanReveal';
-import { HorizontalRunway } from '@/components/sections/HorizontalRunway';
-import { Lookbook } from '@/components/sections/Lookbook';
-import { Journal } from '@/components/sections/Journal';
-import { BrandPillars } from '@/components/sections/BrandPillars';
-import { Footer } from '@/components/sections/Footer';
+import { Hero } from '@/components/home/Hero';
+import { Manifesto } from '@/components/home/Manifesto';
+import { Worlds } from '@/components/home/Worlds';
+import { Collection } from '@/components/home/Collection';
+import { Anatomy } from '@/components/home/Anatomy';
+import { Story } from '@/components/home/Story';
+import { Lifestyle } from '@/components/home/Lifestyle';
+import { Details } from '@/components/home/Details';
+import { Community } from '@/components/home/Community';
+import { FinalCta } from '@/components/home/FinalCta';
 
+/**
+ * Homepage order: promise (Hero) → worlds (the brand's architecture) →
+ * the product (Collection 01) → proof (Anatomy) → meaning (Story) →
+ * life (Lifestyle) → craft (Details) → community → close.
+ * The manifesto sits after the worlds on purpose: Instagram visitors want to
+ * see the brand's range within two swipes, then earn the long read.
+ */
 export default function HomePage() {
   return (
     <>
-      <IntroExperience />
-      <Navigation />
-      <main>
-        <Hero />
-        <BrandStatement />
-        <FloatingGarment />
-        <LightScanReveal />
-        <HorizontalRunway />
-        <Lookbook />
-        <Journal />
-        <BrandPillars />
-      </main>
-      <Footer />
+      <Hero />
+      <Worlds />
+      <Collection />
+      <Manifesto />
+      <Anatomy />
+      <Story />
+      <Lifestyle />
+      <Details />
+      <Community />
+      <FinalCta />
     </>
   );
 }

@@ -1,41 +1,72 @@
 import type { Metadata, Viewport } from 'next';
-import { Playfair_Display, Inter } from 'next/font/google';
+import { Cormorant_Garamond, Inter } from 'next/font/google';
 import './globals.css';
-import { CartProvider } from '@/lib/cart-context';
-import { CartDrawer } from '@/components/cart/CartDrawer';
+import { StoreProvider } from '@/lib/commerce/store';
+import { SiteHeader } from '@/components/layout/SiteHeader';
+import { SiteFooter } from '@/components/layout/SiteFooter';
+import { MobileDock } from '@/components/layout/MobileDock';
+import { Toast } from '@/components/layout/Toast';
+import { CartDrawer } from '@/components/commerce/CartDrawer';
+import { BRAND } from '@/lib/brand';
 
-const display = Playfair_Display({
+const display = Cormorant_Garamond({
   subsets: ['latin'],
   variable: '--font-display',
   weight: ['400', '500', '600'],
+  style: ['normal', 'italic'],
+  display: 'swap',
 });
 
 const sans = Inter({
   subsets: ['latin'],
   variable: '--font-sans',
-  weight: ['400', '500', '600'],
+  display: 'swap',
 });
 
 export const metadata: Metadata = {
-  title: 'NATTYSIMO — Discipline Builds Freedom',
+  metadataBase: new URL(BRAND.url),
+  title: {
+    default: 'NATYSIMO — Discipline Builds Freedom',
+    template: '%s — NATYSIMO',
+  },
   description:
-    'Nattysimo (NS) is a sportswear identity built on discipline, movement, and self-development.',
+    'NATYSIMO is a performance, gym and streetwear house from Düsseldorf. Three worlds — Sports, Clothing, Hybrid — one standard: discipline builds freedom.',
+  keywords: ['NATYSIMO', 'gym wear', 'performance wear', 'streetwear', 'Düsseldorf', 'Collection 01', 'discipline builds freedom'],
+  openGraph: {
+    type: 'website',
+    siteName: 'NATYSIMO',
+    title: 'NATYSIMO — Discipline Builds Freedom',
+    description: 'Performance. Identity. Lifestyle. Collection 01 — Sports, Clothing, Hybrid.',
+    images: [{ url: '/og.jpg', width: 1200, height: 630, alt: 'NATYSIMO — Discipline builds freedom' }],
+    locale: 'en_US',
+  },
+  twitter: { card: 'summary_large_image', images: ['/og.jpg'] },
+  appleWebApp: { title: 'NATYSIMO', statusBarStyle: 'black-translucent' },
 };
 
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
-  themeColor: '#0a0a0a',
+  viewportFit: 'cover',
+  themeColor: '#060606',
+  colorScheme: 'dark',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${display.variable} ${sans.variable}`}>
-      <body className="min-h-screen bg-ink font-sans text-bone">
-        <CartProvider>
-          {children}
+      <body>
+        <StoreProvider>
+          <a href="#main" className="label sr-only z-[70] bg-ivory px-4 py-3 text-ink focus:not-sr-only focus:fixed focus:left-4 focus:top-4">
+            Skip to content
+          </a>
+          <SiteHeader />
+          <main id="main">{children}</main>
+          <SiteFooter />
+          <MobileDock />
           <CartDrawer />
-        </CartProvider>
+          <Toast />
+        </StoreProvider>
       </body>
     </html>
   );

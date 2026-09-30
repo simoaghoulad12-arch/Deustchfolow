@@ -2,32 +2,112 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-  * {
-    @apply border-stone/20;
-  }
+/*
+ * World theming. Every section/page can opt into one of the three NATYSIMO
+ * worlds with data-world; components read the accent through Tailwind's
+ * `accent` / `accent-2` colours, so one component renders correctly in all
+ * three worlds.
+ *   sports   — black · silver · white
+ *   clothing — black · gold · ivory
+ *   hybrid   — black · gold · silver   (also the master brand default)
+ */
+:root,
+[data-world='hybrid'] {
+  --accent: 201 162 107;
+  --accent-2: 207 211 216;
+}
+[data-world='clothing'] {
+  --accent: 201 162 107;
+  --accent-2: 239 232 218;
+}
+[data-world='sports'] {
+  --accent: 207 211 216;
+  --accent-2: 255 255 255;
+}
 
+@layer base {
   html {
-    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+    background: #060606;
   }
 
   body {
-    @apply bg-ink text-bone antialiased;
+    @apply bg-ink font-sans text-ivory antialiased;
+    text-rendering: optimizeLegibility;
   }
 
   ::selection {
-    @apply bg-gold/30 text-bone;
+    @apply bg-gold/40 text-ivory;
   }
 
   :focus-visible {
-    @apply outline outline-2 outline-offset-2 outline-gold;
+    @apply outline outline-1 outline-offset-4 outline-accent;
+  }
+
+  button {
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+@layer components {
+  .label {
+    @apply text-[10px] font-medium uppercase tracking-label sm:text-[11px];
+  }
+
+  .btn {
+    @apply relative inline-flex min-h-[52px] items-center justify-center gap-3 overflow-hidden px-7 text-[11px] font-medium uppercase tracking-label transition-colors duration-500 ease-cinematic;
+  }
+  .btn-solid {
+    @apply btn bg-ivory text-ink hover:bg-accent;
+  }
+  .btn-line {
+    @apply btn border border-ivory/25 text-ivory hover:border-accent hover:text-accent;
+  }
+  .btn-accent {
+    @apply btn bg-accent text-ink hover:bg-ivory;
+  }
+
+  .hairline {
+    @apply h-px w-full bg-gradient-to-r from-transparent via-accent/50 to-transparent;
+  }
+
+  /* Metallic text for headline accents; the world decides the metal. */
+  .metal-text {
+    background-image: linear-gradient(
+      100deg,
+      rgb(var(--accent) / 0.75) 0%,
+      rgb(var(--accent-2)) 45%,
+      rgb(var(--accent)) 60%,
+      rgb(var(--accent) / 0.7) 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .grain::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.12;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
   *,
   *::before,
   *::after {
@@ -35,16 +115,5 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
-  }
-}
-
-@layer utilities {
-  .film-grain::before {
-    content: '';
-    position: absolute;
-    inset: -20%;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.35'/%3E%3C/svg%3E");
-    pointer-events: none;
-    mix-blend-mode: overlay;
   }
 }
