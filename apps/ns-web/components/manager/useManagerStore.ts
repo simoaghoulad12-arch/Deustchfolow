@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
-import type { KpiId } from '@/lib/manager';
+import type { KpiId, ReelReview } from '@/lib/manager';
 
 /**
  * Per-device storage for the /manager page. A convenience only: nothing
@@ -18,16 +18,22 @@ export interface ManagerState {
   checks: Record<string, string[]>;
   /** The five numbers per week. */
   kpis: Record<string, KpiEntry>;
+  /** Reel quality reviews, newest first. */
+  reviews: ReelReview[];
 }
 
-const EMPTY: ManagerState = { checks: {}, kpis: {} };
+const EMPTY: ManagerState = { checks: {}, kpis: {}, reviews: [] };
 
 function read(): ManagerState {
   try {
     const raw = window.localStorage.getItem(MANAGER_KEY);
     if (!raw) return EMPTY;
     const parsed = JSON.parse(raw) as Partial<ManagerState>;
-    return { checks: parsed.checks ?? {}, kpis: parsed.kpis ?? {} };
+    return {
+      checks: parsed.checks ?? {},
+      kpis: parsed.kpis ?? {},
+      reviews: parsed.reviews ?? [],
+    };
   } catch {
     return EMPTY;
   }

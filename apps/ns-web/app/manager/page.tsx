@@ -2,34 +2,43 @@ import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 import { CopyButton } from '@/components/manager/CopyButton';
 import { KpiLog } from '@/components/manager/KpiLog';
+import { ReelReviewer } from '@/components/manager/ReelReviewer';
 import { WeekChecklist } from '@/components/manager/WeekChecklist';
 import {
   AUDIENCE,
   BRAND_PATH,
   BROADCAST_TYPES,
+  CONTENT_TYPES,
   DECISION_RULES,
   EMERGENCY_MODE,
   FUNNEL_FLOW,
   FUNNEL_NOTE,
   FUNNELS,
   GOAL_CHAIN,
+  GOLDEN_RULE,
   HYBRID_NOTE,
   HYBRID_STEPS,
   IDENTITY,
   KPI_SOURCE,
   MANAGER_META,
   NOT_NOW,
+  PRE_QUESTIONS,
+  PROTECTION_RULES,
   REEL_NOTES,
   REEL_SLOTS,
+  REVIEW_RULE,
   RULES,
   RULES_INTRO,
   RULES_NOTE,
+  SCRIPT_MARKS,
   SQUAD_CHECKLIST,
   SQUAD_INTRO,
   START_TOMORROW,
   SUNDAY_FLOW,
   WEEK,
+  VERDICTS,
   WEEK_INTRO,
+  buildReviewPrompt,
 } from '@/lib/manager';
 
 /**
@@ -45,6 +54,7 @@ export const metadata: Metadata = {
 
 const SECTIONS = [
   ['sonntag', 'Sonntag'],
+  ['reel-check', 'Reel-Check'],
   ['nicht-jetzt', 'Nicht jetzt'],
   ['regeln', 'Regeln'],
   ['reels', 'Reels'],
@@ -157,8 +167,83 @@ export default function ManagerPage() {
       </Section>
 
       <Section
-        id="nicht-jetzt"
+        id="reel-check"
         index={2}
+        title="Reel-Qualitäts-Check"
+        intro="Jedes Reel wird vor dem Posten streng geprüft, als würde dein eigener Name dafür stehen. Keine Schönrederei."
+      >
+        <div className="flex flex-col gap-3 border border-white/10 p-4 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-sm text-mist">
+            Prüf-Prompt kopieren und zusammen mit Script, Transkript oder Caption in Claude
+            einfügen.
+          </p>
+          <CopyButton text={buildReviewPrompt()} label="Prompt kopieren" />
+        </div>
+
+        <h3 className="label mt-10 text-gold">Vor der Bearbeitung beantworten</h3>
+        <dl className="mt-4 border-t border-white/[0.07]">
+          {PRE_QUESTIONS.map((q) => (
+            <div key={q.id} className="flex gap-4 border-b border-white/[0.07] py-4">
+              <dt className="tech pt-0.5 text-fog">{q.id}</dt>
+              <dd className="text-sm leading-relaxed">
+                {q.question} <span className="text-mist">{q.rule}</span>
+              </dd>
+            </div>
+          ))}
+        </dl>
+
+        <div className="mt-10 grid gap-8 sm:grid-cols-2">
+          <div>
+            <h3 className="label text-gold">Urteile</h3>
+            <ul className="mt-4 grid gap-2 text-sm">
+              {VERDICTS.map((v) => (
+                <li key={v.verdict}>
+                  <span className="tech text-ivory">{v.verdict}</span>{' '}
+                  <span className="text-mist">{v.when}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div>
+            <h3 className="label text-gold">Script-Markierungen</h3>
+            <ul className="mt-4 grid gap-2 text-sm">
+              {SCRIPT_MARKS.map((m) => (
+                <li key={m.mark}>
+                  <span className="tech text-ivory">{m.mark}</span>{' '}
+                  <span className="text-mist">{m.meaning}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        <ul className="mt-10 grid gap-px bg-white/[0.07] sm:grid-cols-2">
+          {CONTENT_TYPES.map((c) => (
+            <li key={c.id} className="bg-ink py-4 sm:pr-4">
+              <p className="tech text-ivory">{c.label}</p>
+              <p className="mt-2 text-sm text-mist">{c.text}</p>
+            </li>
+          ))}
+        </ul>
+        <p className="mt-6 text-sm text-mist">{REVIEW_RULE}</p>
+
+        <h3 className="label mt-12 text-gold">Reels prüfen</h3>
+        <div className="mt-4">
+          <ReelReviewer />
+        </div>
+
+        <div className="mt-12">
+          <p className="label text-fog">Goldene Regel</p>
+          <div className="mt-3">
+            <Chain items={GOLDEN_RULE.chain} />
+          </div>
+          <p className="mt-3 text-sm text-mist">{GOLDEN_RULE.text}</p>
+        </div>
+      </Section>
+
+      <Section
+        id="nicht-jetzt"
+        index={3}
         title="NICHT JETZT"
         intro="Wenn du mit einem dieser Themen kommst, lautet die Antwort NICHT JETZT. Jedes Thema hat einen Grund und eine Bedingung, ab der es wieder auf den Tisch darf."
       >
@@ -179,7 +264,7 @@ export default function ManagerPage() {
         </ul>
       </Section>
 
-      <Section id="regeln" index={3} title="Manager-Regeln" intro={RULES_INTRO}>
+      <Section id="regeln" index={4} title="Manager-Regeln" intro={RULES_INTRO}>
         <Chain items={GOAL_CHAIN} />
         <p className="mt-2 text-xs text-fog">nicht View → View → View</p>
         <ol className="mt-8 border-t border-white/[0.07]">
@@ -198,7 +283,7 @@ export default function ManagerPage() {
 
       <Section
         id="reels"
-        index={4}
+        index={5}
         title="Reel-Struktur"
         intro="Pro Woche gibt es 4–5 Reels, und mindestens 2 davon sind Fitness. Deutsch bdarija bleibt bei höchstens 1 von 4–5."
       >
@@ -234,7 +319,7 @@ export default function ManagerPage() {
 
       <Section
         id="funnels"
-        index={5}
+        index={6}
         title="CTA und DM-Funnels"
         intro={`Jedes Reel endet mit einem Keyword. ${FUNNEL_NOTE}`}
       >
@@ -270,7 +355,7 @@ export default function ManagerPage() {
         </div>
       </Section>
 
-      <Section id="squad" index={6} title="Natty Squad Broadcast" intro={SQUAD_INTRO}>
+      <Section id="squad" index={7} title="Natty Squad Broadcast" intro={SQUAD_INTRO}>
         <ul className="grid gap-px bg-white/[0.07] sm:grid-cols-2">
           {BROADCAST_TYPES.map((b) => (
             <li key={b.type} className="bg-ink p-5">
@@ -288,7 +373,7 @@ export default function ManagerPage() {
         </div>
       </Section>
 
-      <Section id="woche" index={7} title="Wochenrhythmus" intro={WEEK_INTRO}>
+      <Section id="woche" index={8} title="Wochenrhythmus" intro={WEEK_INTRO}>
         <ul className="border-t border-white/[0.07]">
           {WEEK.map((w) => (
             <li
@@ -315,11 +400,11 @@ export default function ManagerPage() {
         </div>
       </Section>
 
-      <Section id="kpis" index={8} title="Die 5 Zahlen" intro={KPI_SOURCE}>
+      <Section id="kpis" index={9} title="Die 5 Zahlen" intro={KPI_SOURCE}>
         <KpiLog />
       </Section>
 
-      <Section id="marke" index={9} title="NATYSIMO und Hybrid-Programm" intro={BRAND_PATH.intro}>
+      <Section id="marke" index={10} title="NATYSIMO und Hybrid-Programm" intro={BRAND_PATH.intro}>
         <h3 className="label text-gold">NATYSIMO</h3>
         <div className="mt-4 grid gap-2">
           <Chain items={BRAND_PATH.path} />
@@ -350,7 +435,7 @@ export default function ManagerPage() {
         <p className="mt-6 text-sm text-mist">{HYBRID_NOTE}</p>
       </Section>
 
-      <Section id="identitaet" index={10} title="Identität" intro={IDENTITY.summary}>
+      <Section id="identitaet" index={11} title="Identität" intro={IDENTITY.summary}>
         <Chain items={IDENTITY.chain} />
         <h3 className="label mt-10 text-gold">Brand-Hierarchie</h3>
         <ol className="mt-4 border-t border-white/[0.07]">
@@ -377,6 +462,15 @@ export default function ManagerPage() {
             </div>
           ))}
         </dl>
+        <p className="mt-6 text-sm">{AUDIENCE.protectionIntro}</p>
+        <ul className="mt-3 grid gap-2 text-sm text-mist">
+          {PROTECTION_RULES.map((r) => (
+            <li key={r} className="flex gap-3">
+              <span className="text-gold">·</span>
+              {r}
+            </li>
+          ))}
+        </ul>
       </Section>
     </div>
   );
