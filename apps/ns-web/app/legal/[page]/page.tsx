@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { SOCIAL } from '@/lib/brand';
+import { getLocale } from '@/lib/i18n/server';
 
 /**
  * Service & legal pages.
@@ -19,7 +20,7 @@ type Page = {
   placeholder?: boolean;
 };
 
-const PAGES: Record<string, Page> = {
+const PAGES_EN: Record<string, Page> = {
   shipping: {
     title: 'Delivery',
     intro: 'Where NATYSIMO ships, and what is still being confirmed.',
@@ -144,22 +145,172 @@ const PAGES: Record<string, Page> = {
   },
 };
 
+const PAGES_AR: Record<string, Page> = {
+  shipping: {
+    title: 'التوصيل',
+    intro: 'أين تشحن NATYSIMO، وما الذي لا يزال قيد التأكيد.',
+    sections: [
+      {
+        h: 'المغرب',
+        p: [
+          'التوصيل إلى جميع مدن المغرب مخطط له عند الإطلاق، بما في ذلك الدفع عند الاستلام.',
+          'تُؤكَّد الأسعار ومدد التوصيل هنا وعند إتمام الطلب قبل أول طلب.',
+        ],
+      },
+      {
+        h: 'ألمانيا والاتحاد الأوروبي',
+        p: [
+          'التوصيل إلى ألمانيا والاتحاد الأوروبي مخطط له. تُؤكَّد الأسعار ومدد التوصيل وأي تفاصيل جمركية قبل الإطلاق.',
+        ],
+      },
+    ],
+  },
+  returns: {
+    title: 'الإرجاع والاستبدال',
+    local: 'Widerruf',
+    placeholder: true,
+    sections: [
+      {
+        p: [
+          'تُنشر هنا سياسة الإرجاع والاستبدال — بما في ذلك مدة الإرجاع وشروط حالة القطعة وكيفية بدء الإرجاع — قبل أن يستقبل المتجر الطلبات.',
+          'يحتفظ العملاء في الاتحاد الأوروبي بحقهم القانوني في الانسحاب خلال 14 يومًا.',
+        ],
+      },
+    ],
+  },
+  imprint: {
+    title: 'بيانات الناشر',
+    local: 'Impressum',
+    placeholder: true,
+    sections: [
+      {
+        p: [
+          'يُنشر هنا الاسم القانوني للمشغّل وعنوانه وبيانات التواصل ومعلومات التسجيل قبل افتتاح المتجر.',
+        ],
+      },
+    ],
+  },
+  privacy: {
+    title: 'الخصوصية',
+    local: 'Datenschutz',
+    placeholder: true,
+    sections: [
+      {
+        h: 'اليوم',
+        p: [
+          'يحفظ هذا الموقع سلتك ومفضلتك في متصفحك أنت فقط (التخزين المحلي). لا يضع ملفات تتبّع أو إعلانات، ولا يجمع بيانات حساب أو دفع أو تحليلات.',
+        ],
+      },
+      {
+        h: 'عند الإطلاق',
+        p: [
+          'تُنشر هنا سياسة الخصوصية الكاملة — التي تشمل الطلبات والمدفوعات وشركاء التوصيل وحقوقك بموجب اللائحة الأوروبية GDPR والقانون المغربي 09-08 — قبل افتتاح المتجر.',
+        ],
+      },
+    ],
+  },
+  terms: {
+    title: 'الشروط',
+    local: 'AGB',
+    placeholder: true,
+    sections: [
+      {
+        p: ['تُنشر هنا الشروط والأحكام العامة للبيع قبل أن يستقبل المتجر الطلبات.'],
+      },
+    ],
+  },
+  faq: {
+    title: 'الأسئلة الشائعة',
+    sections: [
+      {
+        h: 'هل أستطيع الطلب الآن؟',
+        p: [
+          'ليس بعد. المتجر في مرحلة المعاينة: يمكنك تصفّح المجموعة 01 وحفظ القطع وتجهيز سلتك. يُفتح إتمام الطلب عند الإطلاق — تابعنا على إنستغرام لمعرفة الموعد.',
+        ],
+      },
+      {
+        h: 'أين توصّلون؟',
+        p: ['المغرب أولًا، ثم ألمانيا والاتحاد الأوروبي. تُؤكَّد الأسعار والمدد قبل الإطلاق.'],
+      },
+      {
+        h: 'هل سيتوفر الدفع عند الاستلام؟',
+        p: ['الدفع عند الاستلام في المغرب مخطط له عند الإطلاق.'],
+      },
+      {
+        h: 'كيف تكون قصّة قطع NATYSIMO؟',
+        p: [
+          'لكل صفحة منتج دليل مقاسات بقياسات الجسم. تُنشر ملاحظات القصّة لكل قطعة مع صور الإطلاق. بين مقاسين؟ اختر الأكبر لقصّة مريحة، والأصغر لقصّة أقرب إلى الجسم.',
+        ],
+      },
+      {
+        h: 'مم صُنعت القطع؟',
+        p: [
+          'يُؤكَّد تركيب الخامة مع الموردين ويُنشر في كل صفحة منتج عند الإطلاق. لا ننشر مواصفات لم نتحقق منها.',
+        ],
+      },
+      {
+        h: 'ما هي الأطقم؟',
+        p: [
+          'إطلالات منسّقة تُباع معًا بسعر طقم دائم. هذه طريقة بيع الإطلالات — وليست تخفيضًا، ولا تنتهي صلاحيتها.',
+        ],
+      },
+      {
+        h: 'لماذا بعض الصور عليها «تصميم رقمي للمنتج» أو «صورة تصوّرية»؟',
+        p: [
+          'تُعرض بعض القطع بتصاميم رقمية أو بصور تصوّرية للحملة إلى أن تُصوَّر صور المنتج النهائية. تُوسَم دائمًا، لتعرف متى لا تكون الصورة فوتوغرافية للقطعة النهائية.',
+        ],
+      },
+    ],
+  },
+  contact: {
+    title: 'تواصل معنا',
+    sections: [],
+  },
+};
+
+const UI = {
+  en: {
+    service: 'Service',
+    placeholderNote:
+      'Pre-launch page. The legally binding version is published before the store accepts orders.',
+    instagramDm: 'Instagram DM',
+    whatsapp: 'WhatsApp',
+    email: 'Email',
+    faqLead: 'Questions about sizing or delivery? Read the',
+    faqLink: 'FAQ',
+    faqTail: 'first — most answers are there.',
+  },
+  ar: {
+    service: 'الخدمة',
+    placeholderNote:
+      'صفحة ما قبل الإطلاق. تُنشر النسخة الملزمة قانونيًا قبل أن يقبل المتجر الطلبات.',
+    instagramDm: 'رسالة على إنستغرام',
+    whatsapp: 'واتساب',
+    email: 'البريد الإلكتروني',
+    faqLead: 'أسئلة عن المقاسات أو التوصيل؟ اقرأ',
+    faqLink: 'الأسئلة الشائعة',
+    faqTail: 'أولًا — أغلب الإجابات هناك.',
+  },
+} as const;
+
 export function generateStaticParams() {
-  return Object.keys(PAGES).map((page) => ({ page }));
+  return Object.keys(PAGES_EN).map((page) => ({ page }));
 }
 
 export function generateMetadata({ params }: { params: { page: string } }): Metadata {
-  const page = PAGES[params.page];
+  const page = (getLocale() === 'ar' ? PAGES_AR : PAGES_EN)[params.page];
   return page ? { title: page.title, alternates: { canonical: `/legal/${params.page}` } } : {};
 }
 
 export default function LegalPage({ params }: { params: { page: string } }) {
-  const page = PAGES[params.page];
+  const locale = getLocale();
+  const page = (locale === 'ar' ? PAGES_AR : PAGES_EN)[params.page];
   if (!page) notFound();
+  const ui = UI[locale];
 
   return (
     <div className="mx-auto min-h-[70svh] max-w-2xl px-5 pb-28 pt-32 sm:pt-40">
-      <p className="label text-mist">{page.local ? `Service · ${page.local}` : 'Service'}</p>
+      <p className="label text-mist">{page.local ? `${ui.service} · ${page.local}` : ui.service}</p>
       <h1 className="mt-4 font-display text-5xl leading-none sm:text-6xl">{page.title}</h1>
       {page.intro && <p className="mt-6 text-sm text-mist">{page.intro}</p>}
       {page.placeholder && (
@@ -167,7 +318,7 @@ export default function LegalPage({ params }: { params: { page: string } }) {
           role="note"
           className="mt-8 border border-white/15 px-4 py-3 text-xs leading-relaxed text-mist"
         >
-          Pre-launch page. The legally binding version is published before the store accepts orders.
+          {ui.placeholderNote}
         </p>
       )}
 
@@ -180,10 +331,12 @@ export default function LegalPage({ params }: { params: { page: string } }) {
             className="flex items-center justify-between border border-white/15 px-5 py-5 hover:border-ivory"
           >
             <span>
-              <span className="label block text-mist">Instagram DM</span>
+              <span className="label block text-mist">{ui.instagramDm}</span>
               <span className="mt-1 block">{SOCIAL.instagramHandle}</span>
             </span>
-            <span aria-hidden>→</span>
+            <span aria-hidden className="rtl:-scale-x-100">
+              →
+            </span>
           </a>
           {SOCIAL.whatsapp && (
             <a
@@ -193,10 +346,14 @@ export default function LegalPage({ params }: { params: { page: string } }) {
               className="flex items-center justify-between border border-white/15 px-5 py-5 hover:border-ivory"
             >
               <span>
-                <span className="label block text-mist">WhatsApp</span>
-                <span className="mt-1 block">+{SOCIAL.whatsapp}</span>
+                <span className="label block text-mist">{ui.whatsapp}</span>
+                <span dir="ltr" className="mt-1 block text-start">
+                  +{SOCIAL.whatsapp}
+                </span>
               </span>
-              <span aria-hidden>→</span>
+              <span aria-hidden className="rtl:-scale-x-100">
+                →
+              </span>
             </a>
           )}
           {SOCIAL.contactEmail && (
@@ -205,18 +362,22 @@ export default function LegalPage({ params }: { params: { page: string } }) {
               className="flex items-center justify-between border border-white/15 px-5 py-5 hover:border-ivory"
             >
               <span>
-                <span className="label block text-mist">Email</span>
-                <span className="mt-1 block">{SOCIAL.contactEmail}</span>
+                <span className="label block text-mist">{ui.email}</span>
+                <span dir="ltr" className="mt-1 block text-start">
+                  {SOCIAL.contactEmail}
+                </span>
               </span>
-              <span aria-hidden>→</span>
+              <span aria-hidden className="rtl:-scale-x-100">
+                →
+              </span>
             </a>
           )}
           <p className="pt-4 text-sm text-mist">
-            Questions about sizing or delivery? Read the{' '}
+            {ui.faqLead}{' '}
             <Link href="/legal/faq" className="underline underline-offset-4">
-              FAQ
+              {ui.faqLink}
             </Link>{' '}
-            first — most answers are there.
+            {ui.faqTail}
           </p>
         </div>
       ) : (

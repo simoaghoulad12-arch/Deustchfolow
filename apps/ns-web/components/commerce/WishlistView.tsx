@@ -5,19 +5,20 @@ import { useStore } from '@/lib/commerce/store';
 import { getProduct } from '@/lib/commerce/catalog';
 import { ProductCard } from '@/components/product/ProductCard';
 import type { Product } from '@/lib/commerce/types';
+import { useCopy } from '@/lib/i18n/copy';
+import { pages } from '@/lib/i18n/copy/pages';
 
 export function WishlistView() {
+  const t = useCopy(pages).wishlist;
   const { wishlist } = useStore();
   const items = wishlist.map(getProduct).filter((p): p is Product => Boolean(p));
 
   if (items.length === 0) {
     return (
       <div className="mt-16 max-w-md">
-        <p className="text-sm leading-relaxed text-mist">
-          Nothing saved yet. Tap the heart on any piece to keep it here.
-        </p>
+        <p className="text-sm leading-relaxed text-mist">{t.empty}</p>
         <Link href="/shop" className="btn-solid mt-8">
-          Shop Collection 01
+          {t.shop}
         </Link>
       </div>
     );

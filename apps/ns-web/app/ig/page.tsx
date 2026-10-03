@@ -3,7 +3,15 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Mark } from '@/components/brand/Mark';
 import { Icon } from '@/components/ui/Icon';
-import { BRAND, SOCIAL, WORLDS, WORLD_ORDER } from '@/lib/brand';
+import { BRAND, SOCIAL, WORLD_ORDER } from '@/lib/brand';
+import { getLocale } from '@/lib/i18n/server';
+import { pick } from '@/lib/i18n/copy';
+import { pages } from '@/lib/i18n/copy/pages';
+import { shell } from '@/lib/i18n/copy/shell';
+import { home } from '@/lib/i18n/copy/home';
+import { localizeProduct } from '@/lib/i18n/products';
+import { localizeSet } from '@/lib/i18n/sets';
+import { localizeWorld } from '@/lib/i18n/worlds';
 import { featuredProducts } from '@/lib/commerce/catalog';
 import { getSet } from '@/lib/commerce/sets';
 import { formatPrice } from '@/lib/commerce/provider';
@@ -15,16 +23,25 @@ import { ImageKindTag } from '@/components/product/ProductImage';
  * in 90 days — this page exists to turn that attention into store visits:
  * one screen, thumb-sized targets, the brand first, zero reading required.
  */
-export const metadata: Metadata = {
-  title: 'NATYSIMO — from @natty.simo',
-  description:
-    'Shop NATYSIMO Collection 01, the sets and the three worlds — straight from Instagram.',
-  alternates: { canonical: '/ig' },
-};
+export function generateMetadata(): Metadata {
+  const t = pick(pages, getLocale()).ig;
+  return {
+    title: t.title(SOCIAL.instagramHandle),
+    description: t.description,
+    alternates: { canonical: '/ig' },
+  };
+}
 
 export default function InstagramLanding() {
-  const look = getSet('gym-to-street');
-  const picks = featuredProducts().slice(0, 4);
+  const locale = getLocale();
+  const t = pick(pages, locale).ig;
+  const tagline = pick(home, locale).tagline;
+  const roots = pick(shell, locale).roots;
+  const source = getSet('gym-to-street');
+  const look = source ? localizeSet(source, locale) : undefined;
+  const picks = featuredProducts()
+    .slice(0, 4)
+    .map((p) => localizeProduct(p, locale));
 
   return (
     <div className="mx-auto max-w-md px-4 pb-32 pt-24">
@@ -32,16 +49,18 @@ export default function InstagramLanding() {
         <div className="w-16">
           <Mark priority sizes="64px" />
         </div>
-        <h1 className="mt-6 font-display text-4xl tracking-[0.2em]">{BRAND.name}</h1>
-        <p className="mt-2 font-display text-lg italic text-gold">{BRAND.tagline}</p>
+        <h1 data-latin className="mt-6 font-display text-4xl tracking-[0.2em]">
+          {BRAND.name}
+        </h1>
+        <p className="mt-2 font-display text-lg italic text-gold">{tagline}</p>
         <p className="label mt-4 text-mist">
-          From {SOCIAL.instagramHandle} · {BRAND.roots}
+          {t.from(SOCIAL.instagramHandle)} · {roots}
         </p>
       </div>
 
-      <nav aria-label="Quick links" className="mt-10 grid gap-2.5">
+      <nav aria-label={t.quick} className="mt-10 grid gap-2.5">
         <Link href="/shop" className="btn-solid w-full justify-between">
-          Shop Collection 01 <Icon name="arrow" className="h-4 w-4" />
+          {t.shop} <Icon name="arrow" className="h-4 w-4" />
         </Link>
         {look && (
           <Link
@@ -57,15 +76,15 @@ export default function InstagramLanding() {
             />
             <span className="relative flex w-full items-end justify-between">
               <span>
-                <span className="label block text-gold">The founder’s look</span>
+                <span className="label block text-gold">{t.founderLook}</span>
                 <span className="mt-1 block font-display text-2xl">{look.name}</span>
               </span>
-              <span className="text-sm tabular-nums">{formatPrice(look.priceCents)}</span>
+              <span className="text-sm tabular-nums">{formatPrice(look.priceCents, locale)}</span>
             </span>
           </Link>
         )}
         <Link href="/sets" className="btn-line w-full justify-between">
-          The Sets <Icon name="arrow" className="h-4 w-4" />
+          {t.sets} <Icon name="arrow" className="h-4 w-4" />
         </Link>
         {SOCIAL.planUrl && (
           <a
@@ -74,7 +93,7 @@ export default function InstagramLanding() {
             rel="noreferrer"
             className="btn-line w-full justify-between"
           >
-            The Training Plan <Icon name="arrow" className="h-4 w-4" />
+            {t.plan} <Icon name="arrow" className="h-4 w-4" />
           </a>
         )}
         {SOCIAL.squadUrl && (
@@ -84,7 +103,7 @@ export default function InstagramLanding() {
             rel="noreferrer"
             className="btn-line w-full justify-between"
           >
-            Join Natty Squad <Icon name="arrow" className="h-4 w-4" />
+            {t.squad} <Icon name="arrow" className="h-4 w-4" />
           </a>
         )}
       </nav>
@@ -100,14 +119,14 @@ export default function InstagramLanding() {
             <span className="w-10">
               <Mark world={id} sizes="40px" alt="" />
             </span>
-            <span className="label text-accent">{WORLDS[id].name}</span>
+            <span className="label text-accent">{localizeWorld(id, locale).name}</span>
           </Link>
         ))}
       </div>
 
       <section className="mt-10" aria-labelledby="ig-picks">
         <h2 id="ig-picks" className="label text-mist">
-          Most wanted
+          {t.mostWanted}
         </h2>
         <ul className="mt-4 grid grid-cols-2 gap-2">
           {picks.map((p) => (
@@ -122,11 +141,11 @@ export default function InstagramLanding() {
                     className="object-cover saturate-[0.7]"
                     style={{ objectPosition: p.images[0].position ?? '50% 50%' }}
                   />
-                  <ImageKindTag kind={p.images[0].kind} className="left-2 top-2" />
+                  <ImageKindTag kind={p.images[0].kind} className="start-2 top-2" />
                 </span>
                 <span className="mt-2 block truncate text-xs">{p.name}</span>
                 <span className="block text-xs tabular-nums text-mist">
-                  {formatPrice(p.price.amountCents)}
+                  {formatPrice(p.price.amountCents, locale)}
                 </span>
               </Link>
             </li>
@@ -141,10 +160,8 @@ export default function InstagramLanding() {
         rel="noreferrer"
         className="mt-10 flex flex-col items-center gap-1 border border-white/10 px-4 py-5 text-center transition-colors hover:border-accent"
       >
-        <span className="label text-gold">Waitlist</span>
-        <span className="text-sm">
-          DM <span className="tech text-ivory">SQUAD</span> to {SOCIAL.instagramHandle}
-        </span>
+        <span className="label text-gold">{t.waitlist}</span>
+        <span className="text-sm">{t.waitlistText(SOCIAL.instagramHandle)}</span>
       </a>
       <a
         href={SOCIAL.instagram}
@@ -152,7 +169,7 @@ export default function InstagramLanding() {
         rel="noreferrer"
         className="label mt-2 flex items-center justify-center gap-2 py-4 text-ivory/70"
       >
-        <Icon name="instagram" className="h-4 w-4" /> Questions? DM {SOCIAL.instagramHandle}
+        <Icon name="instagram" className="h-4 w-4" /> {t.questions(SOCIAL.instagramHandle)}
       </a>
     </div>
   );

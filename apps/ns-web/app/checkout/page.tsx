@@ -1,7 +1,12 @@
 import type { Metadata } from 'next';
 import { CheckoutView } from '@/components/commerce/CheckoutView';
+import { getLocale } from '@/lib/i18n/server';
+import { pick } from '@/lib/i18n/copy';
+import { checkout } from '@/lib/i18n/copy/checkout';
 
-export const metadata: Metadata = { title: 'Checkout', robots: { index: false } };
+export function generateMetadata(): Metadata {
+  return { title: pick(checkout, getLocale()).title, robots: { index: false } };
+}
 
 export default function CheckoutPage() {
   return (

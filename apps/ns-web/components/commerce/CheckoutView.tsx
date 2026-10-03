@@ -13,11 +13,17 @@ import {
   shippingFor,
 } from '@/lib/commerce/provider';
 import { cn } from '@/lib/cn';
+import { useLocale } from '@/lib/i18n/context';
+import { useCopy } from '@/lib/i18n/copy';
+import { checkout as copy } from '@/lib/i18n/copy/checkout';
+import { lineName, lineVariant } from '@/lib/i18n/cart';
 
 type Notice = { tone: 'info' | 'error'; text: string } | null;
 
 export function CheckoutView() {
   const { lines, subtotalCents, count } = useStore();
+  const t = useCopy(copy);
+  const locale = useLocale();
   const [shippingId, setShippingId] = useState(DEFAULT_SHIPPING.id);
   const [code, setCode] = useState('');
   const [codeNotice, setCodeNotice] = useState<Notice>(null);
@@ -28,14 +34,14 @@ export function CheckoutView() {
   const shippingCents = shippingFor(method, subtotalCents);
   const totalCents = subtotalCents + (shippingCents ?? 0);
   const shippingLabel = (cents: number | null) =>
-    cents === null ? 'Confirmed at launch' : cents === 0 ? 'Free' : formatPrice(cents);
+    cents === null ? t.confirmedAtLaunch : cents === 0 ? t.free : formatPrice(cents, locale);
 
   if (lines.length === 0) {
     return (
       <div className="flex min-h-[60svh] flex-col items-center justify-center text-center">
-        <h1 className="font-display text-5xl">Your bag is empty.</h1>
+        <h1 className="font-display text-5xl">{t.empty}</h1>
         <Link href="/shop" className="btn-solid mt-8">
-          Shop Collection 01
+          {t.shop}
         </Link>
       </div>
     );
@@ -46,8 +52,11 @@ export function CheckoutView() {
     const res = await getCommerceProvider().validateDiscount(code.trim());
     setCodeNotice(
       res.ok
-        ? { tone: 'info', text: `${res.data.code} applied` }
-        : { tone: 'error', text: res.message },
+        ? { tone: 'info', text: t.applied(res.data.code) }
+        : {
+            tone: 'error',
+            text: res.reason === 'not_configured' ? t.discountOffline : res.message,
+          },
     );
   };
 
@@ -64,7 +73,10 @@ export function CheckoutView() {
     if (res.ok) {
       window.location.href = res.data.redirectUrl;
     } else {
-      setNotice({ tone: 'error', text: res.message });
+      setNotice({
+        tone: 'error',
+        text: res.reason === 'not_configured' ? t.checkoutOffline : res.message,
+      });
     }
   };
 
@@ -75,24 +87,31 @@ export function CheckoutView() {
           role="status"
           className="mb-10 border border-gold/40 bg-gold/[0.06] px-5 py-4 text-sm leading-relaxed text-ivory/85"
         >
-          <span className="label mr-3 text-gold">Preview</span>
-          The NATYSIMO store is not taking payments yet. You can review your bag and delivery
-          options here — no order will be placed and nothing will be charged.
+          <span className="label me-3 text-gold">{t.previewLabel}</span>
+          {t.previewText}
         </div>
       )}
 
-      <h1 className="font-display text-5xl leading-none sm:text-6xl">Checkout</h1>
+      <h1 className="font-display text-5xl leading-none sm:text-6xl">{t.title}</h1>
 
       <form onSubmit={submit} className="mt-12 grid gap-14 lg:grid-cols-[1.2fr_1fr] lg:gap-20">
         <div className="space-y-12">
           <fieldset>
-            <legend className="label text-mist">01 — Contact</legend>
+            <legend className="label text-mist">{t.contact}</legend>
             <div className="mt-5 grid gap-3">
-              <Field label="Email" name="email" type="email" autoComplete="email" required />
               <Field
-                label="Phone (for delivery)"
+                label={t.email}
+                name="email"
+                type="email"
+                autoComplete="email"
+                dir="ltr"
+                required
+              />
+              <Field
+                label={t.phone}
                 name="tel"
                 type="tel"
+                dir="ltr"
                 autoComplete="tel"
                 inputMode="tel"
                 required
@@ -101,47 +120,46 @@ export function CheckoutView() {
           </fieldset>
 
           <fieldset>
-            <legend className="label text-mist">02 — Delivery address</legend>
+            <legend className="label text-mist">{t.address}</legend>
             <div className="mt-5 grid grid-cols-2 gap-3">
-              <Field label="First name" name="given-name" autoComplete="given-name" required />
-              <Field label="Last name" name="family-name" autoComplete="family-name" required />
+              <Field label={t.firstName} name="given-name" autoComplete="given-name" required />
+              <Field label={t.lastName} name="family-name" autoComplete="family-name" required />
               <Field
-                label="Street and number"
+                label={t.street}
                 name="address-line1"
                 autoComplete="address-line1"
                 required
                 className="col-span-2"
               />
               <Field
-                label="Postal code"
+                label={t.postal}
+                dir="ltr"
                 name="postal-code"
                 autoComplete="postal-code"
                 inputMode="numeric"
                 required
               />
-              <Field label="City" name="address-level2" autoComplete="address-level2" required />
+              <Field label={t.city} name="address-level2" autoComplete="address-level2" required />
               <label className="col-span-2 block">
-                <span className="sr-only">Country</span>
+                <span className="sr-only">{t.country}</span>
                 <select
                   name="country"
                   autoComplete="country"
                   className="h-14 w-full border border-white/15 bg-transparent px-4 text-sm text-ivory focus:border-accent focus:outline-none"
                   defaultValue="MA"
                 >
-                  <option value="MA">Morocco</option>
-                  <option value="DE">Germany</option>
-                  <option value="AT">Austria</option>
-                  <option value="NL">Netherlands</option>
-                  <option value="BE">Belgium</option>
-                  <option value="FR">France</option>
-                  <option value="CH">Switzerland</option>
+                  {Object.entries(t.countries).map(([code, name]) => (
+                    <option key={code} value={code}>
+                      {name}
+                    </option>
+                  ))}
                 </select>
               </label>
             </div>
           </fieldset>
 
           <fieldset>
-            <legend className="label text-mist">03 — Shipping</legend>
+            <legend className="label text-mist">{t.shipping}</legend>
             <div className="mt-5 grid gap-2">
               {SHIPPING_METHODS.map((m) => {
                 const price = shippingFor(m, subtotalCents);
@@ -163,53 +181,50 @@ export function CheckoutView() {
                         className="accent-[#c9a26b]"
                       />
                       <span>
-                        {m.label}
-                        <span className="block text-xs text-mist">{m.eta}</span>
+                        {t.methods[m.id]?.label ?? m.label}
+                        <span className="block text-xs text-mist">
+                          {t.methods[m.id]?.eta ?? m.eta}
+                        </span>
                       </span>
                     </span>
-                    <span className="text-right text-xs tabular-nums text-mist">
+                    <span className="text-end text-xs tabular-nums text-mist">
                       {shippingLabel(price)}
                     </span>
                   </label>
                 );
               })}
-              <p className="text-xs text-fog">
-                Delivery rates and times are confirmed when the store opens. Cash on delivery for
-                Morocco is planned for launch.
-              </p>
+              <p className="text-xs text-fog">{t.shippingNote}</p>
             </div>
           </fieldset>
 
           <fieldset>
-            <legend className="label text-mist">04 — Payment</legend>
+            <legend className="label text-mist">{t.payment}</legend>
             <div className="mt-5 border border-dashed border-white/15 px-5 py-6 text-sm text-mist">
-              {COMMERCE.paymentsEnabled
-                ? 'You will be redirected to our secure payment partner.'
-                : 'Payment methods appear here once the payment provider is connected.'}
+              {COMMERCE.paymentsEnabled ? t.paymentRedirect : t.paymentPending}
             </div>
           </fieldset>
         </div>
 
         <aside className="lg:sticky lg:top-28 lg:self-start">
           <div className="border border-white/[0.08] bg-coal p-5 sm:p-7">
-            <p className="label text-mist">Order summary · {count}</p>
+            <p className="label text-mist">{t.summary(count)}</p>
             <ul className="mt-6 divide-y divide-white/[0.07]">
               {lines.map((l) => (
                 <li key={l.sku} className="flex gap-4 py-4">
                   <div className="relative aspect-[4/5] w-16 shrink-0 overflow-hidden bg-graphite">
                     <Image src={l.image} alt="" fill sizes="64px" className="object-cover" />
-                    <span className="absolute right-1 top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-ivory px-1 text-[10px] text-ink">
+                    <span className="absolute end-1 top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-ivory px-1 text-[10px] text-ink">
                       {l.quantity}
                     </span>
                   </div>
                   <div className="flex flex-1 justify-between gap-3 text-sm">
                     <div>
-                      <p>{l.name}</p>
-                      <p className="mt-1 text-xs text-mist">
-                        {l.color} · {l.size}
-                      </p>
+                      <p>{lineName(l, locale)}</p>
+                      <p className="mt-1 text-xs text-mist">{lineVariant(l, locale)}</p>
                     </div>
-                    <p className="tabular-nums">{formatPrice(l.unitPriceCents * l.quantity)}</p>
+                    <p className="tabular-nums">
+                      {formatPrice(l.unitPriceCents * l.quantity, locale)}
+                    </p>
                   </div>
                 </li>
               ))}
@@ -217,16 +232,16 @@ export function CheckoutView() {
 
             <div className="mt-4 flex gap-2">
               <label className="flex-1">
-                <span className="sr-only">Discount code</span>
+                <span className="sr-only">{t.discount}</span>
                 <input
                   value={code}
                   onChange={(e) => setCode(e.target.value.toUpperCase())}
-                  placeholder="Discount code"
+                  placeholder={t.discount}
                   className="h-12 w-full border border-white/15 bg-transparent px-4 text-sm uppercase tracking-wider placeholder:normal-case placeholder:tracking-normal placeholder:text-fog focus:border-accent focus:outline-none"
                 />
               </label>
               <button type="button" onClick={applyCode} className="btn-line min-h-[48px] px-5">
-                Apply
+                {t.apply}
               </button>
             </div>
             {codeNotice && (
@@ -242,16 +257,16 @@ export function CheckoutView() {
 
             <dl className="mt-6 space-y-2.5 border-t border-white/[0.07] pt-5 text-sm">
               <div className="flex justify-between">
-                <dt className="text-mist">Subtotal</dt>
-                <dd className="tabular-nums">{formatPrice(subtotalCents)}</dd>
+                <dt className="text-mist">{t.subtotal}</dt>
+                <dd className="tabular-nums">{formatPrice(subtotalCents, locale)}</dd>
               </div>
               <div className="flex justify-between">
-                <dt className="text-mist">Shipping</dt>
-                <dd className="text-right tabular-nums">{shippingLabel(shippingCents)}</dd>
+                <dt className="text-mist">{t.shippingRow}</dt>
+                <dd className="text-end tabular-nums">{shippingLabel(shippingCents)}</dd>
               </div>
               <div className="flex justify-between border-t border-white/[0.07] pt-3 text-base">
-                <dt>{shippingCents === null ? 'Total (excl. delivery)' : 'Total'}</dt>
-                <dd className="tabular-nums">{formatPrice(totalCents)}</dd>
+                <dt>{shippingCents === null ? t.totalExcl : t.total}</dt>
+                <dd className="tabular-nums">{formatPrice(totalCents, locale)}</dd>
               </div>
             </dl>
 
@@ -262,9 +277,9 @@ export function CheckoutView() {
             >
               {COMMERCE.paymentsEnabled
                 ? pending
-                  ? 'Connecting…'
-                  : `Pay ${formatPrice(totalCents)}`
-                : 'Continue — payments not connected'}
+                  ? t.connecting
+                  : t.pay(formatPrice(totalCents, locale))
+                : t.continueOffline}
             </button>
             {notice && (
               <p role="alert" className="mt-4 text-sm leading-relaxed text-gold">

@@ -4,46 +4,78 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { products } from '@/lib/commerce/catalog';
-import { SETS, setTitle } from '@/lib/commerce/sets';
+import { SETS } from '@/lib/commerce/sets';
 import { formatPrice } from '@/lib/commerce/provider';
-import { WORLDS, WORLD_ORDER } from '@/lib/brand';
+import { WORLD_ORDER } from '@/lib/brand';
+import { useLocale } from '@/lib/i18n/context';
+import { useCopy } from '@/lib/i18n/copy';
+import { shell } from '@/lib/i18n/copy/shell';
+import type { Locale } from '@/lib/i18n/locale';
+import { categoryLabel, localizedProducts } from '@/lib/i18n/products';
+import { localizeSet, setTitleFor } from '@/lib/i18n/sets';
+import { localizedWorlds } from '@/lib/i18n/worlds';
 import { Icon } from '@/components/ui/Icon';
 
 type Result = { href: string; title: string; meta: string; image?: string; price?: number };
 
-const INDEX: (Result & { text: string })[] = [
-  ...products.map((p) => ({
-    href: `/product/${p.slug}`,
-    title: p.name,
-    meta: `${WORLDS[p.world].name} · ${p.line}`,
-    image: p.images[0].src,
-    price: p.price.amountCents,
-    text: [p.name, p.line, p.category, WORLDS[p.world].name, p.story, ...p.details]
-      .join(' ')
-      .toLowerCase(),
-  })),
-  ...SETS.map((s) => ({
-    href: `/sets/${s.slug}`,
-    title: setTitle(s),
-    meta: s.tagline,
-    image: s.image.src,
-    price: s.priceCents,
-    text: [s.name, 'set bundle look', s.tagline, s.story].join(' ').toLowerCase(),
-  })),
-  ...WORLD_ORDER.map((id) => ({
-    href: `/worlds/${id}`,
-    title: `NATYSIMO ${WORLDS[id].name}`,
-    meta: WORLDS[id].descriptor,
-    text: [WORLDS[id].name, WORLDS[id].descriptor, WORLDS[id].intro, 'world']
-      .join(' ')
-      .toLowerCase(),
-  })),
-];
+function buildIndex(locale: Locale): (Result & { text: string })[] {
+  const worlds = localizedWorlds(locale);
+  return [
+    ...localizedProducts(locale).map((p) => ({
+      href: `/product/${p.slug}`,
+      title: p.name,
+      meta: `${worlds[p.world].name} · ${p.line}`,
+      image: p.images[0].src,
+      price: p.price.amountCents,
+      text: [
+        p.name,
+        p.line,
+        categoryLabel(p.category, locale),
+        worlds[p.world].name,
+        p.story,
+        ...p.details,
+      ]
+        .join(' ')
+        .toLowerCase(),
+    })),
+    ...SETS.map((source) => {
+      const s = localizeSet(source, locale);
+      return {
+        href: `/sets/${s.slug}`,
+        title: setTitleFor(s, locale),
+        meta: s.tagline,
+        image: s.image.src,
+        price: s.priceCents,
+        text: [s.name, locale === 'ar' ? 'طقم إطلالة' : 'set bundle look', s.tagline, s.story]
+          .join(' ')
+          .toLowerCase(),
+      };
+    }),
+    ...WORLD_ORDER.map((id) => ({
+      href: `/worlds/${id}`,
+      title: `NATYSIMO ${worlds[id].name}`,
+      meta: worlds[id].descriptor,
+      text: [
+        worlds[id].name,
+        worlds[id].descriptor,
+        worlds[id].intro,
+        locale === 'ar' ? 'عالم' : 'world',
+      ]
+        .join(' ')
+        .toLowerCase(),
+    })),
+  ];
+}
 
-const SUGGESTIONS = ['Tank', 'Shorts', 'Hoodie', 'Set', 'Bag', 'Sports'];
+const SUGGESTIONS = {
+  en: ['Tank', 'Shorts', 'Hoodie', 'Set', 'Bag', 'Sports'],
+  ar: ['تانك', 'شورت', 'هودي', 'طقم', 'حقيبة', 'الرياضة'],
+};
 
 export function SearchOverlay({ open, onClose }: { open: boolean; onClose: () => void }) {
+  const locale = useLocale();
+  const t = useCopy(shell).search;
+  const INDEX = useMemo(() => buildIndex(locale), [locale]);
   const [q, setQ] = useState('');
   const input = useRef<HTMLInputElement>(null);
 
@@ -66,7 +98,7 @@ export function SearchOverlay({ open, onClose }: { open: boolean; onClose: () =>
     const terms = q.toLowerCase().trim().split(/\s+/).filter(Boolean);
     if (terms.length === 0) return [];
     return INDEX.filter((r) => terms.every((t) => r.text.includes(t))).slice(0, 8);
-  }, [q]);
+  }, [q, INDEX]);
 
   return (
     <AnimatePresence>
@@ -74,7 +106,7 @@ export function SearchOverlay({ open, onClose }: { open: boolean; onClose: () =>
         <motion.div
           role="dialog"
           aria-modal="true"
-          aria-label="Search"
+          aria-label={t.label}
           className="fixed inset-0 z-[55] flex flex-col bg-ink/[0.97] backdrop-blur-xl"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -83,14 +115,14 @@ export function SearchOverlay({ open, onClose }: { open: boolean; onClose: () =>
         >
           <div className="mx-auto flex w-full max-w-3xl items-center gap-3 border-b border-white/10 px-5 pb-4 pt-5 sm:pt-10">
             <label htmlFor="site-search" className="sr-only">
-              Search NATYSIMO
+              {t.labelHidden}
             </label>
             <input
               id="site-search"
               ref={input}
               value={q}
               onChange={(e) => setQ(e.target.value)}
-              placeholder="Search pieces, sets, worlds"
+              placeholder={t.placeholder}
               className="h-14 flex-1 bg-transparent font-display text-3xl text-ivory placeholder:text-fog focus:outline-none sm:text-4xl"
               autoComplete="off"
               enterKeyHint="search"
@@ -98,8 +130,8 @@ export function SearchOverlay({ open, onClose }: { open: boolean; onClose: () =>
             <button
               type="button"
               onClick={onClose}
-              className="-mr-2 flex h-11 w-11 items-center justify-center"
-              aria-label="Close search"
+              className="-me-2 flex h-11 w-11 items-center justify-center"
+              aria-label={t.close}
             >
               <Icon name="close" />
             </button>
@@ -108,7 +140,7 @@ export function SearchOverlay({ open, onClose }: { open: boolean; onClose: () =>
           <div className="mx-auto w-full max-w-3xl flex-1 overflow-y-auto px-5 py-6">
             {q.trim() === '' ? (
               <div className="flex flex-wrap gap-2">
-                {SUGGESTIONS.map((s) => (
+                {SUGGESTIONS[locale].map((s) => (
                   <button
                     key={s}
                     type="button"
@@ -120,7 +152,7 @@ export function SearchOverlay({ open, onClose }: { open: boolean; onClose: () =>
                 ))}
               </div>
             ) : results.length === 0 ? (
-              <p className="text-sm text-mist">Nothing for “{q}”. Try “tank”, “set” or “hoodie”.</p>
+              <p className="text-sm text-mist">{t.empty(q)}</p>
             ) : (
               <ul className="divide-y divide-white/[0.07]" aria-live="polite">
                 {results.map((r) => (
@@ -136,7 +168,7 @@ export function SearchOverlay({ open, onClose }: { open: boolean; onClose: () =>
                         <span className="mt-1 block truncate text-xs text-mist">{r.meta}</span>
                       </span>
                       {r.price !== undefined && (
-                        <span className="text-sm tabular-nums">{formatPrice(r.price)}</span>
+                        <span className="text-sm tabular-nums">{formatPrice(r.price, locale)}</span>
                       )}
                     </Link>
                   </li>
