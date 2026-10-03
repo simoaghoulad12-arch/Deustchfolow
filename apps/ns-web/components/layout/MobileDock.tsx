@@ -5,6 +5,8 @@ import { usePathname } from 'next/navigation';
 import { useStore } from '@/lib/commerce/store';
 import { Icon } from '@/components/ui/Icon';
 import { cn } from '@/lib/cn';
+import { useCopy } from '@/lib/i18n/copy';
+import { shell } from '@/lib/i18n/copy/shell';
 
 /**
  * Thumb-zone navigation for phones — most traffic arrives from Instagram on
@@ -15,6 +17,7 @@ import { cn } from '@/lib/cn';
 export function MobileDock() {
   const pathname = usePathname();
   const { count, openCart, wishlist } = useStore();
+  const t = useCopy(shell);
   if (pathname.startsWith('/product/') || pathname.startsWith('/checkout')) return null;
 
   const item = (active: boolean) =>
@@ -25,13 +28,13 @@ export function MobileDock() {
 
   return (
     <nav
-      aria-label="Quick navigation"
+      aria-label={t.dock.aria}
       className="safe-bottom fixed inset-x-0 bottom-0 z-30 border-t border-white/[0.07] bg-ink/85 backdrop-blur-xl lg:hidden"
     >
       <div className="flex">
         <Link href="/shop" className={item(pathname.startsWith('/shop'))}>
           <Icon name="grid" className="h-[18px] w-[18px]" />
-          Shop
+          {t.dock.shop}
         </Link>
         <button
           type="button"
@@ -39,20 +42,20 @@ export function MobileDock() {
           onClick={() => window.dispatchEvent(new Event('natysimo:open-menu'))}
         >
           <Icon name="crown" className="h-[18px] w-[18px]" />
-          Worlds
+          {t.dock.worlds}
         </button>
         <Link href="/wishlist" className={item(pathname.startsWith('/wishlist'))}>
           <Icon name="heart" className="h-[18px] w-[18px]" />
-          Saved {wishlist.length > 0 ? wishlist.length : ''}
+          {t.dock.saved} {wishlist.length > 0 ? wishlist.length : ''}
         </Link>
         <button
           type="button"
           onClick={openCart}
           className={item(false)}
-          aria-label={`Open bag, ${count} items`}
+          aria-label={t.header.openBag(count)}
         >
           <Icon name="bag" className="h-[18px] w-[18px]" />
-          Bag {count > 0 ? count : ''}
+          {t.dock.bag} {count > 0 ? count : ''}
         </button>
       </div>
     </nav>

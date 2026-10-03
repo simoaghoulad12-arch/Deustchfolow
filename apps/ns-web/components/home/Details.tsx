@@ -1,41 +1,31 @@
 import Image from 'next/image';
 import { Reveal } from '@/components/motion/Reveal';
+import { getLocale } from '@/lib/i18n/server';
+import { pick } from '@/lib/i18n/copy';
+import { home } from '@/lib/i18n/copy/home';
 
 /** Real photography only — details as worn on the produced pieces. */
-const DETAILS = [
-  {
-    src: '/images/photo/worn-tank-chest.jpg',
-    title: 'The crown monogram',
-    body: 'Intertwined NS beneath the crown, left chest of the Performance Tank.',
-  },
-  {
-    src: '/images/photo/worn-shorts-leg.jpg',
-    title: 'Contour lines',
-    body: 'Silver lines and the monogram on the Training Shorts.',
-  },
-  {
-    src: '/images/photo/worn-tee-bag.jpg',
-    title: 'Mark & wordmark',
-    body: 'NS, crown and NATYSIMO — on the Essential Tee and Crossbody Bag.',
-  },
-  {
-    src: '/images/photo/worn-socks.jpg',
-    title: 'Down to the socks',
-    body: 'The same mark at the ankle. Every piece carries it.',
-  },
+const SOURCES = [
+  '/images/photo/worn-tank-chest.jpg',
+  '/images/photo/worn-shorts-leg.jpg',
+  '/images/photo/worn-tee-bag.jpg',
+  '/images/photo/worn-socks.jpg',
 ];
 
 export function Details() {
+  const t = pick(home, getLocale()).details;
+  const DETAILS = t.items.map((d, i) => ({ ...d, src: SOURCES[i] ?? '' }));
   return (
     <section className="bg-coal py-24 sm:py-36" aria-labelledby="details-title">
       <div className="mx-auto max-w-[1600px] px-5 sm:px-8">
         <Reveal>
-          <p className="label text-mist">Premium details</p>
+          <p className="label text-mist">{t.eyebrow}</p>
           <h2
             id="details-title"
             className="mt-5 max-w-3xl font-display text-5xl leading-[1] sm:text-7xl"
           >
-            Details make the <span className="italic text-ivory/60">difference.</span>
+            {t.title[0]}
+            <span className="italic text-ivory/60">{t.title[1]}</span>
           </h2>
         </Reveal>
       </div>
@@ -58,7 +48,7 @@ export function Details() {
               </div>
               <figcaption className="mt-4">
                 <p className="label text-ivory">
-                  <span className="mr-3 text-fog">0{i + 1}</span>
+                  <span className="me-3 text-fog">0{i + 1}</span>
                   {d.title}
                 </p>
                 <p className="mt-2 text-sm text-mist">{d.body}</p>

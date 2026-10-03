@@ -7,14 +7,21 @@ import type { Product } from '@/lib/commerce/types';
 import { availability, findVariant } from '@/lib/commerce/catalog';
 import { formatPrice } from '@/lib/commerce/provider';
 import { useStore } from '@/lib/commerce/store';
-import { WORLDS } from '@/lib/brand';
+import { useLocale } from '@/lib/i18n/context';
+import { useCopy } from '@/lib/i18n/copy';
+import { productCopy } from '@/lib/i18n/copy/product';
+import { colorName, localizeProduct, sizeName } from '@/lib/i18n/products';
+import { localizeWorld } from '@/lib/i18n/worlds';
 import { cn } from '@/lib/cn';
 import { Icon } from '@/components/ui/Icon';
 import { SizeGuide } from './SizeGuide';
 import { WishButton } from './WishButton';
 
-export function PurchasePanel({ product }: { product: Product }) {
+export function PurchasePanel({ product: source }: { product: Product }) {
   const router = useRouter();
+  const locale = useLocale();
+  const t = useCopy(productCopy).purchase;
+  const product = localizeProduct(source, locale);
   const { addLine } = useStore();
   const [color, setColor] = useState(product.colors[0].name);
   const oneSize = product.sizes.length === 1;
@@ -24,7 +31,7 @@ export function PurchasePanel({ product }: { product: Product }) {
   const [barVisible, setBarVisible] = useState(false);
   const ctaRef = useRef<HTMLDivElement>(null);
   const sizesRef = useRef<HTMLFieldSetElement>(null);
-  const world = WORLDS[product.world];
+  const world = localizeWorld(product.world, locale);
 
   // Sticky mobile bar appears once the primary CTA scrolls out of view.
   useEffect(() => {
@@ -39,7 +46,7 @@ export function PurchasePanel({ product }: { product: Product }) {
     return () => io.disconnect();
   }, []);
 
-  const stock = availability(product, color, size);
+  const stock = availability(product, color, size, locale);
   const soldOut = (s: string) => findVariant(product, color, s)?.inventory === 0;
 
   const add = (thenCheckout: boolean) => {
@@ -53,7 +60,7 @@ export function PurchasePanel({ product }: { product: Product }) {
     addLine({
       sku: variant.sku,
       slug: product.slug,
-      name: product.name,
+      name: source.name,
       world: product.world,
       color,
       size,
@@ -74,9 +81,9 @@ export function PurchasePanel({ product }: { product: Product }) {
             {product.name}
           </h1>
         </div>
-        <WishButton slug={product.slug} name={product.name} className="-mr-2 -mt-1 shrink-0" />
+        <WishButton slug={product.slug} name={product.name} className="-me-2 -mt-1 shrink-0" />
       </div>
-      <p className="mt-4 text-lg tabular-nums">{formatPrice(product.price.amountCents)}</p>
+      <p className="mt-4 text-lg tabular-nums">{formatPrice(product.price.amountCents, locale)}</p>
       <p className="mt-3 flex items-center gap-2 text-xs text-mist">
         <span
           aria-hidden
@@ -96,8 +103,8 @@ export function PurchasePanel({ product }: { product: Product }) {
       {/* Colour */}
       <fieldset className="mt-9">
         <legend className="label flex w-full justify-between text-mist">
-          <span>Colour</span>
-          <span className="text-ivory">{color}</span>
+          <span>{t.colour}</span>
+          <span className="text-ivory">{colorName(color, locale)}</span>
         </legend>
         <div className="mt-4 flex gap-3">
           {product.colors.map((c) => (
@@ -106,7 +113,7 @@ export function PurchasePanel({ product }: { product: Product }) {
               type="button"
               onClick={() => setColor(c.name)}
               aria-pressed={color === c.name}
-              aria-label={c.name}
+              aria-label={colorName(c.name, locale)}
               className={cn(
                 'flex h-11 w-11 items-center justify-center rounded-full border transition-colors',
                 color === c.name ? 'border-accent' : 'border-white/15 hover:border-white/40',
@@ -126,14 +133,14 @@ export function PurchasePanel({ product }: { product: Product }) {
         <fieldset ref={sizesRef} className="mt-8">
           <legend className="label flex w-full items-center justify-between text-mist">
             <span className={cn(needSize && !size && 'text-accent')}>
-              {needSize && !size ? 'Select a size' : 'Size'}
+              {needSize && !size ? t.selectSizePrompt : t.size}
             </span>
             <button
               type="button"
               onClick={() => setGuideOpen(true)}
               className="flex items-center gap-2 text-ivory underline-offset-4 hover:underline"
             >
-              <Icon name="ruler" className="h-4 w-4" /> Size guide
+              <Icon name="ruler" className="h-4 w-4" /> {t.sizeGuide}
             </button>
           </legend>
           <div className="mt-4 grid grid-cols-3 gap-2 sm:grid-cols-6">
@@ -157,7 +164,7 @@ export function PurchasePanel({ product }: { product: Product }) {
                     out && 'cursor-not-allowed text-fog line-through',
                   )}
                 >
-                  {s}
+                  {sizeName(s, locale)}
                 </button>
               );
             })}
@@ -167,20 +174,15 @@ export function PurchasePanel({ product }: { product: Product }) {
 
       <div ref={ctaRef} className="mt-8 grid gap-2.5">
         <button type="button" onClick={() => add(false)} className="btn-solid w-full">
-          Add to bag
+          {t.addToBag}
         </button>
         <button type="button" onClick={() => add(true)} className="btn-line w-full">
-          Buy now
+          {t.buyNow}
         </button>
       </div>
 
       <ul className="mt-8 grid grid-cols-2 gap-px bg-white/[0.07] text-[11px] leading-snug text-mist">
-        {[
-          ['Delivery', 'Morocco & Europe'],
-          ['Size guide', 'Body measurements'],
-          ['Returns', 'Policy published at launch'],
-          ['Support', 'Direct via Instagram'],
-        ].map(([k, v]) => (
+        {t.info.map(([k, v]) => (
           <li key={k} className="bg-ink px-3 py-3">
             <span className="label block text-ivory/80">{k}</span>
             <span className="mt-1 block">{v}</span>
@@ -203,8 +205,8 @@ export function PurchasePanel({ product }: { product: Product }) {
               <div className="min-w-0 flex-1">
                 <p className="truncate text-sm">{product.name}</p>
                 <p className="text-xs tabular-nums text-mist">
-                  {formatPrice(product.price.amountCents)}
-                  {size ? ` · ${size}` : ''}
+                  {formatPrice(product.price.amountCents, locale)}
+                  {size ? ` · ${sizeName(size, locale)}` : ''}
                 </p>
               </div>
               <button
@@ -212,7 +214,7 @@ export function PurchasePanel({ product }: { product: Product }) {
                 onClick={() => add(false)}
                 className="btn-solid min-h-[48px] px-6"
               >
-                {size ? 'Add to bag' : 'Select size'}
+                {size ? t.addToBag : t.selectSize}
               </button>
             </div>
           </motion.div>

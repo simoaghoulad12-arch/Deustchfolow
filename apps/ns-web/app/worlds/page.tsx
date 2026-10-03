@@ -1,12 +1,17 @@
 import type { Metadata } from 'next';
 import { Worlds } from '@/components/home/Worlds';
+import { getLocale } from '@/lib/i18n/server';
+import { pick } from '@/lib/i18n/copy';
+import { worldPage } from '@/lib/i18n/copy/worldpage';
 
-export const metadata: Metadata = {
-  title: 'Worlds — Sports, Clothing, Hybrid',
-  description:
-    'Three worlds inside NATYSIMO: Sports (performance, training), Clothing (streetwear, lifestyle) and Hybrid (gym to street).',
-  alternates: { canonical: '/worlds' },
-};
+export function generateMetadata(): Metadata {
+  const t = pick(worldPage, getLocale());
+  return {
+    title: t.indexTitle,
+    description: t.indexDescription,
+    alternates: { canonical: '/worlds' },
+  };
+}
 
 export default function WorldsPage() {
   return (

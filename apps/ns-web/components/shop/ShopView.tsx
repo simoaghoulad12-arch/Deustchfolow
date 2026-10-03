@@ -3,13 +3,18 @@
 import { useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { products } from '@/lib/commerce/catalog';
-import { WORLDS, WORLD_ORDER, isWorldId, type WorldId } from '@/lib/brand';
+import { WORLD_ORDER, isWorldId, type WorldId } from '@/lib/brand';
+import { useWorlds } from '@/lib/i18n/useWorlds';
+import { useCopy } from '@/lib/i18n/copy';
+import { home } from '@/lib/i18n/copy/home';
 import { ProductCard } from '@/components/product/ProductCard';
 import { cn } from '@/lib/cn';
 
 type Filter = 'all' | WorldId;
 
 export function ShopView() {
+  const t = useCopy(home).shop;
+  const WORLDS = useWorlds();
   const [filter, setFilter] = useState<Filter>('all');
 
   // Deep links from Instagram: /shop?world=sports
@@ -32,7 +37,7 @@ export function ShopView() {
         <div
           className="no-scrollbar flex gap-6 overflow-x-auto sm:gap-10"
           role="tablist"
-          aria-label="Filter by world"
+          aria-label={t.filterAria}
         >
           {(['all', ...WORLD_ORDER] as Filter[]).map((f) => {
             const count =
@@ -49,8 +54,8 @@ export function ShopView() {
                   filter === f ? 'text-ivory' : 'text-fog hover:text-ivory/80',
                 )}
               >
-                {f === 'all' ? 'All' : WORLDS[f].name}
-                <sup className="ml-1 text-[8px] text-fog">{count}</sup>
+                {f === 'all' ? t.all : WORLDS[f].name}
+                <sup className="ms-1 text-[8px] text-fog">{count}</sup>
                 {filter === f && (
                   <motion.span
                     layoutId="shop-tab"
@@ -71,9 +76,7 @@ export function ShopView() {
           exit={{ opacity: 0 }}
           className="mt-8 max-w-xl text-sm leading-relaxed text-mist"
         >
-          {filter === 'all'
-            ? `${products.length} pieces across three worlds. One standard.`
-            : WORLDS[filter].intro}
+          {filter === 'all' ? t.intro(products.length) : WORLDS[filter].intro}
         </motion.p>
       </AnimatePresence>
 

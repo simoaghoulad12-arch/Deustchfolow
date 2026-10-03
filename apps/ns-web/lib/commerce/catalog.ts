@@ -440,19 +440,42 @@ export const SIZE_GUIDES = {
 
 export type Availability = { label: string; tone: 'ok' | 'low' | 'out' | 'unknown' };
 
+const AVAILABILITY = {
+  en: {
+    unknown: 'Collection 01 · availability confirmed at launch',
+    soldOutSize: 'Sold out in this size',
+    soldOut: 'Sold out',
+    low: (units: number) => `Only ${units} left`,
+    ok: 'In stock',
+  },
+  ar: {
+    unknown: 'المجموعة 01 · يُؤكَّد التوفر عند الإطلاق',
+    soldOutSize: 'نفدت الكمية في هذا المقاس',
+    soldOut: 'نفدت الكمية',
+    low: (units: number) => `متبقٍ ${units} فقط`,
+    ok: 'متوفر',
+  },
+} as const;
+
 /**
  * Stock status for the selected variant (or the product when no size is
  * chosen). Untracked inventory (`null`) never pretends to be "in stock".
  */
-export function availability(product: Product, color: string, size: string | null): Availability {
+export function availability(
+  product: Product,
+  color: string,
+  size: string | null,
+  locale: 'en' | 'ar' = 'en',
+): Availability {
+  const t = AVAILABILITY[locale];
   const pool = product.variants.filter(
     (v) => v.color === color && (size === null || v.size === size),
   );
   if (pool.length === 0 || pool.every((v) => v.inventory === null)) {
-    return { label: 'Collection 01 · availability confirmed at launch', tone: 'unknown' };
+    return { label: t.unknown, tone: 'unknown' };
   }
   const units = pool.reduce((n, v) => n + (v.inventory ?? 0), 0);
-  if (units === 0) return { label: size ? 'Sold out in this size' : 'Sold out', tone: 'out' };
-  if (units <= 5) return { label: `Only ${units} left`, tone: 'low' };
-  return { label: 'In stock', tone: 'ok' };
+  if (units === 0) return { label: size ? t.soldOutSize : t.soldOut, tone: 'out' };
+  if (units <= 5) return { label: t.low(units), tone: 'low' };
+  return { label: t.ok, tone: 'ok' };
 }

@@ -25,6 +25,37 @@
   --accent-2: 255 255 255;
 }
 
+/*
+ * Arabic (right-to-left). The font variables swap to IBM Plex Sans Arabic;
+ * letter-spacing breaks the joining of Arabic letters, and Arabic has no
+ * uppercase or italic. Latin brand text opts out with data-latin.
+ */
+html[dir='rtl'] {
+  --font-display: var(--font-arabic);
+  --font-sans: var(--font-arabic);
+}
+[dir='rtl'] [class*='tracking-']:not([data-latin]),
+[dir='rtl'] .label:not([data-latin]),
+[dir='rtl'] .tech:not([data-latin]),
+[dir='rtl'] .btn:not([data-latin]) {
+  letter-spacing: normal;
+}
+[dir='rtl'] .uppercase:not([data-latin]),
+[dir='rtl'] .label:not([data-latin]),
+[dir='rtl'] .tech:not([data-latin]),
+[dir='rtl'] .btn:not([data-latin]) {
+  text-transform: none;
+}
+[dir='rtl'] .italic:not([data-latin]),
+[dir='rtl'] em:not([data-latin]) {
+  font-style: normal;
+}
+[dir='rtl'] h1,
+[dir='rtl'] h2,
+[dir='rtl'] h3 {
+  line-height: 1.25;
+}
+
 @layer base {
   html {
     -webkit-text-size-adjust: 100%;

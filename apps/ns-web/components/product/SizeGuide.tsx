@@ -2,7 +2,10 @@
 
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect } from 'react';
-import { SIZE_GUIDES } from '@/lib/commerce/catalog';
+import { useLocale } from '@/lib/i18n/context';
+import { useCopy } from '@/lib/i18n/copy';
+import { productCopy } from '@/lib/i18n/copy/product';
+import { sizeGuide, sizeName } from '@/lib/i18n/products';
 import type { Product } from '@/lib/commerce/types';
 import { Icon } from '@/components/ui/Icon';
 
@@ -15,7 +18,9 @@ export function SizeGuide({
   open: boolean;
   onClose: () => void;
 }) {
-  const guide = SIZE_GUIDES[product.sizeGuide];
+  const locale = useLocale();
+  const t = useCopy(productCopy).guide;
+  const guide = sizeGuide(product.sizeGuide, locale);
 
   useEffect(() => {
     if (!open) return;
@@ -30,7 +35,7 @@ export function SizeGuide({
         <>
           <motion.button
             type="button"
-            aria-label="Close size guide"
+            aria-label={t.close}
             className="fixed inset-0 z-50 bg-black/70"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -41,7 +46,7 @@ export function SizeGuide({
             <motion.div
               role="dialog"
               aria-modal="true"
-              aria-label="Size guide"
+              aria-label={t.title}
               className="safe-bottom pointer-events-auto max-h-[85svh] w-full overflow-y-auto border-t border-white/10 bg-coal px-5 pb-8 pt-5 sm:w-[520px] sm:border"
               initial={{ y: 40, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
@@ -49,12 +54,12 @@ export function SizeGuide({
               transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
             >
               <div className="flex items-center justify-between">
-                <p className="label">Size guide</p>
+                <p className="label">{t.title}</p>
                 <button
                   type="button"
                   onClick={onClose}
-                  className="-mr-2 flex h-11 w-11 items-center justify-center"
-                  aria-label="Close size guide"
+                  className="-me-2 flex h-11 w-11 items-center justify-center"
+                  aria-label={t.close}
                 >
                   <Icon name="close" />
                 </button>
@@ -62,7 +67,7 @@ export function SizeGuide({
               {guide ? (
                 <>
                   <p className="mt-4 font-display text-2xl">{guide.title}</p>
-                  <table className="mt-6 w-full text-left text-sm">
+                  <table className="mt-6 w-full text-start text-sm">
                     <thead>
                       <tr className="border-b border-white/10">
                         {guide.columns.map((c) => (
@@ -80,21 +85,17 @@ export function SizeGuide({
                               key={i}
                               className={`py-3 tabular-nums ${i === 0 ? 'font-medium' : 'text-ivory/80'}`}
                             >
-                              {cell}
+                              {i === 0 ? sizeName(cell, locale) : cell}
                             </td>
                           ))}
                         </tr>
                       ))}
                     </tbody>
                   </table>
-                  <p className="mt-6 text-xs leading-relaxed text-mist">
-                    Standard body measurements for choosing your size. Garment measurements for each
-                    piece are published with the Collection 01 launch. Between sizes? Size up for a
-                    relaxed fit, down for a closer one.
-                  </p>
+                  <p className="mt-6 text-xs leading-relaxed text-mist">{t.note}</p>
                 </>
               ) : (
-                <p className="mt-4 text-sm text-mist">One size.</p>
+                <p className="mt-4 text-sm text-mist">{t.oneSize}</p>
               )}
             </motion.div>
           </div>

@@ -38,7 +38,11 @@ export function Icon({
     <svg
       viewBox="0 0 24 24"
       aria-hidden="true"
-      className={cn('h-[20px] w-[20px]', className)}
+      className={cn(
+        'h-[20px] w-[20px]',
+        (name === 'arrow' || name === 'chevron') && 'rtl:-scale-x-100',
+        className,
+      )}
       fill={filled ? 'currentColor' : 'none'}
       stroke="currentColor"
       strokeWidth={1.25}

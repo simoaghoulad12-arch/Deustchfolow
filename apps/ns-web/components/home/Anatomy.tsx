@@ -6,46 +6,25 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Reveal } from '@/components/motion/Reveal';
 import { cn } from '@/lib/cn';
+import { useCopy } from '@/lib/i18n/copy';
+import { home } from '@/lib/i18n/copy/home';
 
 /**
  * Product anatomy of the Training Set, on real photography of the produced
  * Performance Tank and Training Shorts. Only visible design details are
  * annotated — no fabric or tech claims. Coordinates are % of the photo.
  */
-const POINTS = [
-  {
-    x: 37,
-    y: 50,
-    title: 'Crown monogram',
-    body: 'The intertwined NS beneath the crown, left chest. The mark every piece is built around.',
-  },
-  {
-    x: 22,
-    y: 53,
-    title: 'Contour lines',
-    body: 'Silver lines trace the body from the armhole down — the signature of the Sports world.',
-  },
-  {
-    x: 28,
-    y: 41,
-    title: 'Racer cut',
-    body: 'Deep armholes and narrow straps, cut to leave the shoulders free.',
-  },
-  {
-    x: 20,
-    y: 70,
-    title: 'Contour print',
-    body: 'The same silver line language carried onto the Training Shorts.',
-  },
-  {
-    x: 43,
-    y: 76.5,
-    title: 'Leg monogram',
-    body: 'The crown monogram at the leg of the shorts — the set reads as one line.',
-  },
+const COORDS = [
+  { x: 37, y: 50 },
+  { x: 22, y: 53 },
+  { x: 28, y: 41 },
+  { x: 20, y: 70 },
+  { x: 43, y: 76.5 },
 ];
 
 export function Anatomy() {
+  const t = useCopy(home).anatomy;
+  const POINTS = t.points.map((p, i) => ({ ...p, ...COORDS[i]! }));
   const [active, setActive] = useState(0);
 
   return (
@@ -59,7 +38,7 @@ export function Anatomy() {
           <div className="relative aspect-[1086/1448] overflow-hidden bg-graphite">
             <Image
               src="/images/photo/gym-tank-mirror.jpg"
-              alt="The Performance Tank and Training Shorts worn in the gym"
+              alt={t.alt}
               fill
               sizes="(min-width: 1024px) 50vw, 100vw"
               className="object-cover grayscale-[0.5] brightness-[0.85]"
@@ -95,14 +74,11 @@ export function Anatomy() {
 
         <div>
           <Reveal>
-            <p className="label text-accent">Product anatomy · The Training Set</p>
+            <p className="label text-accent">{t.eyebrow}</p>
             <h2 id="anatomy-title" className="mt-5 font-display text-5xl leading-[1] sm:text-7xl">
-              Tank &amp; Shorts.
+              {t.title}
             </h2>
-            <p className="mt-6 max-w-md text-sm leading-relaxed text-mist">
-              The set NATYSIMO was built in, as worn. Five details, each one deliberate — tap a number to
-              read the garment.
-            </p>
+            <p className="mt-6 max-w-md text-sm leading-relaxed text-mist">{t.intro}</p>
           </Reveal>
 
           <ol className="mt-10 border-t border-white/10">
@@ -111,7 +87,7 @@ export function Anatomy() {
                 <button
                   type="button"
                   onClick={() => setActive(i)}
-                  className="flex w-full items-baseline gap-5 py-5 text-left"
+                  className="flex w-full items-baseline gap-5 py-5 text-start"
                   aria-expanded={active === i}
                 >
                   <span
@@ -147,7 +123,7 @@ export function Anatomy() {
 
           <Reveal className="mt-10">
             <Link href="/sets/training-set" className="btn-solid">
-              Shop the Training Set
+              {t.cta}
             </Link>
           </Reveal>
         </div>

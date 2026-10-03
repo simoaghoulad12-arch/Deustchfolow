@@ -7,6 +7,9 @@ import { products } from '@/lib/commerce/catalog';
 import { ProductCard } from '@/components/product/ProductCard';
 import { Reveal } from '@/components/motion/Reveal';
 import { Icon } from '@/components/ui/Icon';
+import { useLocale } from '@/lib/i18n/context';
+import { useCopy } from '@/lib/i18n/copy';
+import { home } from '@/lib/i18n/copy/home';
 
 /**
  * COLLECTION 01 runway.
@@ -15,6 +18,8 @@ import { Icon } from '@/components/ui/Icon';
  * natural under a thumb than scroll-jacking.
  */
 export function Collection() {
+  const t = useCopy(home).collection;
+  const rtl = useLocale() === 'ar';
   const section = useRef<HTMLElement>(null);
   const rail = useRef<HTMLDivElement>(null);
   const reduce = useReducedMotion();
@@ -32,22 +37,23 @@ export function Collection() {
   }, []);
 
   const { scrollYProgress } = useScroll({ target: section, offset: ['start start', 'end end'] });
-  const x = useTransform(scrollYProgress, [0, 1], [0, -distance]);
+  // The rail starts at the right edge in Arabic, so it travels the other way.
+  const x = useTransform(scrollYProgress, [0, 1], [0, rtl ? distance : -distance]);
   const progress = useTransform(scrollYProgress, [0, 1], ['0%', '100%']);
 
   const header = (
     <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
       <div>
-        <p className="label text-mist">Chapter one · {products.length} pieces</p>
+        <p className="label text-mist">{t.eyebrow(products.length)}</p>
         <h2 id="collection-title" className="mt-5 font-display text-5xl leading-none sm:text-7xl">
-          Collection 01
+          {t.title}
         </h2>
       </div>
       <Link
         href="/shop"
         className="label inline-flex items-center gap-3 text-ivory/80 hover:text-gold"
       >
-        View all <Icon name="arrow" className="h-4 w-4" />
+        {t.viewAll} <Icon name="arrow" className="h-4 w-4" />
       </Link>
     </div>
   );
@@ -67,8 +73,8 @@ export function Collection() {
             href="/shop"
             className="flex w-[50vw] max-w-[240px] shrink-0 snap-start flex-col items-center justify-center gap-4 border border-white/10 text-center"
           >
-            <span className="font-display text-3xl">View all</span>
-            <span className="label text-mist">Collection 01</span>
+            <span className="font-display text-3xl">{t.viewAll}</span>
+            <span className="label text-mist">{t.title}</span>
           </Link>
         </div>
       </section>
@@ -88,19 +94,19 @@ export function Collection() {
           <div className="mx-auto w-full max-w-[1600px] px-8">
             <div className="flex items-end justify-between">
               <div>
-                <p className="label text-mist">Chapter one · {products.length} pieces</p>
+                <p className="label text-mist">{t.eyebrow(products.length)}</p>
                 <h2
                   id="collection-title-lg"
                   className="mt-5 font-display text-7xl leading-none xl:text-8xl"
                 >
-                  Collection 01
+                  {t.title}
                 </h2>
               </div>
               <Link
                 href="/shop"
                 className="label inline-flex items-center gap-3 text-ivory/80 hover:text-gold"
               >
-                View all <Icon name="arrow" className="h-4 w-4" />
+                {t.viewAll} <Icon name="arrow" className="h-4 w-4" />
               </Link>
             </div>
           </div>

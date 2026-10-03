@@ -83,13 +83,14 @@ export function getCommerceProvider(): CommerceProvider {
 }
 
 /** 24900 → "249 DH". Whole dirhams are shown without decimals. */
-export function formatPrice(cents: number): string {
+export function formatPrice(cents: number, locale: 'en' | 'ar' = 'en'): string {
   const dh = cents / 100;
   const text = new Intl.NumberFormat(COMMERCE.locale, {
     minimumFractionDigits: Number.isInteger(dh) ? 0 : 2,
     maximumFractionDigits: 2,
   }).format(dh);
-  return `${text.replace(/\u202f|\u00a0/g, ' ')} DH`;
+  const amount = text.replace(/\u202f|\u00a0/g, ' ');
+  return locale === 'ar' ? `${amount} د.م` : `${amount} DH`;
 }
 
 /** Shipping cost for a method, or `null` when the rate is not confirmed. */

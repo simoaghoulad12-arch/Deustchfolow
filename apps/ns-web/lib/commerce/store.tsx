@@ -10,6 +10,8 @@ import {
   type ReactNode,
 } from 'react';
 import type { CartLine } from './types';
+import { useLocale } from '@/lib/i18n/context';
+import { shell } from '@/lib/i18n/copy/shell';
 
 /**
  * Client-side cart + wishlist. Persisted per device in localStorage (a
@@ -57,6 +59,7 @@ function write(key: string, value: unknown) {
 }
 
 export function StoreProvider({ children }: { children: ReactNode }) {
+  const locale = useLocale();
   const [lines, setLines] = useState<CartLine[]>([]);
   const [wishlist, setWishlist] = useState<string[]>([]);
   const [cartOpen, setCartOpen] = useState(false);
@@ -113,13 +116,16 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   );
   const clearCart = useCallback(() => setLines([]), []);
 
-  const toggleWish = useCallback((slug: string) => {
-    setWishlist((prev) => {
-      const has = prev.includes(slug);
-      setToast(has ? 'Removed from wishlist' : 'Saved to wishlist');
-      return has ? prev.filter((s) => s !== slug) : [...prev, slug];
-    });
-  }, []);
+  const toggleWish = useCallback(
+    (slug: string) => {
+      setWishlist((prev) => {
+        const has = prev.includes(slug);
+        setToast(has ? shell[locale].toast.removed : shell[locale].toast.saved);
+        return has ? prev.filter((s) => s !== slug) : [...prev, slug];
+      });
+    },
+    [locale],
+  );
 
   const value = useMemo<StoreValue>(
     () => ({

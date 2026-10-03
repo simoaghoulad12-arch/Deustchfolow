@@ -2,7 +2,13 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getProduct, products, relatedProducts } from '@/lib/commerce/catalog';
-import { WORLDS, BRAND } from '@/lib/brand';
+import { BRAND } from '@/lib/brand';
+import { getLocale } from '@/lib/i18n/server';
+import { pick } from '@/lib/i18n/copy';
+import { productCopy } from '@/lib/i18n/copy/product';
+import { localizeProduct } from '@/lib/i18n/products';
+import { localizeSet } from '@/lib/i18n/sets';
+import { localizeWorld } from '@/lib/i18n/worlds';
 import { ProductGallery } from '@/components/product/ProductGallery';
 import { PurchasePanel } from '@/components/product/PurchasePanel';
 import { ProductCard } from '@/components/product/ProductCard';
@@ -20,9 +26,11 @@ export function generateStaticParams() {
 }
 
 export function generateMetadata({ params }: Props): Metadata {
-  const product = getProduct(params.slug);
-  if (!product) return {};
-  const world = WORLDS[product.world];
+  const source = getProduct(params.slug);
+  if (!source) return {};
+  const locale = getLocale();
+  const product = localizeProduct(source, locale);
+  const world = localizeWorld(product.world, locale);
   return {
     title: `${product.name} — ${world.name}`,
     description: product.story,
@@ -38,7 +46,10 @@ export function generateMetadata({ params }: Props): Metadata {
 export default function ProductPage({ params }: Props) {
   const product = getProduct(params.slug);
   if (!product) notFound();
-  const world = WORLDS[product.world];
+  const locale = getLocale();
+  const t = pick(productCopy, locale).page;
+  const localized = localizeProduct(product, locale);
+  const world = localizeWorld(product.world, locale);
   const related = relatedProducts(product);
   const hasConcept = product.images.some((i) => i.kind !== 'photo');
   const sets = setsContaining(product.slug);
@@ -46,8 +57,8 @@ export default function ProductPage({ params }: Props) {
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Product',
-    name: `NATYSIMO ${product.name}`,
-    description: product.story,
+    name: `NATYSIMO ${localized.name}`,
+    description: localized.story,
     brand: { '@type': 'Brand', name: BRAND.name },
     image: product.images.map((i) => `${BRAND.url}${i.src}`),
     sku: product.variants[0]?.sku,
@@ -66,11 +77,11 @@ export default function ProductPage({ params }: Props) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      <nav aria-label="Breadcrumb" className="mx-auto hidden max-w-[1600px] px-8 py-5 lg:block">
+      <nav aria-label={t.breadcrumb} className="mx-auto hidden max-w-[1600px] px-8 py-5 lg:block">
         <ol className="label flex gap-3 text-fog">
           <li>
             <Link href="/shop" className="hover:text-ivory">
-              Collection 01
+              {t.collection}
             </Link>
           </li>
           <li aria-hidden>/</li>
@@ -80,7 +91,7 @@ export default function ProductPage({ params }: Props) {
             </Link>
           </li>
           <li aria-hidden>/</li>
-          <li className="text-ivory/80">{product.name}</li>
+          <li className="text-ivory/80">{localized.name}</li>
         </ol>
       </nav>
 
@@ -93,11 +104,11 @@ export default function ProductPage({ params }: Props) {
             <div className="mt-12 border-t border-white/[0.07]">
               <details className="group border-b border-white/[0.07]" open>
                 <summary className="label flex cursor-pointer list-none items-center justify-between py-5">
-                  Design details{' '}
+                  {t.designDetails}{' '}
                   <span className="text-lg transition-transform group-open:rotate-45">+</span>
                 </summary>
                 <ul className="space-y-2.5 pb-6 text-sm text-ivory/80">
-                  {product.details.map((d) => (
+                  {localized.details.map((d) => (
                     <li key={d} className="flex gap-3">
                       <span className="mt-2 h-px w-3 shrink-0 bg-accent" />
                       {d}
@@ -107,44 +118,33 @@ export default function ProductPage({ params }: Props) {
               </details>
               <details className="group border-b border-white/[0.07]">
                 <summary className="label flex cursor-pointer list-none items-center justify-between py-5">
-                  Fit &amp; material{' '}
+                  {t.fitMaterial}{' '}
                   <span className="text-lg transition-transform group-open:rotate-45">+</span>
                 </summary>
                 <dl className="grid grid-cols-[88px_1fr] gap-y-3 pb-6 text-sm">
-                  <dt className="text-mist">Fit</dt>
-                  <dd className="text-ivory/80">
-                    {product.specs?.fit ??
-                      'Fit notes and model sizing are published with the launch photography.'}
-                  </dd>
-                  <dt className="text-mist">Material</dt>
-                  <dd className="text-ivory/80">
-                    {product.specs?.material ??
-                      'Composition confirmed by the supplier and published at launch.'}
-                  </dd>
-                  <dt className="text-mist">Care</dt>
-                  <dd className="text-ivory/80">
-                    {product.specs?.care ?? 'Care label details published at launch.'}
-                  </dd>
+                  <dt className="text-mist">{t.fit}</dt>
+                  <dd className="text-ivory/80">{product.specs?.fit ?? t.fitDefault}</dd>
+                  <dt className="text-mist">{t.material}</dt>
+                  <dd className="text-ivory/80">{product.specs?.material ?? t.materialDefault}</dd>
+                  <dt className="text-mist">{t.care}</dt>
+                  <dd className="text-ivory/80">{product.specs?.care ?? t.careDefault}</dd>
                 </dl>
               </details>
               <details className="group border-b border-white/[0.07]">
                 <summary className="label flex cursor-pointer list-none items-center justify-between py-5">
-                  Delivery &amp; returns{' '}
+                  {t.deliveryReturns}{' '}
                   <span className="text-lg transition-transform group-open:rotate-45">+</span>
                 </summary>
                 <div className="space-y-3 pb-6 text-sm leading-relaxed text-ivory/80">
+                  <p>{t.deliveryText}</p>
                   <p>
-                    Delivery across Morocco, plus Germany and the EU. Rates and delivery times are
-                    confirmed at checkout when the store opens.
-                  </p>
-                  <p>
-                    Returns and exchanges follow the policy published before launch.{' '}
+                    {t.returnsText}{' '}
                     <Link href="/legal/returns" className="underline underline-offset-4">
-                      Returns
+                      {t.returns}
                     </Link>{' '}
                     ·{' '}
                     <Link href="/legal/shipping" className="underline underline-offset-4">
-                      Delivery
+                      {t.delivery}
                     </Link>
                   </p>
                 </div>
@@ -153,31 +153,33 @@ export default function ProductPage({ params }: Props) {
 
             {sets.length > 0 && (
               <div className="mt-8">
-                <p className="label text-mist">Part of a set</p>
+                <p className="label text-mist">{t.partOfSet}</p>
                 <ul className="mt-3 space-y-2">
-                  {sets.map((set) => (
-                    <li key={set.slug}>
-                      <Link
-                        href={`/sets/${set.slug}`}
-                        className="group flex items-center justify-between border border-white/10 px-4 py-4 transition-colors hover:border-accent/50"
-                      >
-                        <span>
-                          <span className="block text-sm">{set.name}</span>
-                          <span className="mt-1 block text-xs text-mist">{set.tagline}</span>
-                        </span>
-                        <span className="text-sm tabular-nums">{formatPrice(set.priceCents)}</span>
-                      </Link>
-                    </li>
-                  ))}
+                  {sets.map((source) => {
+                    const set = localizeSet(source, locale);
+                    return (
+                      <li key={set.slug}>
+                        <Link
+                          href={`/sets/${set.slug}`}
+                          className="group flex items-center justify-between border border-white/10 px-4 py-4 transition-colors hover:border-accent/50"
+                        >
+                          <span>
+                            <span className="block text-sm">{set.name}</span>
+                            <span className="mt-1 block text-xs text-mist">{set.tagline}</span>
+                          </span>
+                          <span className="text-sm tabular-nums">
+                            {formatPrice(set.priceCents, locale)}
+                          </span>
+                        </Link>
+                      </li>
+                    );
+                  })}
                 </ul>
               </div>
             )}
 
             {hasConcept && (
-              <p className="mt-6 text-[11px] leading-relaxed text-fog">
-                “Product render” and “Concept visual” images are not photographs of the finished
-                piece and may differ in detail. Final product photography replaces them at launch.
-              </p>
+              <p className="mt-6 text-[11px] leading-relaxed text-fog">{t.conceptNote}</p>
             )}
           </div>
         </div>
@@ -194,14 +196,14 @@ export default function ProductPage({ params }: Props) {
             {world.headline}
           </p>
           <Link href={`/worlds/${product.world}`} className="btn-line">
-            Enter {world.name}
+            {t.enter(world.name)}
           </Link>
         </Reveal>
       </section>
 
       <section className="mx-auto mt-20 max-w-[1600px] px-5 sm:px-8" aria-labelledby="related">
         <h2 id="related" className="label text-mist">
-          Complete the uniform
+          {t.complete}
         </h2>
         <div className="mt-8 grid grid-cols-2 gap-x-3 gap-y-10 lg:grid-cols-4 lg:gap-x-5">
           {related.map((p) => (

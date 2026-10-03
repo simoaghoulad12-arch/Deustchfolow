@@ -4,27 +4,27 @@ import Link from 'next/link';
 import { Mark } from '@/components/brand/Mark';
 import { Reveal, TextReveal } from '@/components/motion/Reveal';
 import { Parallax } from '@/components/motion/Parallax';
-import { BRAND, SOCIAL, WORLDS, WORLD_ORDER } from '@/lib/brand';
+import { SOCIAL, WORLD_ORDER } from '@/lib/brand';
+import { getLocale } from '@/lib/i18n/server';
+import { pick } from '@/lib/i18n/copy';
+import { shell } from '@/lib/i18n/copy/shell';
+import { story } from '@/lib/i18n/copy/story';
+import { localizeWorld } from '@/lib/i18n/worlds';
 
-export const metadata: Metadata = {
-  title: 'Story',
-  description:
-    'Before the clothing, there was the training. NATYSIMO grew out of @natty.simo — Moroccan roots, built in Germany, around one idea: discipline builds freedom.',
-  alternates: { canonical: '/story' },
-};
-
-const CHAPTERS = [
-  ['Training', 'It starts on the floor. Every day, whether anyone is watching or not.'],
-  ['Consistency', 'Not the perfect session — the next one. Then the one after that.'],
-  [
-    'Failure',
-    'Missed days, slow progress, starting again. Nobody posts that part. It still counts.',
-  ],
-  ['Growth', 'Small, repeated, earned. The mirror changes last.'],
-  ['Identity', 'At some point the discipline stops being what you do and becomes who you are.'],
-];
+export function generateMetadata(): Metadata {
+  const t = pick(story, getLocale());
+  return {
+    title: t.title,
+    description: t.description(SOCIAL.instagramHandle),
+    alternates: { canonical: '/story' },
+  };
+}
 
 export default function StoryPage() {
+  const locale = getLocale();
+  const t = pick(story, locale);
+  const roots = pick(shell, locale).roots;
+  const CHAPTERS = t.chapters;
   return (
     <>
       <section className="relative flex min-h-[90svh] items-center justify-center overflow-hidden px-5 pt-24 text-center">
@@ -33,13 +33,13 @@ export default function StoryPage() {
           <Reveal className="mx-auto w-20 sm:w-24">
             <Mark priority sizes="96px" />
           </Reveal>
-          <p className="label mt-10 text-mist">Our story</p>
+          <p className="label mt-10 text-mist">{t.eyebrow}</p>
           <h1 className="mt-6 font-display text-[2.9rem] leading-[1] sm:text-8xl">
             <TextReveal
               lines={[
-                'Before the clothing,',
+                t.heroLines[0],
                 <span key="c" className="italic text-gold">
-                  there was the training.
+                  {t.heroLines[1]}
                 </span>,
               ]}
             />
@@ -52,7 +52,7 @@ export default function StoryPage() {
           <Parallax className="aspect-[4/5] bg-graphite" strength={6}>
             <Image
               src="/images/photo/gym-tank-mirror.jpg"
-              alt="Training in the Performance Tank"
+              alt={t.photoAlt}
               fill
               sizes="(min-width: 1024px) 50vw, 100vw"
               className="object-cover object-[50%_40%] grayscale-[0.4] brightness-[0.8]"
@@ -62,20 +62,11 @@ export default function StoryPage() {
         <Reveal className="flex flex-col justify-center">
           <div className="space-y-6 text-[17px] leading-relaxed text-ivory/85">
             <p className="font-display text-3xl leading-snug text-ivory sm:text-4xl">
-              NATYSIMO started as {SOCIAL.instagramHandle}.
+              {t.lead(SOCIAL.instagramHandle)}
             </p>
-            <p>
-              Training, filmed and shared — between Morocco and Germany. No investors and no
-              shortcuts: sessions, reels, a training plan, and a community that grew around the
-              discipline.
-            </p>
-            <p>
-              The clothing is the next step of the same mindset. Pieces built on the training floor,
-              made to be worn beyond it.
-            </p>
-            <p className="font-display text-2xl italic text-gold">
-              Same dreams. Different work ethic.
-            </p>
+            <p>{t.p1}</p>
+            <p>{t.p2}</p>
+            <p className="font-display text-2xl italic text-gold">{t.tagline}</p>
           </div>
         </Reveal>
       </section>
@@ -86,7 +77,7 @@ export default function StoryPage() {
       >
         <div className="mx-auto max-w-[1400px] px-5 sm:px-8">
           <h2 id="chapters-title" className="label text-mist">
-            What it’s built on
+            {t.chaptersTitle}
           </h2>
           <ol className="mt-10">
             {CHAPTERS.map(([title, body], i) => (
@@ -114,7 +105,7 @@ export default function StoryPage() {
             <Parallax className="aspect-[4/5] bg-graphite" strength={6}>
               <Image
                 src="/images/photo/founder-duesseldorf.jpg"
-                alt="The NATYSIMO founder in Düsseldorf, Germany"
+                alt={t.rootsAlt}
                 fill
                 sizes="(min-width: 1024px) 50vw, 100vw"
                 className="object-cover object-[50%_30%] saturate-[0.8]"
@@ -122,25 +113,25 @@ export default function StoryPage() {
             </Parallax>
           </Reveal>
           <Reveal className="lg:order-1">
-            <p className="label text-mist">{BRAND.roots}</p>
+            <p className="label text-mist">{roots}</p>
             <h2 id="roots-title" className="mt-5 font-display text-5xl leading-none sm:text-6xl">
-              Moroccan roots.
+              {t.rootsLines[0]}
               <br />
-              <span className="italic text-ivory/60">International standard.</span>
+              <span className="italic text-ivory/60">{t.rootsLines[1]}</span>
             </h2>
-            <p className="mt-6 max-w-md text-[15px] leading-relaxed text-ivory/80">
-              Most of the community lives in Morocco — Casablanca, Marrakech, Tanger, Fès, Salé. The
-              brand is built in Germany. NATYSIMO is made for both: the energy of home, executed to
-              an international standard.
-            </p>
+            <p className="mt-6 max-w-md text-[15px] leading-relaxed text-ivory/80">{t.rootsText}</p>
             <blockquote
               lang="ar"
               dir="rtl"
-              className="mt-10 border-r border-gold/60 pr-5 text-right font-display text-3xl leading-snug text-ivory/80"
+              className="mt-10 border-s border-gold/60 ps-5 text-start font-display text-3xl leading-snug text-ivory/80"
             >
               القرار كرجع ليك
-              <footer lang="en" dir="ltr" className="label mt-3 text-left text-fog">
-                “The decision comes back to you.” — {SOCIAL.instagramHandle}
+              <footer
+                lang={locale === 'ar' ? 'ar' : 'en'}
+                dir={locale === 'ar' ? 'rtl' : 'ltr'}
+                className="label mt-3 text-start text-fog"
+              >
+                {t.quoteFooter(SOCIAL.instagramHandle)}
               </footer>
             </blockquote>
           </Reveal>
@@ -150,14 +141,11 @@ export default function StoryPage() {
       <section className="py-24 sm:py-32" aria-labelledby="system-title">
         <div className="mx-auto max-w-[1400px] px-5 sm:px-8">
           <Reveal>
-            <p className="label text-mist">The identity</p>
+            <p className="label text-mist">{t.identityEyebrow}</p>
             <h2 id="system-title" className="mt-5 font-display text-5xl leading-none sm:text-7xl">
-              One crown. Three worlds.
+              {t.identityTitle}
             </h2>
-            <p className="mt-6 max-w-xl text-sm leading-relaxed text-mist">
-              Every world carries the NS monogram beneath the crown — cut in its own metal. Silver
-              for the training floor, gold for the street, forged steel where the two meet.
-            </p>
+            <p className="mt-6 max-w-xl text-sm leading-relaxed text-mist">{t.identityText}</p>
           </Reveal>
           <div className="mt-16 grid gap-2 sm:grid-cols-3">
             {WORLD_ORDER.map((id, i) => (
@@ -170,19 +158,19 @@ export default function StoryPage() {
                   <span className="w-28 transition-transform duration-1000 ease-cinematic group-hover:scale-105 sm:w-32">
                     <Mark world={id} sizes="128px" />
                   </span>
-                  <p className="label mt-10 text-accent">{WORLDS[id].name}</p>
-                  <p className="mt-3 font-display text-2xl">{WORLDS[id].headline}</p>
-                  <p className="label mt-4 text-fog">{WORLDS[id].descriptor}</p>
+                  <p className="label mt-10 text-accent">{localizeWorld(id, locale).name}</p>
+                  <p className="mt-3 font-display text-2xl">{localizeWorld(id, locale).headline}</p>
+                  <p className="label mt-4 text-fog">{localizeWorld(id, locale).descriptor}</p>
                 </Link>
               </Reveal>
             ))}
           </div>
           <div className="mt-16 flex flex-col gap-2.5 sm:flex-row">
             <Link href="/shop" className="btn-solid">
-              Shop Collection 01
+              {t.shop}
             </Link>
             <a href={SOCIAL.instagram} target="_blank" rel="noreferrer" className="btn-line">
-              Follow {SOCIAL.instagramHandle}
+              {t.follow(SOCIAL.instagramHandle)}
             </a>
           </div>
         </div>

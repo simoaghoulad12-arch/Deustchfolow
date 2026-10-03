@@ -3,21 +3,20 @@
 import { useRef, useState } from 'react';
 import type { Product } from '@/lib/commerce/types';
 import { ProductImage } from './ProductImage';
-
-const ROLE_LABEL: Record<string, string> = {
-  model: 'On body',
-  front: 'Front',
-  back: 'Back',
-  detail: 'Detail',
-  flatlay: 'Flat lay',
-  lifestyle: 'Lifestyle',
-};
+import { useLocale } from '@/lib/i18n/context';
+import { useCopy } from '@/lib/i18n/copy';
+import { catalogUi } from '@/lib/i18n/copy/catalog';
+import { localizeProduct } from '@/lib/i18n/products';
 
 /**
  * Mobile: full-bleed swipe gallery with scroll-snap and a position counter.
  * Desktop: editorial grid — first image large, the rest in pairs.
  */
-export function ProductGallery({ product }: { product: Product }) {
+export function ProductGallery({ product: source }: { product: Product }) {
+  const locale = useLocale();
+  const t = useCopy(catalogUi);
+  const ROLE_LABEL = t.roles;
+  const product = localizeProduct(source, locale);
   const [active, setActive] = useState(0);
   const track = useRef<HTMLDivElement>(null);
   const images = product.images;
@@ -25,7 +24,8 @@ export function ProductGallery({ product }: { product: Product }) {
   const onScroll = () => {
     const el = track.current;
     if (!el) return;
-    setActive(Math.round(el.scrollLeft / el.clientWidth));
+    // scrollLeft is negative in right-to-left layouts.
+    setActive(Math.round(Math.abs(el.scrollLeft) / el.clientWidth));
   };
 
   return (
@@ -36,7 +36,7 @@ export function ProductGallery({ product }: { product: Product }) {
           ref={track}
           onScroll={onScroll}
           className="no-scrollbar flex snap-x snap-mandatory overflow-x-auto"
-          aria-label={`${product.name} images`}
+          aria-label={t.galleryImages(product.name)}
           role="region"
         >
           {images.map((image, i) => (
@@ -55,7 +55,7 @@ export function ProductGallery({ product }: { product: Product }) {
             ))}
           </div>
         )}
-        <span className="label absolute bottom-4 right-4 text-ivory/70">
+        <span className="label absolute bottom-4 end-4 text-ivory/70">
           {ROLE_LABEL[images[active]?.role ?? 'model']}
         </span>
       </div>
@@ -73,7 +73,7 @@ export function ProductGallery({ product }: { product: Product }) {
               priority={i === 0}
               showTag
             />
-            <figcaption className="label absolute bottom-4 left-4 text-ivory/70">
+            <figcaption className="label absolute bottom-4 start-4 text-ivory/70">
               {ROLE_LABEL[image.role]}
             </figcaption>
           </figure>

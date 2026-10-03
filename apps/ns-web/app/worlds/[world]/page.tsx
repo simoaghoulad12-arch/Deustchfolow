@@ -2,7 +2,11 @@ import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { WORLDS, WORLD_ORDER, isWorldId } from '@/lib/brand';
+import { WORLD_ORDER, isWorldId } from '@/lib/brand';
+import { getLocale } from '@/lib/i18n/server';
+import { pick } from '@/lib/i18n/copy';
+import { worldPage } from '@/lib/i18n/copy/worldpage';
+import { localizeWorld } from '@/lib/i18n/worlds';
 import { productsByWorld, products } from '@/lib/commerce/catalog';
 import { ImageKindTag } from '@/components/product/ProductImage';
 import { kindOf } from '@/lib/images';
@@ -21,7 +25,7 @@ export function generateStaticParams() {
 
 export function generateMetadata({ params }: Props): Metadata {
   if (!isWorldId(params.world)) return {};
-  const w = WORLDS[params.world];
+  const w = localizeWorld(params.world, getLocale());
   return {
     title: `${w.name} — ${w.descriptor}`,
     description: w.intro,
@@ -32,7 +36,9 @@ export function generateMetadata({ params }: Props): Metadata {
 
 export default function WorldPage({ params }: Props) {
   if (!isWorldId(params.world)) notFound();
-  const world = WORLDS[params.world];
+  const locale = getLocale();
+  const t = pick(worldPage, locale);
+  const world = localizeWorld(params.world, locale);
   const list = productsByWorld(world.id);
   const others = WORLD_ORDER.filter((id) => id !== world.id);
 
@@ -48,7 +54,7 @@ export default function WorldPage({ params }: Props) {
           className={`object-cover brightness-[0.5] contrast-[1.1] ${world.id === 'sports' ? 'grayscale' : 'saturate-[0.7]'}`}
           style={{ objectPosition: world.image.position }}
         />
-        <ImageKindTag kind={kindOf(world.image.src)} className="left-4 top-20" />
+        <ImageKindTag kind={kindOf(world.image.src)} className="start-4 top-20" />
         <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/50 to-ink/30" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_40%,rgb(var(--accent)/0.14),transparent_70%)]" />
 
@@ -56,7 +62,7 @@ export default function WorldPage({ params }: Props) {
           <Reveal className="w-28 sm:w-36" y={30}>
             <Mark world={world.id} priority sizes="144px" />
           </Reveal>
-          <p className="label mt-8 text-accent">World {world.index}</p>
+          <p className="label mt-8 text-accent">{t.world(world.index)}</p>
           <h1 className="mt-5 font-display text-6xl leading-none sm:text-8xl lg:text-9xl">
             <TextReveal
               lines={[
@@ -74,7 +80,7 @@ export default function WorldPage({ params }: Props) {
             <p className="mx-auto mt-6 max-w-lg text-sm leading-relaxed text-ivory/70">
               {world.intro}
             </p>
-            <div className="mt-8 flex justify-center gap-2" aria-label={`${world.name} palette`}>
+            <div className="mt-8 flex justify-center gap-2" aria-label={t.palette(world.name)}>
               {world.palette.map((c) => (
                 <span
                   key={c.name}
@@ -98,9 +104,9 @@ export default function WorldPage({ params }: Props) {
       >
         <div className="flex items-end justify-between border-b border-white/10 pb-6">
           <h2 id="world-pieces" className="font-display text-4xl sm:text-5xl">
-            The pieces
+            {t.pieces}
           </h2>
-          <p className="label text-fog">{list.length} in Collection 01</p>
+          <p className="label text-fog">{t.inCollection(list.length)}</p>
         </div>
         <div className="mt-10 grid grid-cols-2 gap-x-3 gap-y-12 md:grid-cols-3 lg:grid-cols-4 lg:gap-x-5">
           {list.map((p, i) => (
@@ -111,23 +117,25 @@ export default function WorldPage({ params }: Props) {
         </div>
       </section>
 
-      <section className="border-t border-white/[0.07] bg-coal" aria-label="Other worlds">
+      <section className="border-t border-white/[0.07] bg-coal" aria-label={t.others}>
         <div className="mx-auto grid max-w-[1600px] sm:grid-cols-2">
           {others.map((id) => (
             <Link
               key={id}
               href={`/worlds/${id}`}
               data-world={id}
-              className="group flex items-center justify-between gap-6 border-b border-white/[0.07] px-5 py-10 transition-colors hover:bg-graphite sm:border-b-0 sm:px-10 sm:py-14 sm:first:border-r"
+              className="group flex items-center justify-between gap-6 border-b border-white/[0.07] px-5 py-10 transition-colors hover:bg-graphite sm:border-b-0 sm:px-10 sm:py-14 sm:first:border-e"
             >
               <div>
-                <p className="label text-accent">World {WORLDS[id].index}</p>
-                <p className="mt-3 font-display text-4xl sm:text-5xl">{WORLDS[id].name}</p>
+                <p className="label text-accent">{t.world(localizeWorld(id, locale).index)}</p>
+                <p className="mt-3 font-display text-4xl sm:text-5xl">
+                  {localizeWorld(id, locale).name}
+                </p>
                 <p className="label mt-3 inline-flex items-center gap-2 text-ivory/60">
-                  Enter{' '}
+                  {t.enter}{' '}
                   <Icon
                     name="arrow"
-                    className="h-4 w-4 transition-transform group-hover:translate-x-1"
+                    className="h-4 w-4 transition-transform group-hover:translate-x-1 rtl:group-hover:-translate-x-1"
                   />
                 </p>
               </div>

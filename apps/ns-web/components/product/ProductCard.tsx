@@ -1,13 +1,19 @@
+'use client';
+
 import Link from 'next/link';
 import type { Product } from '@/lib/commerce/types';
 import { formatPrice } from '@/lib/commerce/provider';
-import { WORLDS } from '@/lib/brand';
+import { useLocale } from '@/lib/i18n/context';
+import { useCopy } from '@/lib/i18n/copy';
+import { catalogUi } from '@/lib/i18n/copy/catalog';
+import { colorName, localizeProduct } from '@/lib/i18n/products';
+import { localizeWorld } from '@/lib/i18n/worlds';
 import { ProductImage } from './ProductImage';
 import { WishButton } from './WishButton';
 import { cn } from '@/lib/cn';
 
 export function ProductCard({
-  product,
+  product: source,
   index,
   sizes = '(min-width: 1024px) 25vw, 50vw',
   priority,
@@ -19,14 +25,17 @@ export function ProductCard({
   priority?: boolean;
   className?: string;
 }) {
+  const locale = useLocale();
+  const t = useCopy(catalogUi);
+  const product = localizeProduct(source, locale);
   const [primary, secondary] = product.images;
-  const world = WORLDS[product.world];
+  const world = localizeWorld(product.world, locale);
   return (
     <article data-world={product.world} className={cn('group relative', className)}>
       <Link
         href={`/product/${product.slug}`}
         className="block"
-        aria-label={`${product.name}, ${formatPrice(product.price.amountCents)}`}
+        aria-label={`${product.name}, ${formatPrice(product.price.amountCents, locale)}`}
       >
         <div className="relative aspect-[4/5] overflow-hidden bg-graphite">
           <div className="absolute inset-0 transition-transform duration-[1.4s] ease-cinematic group-hover:scale-[1.04]">
@@ -38,9 +47,9 @@ export function ProductCard({
             </div>
           )}
           <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-ink/70 to-transparent" />
-          <span className="label absolute bottom-3 left-3 text-accent">{world.name}</span>
+          <span className="label absolute bottom-3 start-3 text-accent">{world.name}</span>
           {index !== undefined && (
-            <span className="tech absolute right-3 top-3 text-ivory/50">
+            <span dir="ltr" className="tech absolute end-3 top-3 text-ivory/50">
               NS/{String(index + 1).padStart(3, '0')}
             </span>
           )}
@@ -53,10 +62,14 @@ export function ProductCard({
           </h3>
           <p className="mt-1 text-[11px] uppercase tracking-[0.18em] text-mist">{product.line}</p>
           <p className="mt-2 flex items-center gap-2.5 text-[13px] tabular-nums text-ivory/85">
-            {formatPrice(product.price.amountCents)}
+            {formatPrice(product.price.amountCents, locale)}
             <span
               className="flex gap-1"
-              aria-label={`Colours: ${product.colors.map((c) => c.name).join(', ')}`}
+              aria-label={t.colours(
+                product.colors
+                  .map((c) => colorName(c.name, locale))
+                  .join(locale === 'ar' ? '، ' : ', '),
+              )}
             >
               {product.colors.map((c) => (
                 <span
@@ -68,7 +81,7 @@ export function ProductCard({
             </span>
           </p>
         </Link>
-        <WishButton slug={product.slug} name={product.name} className="-mr-2 -mt-2.5 shrink-0" />
+        <WishButton slug={product.slug} name={product.name} className="-me-2 -mt-2.5 shrink-0" />
       </div>
     </article>
   );

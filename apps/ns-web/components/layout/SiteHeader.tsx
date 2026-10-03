@@ -6,22 +6,27 @@ import { AnimatePresence, motion, useMotionValueEvent, useScroll } from 'framer-
 import { useEffect, useState } from 'react';
 import { Mark } from '@/components/brand/Mark';
 import { useStore } from '@/lib/commerce/store';
-import { BRAND, SOCIAL, WORLDS, WORLD_ORDER } from '@/lib/brand';
+import { BRAND, SOCIAL, WORLD_ORDER } from '@/lib/brand';
+import { useCopy } from '@/lib/i18n/copy';
+import { shell } from '@/lib/i18n/copy/shell';
+import { useWorlds } from '@/lib/i18n/useWorlds';
+import { LanguageSwitch } from '@/components/i18n/LanguageSwitch';
 import { cn } from '@/lib/cn';
 import { Icon } from '@/components/ui/Icon';
 import { SearchOverlay } from './SearchOverlay';
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
-const PRIMARY = [
-  { href: '/shop', label: 'Shop' },
-  { href: '/worlds', label: 'Worlds' },
-  { href: '/collection', label: 'Collection 01' },
-  { href: '/story', label: 'Story' },
-];
-
 export function SiteHeader() {
   const pathname = usePathname();
+  const t = useCopy(shell);
+  const WORLDS = useWorlds();
+  const PRIMARY = [
+    { href: '/shop', label: t.nav.shop },
+    { href: '/worlds', label: t.nav.worlds },
+    { href: '/collection', label: t.nav.collection },
+    { href: '/story', label: t.nav.story },
+  ];
   const { scrollY } = useScroll();
   const [solid, setSolid] = useState(false);
   const [hidden, setHidden] = useState(false);
@@ -75,13 +80,13 @@ export function SiteHeader() {
             <button
               type="button"
               onClick={() => setMenuOpen(true)}
-              className="-ml-2 flex h-11 w-11 items-center justify-center lg:hidden"
-              aria-label="Open menu"
+              className="-ms-2 flex h-11 w-11 items-center justify-center lg:hidden"
+              aria-label={t.header.openMenu}
               aria-expanded={menuOpen}
             >
               <Icon name="menu" />
             </button>
-            <nav aria-label="Primary" className="hidden items-center gap-8 lg:flex">
+            <nav aria-label={t.header.primary} className="hidden items-center gap-8 lg:flex">
               {PRIMARY.map((item) => (
                 <Link
                   key={item.href}
@@ -97,46 +102,50 @@ export function SiteHeader() {
             </nav>
           </div>
 
-          <Link href="/" aria-label="NATYSIMO — home" className="flex items-center gap-3">
+          <Link href="/" aria-label={t.header.home} className="flex items-center gap-3">
             <span className="block w-7 sm:w-8">
               <Mark priority sizes="32px" alt="" />
             </span>
-            <span className="font-display text-[15px] tracking-wide2 text-ivory sm:text-base">
+            <span
+              data-latin
+              className="font-display text-[15px] tracking-wide2 text-ivory sm:text-base"
+            >
               {BRAND.name}
             </span>
           </Link>
 
           <div className="flex items-center justify-end gap-0 sm:gap-2">
+            <LanguageSwitch className="hidden sm:flex" />
             <button
               type="button"
               onClick={() => setSearchOpen(true)}
               className="flex h-11 w-11 items-center justify-center"
-              aria-label="Search"
+              aria-label={t.header.search}
             >
               <Icon name="search" />
             </button>
             <Link
               href="/wishlist"
               className="relative hidden h-11 w-11 items-center justify-center sm:flex"
-              aria-label={`Wishlist, ${wishlist.length} saved`}
+              aria-label={t.header.wishlist(wishlist.length)}
             >
               <Icon name="heart" />
               {wishlist.length > 0 && (
-                <span className="absolute right-2 top-2 h-1.5 w-1.5 rounded-full bg-gold" />
+                <span className="absolute end-2 top-2 h-1.5 w-1.5 rounded-full bg-gold" />
               )}
             </Link>
             <Link
               href="/account"
               className="hidden h-11 w-11 items-center justify-center sm:flex"
-              aria-label="Account"
+              aria-label={t.header.account}
             >
               <Icon name="user" />
             </Link>
             <button
               type="button"
               onClick={openCart}
-              className="-mr-2 flex h-11 min-w-11 items-center justify-center gap-2 px-2"
-              aria-label={`Open bag, ${count} items`}
+              className="-me-2 flex h-11 min-w-11 items-center justify-center gap-2 px-2"
+              aria-label={t.header.openBag(count)}
             >
               <Icon name="bag" />
               <span className="label tabular-nums text-ivory/80">{count}</span>
@@ -152,7 +161,7 @@ export function SiteHeader() {
           <motion.div
             role="dialog"
             aria-modal="true"
-            aria-label="Menu"
+            aria-label={t.header.menu}
             className="fixed inset-0 z-50 flex flex-col bg-ink"
             initial={{ clipPath: 'inset(0 0 100% 0)' }}
             animate={{ clipPath: 'inset(0 0 0% 0)' }}
@@ -166,16 +175,16 @@ export function SiteHeader() {
               <button
                 type="button"
                 onClick={() => setMenuOpen(false)}
-                className="-mr-2 flex h-11 w-11 items-center justify-center"
-                aria-label="Close menu"
+                className="-me-2 flex h-11 w-11 items-center justify-center"
+                aria-label={t.header.closeMenu}
               >
                 <Icon name="close" />
               </button>
             </div>
 
-            <nav aria-label="Menu" className="flex flex-1 flex-col justify-center px-6">
+            <nav aria-label={t.header.menu} className="flex flex-1 flex-col justify-center px-6">
               <Link href="/shop" className="group border-b border-white/[0.07] py-5">
-                <MenuLine index="00" label="Collection 01" delay={0.2} />
+                <MenuLine index="00" label={t.nav.collection} delay={0.2} />
               </Link>
               {WORLD_ORDER.map((id, i) => (
                 <Link
@@ -201,22 +210,25 @@ export function SiteHeader() {
                 </Link>
               ))}
               <Link href="/sets" className="group border-b border-white/[0.07] py-5">
-                <MenuLine index="04" label="The Sets" delay={0.44} />
+                <MenuLine index="04" label={t.nav.sets} delay={0.44} />
               </Link>
               <Link href="/story" className="group py-5">
-                <MenuLine index="05" label="Story" delay={0.5} />
+                <MenuLine index="05" label={t.nav.story} delay={0.5} />
               </Link>
             </nav>
 
+            <div className="px-6 pb-4 sm:hidden">
+              <LanguageSwitch className="justify-center" />
+            </div>
             <div className="safe-bottom grid grid-cols-3 border-t border-white/[0.07] text-center">
               <Link href="/wishlist" className="label py-5 text-ivory/70">
-                Wishlist
+                {t.header.wishlistShort}
               </Link>
               <Link
                 href="/account"
                 className="label border-x border-white/[0.07] py-5 text-ivory/70"
               >
-                Account
+                {t.header.account}
               </Link>
               <a
                 href={SOCIAL.instagram}
@@ -224,7 +236,7 @@ export function SiteHeader() {
                 rel="noreferrer"
                 className="label py-5 text-ivory/70"
               >
-                Instagram
+                {t.header.instagram}
               </a>
             </div>
           </motion.div>

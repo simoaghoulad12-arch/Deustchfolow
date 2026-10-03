@@ -7,7 +7,10 @@ import { ImageKindTag } from '@/components/product/ProductImage';
 import { kindOf } from '@/lib/images';
 import { Mark } from '@/components/brand/Mark';
 import { Reveal } from '@/components/motion/Reveal';
-import { BRAND, WORLDS, WORLD_ORDER, type WorldId } from '@/lib/brand';
+import { WORLD_ORDER, type WorldId } from '@/lib/brand';
+import { useWorlds } from '@/lib/i18n/useWorlds';
+import { useCopy } from '@/lib/i18n/copy';
+import { home } from '@/lib/i18n/copy/home';
 import { productsByWorld } from '@/lib/commerce/catalog';
 import { Icon } from '@/components/ui/Icon';
 import { cn } from '@/lib/cn';
@@ -19,6 +22,9 @@ import { cn } from '@/lib/cn';
  */
 export function Worlds({ headingLevel = 'h2' }: { headingLevel?: 'h1' | 'h2' }) {
   const Heading = headingLevel;
+  const t = useCopy(home).worlds;
+  const journey = useCopy(home).journey;
+  const WORLDS = useWorlds();
   const [active, setActive] = useState<WorldId>('clothing');
 
   return (
@@ -30,26 +36,23 @@ export function Worlds({ headingLevel = 'h2' }: { headingLevel?: 'h1' | 'h2' }) 
       <div className="mx-auto max-w-[1600px] px-5 sm:px-8">
         <Reveal className="flex flex-col gap-6 border-t border-white/10 pt-10 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <p className="label text-mist">Three worlds · One house</p>
+            <p className="label text-mist">{t.eyebrow}</p>
             <Heading
               id="worlds-title"
               className="mt-5 font-display text-5xl leading-none sm:text-7xl"
             >
-              Choose your world.
+              {t.title}
             </Heading>
           </div>
           <div className="max-w-sm">
             <p className="font-display text-2xl leading-tight text-ivory/85">
-              {BRAND.journey.map((line) => (
+              {journey.map((line) => (
                 <span key={line} className="block">
                   {line}
                 </span>
               ))}
             </p>
-            <p className="mt-4 text-sm leading-relaxed text-mist">
-              Three worlds, not three brands — each with its own mark and its own metal, one
-              standard.
-            </p>
+            <p className="mt-4 text-sm leading-relaxed text-mist">{t.note}</p>
           </div>
         </Reveal>
       </div>
@@ -74,7 +77,7 @@ export function Worlds({ headingLevel = 'h2' }: { headingLevel?: 'h1' | 'h2' }) 
               <Link
                 href={`/worlds/${id}`}
                 className="absolute inset-0 z-20"
-                aria-label={`Enter NATYSIMO ${world.name}`}
+                aria-label={t.enterAria(world.name)}
               />
               <Image
                 src={world.image.src}
@@ -92,7 +95,7 @@ export function Worlds({ headingLevel = 'h2' }: { headingLevel?: 'h1' | 'h2' }) 
               />
               <ImageKindTag
                 kind={kindOf(world.image.src)}
-                className="left-auto right-3 top-14 sm:right-10 sm:top-20"
+                className="start-auto end-3 top-14 sm:end-10 sm:top-20"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/40 to-ink/10" />
               <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_30%,rgb(var(--accent)/0.12),transparent_60%)]" />
@@ -102,7 +105,7 @@ export function Worlds({ headingLevel = 'h2' }: { headingLevel?: 'h1' | 'h2' }) 
                   <p className="label text-accent">
                     {world.index} — {world.name}
                   </p>
-                  <p className="label text-ivory/50">{count} pieces</p>
+                  <p className="label text-ivory/50">{t.pieces(count)}</p>
                 </div>
 
                 <div>
@@ -122,7 +125,9 @@ export function Worlds({ headingLevel = 'h2' }: { headingLevel?: 'h1' | 'h2' }) 
                         : 'text-5xl sm:text-6xl lg:text-4xl xl:text-5xl',
                     )}
                   >
-                    <span className={cn(!open && 'lg:hidden')}>NATYSIMO </span>
+                    <span data-latin className={cn(!open && 'lg:hidden')}>
+                      NATYSIMO{' '}
+                    </span>
                     <span className="metal-text italic">{world.name}</span>
                   </h3>
                   <p className={cn('label mt-4 text-ivory/70', !open && 'lg:hidden')}>
@@ -141,7 +146,7 @@ export function Worlds({ headingLevel = 'h2' }: { headingLevel?: 'h1' | 'h2' }) 
                         {world.intro}
                       </p>
                       <div className="mt-6 flex items-center gap-4">
-                        <div className="flex gap-1.5" aria-label="Palette">
+                        <div className="flex gap-1.5" aria-label={t.palette}>
                           {world.palette.map((c) => (
                             <span
                               key={c.name}
@@ -152,10 +157,10 @@ export function Worlds({ headingLevel = 'h2' }: { headingLevel?: 'h1' | 'h2' }) 
                           ))}
                         </div>
                         <span className="label inline-flex items-center gap-2 text-accent">
-                          Enter {world.name}{' '}
+                          {t.enter(world.name)}{' '}
                           <Icon
                             name="arrow"
-                            className="h-4 w-4 transition-transform duration-500 group-hover:translate-x-1"
+                            className="h-4 w-4 transition-transform duration-500 group-hover:translate-x-1 rtl:group-hover:-translate-x-1"
                           />
                         </span>
                       </div>

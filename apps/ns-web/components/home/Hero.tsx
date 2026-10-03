@@ -6,6 +6,8 @@ import { useRef } from 'react';
 import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
 import { Mark } from '@/components/brand/Mark';
 import { BRAND } from '@/lib/brand';
+import { useCopy } from '@/lib/i18n/copy';
+import { home } from '@/lib/i18n/copy/home';
 import { Icon } from '@/components/ui/Icon';
 
 const EASE = [0.16, 1, 0.3, 1] as const;
@@ -16,6 +18,7 @@ const EASE = [0.16, 1, 0.3, 1] as const;
  * in the first viewport on an iPhone; nothing waits on a splash screen.
  */
 export function Hero() {
+  const t = useCopy(home);
   const ref = useRef<HTMLElement>(null);
   const reduce = useReducedMotion();
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] });
@@ -33,7 +36,7 @@ export function Hero() {
     <section
       ref={ref}
       className="relative h-[100svh] min-h-[640px] overflow-hidden bg-ink"
-      aria-label="NATYSIMO"
+      aria-label={t.hero.label}
     >
       <motion.div className="absolute inset-0" style={reduce ? undefined : { y: imgY }}>
         <motion.div
@@ -44,7 +47,7 @@ export function Hero() {
         >
           <Image
             src="/images/photo/gym-tank-mirror.jpg"
-            alt="NATYSIMO athlete in the Performance Tank, training floor"
+            alt={t.hero.alt}
             fill
             priority
             sizes="100vw"
@@ -66,7 +69,7 @@ export function Hero() {
           animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
           transition={{ duration: 1.6, delay: 0.5, ease: EASE }}
         >
-          <Mark priority sizes="104px" alt="NATYSIMO crown monogram" />
+          <Mark priority sizes="104px" alt={t.hero.markAlt} />
           <span
             aria-hidden
             className="pointer-events-none absolute inset-y-0 left-0 w-1/2 animate-sheen bg-gradient-to-r from-transparent via-white/25 to-transparent mix-blend-overlay [animation-delay:1.4s]"
@@ -75,6 +78,7 @@ export function Hero() {
 
         <h1 className="mt-7 overflow-hidden">
           <motion.span
+            data-latin
             className="block font-display text-[2.9rem] font-medium leading-none tracking-[0.22em] text-ivory sm:text-7xl lg:text-8xl"
             initial={reduce ? false : { y: '110%' }}
             animate={{ y: '0%' }}
@@ -88,15 +92,15 @@ export function Hero() {
           {...rise(1.25)}
           className="mt-5 font-display text-xl italic text-gold sm:text-2xl"
         >
-          {BRAND.tagline}
+          {t.tagline}
         </motion.p>
 
         <motion.ul
           {...rise(1.45)}
           className="label mt-6 flex items-center gap-3 text-ivory/70 sm:gap-5"
-          aria-label="Pillars"
+          aria-label={t.hero.pillars}
         >
-          {BRAND.pillars.map((p, i) => (
+          {t.pillars.map((p, i) => (
             <li key={p} className="flex items-center gap-3 sm:gap-5">
               {i > 0 && <span className="h-px w-4 bg-ivory/30" aria-hidden />}
               {p}
@@ -109,29 +113,29 @@ export function Hero() {
           className="mt-9 flex w-full max-w-[420px] flex-col gap-2.5 sm:w-auto sm:max-w-none sm:flex-row sm:gap-3"
         >
           <Link href="/shop" className="btn-solid">
-            Shop Collection <Icon name="arrow" className="h-4 w-4" />
+            {t.hero.shop} <Icon name="arrow" className="h-4 w-4" />
           </Link>
           <Link href="#worlds" className="btn-line">
-            Explore Worlds
+            {t.hero.worlds}
           </Link>
         </motion.div>
       </motion.div>
 
       <motion.div
-        className="label pointer-events-none absolute bottom-8 right-8 z-10 hidden items-center gap-3 text-ivory/40 lg:flex"
+        className="label pointer-events-none absolute bottom-8 end-8 z-10 hidden items-center gap-3 text-ivory/40 lg:flex"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 2.2, duration: 1 }}
       >
-        <span className="block h-8 w-px animate-drift bg-ivory/40" /> Scroll
+        <span className="block h-8 w-px animate-drift bg-ivory/40" /> {t.hero.scroll}
       </motion.div>
       <motion.p
-        className="label pointer-events-none absolute bottom-8 left-8 z-10 hidden text-ivory/40 lg:block"
+        className="label pointer-events-none absolute bottom-8 start-8 z-10 hidden text-ivory/40 lg:block"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 2.2, duration: 1 }}
       >
-        Collection 01 — Sports · Clothing · Hybrid
+        {t.hero.footer}
       </motion.p>
     </section>
   );

@@ -3,23 +3,27 @@ import { SETS } from '@/lib/commerce/sets';
 import { SetCard } from '@/components/sets/SetCard';
 import { Reveal } from '@/components/motion/Reveal';
 import { Icon } from '@/components/ui/Icon';
+import { getLocale } from '@/lib/i18n/server';
+import { pick } from '@/lib/i18n/copy';
+import { home } from '@/lib/i18n/copy/home';
 
 export function Sets() {
+  const t = pick(home, getLocale()).sets;
   return (
     <section className="bg-ink py-24 sm:py-32" aria-labelledby="sets-title">
       <div className="mx-auto max-w-[1600px] px-5 sm:px-8">
         <Reveal className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <p className="label text-mist">Curated looks</p>
+            <p className="label text-mist">{t.eyebrow}</p>
             <h2 id="sets-title" className="mt-5 font-display text-5xl leading-none sm:text-7xl">
-              The Sets.
+              {t.title}
             </h2>
           </div>
           <Link
             href="/sets"
             className="label inline-flex items-center gap-3 text-ivory/80 hover:text-ivory"
           >
-            All sets <Icon name="arrow" className="h-4 w-4" />
+            {t.all} <Icon name="arrow" className="h-4 w-4" />
           </Link>
         </Reveal>
       </div>

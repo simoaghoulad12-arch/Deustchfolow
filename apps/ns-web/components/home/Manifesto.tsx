@@ -1,6 +1,20 @@
 import { Reveal, TextReveal } from '@/components/motion/Reveal';
+import { getLocale } from '@/lib/i18n/server';
+import { pick } from '@/lib/i18n/copy';
+import { home } from '@/lib/i18n/copy/home';
 
 export function Manifesto() {
+  const t = pick(home, getLocale()).manifesto;
+  const withHighlight = (line: string) => {
+    const [before, after] = line.split('{h}');
+    return (
+      <>
+        {before}
+        <span className="italic text-gold">{t.highlight}</span>
+        {after}
+      </>
+    );
+  };
   return (
     <section
       className="relative overflow-hidden bg-ink px-5 py-28 sm:px-8 sm:py-40"
@@ -8,39 +22,17 @@ export function Manifesto() {
     >
       <div className="mx-auto max-w-[1400px]">
         <Reveal>
-          <p className="label text-mist">More than just clothes</p>
+          <p className="label text-mist">{t.eyebrow}</p>
         </Reveal>
         <h2
           id="manifesto"
           className="mt-8 font-display text-[2.35rem] leading-[1.05] sm:text-6xl lg:text-[5.5rem]"
         >
-          <TextReveal
-            lines={[
-              <>A mindset,</>,
-              <>
-                built from <span className="italic text-gold">discipline</span>,
-              </>,
-              <>hard work and the will</>,
-              <>never to stand still.</>,
-            ]}
-          />
+          <TextReveal lines={[t.lines[0], withHighlight(t.lines[1]), t.lines[2], t.lines[3]]} />
         </h2>
 
         <div className="mt-16 grid gap-10 sm:mt-24 lg:grid-cols-3 lg:gap-6">
-          {[
-            [
-              'Performance.',
-              'Built on the training floor. Every piece earns its place in the session first.',
-            ],
-            [
-              'Identity.',
-              'The crown monogram is a standard, not a decoration. You wear what you’ve earned.',
-            ],
-            [
-              'Lifestyle.',
-              'The discipline doesn’t end when the session does. Neither does the uniform.',
-            ],
-          ].map(([title, body], i) => (
+          {t.cards.map(([title, body], i) => (
             <Reveal key={title} delay={i * 0.12} className="border-t border-white/10 pt-6">
               <p className="label text-fog">0{i + 1}</p>
               <p
