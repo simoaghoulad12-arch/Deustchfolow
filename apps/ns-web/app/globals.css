@@ -50,6 +50,19 @@
 }
 
 @layer components {
+  /* Arabic script (the Darija /manager page): letter-spacing breaks the
+     joining of Arabic letters, and Arabic has no uppercase or italic. */
+  [dir='rtl'] .label,
+  [dir='rtl'] .tech,
+  [dir='rtl'] .btn {
+    letter-spacing: normal;
+    text-transform: none;
+  }
+  [dir='rtl'] em,
+  [dir='rtl'] .italic {
+    font-style: normal;
+  }
+
   .label {
     @apply text-[10px] font-medium uppercase tracking-label sm:text-[11px];
   }

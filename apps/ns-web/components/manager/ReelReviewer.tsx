@@ -7,6 +7,7 @@ import {
   POSTING_CHECKLIST,
   QUALITY_CHECK,
   RATINGS,
+  RATING_LABELS,
   REEL_SLOTS,
   SCORE_CATEGORIES,
   checkKey,
@@ -45,7 +46,7 @@ export function ReelReviewer() {
   }
 
   function remove(id: string) {
-    if (!window.confirm('Diese Prüfung löschen?')) return;
+    if (!window.confirm('نمسح هاد المراجعة؟')) return;
     update((prev) => ({ ...prev, reviews: prev.reviews.filter((r) => r.id !== id) }));
     setOpenId(null);
   }
@@ -53,7 +54,7 @@ export function ReelReviewer() {
   return (
     <div>
       <button type="button" onClick={add} disabled={!ready} className="btn-solid w-full sm:w-auto">
-        Neues Reel prüfen
+        راجع ريل جديد
       </button>
 
       {state.reviews.length > 0 && (
@@ -66,16 +67,16 @@ export function ReelReviewer() {
                   type="button"
                   onClick={() => setOpenId(openId === r.id ? null : r.id)}
                   aria-expanded={openId === r.id}
-                  className="flex min-h-[52px] w-full items-center justify-between gap-4 py-3 text-left"
+                  className="flex min-h-[52px] w-full items-center justify-between gap-4 py-3 text-start"
                 >
                   <span className="min-w-0">
-                    <span className="block truncate text-sm">{r.title || 'Ohne Titel'}</span>
+                    <span className="block truncate text-sm">{r.title || 'بلا عنوان'}</span>
                     <span className="tech mt-1 block text-fog">
-                      {r.slot ? `Slot ${r.slot}` : 'kein Slot'} · {r.cta ?? 'kein CTA'}
+                      {r.slot ? `السلوت ${r.slot}` : 'بلا سلوت'} · {r.cta ?? 'بلا CTA'}
                     </span>
                   </span>
                   <span className={cn('tech shrink-0', canPost ? 'text-gold' : 'text-fog')}>
-                    {canPost ? 'Bereit zum Posten' : `${blockers.length} offen`}
+                    {canPost ? 'واجد للنشر' : `${blockers.length} مازال`}
                   </span>
                 </button>
               </li>
@@ -112,7 +113,7 @@ function ReviewEditor({
   return (
     <div className="mt-8 border border-white/10 p-4 sm:p-6">
       <label className="block">
-        <span className="label text-mist">Reel (Idee in einem Satz)</span>
+        <span className="label text-mist">الريل (الفكرة فجملة وحدة)</span>
         <input
           value={review.title}
           onChange={(e) => set((r) => ({ ...r, title: e.target.value }))}
@@ -122,7 +123,7 @@ function ReviewEditor({
 
       <div className="mt-6 grid gap-4 sm:grid-cols-3">
         <label className="block">
-          <span className="label text-mist">Slot</span>
+          <span className="label text-mist">السلوت</span>
           <select
             value={review.slot ?? ''}
             onChange={(e) => {
@@ -156,13 +157,13 @@ function ReviewEditor({
             {CTAS.map((c) => (
               <option key={c} value={c}>
                 {c}
-                {slot && !slot.ctas.includes(c) ? ' (passt nicht zum Slot)' : ''}
+                {slot && !slot.ctas.includes(c) ? ' (ماكيناسبش السلوت)' : ''}
               </option>
             ))}
           </select>
         </label>
         <label className="block">
-          <span className="label text-mist">Typ</span>
+          <span className="label text-mist">النوع</span>
           <select
             value={review.contentType ?? ''}
             onChange={(e) =>
@@ -184,7 +185,7 @@ function ReviewEditor({
       </div>
       {slot && <p className="mt-3 font-display text-lg italic text-ivory/70">{slot.hook}</p>}
 
-      <h4 className="label mt-10 text-gold">Qualitäts-Check</h4>
+      <h4 className="label mt-10 text-gold">تشيك الجودة</h4>
       <div className="mt-4 border-t border-white/[0.07]">
         {QUALITY_CHECK.map((g) => {
           const done = g.items.filter((_, i) => review.checks.includes(checkKey(g.id, i))).length;
@@ -193,7 +194,7 @@ function ReviewEditor({
               <summary className="flex min-h-[52px] cursor-pointer list-none items-center justify-between gap-4 py-3">
                 <span className="text-sm">
                   {g.title}
-                  {g.note && <span className="ml-2 text-xs text-fog">{g.note}</span>}
+                  {g.note && <span className="ms-2 text-xs text-fog">{g.note}</span>}
                 </span>
                 <span className={cn('tech', done === g.items.length ? 'text-gold' : 'text-fog')}>
                   {done}/{g.items.length}
@@ -222,10 +223,10 @@ function ReviewEditor({
         })}
       </div>
 
-      <h4 className="label mt-10 text-gold">Score pro Kategorie</h4>
+      <h4 className="label mt-10 text-gold">السكور لكل كاتيغوري</h4>
       <ul className="mt-4 grid gap-px bg-white/[0.07] sm:grid-cols-2">
         {SCORE_CATEGORIES.map((c) => (
-          <li key={c.id} className="flex flex-col gap-2 bg-ink py-3 sm:pr-4">
+          <li key={c.id} className="flex flex-col gap-2 bg-ink py-3 sm:pe-4">
             <span className="text-sm">{c.label}</span>
             <span className="grid grid-cols-4 gap-1" role="radiogroup" aria-label={c.label}>
               {RATINGS.map((rating) => {
@@ -245,13 +246,13 @@ function ReviewEditor({
                     className={cn(
                       'tech min-h-[40px] border px-1 transition-colors',
                       active
-                        ? rating === 'ÄNDERN'
+                        ? rating === 'change'
                           ? 'border-ivory bg-ivory text-ink'
                           : 'border-accent text-accent'
                         : 'border-white/10 text-fog hover:border-white/30',
                     )}
                   >
-                    {rating}
+                    {RATING_LABELS[rating]}
                   </button>
                 );
               })}
@@ -263,7 +264,7 @@ function ReviewEditor({
       <label className="mt-10 block">
         <span className="label text-gold">Must Fix</span>
         <span className="mt-1 block text-xs text-fog">
-          Eine Änderung pro Zeile. Erledigt: Zeile mit [x] beginnen.
+          تبديل واحد فكل سطر. اللي سالا: بدا السطر بـ [x].
         </span>
         <textarea
           value={review.mustFix}
@@ -273,7 +274,7 @@ function ReviewEditor({
         />
       </label>
 
-      <h4 className="label mt-10 text-gold">Posting-Checkliste</h4>
+      <h4 className="label mt-10 text-gold">ليستة النشر</h4>
       <ul className="mt-4 grid gap-x-6 sm:grid-cols-2">
         {POSTING_CHECKLIST.map((item, i) => (
           <li key={item}>
@@ -302,7 +303,7 @@ function ReviewEditor({
         aria-live="polite"
       >
         <p className={cn('label', ready ? 'text-gold' : 'text-ivory')}>
-          {ready ? 'Bereit zum Posten' : 'Noch nicht posten'}
+          {ready ? 'واجد للنشر' : 'مازال ماتنشرش'}
         </p>
         {!ready && (
           <ul className="mt-3 grid gap-1 text-sm text-mist">
@@ -321,7 +322,7 @@ function ReviewEditor({
         onClick={() => remove(review.id)}
         className="label mt-6 py-3 text-fog hover:text-ivory"
       >
-        Prüfung löschen
+        مسح المراجعة
       </button>
     </div>
   );

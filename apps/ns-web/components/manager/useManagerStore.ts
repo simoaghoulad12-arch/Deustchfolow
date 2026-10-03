@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
-import type { KpiId, ReelReview } from '@/lib/manager';
+import { normalizeReview, type KpiId, type ReelReview } from '@/lib/manager';
 
 /**
  * Per-device storage for the /manager page. A convenience only: nothing
@@ -32,7 +32,7 @@ function read(): ManagerState {
     return {
       checks: parsed.checks ?? {},
       kpis: parsed.kpis ?? {},
-      reviews: parsed.reviews ?? [],
+      reviews: (parsed.reviews ?? []).map(normalizeReview),
     };
   } catch {
     return EMPTY;

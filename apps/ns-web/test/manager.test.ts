@@ -2,6 +2,7 @@ import { readFileSync, readdirSync, statSync } from 'fs';
 import { join } from 'path';
 import {
   CTAS,
+  DEUTSCH_CONTEXT_ITEM,
   POSTING_CHECKLIST,
   QUALITY_CHECK,
   REVIEW_ANSWER_FORMAT,
@@ -9,6 +10,7 @@ import {
   buildReviewPrompt,
   checkKey,
   newReelReview,
+  normalizeReview,
   postingReadiness,
   type ReelReview,
   FUNNELS,
@@ -36,13 +38,13 @@ function sourceFiles(dir: string): string[] {
 function completeReview(overrides: Partial<ReelReview> = {}): ReelReview {
   return {
     ...newReelReview('t', '2026-10-04T08:00:00.000Z'),
-    title: 'Tag 12: Training nach der Spätschicht',
+    title: 'النهار 12: ترينينغ من بعد الشيفت ديال العشية',
     slot: 2,
     cta: 'PLAN',
     checks: QUALITY_CHECK.flatMap((g) => g.items.map((_, i) => checkKey(g.id, i))),
     posting: POSTING_CHECKLIST.map((_, i) => i),
-    scores: Object.fromEntries(SCORE_CATEGORIES.map((c) => [c.id, 'OK'])),
-    mustFix: '[x] Hook kürzen',
+    scores: Object.fromEntries(SCORE_CATEGORIES.map((c) => [c.id, 'ok'])),
+    mustFix: '[x] قصّر الهوك',
     ...overrides,
   };
 }
@@ -86,9 +88,9 @@ describe('manager system', () => {
 
   it('keeps the hybrid programme order fixed', () => {
     expect(HYBRID_STEPS).toHaveLength(10);
-    expect(HYBRID_STEPS[4]).toBe('Nachfrage testen');
-    expect(HYBRID_STEPS[5]).toBe('Founding Members');
-    expect(HYBRID_STEPS[9]).toBe('Launch');
+    expect(HYBRID_STEPS[4]).toBe('اختبار الطلب');
+    expect(HYBRID_STEPS[5]).toContain('Founding Members');
+    expect(HYBRID_STEPS[9]).toBe('اللانسمون');
   });
 
   it('tracks exactly five numbers', () => {
@@ -127,7 +129,7 @@ describe('reel quality check', () => {
   it('blocks an empty review', () => {
     const { ready, blockers } = postingReadiness(newReelReview('e', ''));
     expect(ready).toBe(false);
-    expect(blockers.join(' ')).toMatch(/Kein CTA/);
+    expect(blockers.join(' ')).toMatch(/ماكاينش CTA/);
   });
 
   it('lets a fully checked reel post', () => {
@@ -138,13 +140,26 @@ describe('reel quality check', () => {
     expect(postingReadiness(completeReview({ slot: 3, cta: 'PLAN' })).ready).toBe(false);
   });
 
-  it('blocks any category rated ÄNDERN', () => {
+  it('blocks any category rated "change"', () => {
     const r = completeReview();
-    expect(postingReadiness({ ...r, scores: { ...r.scores, hook: 'ÄNDERN' } }).ready).toBe(false);
+    expect(postingReadiness({ ...r, scores: { ...r.scores, hook: 'change' } }).ready).toBe(false);
+  });
+
+  it('migrates ratings stored with the old German values', () => {
+    const legacy = {
+      ...completeReview(),
+      scores: { hook: '\u00c4NDERN', story: 'STARK', audio: 'SCHWACH', cta: 'OK', value: 'x' },
+    } as unknown as ReelReview;
+    expect(normalizeReview(legacy).scores).toEqual({
+      hook: 'change',
+      story: 'strong',
+      audio: 'weak',
+      cta: 'ok',
+    });
   });
 
   it('blocks open Must Fix lines and an incomplete posting checklist', () => {
-    expect(postingReadiness(completeReview({ mustFix: 'Untertitel prüfen' })).ready).toBe(false);
+    expect(postingReadiness(completeReview({ mustFix: 'شوف السوتيتر' })).ready).toBe(false);
     expect(postingReadiness(completeReview({ posting: [0, 1, 2] })).ready).toBe(false);
   });
 
@@ -152,10 +167,10 @@ describe('reel quality check', () => {
     const r = completeReview({ slot: 4, cta: 'DEUTSCH' });
     expect(postingReadiness(r).ready).toBe(true);
     const deutsch = QUALITY_CHECK.find((g) => g.id === 'deutsch')!;
-    const ctx = deutsch.items.findIndex((i) => i.startsWith('Relevanter Natty-Simo-Kontext'));
+    const ctx = deutsch.items.indexOf(DEUTSCH_CONTEXT_ITEM);
     expect(ctx).toBeGreaterThanOrEqual(0);
     const without = { ...r, checks: r.checks.filter((k) => k !== checkKey('deutsch', ctx)) };
-    expect(postingReadiness(without).blockers.join(' ')).toMatch(/Natty-Simo-Kontext/);
+    expect(postingReadiness(without).blockers.join(' ')).toMatch(/سياق Natty Simo/);
   });
 
   it('blocks while a protection rule is unchecked', () => {
@@ -169,5 +184,33 @@ describe('reel quality check', () => {
     for (const step of REVIEW_ANSWER_FORMAT) expect(prompt).toContain(step);
     for (const item of POSTING_CHECKLIST) expect(prompt).toContain(`☐ ${item}`);
     expect(prompt).toContain('Discipline builds freedom.');
+  });
+
+  it('asks Claude to answer in Darija, in Arabic script', () => {
+    const prompt = buildReviewPrompt();
+    expect(prompt).toMatch(/[\u0600-\u06FF]/);
+    expect(prompt).toContain('جاوب ديما بالدارجة المغربية بالحروف العربية');
+  });
+});
+
+describe('/manager is in Darija', () => {
+  it('leaves no German behind in the manager data, page or components', () => {
+    const files = [
+      join(ROOT, 'lib/manager.ts'),
+      ...sourceFiles(join(ROOT, 'app/manager')),
+      ...sourceFiles(join(ROOT, 'components/manager')),
+    ];
+    for (const file of files) {
+      expect([file, readFileSync(file, 'utf8')]).not.toEqual([
+        file,
+        expect.stringMatching(/[\u00e4\u00f6\u00fc\u00c4\u00d6\u00dc\u00df]/),
+      ]);
+    }
+  });
+
+  it('renders right-to-left in Arabic', () => {
+    const page = readFileSync(join(ROOT, 'app/manager/page.tsx'), 'utf8');
+    expect(page).toContain('dir="rtl"');
+    expect(page).toContain('lang="ar-MA"');
   });
 });

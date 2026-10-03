@@ -22,7 +22,7 @@ export function WeekChecklist({ id, items }: { id: string; items: readonly strin
   return (
     <div>
       <p className="tech text-mist">
-        {week} · {ready ? `${count}/${items.length} erledigt` : '…'}
+        <bdi dir="ltr">{week}</bdi> · {ready ? `${count}/${items.length} سالاو` : '…'}
       </p>
       <ol className="mt-4 border-t border-white/[0.07]">
         {items.map((item, i) => {

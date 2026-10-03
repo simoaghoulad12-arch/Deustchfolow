@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
-import type { ReactNode } from 'react';
+import { IBM_Plex_Sans_Arabic } from 'next/font/google';
+import type { CSSProperties, ReactNode } from 'react';
 import { CopyButton } from '@/components/manager/CopyButton';
 import { KpiLog } from '@/components/manager/KpiLog';
 import { ReelReviewer } from '@/components/manager/ReelReviewer';
@@ -47,23 +48,29 @@ import {
  * the URL can open it (there is no backend to log in against). Keep only
  * strategy and aggregate numbers here, never personal data. See ASSETS.md.
  */
+const arabic = IBM_Plex_Sans_Arabic({
+  subsets: ['arabic'],
+  weight: ['400', '500', '600'],
+  display: 'swap',
+});
+
 export const metadata: Metadata = {
   title: 'Manager',
   robots: { index: false, follow: false },
 };
 
 const SECTIONS = [
-  ['sonntag', 'Sonntag'],
-  ['reel-check', 'Reel-Check'],
-  ['nicht-jetzt', 'Nicht jetzt'],
-  ['regeln', 'Regeln'],
-  ['reels', 'Reels'],
-  ['funnels', 'DM-Funnels'],
+  ['sonntag', 'الحد'],
+  ['reel-check', 'تشيك الريل'],
+  ['nicht-jetzt', 'ماشي دابا'],
+  ['regeln', 'القواعد'],
+  ['reels', 'الريلز'],
+  ['funnels', 'فانيل الديام'],
   ['squad', 'Squad'],
-  ['woche', 'Woche'],
-  ['kpis', 'Zahlen'],
-  ['marke', 'NATYSIMO & Hybrid'],
-  ['identitaet', 'Identität'],
+  ['woche', 'السيمانة'],
+  ['kpis', 'الأرقام'],
+  ['marke', 'NATYSIMO والهايبريد'],
+  ['identitaet', 'الهوية'],
 ] as const;
 
 function Chain({ items, open = false }: { items: readonly string[]; open?: boolean }) {
@@ -71,13 +78,13 @@ function Chain({ items, open = false }: { items: readonly string[]; open?: boole
     <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm">
       {items.map((item, i) => (
         <span key={item} className="flex items-center gap-2">
-          {i > 0 && <span className="text-gold">→</span>}
+          {i > 0 && <span className="text-gold">←</span>}
           {item}
         </span>
       ))}
       {open && (
         <span className="flex items-center gap-2 text-fog">
-          <span className="text-gold">→</span> … (offen)
+          <span className="text-gold">←</span> … (مازال مفتوح)
         </span>
       )}
     </p>
@@ -99,7 +106,9 @@ function Section({
 }) {
   return (
     <section id={id} className="scroll-mt-24 border-t border-white/[0.07] py-14">
-      <p className="tech text-fog">{String(index).padStart(2, '0')}</p>
+      <p className="tech text-fog" dir="ltr">
+        {String(index).padStart(2, '0')}
+      </p>
       <h2 className="mt-3 font-display text-4xl leading-none sm:text-5xl">{title}</h2>
       {intro && <p className="mt-5 max-w-2xl text-sm leading-relaxed text-mist">{intro}</p>}
       <div className="mt-8">{children}</div>
@@ -109,22 +118,33 @@ function Section({
 
 export default function ManagerPage() {
   return (
-    <div lang="de" className="mx-auto max-w-4xl px-4 pb-32 pt-28 sm:px-6">
+    <div
+      lang="ar-MA"
+      dir="rtl"
+      className={`${arabic.className} mx-auto max-w-4xl px-4 pb-32 pt-28 sm:px-6`}
+      style={
+        {
+          '--font-sans': arabic.style.fontFamily,
+          '--font-display': arabic.style.fontFamily,
+        } as CSSProperties
+      }
+    >
       <header>
         <p className="label text-mist">
           {MANAGER_META.date} · {MANAGER_META.author}
         </p>
         <h1 className="mt-4 font-display text-5xl leading-[0.95] sm:text-6xl">
-          Management-System <em className="text-gold">90 Tage</em>
+          نظام المانجمنت <em className="text-gold">90 يوم</em>
         </h1>
-        <p className="mt-5 font-display text-xl italic text-ivory/80">{IDENTITY.claim}</p>
+        <p className="mt-5 font-display text-xl text-ivory/80" dir="ltr" lang="en">
+          {IDENTITY.claim}
+        </p>
         <p className="mt-6 max-w-2xl text-xs leading-relaxed text-fog">
-          Private Seite, nirgends verlinkt. Abhaken und Zahlen werden nur auf diesem Gerät
-          gespeichert.
+          صفحة خاصة، ماكاين حتى لينك ليها. العلامات والأرقام كيتسجلو غير فهاد الجهاز.
         </p>
       </header>
 
-      <nav aria-label="Abschnitte" className="mt-10 flex flex-wrap gap-2">
+      <nav aria-label="الأقسام" className="mt-10 flex flex-wrap gap-2">
         {SECTIONS.map(([id, label]) => (
           <a
             key={id}
@@ -139,20 +159,20 @@ export default function ManagerPage() {
       <Section
         id="sonntag"
         index={1}
-        title="Sonntag = Manager Day"
-        intro="Jeden Sonntag schaust du 15 Minuten auf genau 5 Zahlen und entscheidest danach, was du diese Woche filmst."
+        title="الحد = نهار المانجر"
+        intro="كل حد كتشوف 15 دقيقة فـ 5 أرقام بالضبط، ومن بعد كتقرر شنو غادي تصور هاد السيمانة."
       >
-        <h3 className="label text-gold">Start · {START_TOMORROW.date}</h3>
+        <h3 className="label text-gold">البداية · {START_TOMORROW.date}</h3>
         <div className="mt-4">
           <WeekChecklist id="start" items={START_TOMORROW.steps} />
         </div>
 
-        <h3 className="label mt-12 text-gold">Ablauf am Sonntag</h3>
+        <h3 className="label mt-12 text-gold">البرنامج ديال الحد</h3>
         <div className="mt-4">
           <WeekChecklist id="sunday" items={SUNDAY_FLOW} />
         </div>
 
-        <h3 className="label mt-12 text-gold">Entscheidungsregeln</h3>
+        <h3 className="label mt-12 text-gold">قواعد القرار</h3>
         <dl className="mt-4 border-t border-white/[0.07]">
           {DECISION_RULES.map((r) => (
             <div
@@ -169,18 +189,17 @@ export default function ManagerPage() {
       <Section
         id="reel-check"
         index={2}
-        title="Reel-Qualitäts-Check"
-        intro="Jedes Reel wird vor dem Posten streng geprüft, als würde dein eigener Name dafür stehen. Keine Schönrederei."
+        title="تشيك الجودة ديال الريل"
+        intro="كل ريل كيتراجع بصرامة قبل النشر، بحال إلا السمية ديالك هي اللي مكتوبة عليه. بلا مجاملة."
       >
         <div className="flex flex-col gap-3 border border-white/10 p-4 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-sm text-mist">
-            Prüf-Prompt kopieren und zusammen mit Script, Transkript oder Caption in Claude
-            einfügen.
+            نسخ البرومبت ديال المراجعة، ولصقو فـ Claude مع السكريبت، الترانسكريبت ولا الكابشن.
           </p>
-          <CopyButton text={buildReviewPrompt()} label="Prompt kopieren" />
+          <CopyButton text={buildReviewPrompt()} label="نسخ البرومبت" />
         </div>
 
-        <h3 className="label mt-10 text-gold">Vor der Bearbeitung beantworten</h3>
+        <h3 className="label mt-10 text-gold">قبل ما تبدا، جاوب</h3>
         <dl className="mt-4 border-t border-white/[0.07]">
           {PRE_QUESTIONS.map((q) => (
             <div key={q.id} className="flex gap-4 border-b border-white/[0.07] py-4">
@@ -194,22 +213,24 @@ export default function ManagerPage() {
 
         <div className="mt-10 grid gap-8 sm:grid-cols-2">
           <div>
-            <h3 className="label text-gold">Urteile</h3>
+            <h3 className="label text-gold">الأحكام</h3>
             <ul className="mt-4 grid gap-2 text-sm">
               {VERDICTS.map((v) => (
-                <li key={v.verdict}>
-                  <span className="tech text-ivory">{v.verdict}</span>{' '}
+                <li key={v.id}>
+                  <span className="tech text-ivory">{v.label}</span>{' '}
                   <span className="text-mist">{v.when}</span>
                 </li>
               ))}
             </ul>
           </div>
           <div>
-            <h3 className="label text-gold">Script-Markierungen</h3>
+            <h3 className="label text-gold">علامات السكريبت</h3>
             <ul className="mt-4 grid gap-2 text-sm">
               {SCRIPT_MARKS.map((m) => (
                 <li key={m.mark}>
-                  <span className="tech text-ivory">{m.mark}</span>{' '}
+                  <span className="tech text-ivory" dir="ltr">
+                    {m.mark}
+                  </span>{' '}
                   <span className="text-mist">{m.meaning}</span>
                 </li>
               ))}
@@ -219,7 +240,7 @@ export default function ManagerPage() {
 
         <ul className="mt-10 grid gap-px bg-white/[0.07] sm:grid-cols-2">
           {CONTENT_TYPES.map((c) => (
-            <li key={c.id} className="bg-ink py-4 sm:pr-4">
+            <li key={c.id} className="bg-ink py-4 sm:pe-4">
               <p className="tech text-ivory">{c.label}</p>
               <p className="mt-2 text-sm text-mist">{c.text}</p>
             </li>
@@ -227,13 +248,13 @@ export default function ManagerPage() {
         </ul>
         <p className="mt-6 text-sm text-mist">{REVIEW_RULE}</p>
 
-        <h3 className="label mt-12 text-gold">Reels prüfen</h3>
+        <h3 className="label mt-12 text-gold">راجع الريلز</h3>
         <div className="mt-4">
           <ReelReviewer />
         </div>
 
         <div className="mt-12">
-          <p className="label text-fog">Goldene Regel</p>
+          <p className="label text-fog">القاعدة الذهبية</p>
           <div className="mt-3">
             <Chain items={GOLDEN_RULE.chain} />
           </div>
@@ -244,19 +265,19 @@ export default function ManagerPage() {
       <Section
         id="nicht-jetzt"
         index={3}
-        title="NICHT JETZT"
-        intro="Wenn du mit einem dieser Themen kommst, lautet die Antwort NICHT JETZT. Jedes Thema hat einen Grund und eine Bedingung, ab der es wieder auf den Tisch darf."
+        title="ماشي دابا"
+        intro="إلا جيتي بشي موضوع من هادو، الجواب هو: ماشي دابا. كل موضوع عندو سبب وشرط، ومن بعدو يقدر يرجع للطابلة."
       >
         <ul className="grid gap-px bg-white/[0.07]">
           {NOT_NOW.map((n) => (
             <li key={n.topic} className="grid gap-3 bg-ink py-5 sm:grid-cols-3 sm:gap-6">
               <p className="text-sm">{n.topic}</p>
               <p className="text-sm text-mist">
-                <span className="label block text-fog">Warum nicht jetzt</span>
+                <span className="label block text-fog">علاش ماشي دابا</span>
                 {n.why}
               </p>
               <p className="text-sm text-mist">
-                <span className="label block text-fog">Wieder erlaubt, wenn</span>
+                <span className="label block text-fog">يرجع مسموح ملي</span>
                 {n.allowedWhen}
               </p>
             </li>
@@ -264,9 +285,9 @@ export default function ManagerPage() {
         </ul>
       </Section>
 
-      <Section id="regeln" index={4} title="Manager-Regeln" intro={RULES_INTRO}>
+      <Section id="regeln" index={4} title="قواعد المانجر" intro={RULES_INTRO}>
         <Chain items={GOAL_CHAIN} />
-        <p className="mt-2 text-xs text-fog">nicht View → View → View</p>
+        <p className="mt-2 text-xs text-fog">ماشي مشاهدة ← مشاهدة ← مشاهدة</p>
         <ol className="mt-8 border-t border-white/[0.07]">
           {RULES.map((r, i) => (
             <li key={r.title} className="flex gap-4 border-b border-white/[0.07] py-4">
@@ -284,8 +305,8 @@ export default function ManagerPage() {
       <Section
         id="reels"
         index={5}
-        title="Reel-Struktur"
-        intro="Pro Woche gibt es 4–5 Reels, und mindestens 2 davon sind Fitness. Deutsch bdarija bleibt bei höchstens 1 von 4–5."
+        title="الستروكتور ديال الريلز"
+        intro="كل سيمانة 4–5 ريلز، وعلى الأقل 2 منهم فيتنس. Deutsch بالدارجة ماكيفوتش 1 من 4–5."
       >
         <ul className="border-t border-white/[0.07]">
           {REEL_SLOTS.map((r) => (
@@ -295,15 +316,15 @@ export default function ManagerPage() {
             >
               <span className="tech text-fog">
                 {r.slot}
-                {r.optional && ' (opt.)'}
+                {r.optional && ' (اختياري)'}
               </span>
               <span>
                 <span className="block text-sm">{r.topic}</span>
-                <span className="mt-1 block font-display text-lg italic text-ivory/80">
-                  {r.hook}
-                </span>
+                <span className="mt-1 block font-display text-lg text-ivory/80">{r.hook}</span>
               </span>
-              <span className="tech text-gold sm:text-right">{r.ctas.join(' / ')}</span>
+              <span className="tech text-gold sm:text-end" dir="ltr">
+                {r.ctas.join(' / ')}
+              </span>
             </li>
           ))}
         </ul>
@@ -320,8 +341,8 @@ export default function ManagerPage() {
       <Section
         id="funnels"
         index={6}
-        title="CTA und DM-Funnels"
-        intro={`Jedes Reel endet mit einem Keyword. ${FUNNEL_NOTE}`}
+        title="CTA وفانيل الديام"
+        intro={`كل ريل كيسالي بكلمة. ${FUNNEL_NOTE}`}
       >
         <Chain items={FUNNEL_FLOW} />
         <div className="mt-10 grid gap-10">
@@ -341,8 +362,8 @@ export default function ManagerPage() {
                         {s.text && <span className="text-mist">: {s.text}</span>}
                       </p>
                       {s.snippet && (
-                        <div className="mt-3 flex items-start justify-between gap-3 border-l border-gold/60 pl-4">
-                          <p className="font-display text-lg italic">„{s.snippet}“</p>
+                        <div className="mt-3 flex items-start justify-between gap-3 border-s border-gold/60 ps-4">
+                          <p className="font-display text-lg">«{s.snippet}»</p>
                           <CopyButton text={s.snippet} />
                         </div>
                       )}
@@ -365,15 +386,13 @@ export default function ManagerPage() {
             </li>
           ))}
         </ul>
-        <h3 className="label mt-12 text-gold">
-          Checkliste pro Reel: Wie kommen Menschen in den Channel?
-        </h3>
+        <h3 className="label mt-12 text-gold">الليستة لكل ريل: كيفاش الناس كيدخلو للقناة؟</h3>
         <div className="mt-4">
           <WeekChecklist id="squad" items={SQUAD_CHECKLIST} />
         </div>
       </Section>
 
-      <Section id="woche" index={8} title="Wochenrhythmus" intro={WEEK_INTRO}>
+      <Section id="woche" index={8} title="الريتم ديال السيمانة" intro={WEEK_INTRO}>
         <ul className="border-t border-white/[0.07]">
           {WEEK.map((w) => (
             <li
@@ -382,12 +401,12 @@ export default function ManagerPage() {
             >
               <span className="text-sm">{w.day}</span>
               <span className="text-sm text-mist">{w.task}</span>
-              <span className="tech text-fog sm:text-right">{w.time}</span>
+              <span className="tech text-fog sm:text-end">{w.time}</span>
             </li>
           ))}
         </ul>
         <div className="mt-10 border border-white/10 p-5">
-          <p className="label text-gold">Notfallmodus · {EMERGENCY_MODE.time}</p>
+          <p className="label text-gold">وضع الطوارئ · {EMERGENCY_MODE.time}</p>
           <ul className="mt-4 grid gap-2 text-sm">
             {EMERGENCY_MODE.tasks.map((t) => (
               <li key={t} className="flex gap-3">
@@ -400,17 +419,17 @@ export default function ManagerPage() {
         </div>
       </Section>
 
-      <Section id="kpis" index={9} title="Die 5 Zahlen" intro={KPI_SOURCE}>
+      <Section id="kpis" index={9} title="الأرقام الخمسة" intro={KPI_SOURCE}>
         <KpiLog />
       </Section>
 
-      <Section id="marke" index={10} title="NATYSIMO und Hybrid-Programm" intro={BRAND_PATH.intro}>
+      <Section id="marke" index={10} title="NATYSIMO وبرنامج الهايبريد" intro={BRAND_PATH.intro}>
         <h3 className="label text-gold">NATYSIMO</h3>
         <div className="mt-4 grid gap-2">
           <Chain items={BRAND_PATH.path} />
-          <p className="text-sm text-fog">Nicht sofort: {BRAND_PATH.notPath.join(' → ')}</p>
+          <p className="text-sm text-fog">ماشي ديريكت: {BRAND_PATH.notPath.join(' ← ')}</p>
         </div>
-        <p className="label mt-8 text-mist">Content-Ideen für Reel 5 und den Broadcast</p>
+        <p className="label mt-8 text-mist">أفكار ديال المحتوى للريل 5 وللبرودكاست</p>
         <ul className="mt-3 grid gap-2 text-sm">
           {BRAND_PATH.ideas.map((idea) => (
             <li key={idea} className="flex gap-3">
@@ -420,10 +439,8 @@ export default function ManagerPage() {
           ))}
         </ul>
 
-        <h3 className="label mt-12 text-gold">12-Wochen-Hybrid-Programm</h3>
-        <p className="mt-3 text-sm text-mist">
-          Das Programm wird nicht aggressiv verkauft. Die Reihenfolge ist fest:
-        </p>
+        <h3 className="label mt-12 text-gold">برنامج الهايبريد ديال 12 سيمانة</h3>
+        <p className="mt-3 text-sm text-mist">البرنامج ماكيتباعش بالضغط. الترتيب ثابت:</p>
         <ol className="mt-4 grid gap-px bg-white/[0.07] sm:grid-cols-2">
           {HYBRID_STEPS.map((s, i) => (
             <li key={s} className="flex gap-4 bg-ink py-3">
@@ -435,9 +452,9 @@ export default function ManagerPage() {
         <p className="mt-6 text-sm text-mist">{HYBRID_NOTE}</p>
       </Section>
 
-      <Section id="identitaet" index={11} title="Identität" intro={IDENTITY.summary}>
+      <Section id="identitaet" index={11} title="الهوية" intro={IDENTITY.summary}>
         <Chain items={IDENTITY.chain} />
-        <h3 className="label mt-10 text-gold">Brand-Hierarchie</h3>
+        <h3 className="label mt-10 text-gold">الترتيب ديال البراند</h3>
         <ol className="mt-4 border-t border-white/[0.07]">
           {IDENTITY.hierarchy.map((h, i) => (
             <li key={h} className="flex gap-4 border-b border-white/[0.07] py-3 text-sm">
@@ -447,12 +464,12 @@ export default function ManagerPage() {
           ))}
         </ol>
         <p className="mt-6 text-sm text-mist">{IDENTITY.deutschNote}</p>
-        <h3 className="label mt-10 text-gold">Story-Kette</h3>
+        <h3 className="label mt-10 text-gold">سلسلة القصة</h3>
         <div className="mt-4">
           <Chain items={IDENTITY.storyChain} open={IDENTITY.storyChainOpen} />
         </div>
 
-        <h3 className="label mt-10 text-gold">Zielgruppe und Sprache</h3>
+        <h3 className="label mt-10 text-gold">الجمهور واللغة</h3>
         <p className="mt-4 text-sm text-mist">{AUDIENCE.summary}</p>
         <dl className="mt-4 grid gap-3">
           {AUDIENCE.points.map((p) => (

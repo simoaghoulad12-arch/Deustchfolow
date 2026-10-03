@@ -1,15 +1,17 @@
 /**
- * Natty Simo – Management-System (90 Tage), Stand 3. Okt. 2026.
+ * Natty Simo – management system (90 days), as of 3 Oct 2026.
  *
  * Private working document for the founder, rendered at /manager (noindex,
- * unlinked — see ASSETS.md). Copy is kept exactly as written; nothing is
- * invented. Open points stay marked as open. The brand name is spelled
- * NATYSIMO here like everywhere else in the site.
+ * unlinked — see ASSETS.md). All copy is Moroccan Darija in Arabic script,
+ * rendered right-to-left. Kept in Latin script on purpose: the brand names
+ * (Natty Simo = person, NATYSIMO = clothing), the DM keywords PLAN /
+ * DEUTSCH / SQUAD (people type exactly these), the claim and the script
+ * tags. Nothing is invented; open points stay marked as open.
  */
 
 export const MANAGER_META = {
-  title: 'Natty Simo – Management-System (90 Tage)',
-  date: '3. Okt. 2026',
+  title: 'Natty Simo – نظام المانجمنت (90 يوم)',
+  date: '3 أكتوبر 2026',
   author: '@Simo',
 } as const;
 
@@ -18,91 +20,83 @@ export const CTAS: Cta[] = ['PLAN', 'DEUTSCH', 'SQUAD'];
 
 export const IDENTITY = {
   summary:
-    'Natty Simo steht für eine Lebensweise, nicht für einen Fitness-Kanal: Disziplin als Weg zur Freiheit und zur eigenen Marke.',
+    'Natty Simo ماشي غير قناة ديال الفيتنس، هو أسلوب حياة: الانضباط هو الطريق للحرية وللبراند ديالك.',
   claim: 'Discipline builds freedom.',
-  chain: [
-    'Disziplin',
-    'Fitness',
-    'Sprache',
-    'Deutschland',
-    'Selbstentwicklung',
-    'Freiheit',
-    'eigene Marke',
-  ],
+  chain: ['الانضباط', 'الفيتنس', 'اللغة', 'ألمانيا', 'تطوير الذات', 'الحرية', 'البراند ديالك'],
   hierarchy: [
-    'Natty Simo (die Person, Personal Brand)',
-    'Fitness / Hybrid / Disziplin (der Kern)',
-    'Marokkaner in Deutschland',
-    'Deutsch bdarija',
-    'NATYSIMO (Clothing Brand)',
-    'Hybrid-Programm und Produkte',
+    'Natty Simo (الشخص، البراند الشخصي)',
+    'الفيتنس / الهايبريد / الانضباط (الأساس)',
+    'المغاربة فألمانيا',
+    'Deutsch بالدارجة',
+    'NATYSIMO (براند الحوايج)',
+    'برنامج الهايبريد والمنتوجات',
   ],
   deutschNote:
-    'Smart Deutsch darf wachsen, aber Natty Simo wird kein reiner Deutschlehrer-Account. Deutsch ist ein Tool und Differenzierungsmerkmal. Jedes Deutsch-Reel braucht einen relevanten Natty-Simo-Kontext.',
+    'Smart Deutsch يقدر يكبر، ولكن Natty Simo ماغاديش يولي حساب ديال أستاذ الألمانية وصافي. الألمانية أداة وحاجة كتميزك. كل ريل ديال الألمانية خاصو سياق حقيقي ديال Natty Simo.',
   /** Only the known part. The rest of the story chain is still open — never invent it. */
-  storyChain: ['Salé', 'Deutschland'],
+  storyChain: ['سلا', 'ألمانيا'],
   storyChainOpen: true,
 } as const;
 
 export const AUDIENCE = {
   summary:
-    'Junge Menschen aus Marokko, die fitter und disziplinierter werden, ihr Leben verbessern und sich weiterentwickeln wollen, Deutschland interessant finden, Deutsch lernen wollen oder Ausbildung/Studium in Deutschland überlegen. In deinen Zahlen: 79,6 % der interagierenden Konten, 81 % Männer, die meisten zwischen 18 und 34.',
+    'شباب من المغرب باغيين يوليو فورمة ومنضبطين، يحسنو حياتهم ويطورو راسهم، مهتمين بألمانيا، باغيين يتعلمو الألمانية ولا كيفكرو فالأوسبيلدونغ ولا القراية فألمانيا. فالأرقام ديالك: 79,6 % من الحسابات اللي كتفاعل، 81 % رجال، وأغلبهم بين 18 و34 عام.',
   points: [
     {
-      term: 'Interessen',
-      text: 'Fitness, Muskelaufbau, Hybrid Training, Disziplin, Motivation, Selbstentwicklung, Deutschland, Deutsch, Ausbildung, Studium, besseres Leben.',
+      term: 'الاهتمامات',
+      text: 'الفيتنس، بناء العضلات، الهايبريد ترينينغ، الانضباط، الموتيفاسيون، تطوير الذات، ألمانيا، الألمانية، الأوسبيلدونغ، القراية، حياة حسن.',
     },
-    { term: 'Darija', text: 'ist die Hauptsprache jedes Reels.' },
-    { term: 'Deutsch', text: 'ist Differenzierung, nicht Hauptidentität.' },
+    { term: 'الدارجة', text: 'هي اللغة الأساسية فكل ريل.' },
+    { term: 'الألمانية', text: 'حاجة كتميزك، ماشي الهوية الأساسية.' },
     {
-      term: 'Untertitel immer',
-      text: 'Darija-Video mit deutschen oder arabischen Untertiteln je nach Kontext, deutsches Video mit Darija-Erklärung.',
+      term: 'السوتيتر ديما',
+      text: 'فيديو بالدارجة بسوتيتر بالألمانية ولا بالعربية حسب السياق، وفيديو بالألمانية بشرح بالدارجة.',
     },
   ],
-  protectionIntro: 'Ungefähr 10 % der Reichweite sind unter 18. Deshalb:',
+  protectionIntro: 'تقريبا 10 % من الريتش ديالك تحت 18 عام. داكشي علاش:',
 } as const;
 
 /** Hard content limits. Checked in every reel review (see QUALITY_CHECK › risk). */
 export const PROTECTION_RULES = [
-  'keine extremen Diätversprechen',
-  'keine Supplement-Heilsversprechen',
-  'keine gefährlichen Fitnessversprechen',
-  'keine problematischen Aussagen über Körper',
-  'keine Patienten-/Stationsaufnahmen',
-  'keine privaten Patientendaten',
+  'ماكاين حتى وعد ديال ريجيم متطرف',
+  'ماكاين حتى وعد بلي شي مكمل غذائي كيداوي ولا كيدير المعجزات',
+  'ماكاين حتى وعد خطير فالتمارين',
+  'ماكاين حتى كلام مشكل على الجسم',
+  'ماكاينش تصوير المرضى ولا فالمصلحة ديال السبيطار',
+  'ماكاين حتى معلومة خاصة على المرضى',
 ];
 
-export const GOAL_CHAIN = ['View', 'Follow', 'Gespräch', 'Community', 'Vertrauen', 'Produkt'];
+export const GOAL_CHAIN = ['مشاهدة', 'فولو', 'هضرة', 'كوميونيتي', 'ثقة', 'منتوج'];
 
 export const RULES_INTRO =
-  'Dein Problem ist Bindung, nicht Reichweite: 93,5 % der Interaktionen kamen von Nicht-Followern, nur 876 Story-Antworten in drei Monaten.';
+  'المشكل ديالك هو الارتباط، ماشي الريتش: 93,5 % من التفاعلات جات من ناس ماشي فولوورز، وغير 876 رد على الستوري فتلت شهور.';
 
 export const RULES: { title: string; text: string }[] = [
   {
-    title: 'Nur 3 Prioritäten pro Woche',
-    text: 'Content/Reels, Community, Analyse. Alles andere ist Zusatz.',
+    title: 'غير 3 أولويات فالسيمانة',
+    text: 'الكونتنو/الريلز، الكوميونيتي، التحليل. كلشي آخر زيادة.',
   },
   {
-    title: 'Neue Idee? Erst der Test',
-    text: 'Hilft das jetzt einer dieser drei Prioritäten? Wenn nein, lautet die Antwort NICHT JETZT.',
+    title: 'فكرة جديدة؟ دوزها من الاختبار',
+    text: 'واش كتعاون دابا وحدة من هاد التلت أولويات؟ إلا لا، الجواب هو: ماشي دابا.',
   },
   {
-    title: 'Fitness ist der Kern',
-    text: 'Deutsch bdarija ist höchstens 1 von 4–5 Reels pro Woche.',
+    title: 'الفيتنس هو الأساس',
+    text: 'Deutsch بالدارجة ماكيفوتش 1 من 4–5 ريلز فالسيمانة.',
   },
   {
-    title: 'Kein Reel ohne CTA',
-    text: 'die ein Gespräch oder eine Community-Aktion auslöst, nicht nur „Like und Follow“.',
+    title: 'حتى ريل بلا CTA',
+    text: 'خاص CTA اللي كيحل هضرة ولا كيدير حركة فالكوميونيتي، ماشي غير «دير لايك وفولو».',
   },
   {
-    title: 'Community vor Views',
-    text: 'Jede Woche zählt, wie viele Menschen aus Reels im Gespräch oder im Broadcast landen.',
+    title: 'الكوميونيتي قبل الفيوز',
+    text: 'كل سيمانة حسب شحال من واحد جا من الريلز ودخل فالهضرة ولا فالبرودكاست.',
   },
-  { title: 'Fertig ist besser als perfekt', text: '' },
+  { title: 'اللي تسالى حسن من اللي كامل', text: '' },
 ];
 
 export const RULES_NOTE =
-  'Die Verteilung der Reels darf sich ändern, wenn die Daten es rechtfertigen. Fitness bleibt trotzdem der Kern.';
+  'التوزيع ديال الريلز يقدر يتبدل إلا الداتا بيّنات هادشي. ولكن الفيتنس كيبقى هو الأساس.';
 
 export type ReelKind = 'fitness' | 'morocco-germany' | 'deutsch' | 'personal';
 
@@ -121,65 +115,64 @@ export const REEL_SLOTS: ReelSlot[] = [
   {
     slot: 1,
     kind: 'fitness',
-    topic: 'Hybrid / Fitness / Disziplin',
-    hook: '„Ich laufe 5 km UND bankdrücke 100 kg. Natty. Das ist mein Plan.“',
+    topic: 'هايبريد / فيتنس / انضباط',
+    hook: '«كنجري 5 كيلو وكندفع 100 كيلو فالبنش. Natty. هادا هو البلان ديالي.»',
     ctas: ['PLAN'],
   },
   {
     slot: 2,
     kind: 'fitness',
-    topic: 'Hybrid / Disziplin / Serie („Hybrid Journey – Tag X/90“)',
-    hook: '„Tag 12: Training nach der Spätschicht.“',
+    topic: 'هايبريد / انضباط / سلسلة («Hybrid Journey – النهار X/90»)',
+    hook: '«النهار 12: ترينينغ من بعد الشيفت ديال العشية.»',
     ctas: ['PLAN', 'SQUAD'],
   },
   {
     slot: 3,
     kind: 'morocco-germany',
-    topic: 'Marokkaner in Deutschland / Humor / Reality',
-    hook: '„Deutsche Pünktlichkeit vs. marokkanisches ‚daba daba‘.“',
+    topic: 'المغاربة فألمانيا / ضحك / الواقع',
+    hook: '«الوقت عند الألمان ضد "دابا دابا" ديال المغاربة.»',
     ctas: ['SQUAD'],
   },
   {
     slot: 4,
     kind: 'deutsch',
-    topic: 'Deutsch bdarija mit Natty-Bezug',
-    hook: '„3 deutsche Sätze fürs Gym, die jeder braucht.“',
+    topic: 'Deutsch بالدارجة مع سياق Natty',
+    hook: '«3 جمل بالألمانية خاصك تعرفهم فالجيم.»',
     ctas: ['DEUTSCH'],
   },
   {
     slot: 5,
     optional: true,
     kind: 'personal',
-    topic: 'Schichtdienst / Personal Story / Behind the Brand',
-    hook: '„Ihr entscheidet: Schwarz oder Off-White für mein erstes Teil?“',
+    topic: 'الشيفتات / قصة شخصية / وراء البراند',
+    hook: '«نتوما اللي غادي تختارو: كحل ولا أوف وايت للبياسة الأولى ديالي؟»',
     ctas: ['SQUAD'],
   },
 ];
 
 export const REEL_NOTES = [
   {
-    term: 'Deutsch-Reels nur mit Bezug',
-    text: 'Gym, Ausbildung, Schicht, Deutschland, Alltag, echte Situationen für Marokkaner in Deutschland. Keine reinen Deutschlehrer-Reels ohne Natty-Bezug.',
+    term: 'ريلز الألمانية غير بسياق',
+    text: 'الجيم، الأوسبيلدونغ، الشيفت، ألمانيا، الحياة اليومية، مواقف حقيقية ديال المغاربة فألمانيا. ماكاينش ريلز ديال أستاذ الألمانية بلا علاقة بـ Natty.',
   },
   {
-    term: 'Ton',
-    text: 'provokant, aber sympathisch. Du neckst Verhalten, nie Gruppen, Körper oder Patienten. Aufnahmen auf Station und Patientenbezug gibt es nie.',
+    term: 'الطون',
+    text: 'مستفز ولكن ظريف. كتضحك على التصرفات، عمرك ما على المجموعات، الأجسام ولا المرضى. ماكاينش تصوير فالمصلحة ديال السبيطار ولا شي حاجة فيها المرضى.',
   },
 ];
 
 export const FUNNEL_FLOW = [
-  'Reel-CTA',
-  'User schreibt das Keyword',
-  'deine Antwort (innerhalb von 24 Stunden)',
-  '1 Frage',
-  'hilfreicher Inhalt',
-  'Follow-up nach 2–3 Tagen',
-  'Einladung in Natty Squad',
-  'später eventuell ein Produkt',
+  'CTA فالريل',
+  'الشخص كيكتب الكلمة',
+  'الجواب ديالك (فـ 24 ساعة)',
+  'سؤال واحد',
+  'محتوى مفيد',
+  'فولو-آب من بعد 2–3 أيام',
+  'دعوة لـ Natty Squad',
+  'من بعد يمكن منتوج',
 ];
 
-export const FUNNEL_NOTE =
-  'Keine Automation, du antwortest selbst, notfalls mit gespeicherten Textbausteinen.';
+export const FUNNEL_NOTE = 'بلا أوتوماسيون، كتجاوب براسك، وإلا تزيرتي استعمل ردود محفوظة.';
 
 export interface FunnelStep {
   step: string;
@@ -197,154 +190,145 @@ export interface Funnel {
 export const FUNNELS: Funnel[] = [
   {
     keyword: 'PLAN',
-    label: 'Fitness / Hybrid',
+    label: 'فيتنس / هايبريد',
     steps: [
       {
-        step: 'Antwort',
-        text: 'Sprachnachricht oder kurzer Text auf Darija.',
-        snippet: 'Wa sahbi, hier ist dein Einstieg. Eine Frage vorab …',
+        step: 'الجواب',
+        text: 'فوكال ولا ميساج قصير بالدارجة.',
+        snippet: 'وا صاحبي، ها البداية ديالك. غير سؤال واحد قبل…',
       },
       {
-        step: 'Frage',
-        text: 'Wahlweise: wie oft pro Woche kannst du trainieren?',
-        snippet: 'Was ist dein Ziel gerade: Muskeln, Ausdauer oder beides?',
+        step: 'السؤال',
+        text: 'ولا: شحال من مرة فالسيمانة تقدر تترينا؟',
+        snippet: 'شنو الهدف ديالك دابا: العضلات، النفس ولا بجوج؟',
       },
       {
-        step: 'Hilfreicher Inhalt',
-        text: 'der passende Mini-Plan oder ein Reel, das die Frage beantwortet.',
+        step: 'المحتوى المفيد',
+        text: 'الميني بلان المناسب ولا ريل كيجاوب على السؤال.',
       },
-      { step: 'Follow-up nach 2–3 Tagen', text: '', snippet: 'Wie lief die erste Einheit?' },
+      { step: 'فولو-آب من بعد 2–3 أيام', text: '', snippet: 'كيف دازت أول حصة؟' },
       {
-        step: 'Community',
-        text: 'Einladung zu Natty Squad. Die gesammelten Antworten zeigen, was die Community wirklich braucht (Quelle fürs Hybrid-Programm).',
+        step: 'الكوميونيتي',
+        text: 'دعوة لـ Natty Squad. الأجوبة اللي كتجمع كتبين شنو محتاجة الكوميونيتي بصح (مصدر لبرنامج الهايبريد).',
       },
     ],
   },
   {
     keyword: 'DEUTSCH',
-    label: 'Deutsch / Deutschland',
+    label: 'الألمانية / ألمانيا',
     steps: [
-      { step: 'Antwort', text: 'Das versprochene Material (Vokabeln oder Sätze) mit Natty-Bezug.' },
+      { step: 'الجواب', text: 'الماتيريال اللي وعدتي بيه (كلمات ولا جمل) مع سياق Natty.' },
       {
-        step: 'Frage',
+        step: 'السؤال',
         text: '',
-        snippet: 'Wofür brauchst du Deutsch: Ausbildung, Arbeit, Studium oder Alltag?',
+        snippet: 'علاش محتاج الألمانية: أوسبيلدونغ، خدمة، قراية ولا الحياة اليومية؟',
       },
+      { step: 'المحتوى المفيد', text: 'ريل مناسب ولا جواب على الموقف ديالو بالضبط.' },
       {
-        step: 'Hilfreicher Inhalt',
-        text: 'ein passendes Reel oder eine Antwort auf die konkrete Situation.',
-      },
-      {
-        step: 'Follow-up',
+        step: 'الفولو-آب',
         text: '',
-        snippet: 'Hat dir das geholfen? Was ist dein größtes Problem mit Deutschland?',
+        snippet: 'عاوناتك؟ شنو أكبر مشكل عندك مع ألمانيا؟',
       },
-      { step: 'Community', text: 'Einladung zu Natty Squad, nicht in einen eigenen Deutsch-Kurs.' },
+      { step: 'الكوميونيتي', text: 'دعوة لـ Natty Squad، ماشي لكورس ديال الألمانية.' },
     ],
   },
   {
     keyword: 'SQUAD',
-    label: 'Broadcast',
+    label: 'البرودكاست',
     steps: [
-      { step: 'Antwort', text: 'Link zum Natty-Squad-Channel plus ein Satz, was dort passiert.' },
+      { step: 'الجواب', text: 'اللينك ديال قناة Natty Squad وجملة وحدة على شنو كيدوز تما.' },
       {
-        step: 'Frage',
+        step: 'السؤال',
         text: '',
-        snippet:
-          'Was wünschst du dir im Squad am meisten: Trainingstipps, Deutsch-Hilfe oder Behind the Brand?',
+        snippet: 'شنو بغيتي أكثر فالسكواد: نصائح الترينينغ، مساعدة فالألمانية ولا وراء البراند؟',
       },
-      { step: 'Begrüßung im Channel', text: 'erste Umfrage, damit der Neue sofort mitmacht.' },
-      { step: 'Follow-up', text: 'nach einer Woche, ob die Inhalte passen.' },
+      { step: 'الترحيب فالقناة', text: 'أول سونداج باش الجديد يشارك ديريكت.' },
+      { step: 'الفولو-آب', text: 'من بعد سيمانة: واش المحتوى عاجبو.' },
     ],
   },
 ];
 
 export const SQUAD_INTRO =
-  'Natty Squad ist der Ort, an dem aus Zuschauern eine Community wird. Plane 2–4 Nachrichten pro Woche, mehr braucht es nicht.';
+  'Natty Squad هو البلاصة فين المتابعين كيوليو كوميونيتي. خطط 2–4 ميساجات فالسيمانة، ماخصكش كثر.';
 
 export const BROADCAST_TYPES: { type: string; purpose: string; example: string }[] = [
   {
-    type: 'Umfrage',
-    purpose: 'Gespräch und Datenquelle',
-    example: '„Schwarz oder Off-White für das erste Teil?“',
+    type: 'سونداج',
+    purpose: 'هضرة ومصدر ديال الداتا',
+    example: '«كحل ولا أوف وايت للبياسة الأولى؟»',
   },
   {
-    type: 'Sprachnachricht (Darija)',
-    purpose: 'Nähe und Vertrauen',
-    example: '60 Sekunden zu deiner Woche und dem nächsten Reel',
+    type: 'فوكال (بالدارجة)',
+    purpose: 'القرب والثقة',
+    example: '60 ثانية على السيمانة ديالك والريل الجاي',
   },
   {
-    type: 'Challenge',
-    purpose: 'Gemeinsame Aktion',
-    example: '„30 Tage Discipline“: täglich 10 Minuten Training und 1 deutsches Wort',
+    type: 'تشالنج',
+    purpose: 'حركة جماعية',
+    example: '«30 يوم ديال Discipline»: كل نهار 10 دقايق ترينينغ وكلمة وحدة بالألمانية',
   },
   {
     type: 'Early Access',
-    purpose: 'Grund zu bleiben',
-    example: 'Reel oder Design vor allen anderen sehen',
+    purpose: 'سبب باش يبقاو',
+    example: 'يشوفو الريل ولا الديزاين قبل الناس كاملين',
   },
   {
-    type: 'Persönliches Update',
-    purpose: 'Story und Authentizität',
-    example: 'Spätschicht, Training trotzdem gemacht',
+    type: 'أبديت شخصي',
+    purpose: 'القصة والمصداقية',
+    example: 'شيفت العشية، ومع ذلك درت الترينينغ',
   },
   {
-    type: 'Exklusive Info',
-    purpose: 'Wert nur für Mitglieder',
-    example: 'Live-Termin, Plan, Warteliste NATYSIMO',
+    type: 'معلومة حصرية',
+    purpose: 'قيمة غير للأعضاء',
+    example: 'موعد اللايف، البلان، لائحة الانتظار ديال NATYSIMO',
   },
 ];
 
 export const SQUAD_CHECKLIST = [
-  'Das Reel endet mit einer CTA (PLAN, DEUTSCH oder SQUAD) und nennt den Nutzen für den Squad.',
-  'Der Channel ist in der Bio und in den Highlights sichtbar.',
-  'Jede DM-Antwort enthält eine Einladung.',
-  'Ein Reel pro Woche bewirbt den Squad direkt (zum Beispiel mit einer Challenge oder einer Umfrage, die es nur dort gibt).',
-  'Du erwähnst im Reel, was es diese Woche im Squad gibt.',
+  'الريل كيسالي بـ CTA (PLAN، DEUTSCH ولا SQUAD) وكيقول شنو الفايدة فالسكواد.',
+  'القناة باينة فالبيو وفالهايلايتس.',
+  'كل جواب فالديام فيه دعوة.',
+  'ريل واحد فالسيمانة كيروج للسكواد ديريكت (مثلا بتشالنج ولا سونداج كاين غير تما).',
+  'كتقول فالريل شنو كاين هاد السيمانة فالسكواد.',
 ];
 
 export const WEEK_INTRO =
-  'Eine normale Woche braucht 4–5 Stunden, eine Prüfungs- oder schwere Schichtwoche nur etwa 2 Stunden. Ausgangspunkt sind iPhone 16 und CapCut, kein Team, kein Studio.';
+  'سيمانة عادية بغات 4–5 سوايع، وسيمانة ديال الامتحانات ولا الشيفتات الصعيبة غير تقريبا 2 سوايع. نقطة البداية: iPhone 16 وCapCut، بلا فريق، بلا ستوديو.';
 
 export const WEEK: { day: string; task: string; time: string }[] = [
   {
-    day: 'Sonntag',
-    task: 'Manager Day: Analyse, 5 Hooks schreiben, 3–4 Reels am Stück filmen, Woche planen',
-    time: '2–2,5 h',
+    day: 'الحد',
+    task: 'نهار المانجر: تحليل، كتابة 5 هوكات، تصوير 3–4 ريلز مرة وحدة، تخطيط السيمانة',
+    time: '2–2,5 سوايع',
+  },
+  { day: 'الاثنين', task: 'المونطاج: 2 ريلز فـ CapCut، وزيد السوتيتر', time: 'تقريبا 45 دقيقة' },
+  {
+    day: 'الربعاء',
+    task: 'محتوى آخر (كاروسيل ولا ريل) و1–2 ميساجات فالبرودكاست',
+    time: '30–45 دقيقة',
   },
   {
-    day: 'Montag',
-    task: 'Editing: 2 Reels in CapCut schneiden, Untertitel einfügen',
-    time: 'ca. 45 Min.',
-  },
-  {
-    day: 'Mittwoch',
-    task: 'Weiterer Content (Karussell oder Reel) plus 1–2 Broadcast-Nachrichten',
-    time: '30–45 Min.',
-  },
-  {
-    day: 'Training',
-    task: 'Rohmaterial filmen: 3 Clips pro Einheit (Hook-Clip, Arbeits-Clip, Reaktion), keine Extra-Zeit',
+    day: 'الترينينغ',
+    task: 'صوّر الراشز: 3 كليبات فكل حصة (كليب الهوك، كليب الخدمة، الرياكسيون)، بلا وقت زايد',
     time: '0',
   },
   {
-    day: 'Täglich',
-    task: 'Kommentare in der ersten Stunde nach dem Posting, DMs, 2–3 Stories',
-    time: '10–15 Min.',
+    day: 'كل نهار',
+    task: 'الكومونتيرات فأول ساعة من بعد البوست، الديامات، 2–3 ستوريات',
+    time: '10–15 دقيقة',
   },
-  { day: 'Alle 1–2 Wochen', task: '20-Minuten-Live mit Q&A (Sonntagabend)', time: '20–30 Min.' },
+  { day: 'كل 1–2 سيمانات', task: 'لايف 20 دقيقة مع سؤال وجواب (الحد فالليل)', time: '20–30 دقيقة' },
 ];
 
 export const EMERGENCY_MODE = {
-  time: 'ca. 2 Stunden',
+  time: 'تقريبا 2 سوايع',
   tasks: [
-    '2 Reels aus vorhandenem Material',
-    'tägliche einfache Stories',
-    'Kommentare und DMs',
-    '1 Broadcast-Nachricht',
+    '2 ريلز من الماتيريال اللي عندك',
+    'ستوريات بسيطة كل نهار',
+    'الكومونتيرات والديامات',
+    'ميساج واحد فالبرودكاست',
   ],
-  never:
-    'Im Notfallmodus gibt es kein Live, keine neue Serie und keine neue Business-Infrastruktur.',
+  never: 'فوضع الطوارئ ماكاينش لايف، ماكاينش سلسلة جديدة وماكاينش بنية جديدة ديال البيزنس.',
 } as const;
 
 export type KpiId = 'shares' | 'storyReplies' | 'unfollowRate' | 'squadMembers' | 'dmLeads';
@@ -358,135 +342,133 @@ export interface Kpi {
 }
 
 export const KPI_SOURCE =
-  'Startwerte aus dem Instagram-Export (20. Juni bis 17. September 2026). Die Zielwerte sind Planungsannahmen, keine Benchmarks. Der DM-Startwert fehlt, zähle ab der ersten Woche mit.';
+  'أرقام البداية من الإكسبور ديال إنستغرام (20 يونيو حتى 17 شتنبر 2026). الأهداف تقديرات ديال التخطيط، ماشي بنشمارك. رقم البداية ديال الديامات ناقص، بدا حسب من السيمانة الأولى.';
 
 export const KPIS: Kpi[] = [
   {
     id: 'shares',
-    label: 'Shares pro Reel',
-    start: '89.998 Shares insgesamt (Reels)',
-    target: 'Pro Reel notieren, Trend steigt',
+    label: 'الشيرات فكل ريل',
+    start: '89.998 شير فالمجموع (ريلز)',
+    target: 'سجلها لكل ريل، والاتجاه طالع',
   },
   {
     id: 'storyReplies',
-    label: 'Story-Antworten',
-    start: '876 in 3 Monaten',
-    target: 'mindestens 3.000',
+    label: 'الردود على الستوري',
+    start: '876 فتلت شهور',
+    target: 'على الأقل 3.000',
   },
   {
     id: 'unfollowRate',
-    label: 'Unfollows im Verhältnis zu neuen Followern',
-    start: '4.887 zu 26.105 (ca. 19 %)',
-    target: 'unter 12 %',
+    label: 'الأنفولو مقارنة مع الفولوورز الجداد',
+    start: '4.887 مقابل 26.105 (تقريبا 19 %)',
+    target: 'تحت 12 %',
     unit: '%',
   },
-  { id: 'squadMembers', label: 'Broadcast-Mitglieder', start: '0', target: '1.500–2.500' },
+  { id: 'squadMembers', label: 'أعضاء البرودكاست', start: '0', target: '1.500–2.500' },
   {
     id: 'dmLeads',
-    label: 'DM-Leads (PLAN, DEUTSCH, SQUAD)',
-    start: 'nicht erfasst',
-    target: 'mindestens 500',
+    label: 'ليدز فالديام (PLAN، DEUTSCH، SQUAD)',
+    start: 'ماتحسبوش',
+    target: 'على الأقل 500',
   },
 ];
 
 export const SUNDAY_FLOW = [
-  '15 Minuten Analyse der 5 Zahlen.',
-  'Top-Reel der Woche bestimmen.',
-  'Schwächstes Reel bestimmen.',
-  'Wiederholbare Muster erkennen (Thema, Hook, Länge, CTA).',
-  '5 Hooks schreiben.',
-  '3–4 Reels filmen.',
-  'Nächste Woche planen (Reels, Broadcast-Termine, ob ein Live ansteht).',
+  '15 دقيقة تحليل ديال 5 أرقام.',
+  'حدد أحسن ريل فالسيمانة.',
+  'حدد أضعف ريل.',
+  'لقا الباترن اللي كيتعاود (الموضوع، الهوك، الطول، CTA).',
+  'كتب 5 هوكات.',
+  'صوّر 3–4 ريلز.',
+  'خطط السيمانة الجاية (الريلز، مواعيد البرودكاست، واش كاين لايف).',
 ];
 
 export const DECISION_RULES: { signal: string; action: string }[] = [
-  { signal: 'Shares und Gespräche', action: 'eine Serie daraus machen.' },
-  { signal: 'Nur Views', action: 'nicht automatisch wiederholen.' },
+  { signal: 'شيرات وهضرة', action: 'دير منو سلسلة.' },
+  { signal: 'غير فيوز', action: 'ماتعاودوش أوتوماتيكيا.' },
   {
-    signal: 'Wenig Views, aber viele DMs oder Gespräche',
-    action:
-      'nicht löschen und nicht ignorieren. Solche Inhalte können für Community und Business wichtiger sein.',
+    signal: 'فيوز قلال ولكن بزاف ديال الديامات ولا الهضرة',
+    action: 'ماتمسحوش وماتهملوش. هاد المحتوى يقدر يكون أهم للكوميونيتي وللبيزنس.',
   },
-  { signal: 'Ein Thema bringt wiederholt gute Ergebnisse', action: 'Priorität erhöhen.' },
+  { signal: 'موضوع كيجيب نتائج مزيانة بزاف ديال المرات', action: 'طلّع الأولوية ديالو.' },
 ];
 
 export const BRAND_PATH = {
-  intro:
-    'Beide Projekte wachsen langsam aus der Community heraus, nicht aus Produktion und Verkaufsdruck.',
-  path: ['Story', 'Behind the Brand', 'Community entscheidet', 'Warteliste', 'später Drop'],
-  notPath: ['Produktion', 'Lager', 'großer Verkauf'],
+  intro: 'بجوج كيكبرو بشوية من الكوميونيتي، ماشي من الإنتاج وضغط البيع.',
+  path: ['القصة', 'وراء البراند', 'الكوميونيتي كتقرر', 'لائحة الانتظار', 'من بعد الدروب'],
+  notPath: ['الإنتاج', 'السطوك', 'بيع كبير'],
   ideas: [
-    'Logo und Monogramm (Entstehung zeigen)',
-    'T-Shirt: Schnitt, Material, Design',
-    'Farben (Abstimmung im Squad)',
-    '„Was würdet ihr tragen?“',
-    'Entstehung dokumentieren, auch Fehlversuche',
+    'اللوغو والمونوغرام (ورّي كيفاش تولدو)',
+    'التيشورت: الفصالة، الثوب، الديزاين',
+    'الألوان (تصويت فالسكواد)',
+    '«شنو غادي تلبسو؟»',
+    'وثّق كيفاش كيتصاوب، حتى المحاولات اللي فشلات',
   ],
 } as const;
 
 export const HYBRID_STEPS = [
-  'Content',
-  'Probleme der Community sammeln',
-  'PLAN-DMs beantworten',
-  'Kostenlose Hilfe geben',
-  'Nachfrage testen',
-  'Founding Members',
-  'Beta',
-  'Feedback einarbeiten',
-  'Endgültiges Programm',
-  'Launch',
+  'المحتوى',
+  'جمع المشاكل ديال الكوميونيتي',
+  'الجواب على ديامات PLAN',
+  'مساعدة فابور',
+  'اختبار الطلب',
+  'الأعضاء المؤسسين (Founding Members)',
+  'بيتا',
+  'إدخال الفيدباك',
+  'البرنامج النهائي',
+  'اللانسمون',
 ];
 
 export const HYBRID_NOTE =
-  'Schritt 6 beginnt erst, wenn Schritt 5 echte Nachfrage zeigt, etwa viele PLAN-DMs und aktive Antworten im Squad. Die Preisgestaltung entscheidest du später, mit Blick auf die Kaufkraft deiner Zielgruppe in Marokko.';
+  'الخطوة 6 كتبدا غير إلا الخطوة 5 بينات طلب حقيقي، بحال بزاف ديال ديامات PLAN وأجوبة نشيطة فالسكواد. الثمن غادي تقررو من بعد، وعينيك على القدرة الشرائية ديال الجمهور ديالك فالمغرب.';
 
 export const NOT_NOW: { topic: string; why: string; allowedWhen: string }[] = [
   {
-    topic: 'Asal Achifa auf dem Hauptkanal',
-    why: 'Fremdes Thema, Health-Claims-Risiko, lenkt vom Kern ab',
-    allowedWhen: 'Natty Simo stabil läuft; dann nur auf einem eigenen Kanal',
+    topic: 'Asal Achifa فالقناة الرئيسية',
+    why: 'موضوع غريب، خطر ديال الادعاءات الصحية، كيبعدك على الأساس',
+    allowedWhen: 'ملي Natty Simo يمشي مزيان ومستقر؛ ومن بعد غير فقناة بوحدها',
   },
   {
-    topic: 'Große NATYSIMO-Produktion, Drop',
-    why: 'Nachfrage ist nicht validiert',
-    allowedWhen: 'Warteliste und Abstimmungen zeigen echte Nachfrage',
+    topic: 'إنتاج كبير ديال NATYSIMO، دروب',
+    why: 'الطلب مازال ماتأكدش',
+    allowedWhen: 'لائحة الانتظار والتصويتات كيبينو طلب حقيقي',
   },
   {
-    topic: 'Website-Perfektion',
-    why: 'Nur notwendige Infrastruktur zählt',
-    allowedWhen: 'Es gibt eine Warteliste, die sie braucht',
+    topic: 'الويبسايت بيرفيكت',
+    why: 'غير البنية الضرورية اللي كتحسب',
+    allowedWhen: 'تكون كاينة لائحة انتظار محتاجاها',
   },
   {
-    topic: 'Smart Deutsch als eigener Hauptkanal',
-    why: 'Du würdest zum reinen Deutschlehrer',
-    allowedWhen: 'Fitness-Kern und Community stehen',
+    topic: 'Smart Deutsch كقناة رئيسية بوحدها',
+    why: 'غادي تولي أستاذ ديال الألمانية وصافي',
+    allowedWhen: 'الأساس ديال الفيتنس والكوميونيتي يكونو واقفين',
   },
   {
-    topic: 'Neue Plattformen',
-    why: 'Verteilt Aufmerksamkeit',
-    allowedWhen: 'Instagram läuft im Rhythmus und die KPIs stehen',
+    topic: 'بلاتفورمات جديدة',
+    why: 'كتفرق التركيز',
+    allowedWhen: 'إنستغرام ماشي فالريتم والأرقام واقفة',
   },
   {
-    topic: 'Neue Produkte',
-    why: 'Erst Nachfrage validieren',
-    allowedWhen: 'Das Hybrid-Programm hat Founding Members',
+    topic: 'منتوجات جديدة',
+    why: 'الطلب خاصو يتأكد قبل',
+    allowedWhen: 'برنامج الهايبريد عندو Founding Members',
   },
   {
-    topic: 'Perfektionismus',
-    why: 'Kostet Zeit, bringt keine Bindung',
-    allowedWhen: 'nie: fertig ist besser als perfekt',
+    topic: 'البيرفيكسيونيزم',
+    why: 'كياكل الوقت وماكيجيبش الارتباط',
+    allowedWhen: 'عمرو: اللي تسالى حسن من اللي كامل',
   },
 ];
 
 export const START_TOMORROW = {
-  date: 'Sonntag, 4. Oktober 2026',
+  date: 'الحد، 4 أكتوبر 2026',
   steps: [
-    '15 Minuten Analyse: Top-Reel und schwächstes Reel der letzten Woche, die 5 Zahlen notieren.',
-    '5 Hooks schreiben (Fitness 2, Marokkaner in Deutschland 1, Deutsch mit Natty-Bezug 1, Behind the Brand oder Schichtdienst 1).',
-    'Natty Squad eröffnen und die erste Nachricht in Darija senden: Wer bist du, was kommt diese Woche, wie macht man mit?',
-    'Bio, Highlights und angepinnte Reels auf Natty Simo ausrichten (Hauptaccount festlegen).',
-    '3 Reels im gleichen Outfit und mit gleichem Licht am Stück filmen, jedes mit einer CTA (PLAN, DEUTSCH oder SQUAD).',
-    'Montag: schneiden. Mittwoch: Broadcast-Nachrichten und weiterer Content.',
+    '15 دقيقة تحليل: أحسن ريل وأضعف ريل فالسيمانة اللي فاتت، وسجل 5 أرقام.',
+    'كتب 5 هوكات (فيتنس 2، المغاربة فألمانيا 1، الألمانية مع سياق Natty 1، وراء البراند ولا الشيفتات 1).',
+    'حل Natty Squad وصيفط أول ميساج بالدارجة: شكون نتا، شنو جاي هاد السيمانة، وكيفاش يشاركو؟',
+    'وجّد البيو، الهايلايتس والريلز المثبتين على Natty Simo (حدد الحساب الرئيسي).',
+    'صوّر 3 ريلز بنفس الحوايج ونفس الضو مرة وحدة، كل واحد بـ CTA (PLAN، DEUTSCH ولا SQUAD).',
+    'الاثنين: المونطاج. الربعاء: ميساجات البرودكاست ومحتوى آخر.',
   ],
 } as const;
 
@@ -500,27 +482,28 @@ export function isoWeekKey(date: Date): string {
   return `${d.getUTCFullYear()}-W${String(week).padStart(2, '0')}`;
 }
 
-/* ───────────────────────── Reel-Qualitäts-Check ─────────────────────────
- * The content quality control system: every reel is checked against this
- * before posting. Used by the reel reviewer on /manager and by the review
- * prompt that Simo pastes into Claude together with a script.
+/* ───────────────────────── Reel quality check ─────────────────────────
+ * Every reel is checked against this before posting. Used by the reel
+ * reviewer on /manager and by the review prompt Simo pastes into Claude
+ * together with a script. Stored data only uses the stable ids below,
+ * never display text.
  */
 
-export type Verdict = 'BEHALTEN' | 'ÄNDERN' | 'STREICHEN' | 'NICHT JETZT';
+export type Verdict = 'keep' | 'change' | 'delete' | 'not-now';
 
-export const VERDICTS: { verdict: Verdict; when: string }[] = [
-  { verdict: 'BEHALTEN', when: 'funktioniert' },
-  { verdict: 'ÄNDERN', when: 'ist schlecht' },
-  { verdict: 'STREICHEN', when: 'ist unnötig' },
-  { verdict: 'NICHT JETZT', when: 'ist später sinnvoll' },
+export const VERDICTS: { id: Verdict; label: string; when: string }[] = [
+  { id: 'keep', label: 'خلّيه', when: 'كيخدم' },
+  { id: 'change', label: 'بدّلو', when: 'خايب' },
+  { id: 'delete', label: 'حيّدو', when: 'زايد' },
+  { id: 'not-now', label: 'ماشي دابا', when: 'مزيان من بعد' },
 ];
 
 export const SCRIPT_MARKS: { mark: string; meaning: string }[] = [
-  { mark: '[KEEP]', meaning: 'behalten' },
-  { mark: '[CHANGE]', meaning: 'ändern' },
-  { mark: '[DELETE]', meaning: 'löschen' },
-  { mark: '[ADD]', meaning: 'hinzufügen' },
-  { mark: '[MOVE]', meaning: 'Position ändern' },
+  { mark: '[KEEP]', meaning: 'خلّي' },
+  { mark: '[CHANGE]', meaning: 'بدّل' },
+  { mark: '[DELETE]', meaning: 'حيّد' },
+  { mark: '[ADD]', meaning: 'زيد' },
+  { mark: '[MOVE]', meaning: 'بدّل البلاصة' },
 ];
 
 export const FINAL_SCRIPT_MARKS = [
@@ -540,37 +523,37 @@ export const CONTENT_TYPES: { id: ContentType; label: string; text: string }[] =
   {
     id: 'reach',
     label: 'REACH CONTENT',
-    text: 'Bringt Reichweite, aber wenig Community oder Beziehung. Nicht automatisch schlecht.',
+    text: 'كيجيب الريتش ولكن شوية ديال الكوميونيتي ولا العلاقة. ماشي ديما خايب.',
   },
   {
     id: 'conversion',
     label: 'CONVERSION CONTENT',
-    text: 'Könnte wenig Views haben, aber starke DMs erzeugen. Nicht löschen, nicht ignorieren.',
+    text: 'يمكن يجيب فيوز قلال، ولكن ديامات قوية. ماتمسحوش وماتهملوش.',
   },
 ];
 
-/** Answered before the reel is touched. No clear answer → ÄNDERN. */
+/** Answered before the reel is touched. No clear answer → change it. */
 export const PRE_QUESTIONS: { id: string; question: string; rule: string }[] = [
   {
     id: 'A',
-    question: 'Was ist die zentrale Idee? (ein Satz)',
-    rule: 'Nicht in einem Satz erklärbar → ÄNDERN.',
+    question: 'شنو هي الفكرة الأساسية؟ (جملة وحدة)',
+    rule: 'إلا ماتقدرش تشرحها فجملة ← بدّلها.',
   },
-  { id: 'B', question: 'Warum sollte jemand das anschauen?', rule: 'Ein konkreter Grund.' },
+  { id: 'B', question: 'علاش شي واحد غادي يتفرج فهادا؟', rule: 'سبب واحد واضح.' },
   {
     id: 'C',
-    question: 'Warum sollte ein Marokkaner zwischen 18 und 34 das anschauen?',
-    rule: 'Keine klare Antwort → ÄNDERN.',
+    question: 'علاش مغربي بين 18 و34 عام غادي يتفرج فهادا؟',
+    rule: 'إلا ماكاينش جواب واضح ← بدّل.',
   },
   {
     id: 'D',
-    question: 'Was bekommt der Zuschauer?',
-    rule: 'Mindestens eins: Information, Emotion, Motivation, Unterhaltung, Inspiration, praktischer Nutzen, Identifikation, Story.',
+    question: 'شنو غادي ياخد اللي كيتفرج؟',
+    rule: 'على الأقل وحدة: معلومة، إحساس، موتيفاسيون، ضحك، إلهام، فايدة عملية، يلقى راسو فيه، قصة.',
   },
   {
     id: 'E',
-    question: 'Was soll der Zuschauer danach tun?',
-    rule: 'Kommentieren, DM, PLAN, DEUTSCH, SQUAD, Broadcast beitreten, speichern, teilen. Keine klare Handlung → ÄNDERN.',
+    question: 'شنو خاصو يدير من بعد؟',
+    rule: 'كومونتير، ديام، PLAN، DEUTSCH، SQUAD، يدخل للبرودكاست، سيف، بارطاجي. بلا حركة واضحة ← بدّل.',
   },
 ];
 
@@ -582,198 +565,202 @@ export interface CheckGroup {
   note?: string;
 }
 
+/** The check a Deutsch reel cannot be posted without (see postingReadiness). */
+export const DEUTSCH_CONTEXT_ITEM =
+  'كاين سياق حقيقي ديال Natty Simo (الجيم، الأوسبيلدونغ، الشيفت، ألمانيا، الحياة اليومية، موقف حقيقي).';
+
 export const QUALITY_CHECK: CheckGroup[] = [
   {
     id: 'idea',
-    title: 'Idee',
+    title: 'الفكرة',
     items: [
-      'Die Idee ist klar (in einem Satz erklärbar).',
-      'Sie passt zur Brand Natty Simo.',
-      'Sie passt zur Zielgruppe (Marokko, 18–34).',
-      'Es gibt einen echten Grund, warum jemand das sehen sollte.',
+      'الفكرة واضحة (كتشرح فجملة وحدة).',
+      'كتناسب البراند ديال Natty Simo.',
+      'كتناسب الجمهور (المغرب، 18–34).',
+      'كاين سبب حقيقي باش شي واحد يتفرج.',
     ],
   },
   {
     id: 'hook',
-    title: 'Hook (0–1 s und 1–3 s)',
+    title: 'الهوك (0–1 ثانية و1–3 ثواني)',
     items: [
-      'Das erste Wort ist stark.',
-      'Die erste Sekunde hat einen Grund weiterzuschauen.',
-      'Die erste Aussage ist sofort verständlich.',
-      'Das visuelle Opening zieht.',
-      'Es entsteht Spannung oder Neugier.',
-      'Spezifisch, glaubwürdig und passend zu Natty Simo.',
-      'Kurz genug, keine Füllwörter, wichtigste Info nicht zu spät.',
+      'أول كلمة قوية.',
+      'أول ثانية فيها سبب باش يكمل.',
+      'أول جملة مفهومة ديريكت.',
+      'البداية فالتصويرة كتجبد.',
+      'كاين توتر ولا فضول.',
+      'محدد، كيتصدق، وكيشبه لـ Natty Simo.',
+      'قصير، بلا كلام زايد، والمعلومة المهمة ماجاتش معطلة.',
     ],
   },
   {
     id: 'script',
-    title: 'Script (Wort für Wort)',
+    title: 'السكريبت (كلمة بكلمة)',
     items: [
-      'Jedes Wort und jede Aussage geprüft und markiert ([KEEP] [CHANGE] [DELETE] [ADD] [MOVE]).',
-      'Keine unnötigen Wörter, keine Wiederholungen.',
-      'Reihenfolge stimmt.',
-      'Verständlich, natürlich, klingt wie Simo und nicht wie ein KI-Text.',
-      'Tonalität, Emotion und Provokation stimmen.',
-      'Glaubwürdig: nichts behauptet, was nicht stimmt.',
+      'كل كلمة وكل جملة تشافت وتعلمات ([KEEP] [CHANGE] [DELETE] [ADD] [MOVE]).',
+      'ماكاين كلام زايد، ماكاين تكرار.',
+      'الترتيب مزيان.',
+      'مفهوم، طبيعي، كيشبه لسيمو ماشي لنص ديال الذكاء الاصطناعي.',
+      'الطون، الإحساس والاستفزاز فبلاصتهم.',
+      'كيتصدق: ماكاين حتى ادعاء ماشي صحيح.',
     ],
   },
   {
     id: 'darija',
-    title: 'Darija',
+    title: 'الدارجة',
     items: [
-      'Klingt wie echte marokkanische Alltagssprache.',
-      'Ein junger Marokkaner würde es genau so sagen.',
-      'Keine unnötigen deutschen Wörter, nichts zu formell.',
-      'Sofort verständlich.',
+      'كتشبه للدارجة ديال الزنقة بصح.',
+      'شاب مغربي غادي يقولها بحال هكا بالضبط.',
+      'بلا كلمات ألمانية زايدة، ماشي رسمية بزاف.',
+      'مفهومة ديريكت.',
     ],
   },
   {
     id: 'deutsch',
-    title: 'Deutsch',
-    note: 'Nur wenn Deutsch vorkommt.',
+    title: 'الألمانية',
+    note: 'غير إلا كانت الألمانية فالريل.',
     items: [
-      'Grammatik und Wortwahl korrekt.',
-      'Aussprache sauber.',
-      'B1/B2-verständlich, wenn es für die Zielgruppe gedacht ist.',
-      'Das deutsche Wort ist wirklich nötig (sonst Darija-Erklärung).',
-      'Relevanter Natty-Simo-Kontext (Gym, Ausbildung, Schicht, Deutschland, Alltag, echte Situation).',
+      'القواعد والكلمات صحاح.',
+      'النطق نقي.',
+      'مفهومة فمستوى B1/B2 إلا كانت للجمهور.',
+      'الكلمة بالألمانية ضرورية بصح (وإلا شرح بالدارجة).',
+      DEUTSCH_CONTEXT_ITEM,
     ],
   },
   {
     id: 'retention',
-    title: 'Retention (Sekunde für Sekunde)',
+    title: 'الريتونشن (ثانية بثانية)',
     items: [
-      'Keine toten Sekunden (Dead Seconds).',
-      'Keine unnötigen Pausen.',
-      'Visuell passiert genug.',
-      'Es entsteht eine offene Frage.',
-      'Es gibt einen Grund, bis zum Ende zu schauen.',
-      'Die wichtigste Information kommt nicht zu spät.',
-      'Kein offensichtlicher Drop-off-Grund.',
+      'ماكاينش ثواني ميتة (Dead Seconds).',
+      'ماكاينش بوزات زايدة.',
+      'كاين حركة كافية فالتصويرة.',
+      'كاين سؤال مفتوح.',
+      'كاين سبب باش يكمل حتى للآخر.',
+      'المعلومة المهمة ماجاتش معطلة.',
+      'ماكاين حتى سبب واضح باش يخرج.',
     ],
   },
   {
     id: 'visual',
-    title: 'Visual',
+    title: 'التصويرة',
     items: [
-      'Kamera, Licht, Perspektive und Bildausschnitt stimmen.',
-      'Gesicht, Körperhaltung und Hintergrund passen.',
-      'Bewegung, Stabilität und Geschwindigkeit passen.',
-      'B-Roll sinnvoll (Gym Shots, Deutschland Shots).',
-      'Cuts sitzen (Jump Cuts, Zooms, Perspektivwechsel).',
-      'Text Overlay: Position, Größe, Lesbarkeit, Timing, nicht zu viel Text.',
+      'الكاميرا، الضو، الزاوية والكادر مزيانين.',
+      'الوجه، الوقفة والخلفية مناسبين.',
+      'الحركة، الثبات والسرعة مناسبين.',
+      'B-Roll فبلاصتو (لقطات الجيم، لقطات ألمانيا).',
+      'الكوبات مزيانين (Jump Cuts، زوم، تبديل الزاوية).',
+      'النص على الشاشة: البلاصة، الحجم، القراية، التوقيت، ماشي بزاف ديال النص.',
     ],
   },
   {
     id: 'audio',
-    title: 'Audio',
+    title: 'الصوت',
     items: [
-      'Stimme verständlich und natürlich.',
-      'Musik passend und leiser als die Stimme.',
-      'SFX sinnvoll.',
-      'Keine störenden Geräusche, keine unnötige Stille.',
+      'الصوت ديالك مفهوم وطبيعي.',
+      'الموسيقى مناسبة وطايحة على الصوت.',
+      'SFX عندهم معنى.',
+      'ماكاين صداع فالخلفية، ماكاين سكات زايد.',
     ],
   },
   {
     id: 'subtitles',
-    title: 'Untertitel',
+    title: 'السوتيتر',
     items: [
-      'Rechtschreibung geprüft, jedes Wort.',
-      'Darija und Deutsch korrekt, keine falsche Übersetzung.',
-      'Timing sitzt.',
-      'Lesbar, Zeilenlänge kurz.',
-      'Wichtige Wörter hervorgehoben.',
+      'كل كلمة تشافت، بلا أخطاء.',
+      'الدارجة والألمانية صحاح، بلا ترجمة غالطة.',
+      'التوقيت مضبوط.',
+      'كيتقرا مزيان، السطورة قصار.',
+      'الكلمات المهمة باينين.',
     ],
   },
   {
     id: 'story',
-    title: 'Story und Emotion',
+    title: 'القصة والإحساس',
     items: [
-      'Struktur erkennbar (z. B. Hook → Problem → Spannung → Entwicklung → Payoff → CTA).',
-      'Es gibt eine Entwicklung.',
-      'Eine klare Emotion (Motivation, Überraschung, Neugier, Stolz, Humor, Identifikation, Ehrgeiz, Hoffnung …).',
+      'الستروكتور باينة (مثلا: هوك ← مشكل ← توتر ← تطور ← نتيجة ← CTA).',
+      'كاين تطور.',
+      'إحساس واضح (موتيفاسيون، مفاجأة، فضول، فخر، ضحك، يلقى راسو، طموح، أمل …).',
     ],
   },
   {
     id: 'provocation',
-    title: 'Provokation',
+    title: 'الاستفزاز',
     items: [
-      'Provokation greift Verhalten an, nicht Menschen oder Gruppen.',
-      'Keine Angriffe auf Nationalitäten, Religionen, Körper, Patienten, vulnerable Personen.',
-      'Unnötig aggressive Aussagen: gleiche Energie, intelligenter formuliert.',
+      'الاستفزاز كيضرب التصرفات، ماشي الناس ولا المجموعات.',
+      'ماكاين هجوم على الجنسيات، الديانات، الأجسام، المرضى، الناس الضعاف.',
+      'كلام عنيف بلا سبب: نفس الطاقة، بطريقة أذكى.',
     ],
   },
   {
     id: 'cta',
     title: 'CTA',
     items: [
-      'Klarer CTA vorhanden: PLAN, DEUTSCH oder SQUAD.',
-      'Er entsteht natürlich aus dem Inhalt.',
-      'Konkret, nicht „Like und Follow“.',
-      'Nennt den Nutzen für den Squad, wenn passend.',
+      'كاين CTA واضح: PLAN، DEUTSCH ولا SQUAD.',
+      'كيجي طبيعي من المحتوى.',
+      'محدد، ماشي «دير لايك وفولو».',
+      'كيقول الفايدة ديال السكواد إلا كانت مناسبة.',
     ],
   },
   {
     id: 'funnel',
-    title: 'DM-Funnel',
+    title: 'الفانيل ديال الديام',
     items: [
-      'Der CTA führt in einen echten Funnel (Antwort → Frage → Inhalt → Follow-up → Natty Squad).',
-      'Textbausteine für die Antworten sind bereit.',
+      'CTA كيدي لفانيل حقيقي (جواب ← سؤال ← محتوى ← فولو-آب ← Natty Squad).',
+      'الردود المحفوظة واجدين.',
     ],
   },
   {
     id: 'caption',
-    title: 'Caption',
+    title: 'الكابشن',
     items: [
-      'Wiederholt nicht einfach das Reel (Kontext, Zusatzinfo, Diskussion oder CTA).',
-      'Erste Zeile stark.',
-      'Lesbar, passende Länge.',
-      'Keyword wiederholt.',
-      'Keine unnötigen Hashtags, keine Tippfehler.',
+      'ماكتعاودش الريل وصافي (سياق، معلومة زايدة، نقاش ولا CTA).',
+      'أول سطر قوي.',
+      'كتقرا مزيان، طول مناسب.',
+      'الكلمة (keyword) متعاودة.',
+      'بلا هاشتاغات زايدة، بلا أخطاء.',
     ],
   },
   {
     id: 'cover',
-    title: 'Cover',
+    title: 'الكوفر',
     items: [
-      'In 1 Sekunde verständlich, wenige Wörter.',
-      'Starke Emotion, klarer Kontrast.',
-      'Thema sofort erkennbar, passt zur Brand.',
-      '3 Cover-Texte zur Auswahl geschrieben.',
+      'مفهوم فثانية وحدة، كلمات قلال.',
+      'إحساس قوي، كونطراست واضح.',
+      'الموضوع باين ديريكت، كيناسب البراند.',
+      '3 ديال النصوص للكوفر مكتوبين باش تختار.',
     ],
   },
   {
     id: 'brand',
-    title: 'Brand',
+    title: 'البراند',
     items: [
-      'Man erkennt Natty Simo (Persönlichkeit, Sprache, Haltung, Story).',
-      'Könnte nicht von jedem anderen Fitness-Creator kommen (sonst BRAND WEAK).',
-      'Schreibweise: Natty Simo (Person), NATYSIMO (Clothing).',
+      'كتعرف بلي هادا Natty Simo (الشخصية، اللغة، الموقف، القصة).',
+      'ماشي أي فيتنس كرياتور يقدر يديرو (وإلا BRAND WEAK).',
+      'الكتابة: Natty Simo (الشخص)، NATYSIMO (الحوايج).',
     ],
   },
   {
     id: 'monetization',
-    title: 'Community und Monetarisierung',
+    title: 'الكوميونيتي والفلوس',
     items: [
-      'Baut Community oder DM-Leads auf (oder ist bewusst REACH CONTENT).',
-      'Unterstützt später etwas: Hybrid-Programm, NATYSIMO, Kooperationen, Produkte.',
+      'كيبني الكوميونيتي ولا ليدز فالديام (ولا هو REACH CONTENT عن قصد).',
+      'كيعاون من بعد فشي حاجة: برنامج الهايبريد، NATYSIMO، الشراكات، المنتوجات.',
     ],
   },
   {
     id: 'risk',
-    title: 'Schutz und Risiken',
+    title: 'الحماية والمخاطر',
     items: [
-      ...PROTECTION_RULES.map((r) => `${r.charAt(0).toUpperCase()}${r.slice(1)}.`),
-      'Keine möglichen Missverständnisse, keine unnötigen Claims.',
+      ...PROTECTION_RULES.map((r) => `${r}.`),
+      'ماكاينش سوء فهم ممكن، ماكاينش ادعاءات زايدة.',
     ],
   },
   {
     id: 'not-now',
-    title: 'NICHT-JETZT-Check',
+    title: 'اختبار «ماشي دابا»',
     items: [
-      'Die Idee unterstützt Content/Reels, Community oder Analyse.',
-      'Keine Idee aus der NICHT-JETZT-Liste versteckt sich darin.',
+      'الفكرة كتعاون الكونتنو/الريلز، الكوميونيتي ولا التحليل.',
+      'ماكاين حتى فكرة من لائحة «ماشي دابا» مخبية فيها.',
     ],
   },
 ];
@@ -792,74 +779,98 @@ export type ScoreId =
   | 'brand'
   | 'monetization';
 
-export type Rating = 'STARK' | 'OK' | 'SCHWACH' | 'ÄNDERN';
-export const RATINGS: Rating[] = ['STARK', 'OK', 'SCHWACH', 'ÄNDERN'];
+export type Rating = 'strong' | 'ok' | 'weak' | 'change';
+export const RATINGS: Rating[] = ['strong', 'ok', 'weak', 'change'];
+
+export const RATING_LABELS: Record<Rating, string> = {
+  strong: 'قوي',
+  ok: 'مزيان',
+  weak: 'ضعيف',
+  change: 'بدّل',
+};
+
+/** Ratings stored before the Darija switch used German words. */
+const LEGACY_RATINGS: Record<string, Rating> = {
+  STARK: 'strong',
+  OK: 'ok',
+  SCHWACH: 'weak',
+  // The old German "change" (A-umlaut + NDERN), built from a char code so
+  // this file stays free of German text.
+  [String.fromCharCode(0xc4) + 'NDERN']: 'change',
+};
+
+/** Accepts current ids and the old German values; anything else is dropped. */
+export function normalizeRating(value: unknown): Rating | undefined {
+  if (typeof value !== 'string') return undefined;
+  if ((RATINGS as string[]).includes(value)) return value as Rating;
+  return LEGACY_RATINGS[value];
+}
 
 /** No overall 10/10 — every category is rated on its own. */
 export const SCORE_CATEGORIES: { id: ScoreId; label: string }[] = [
-  { id: 'hook', label: 'Hook' },
-  { id: 'retention', label: 'Retention' },
-  { id: 'story', label: 'Story' },
-  { id: 'language', label: 'Sprache' },
-  { id: 'value', label: 'Value' },
-  { id: 'emotion', label: 'Emotion' },
-  { id: 'visual', label: 'Visual' },
-  { id: 'audio', label: 'Audio' },
+  { id: 'hook', label: 'الهوك' },
+  { id: 'retention', label: 'الريتونشن' },
+  { id: 'story', label: 'القصة' },
+  { id: 'language', label: 'اللغة' },
+  { id: 'value', label: 'القيمة' },
+  { id: 'emotion', label: 'الإحساس' },
+  { id: 'visual', label: 'التصويرة' },
+  { id: 'audio', label: 'الصوت' },
   { id: 'cta', label: 'CTA' },
-  { id: 'community', label: 'Community' },
-  { id: 'brand', label: 'Brand Fit' },
-  { id: 'monetization', label: 'Monetarisierung' },
+  { id: 'community', label: 'الكوميونيتي' },
+  { id: 'brand', label: 'كيناسب البراند' },
+  { id: 'monetization', label: 'الفلوس' },
 ];
 
 export const POSTING_CHECKLIST = [
-  'Hook geprüft',
-  'erstes Wort geprüft',
-  'jedes Wort geprüft',
-  'Darija geprüft',
-  'Deutsch geprüft',
-  'Grammatik geprüft',
-  'Untertitel geprüft',
-  'Timing geprüft',
-  'Dead Seconds entfernt',
-  'Audio geprüft',
-  'Musik geprüft',
-  'Visuals geprüft',
-  'CTA geprüft',
-  'Keyword geprüft',
-  'DM-Funnel geprüft',
-  'Caption geprüft',
-  'Cover geprüft',
-  'Brand-Fit geprüft',
-  'Community-Ziel geprüft',
-  'Monetarisierungspotenzial geprüft',
-  'keine unnötigen Claims',
-  'keine unnötige Provokation',
-  '„NICHT JETZT“-Check bestanden',
+  'الهوك تشاف',
+  'أول كلمة تشافت',
+  'كل كلمة تشافت',
+  'الدارجة تشافت',
+  'الألمانية تشافت',
+  'القواعد تشافو',
+  'السوتيتر تشافو',
+  'التوقيت تشاف',
+  'الثواني الميتة تحيدو',
+  'الصوت تشاف',
+  'الموسيقى تشافت',
+  'التصويرة تشافت',
+  'CTA تشاف',
+  'الكلمة (keyword) تشافت',
+  'فانيل الديام تشاف',
+  'الكابشن تشاف',
+  'الكوفر تشاف',
+  'كيناسب البراند',
+  'هدف الكوميونيتي تشاف',
+  'إمكانية الربح تشافت',
+  'بلا ادعاءات زايدة',
+  'بلا استفزاز زايد',
+  'دوّز اختبار «ماشي دابا»',
 ];
 
 /** The order every review answer follows. */
 export const REVIEW_ANSWER_FORMAT = [
-  'Content-Ziel',
-  'Hook (Wort-für-Wort-Analyse)',
-  'Script (jedes problematische Wort markiert)',
-  'Retention (wo verliert der Zuschauer Interesse?)',
-  'Visual (was passiert wann auf dem Bildschirm?)',
-  'Audio (Stimme, Musik, Sound)',
-  'CTA (ist die Handlung klar?)',
-  'DM-Funnel (was passiert nach dem CTA?)',
-  'Brand (passt es zu Natty Simo?)',
-  'Monetarisierung (welche spätere Einnahme unterstützt es?)',
-  'Must Fix',
-  'Final Version (zum Filmen/Posten)',
-  'Posting Checklist',
+  'هدف المحتوى',
+  'الهوك (تحليل كلمة بكلمة)',
+  'السكريبت (كل كلمة فيها مشكل معلّمة)',
+  'الريتونشن (فين كيبدا يمل اللي كيتفرج؟)',
+  'التصويرة (شنو كيبان على الشاشة وإمتى؟)',
+  'الصوت (الصوت، الموسيقى، الساوند)',
+  'CTA (واش الحركة واضحة؟)',
+  'فانيل الديام (شنو كيوقع من بعد CTA؟)',
+  'البراند (واش كيناسب Natty Simo؟)',
+  'الفلوس (شنو الدخل اللي كيعاون فيه من بعد؟)',
+  'Must Fix (التبديلات الضرورية)',
+  'النسخة النهائية (واجدة للتصوير والنشر)',
+  'ليستة النشر',
 ];
 
 export const REVIEW_RULE =
-  'Nicht sofort neu schreiben. Erst analysieren, Fehler finden, Stärken finden, Verbesserungen erklären, erst danach die Final Version. Die Idee nie stillschweigend verändern: Grundlegende Änderungen beginnen mit „Ich würde die Richtung ändern, weil …“.';
+  'ماتعاودش تكتب ديريكت. الأول حلل، لقا الأخطاء، لقا نقط القوة، شرح التحسينات، ومن بعد عاد النسخة النهائية. عمرك ما تبدل الفكرة بلا ماتقول: التبديلات الكبيرة كتبدا بـ «غادي نبدل الاتجاه حيت …».';
 
 export const GOLDEN_RULE = {
-  chain: ['Views', 'Followers', 'DMs', 'Community', 'Vertrauen', 'Kunden', 'Produkte'],
-  text: 'Nicht mehr Content um jeden Preis. Das Ziel ist nicht nur viral zu gehen, sondern eine starke Personal Brand, die langfristig Geld verdient.',
+  chain: ['فيوز', 'فولوورز', 'ديامات', 'كوميونيتي', 'ثقة', 'كليان', 'منتوجات'],
+  text: 'ماشي كونتنو كثر بأي ثمن. الهدف ماشي غير تولي فيرال، الهدف هو براند شخصي قوي كيدخل الفلوس على المدى الطويل.',
 } as const;
 
 /* ───────────── Reel review records (stored per device on /manager) ───────────── */
@@ -899,6 +910,16 @@ export function newReelReview(id: string, createdAt: string): ReelReview {
   };
 }
 
+/** Brings a stored review up to date (old German rating values → ids). */
+export function normalizeReview(review: ReelReview): ReelReview {
+  const scores: Partial<Record<ScoreId, Rating>> = {};
+  for (const c of SCORE_CATEGORIES) {
+    const rating = normalizeRating((review.scores as Record<string, unknown> | undefined)?.[c.id]);
+    if (rating) scores[c.id] = rating;
+  }
+  return { ...review, scores };
+}
+
 /** The CTA a slot uses by default (first allowed one). */
 export function defaultCtaForSlot(slot: number): Cta | null {
   return REEL_SLOTS.find((r) => r.slot === slot)?.ctas[0] ?? null;
@@ -907,44 +928,43 @@ export function defaultCtaForSlot(slot: number): Cta | null {
 /**
  * Whether a reel may be posted, and what still blocks it. The rules come
  * straight from the system: no reel without a real CTA that fits its slot,
- * no category rated ÄNDERN, every Must Fix done, the protection rules and
+ * no category rated "change", every Must Fix done, the protection rules and
  * the full posting checklist ticked — and a Deutsch reel needs Natty context.
  */
 export function postingReadiness(review: ReelReview): { ready: boolean; blockers: string[] } {
   const blockers: string[] = [];
   const slot = REEL_SLOTS.find((r) => r.slot === review.slot);
 
-  if (!review.title.trim()) blockers.push('Titel oder Idee fehlt.');
-  if (!slot) blockers.push('Slot fehlt.');
-  if (!review.cta) blockers.push('Kein CTA: PLAN, DEUTSCH oder SQUAD wählen.');
+  if (!review.title.trim()) blockers.push('العنوان ولا الفكرة ناقصين.');
+  if (!slot) blockers.push('السلوت ناقص.');
+  if (!review.cta) blockers.push('ماكاينش CTA: ختار PLAN، DEUTSCH ولا SQUAD.');
   else if (slot && !slot.ctas.includes(review.cta))
-    blockers.push(`CTA ${review.cta} passt nicht zu Slot ${slot.slot} (${slot.ctas.join(' / ')}).`);
+    blockers.push(`CTA ${review.cta} ماكيناسبش السلوت ${slot.slot} (${slot.ctas.join(' / ')}).`);
 
   if (slot?.kind === 'deutsch') {
     const deutsch = QUALITY_CHECK.find((g) => g.id === 'deutsch')!;
-    const contextIndex = deutsch.items.findIndex((i) =>
-      i.startsWith('Relevanter Natty-Simo-Kontext'),
-    );
+    const contextIndex = deutsch.items.indexOf(DEUTSCH_CONTEXT_ITEM);
     if (!review.checks.includes(checkKey('deutsch', contextIndex)))
-      blockers.push('Deutsch-Reel ohne bestätigten Natty-Simo-Kontext.');
+      blockers.push('ريل الألمانية بلا سياق Natty Simo مأكد.');
   }
 
   const risk = QUALITY_CHECK.find((g) => g.id === 'risk')!;
   const openRisks = risk.items.filter((_, i) => !review.checks.includes(checkKey('risk', i)));
-  if (openRisks.length > 0) blockers.push(`Schutz-Check offen (${openRisks.length}).`);
+  if (openRisks.length > 0) blockers.push(`اختبار الحماية مازال مفتوح (${openRisks.length}).`);
 
-  const toChange = SCORE_CATEGORIES.filter((c) => review.scores[c.id] === 'ÄNDERN');
-  if (toChange.length > 0) blockers.push(`ÄNDERN bei: ${toChange.map((c) => c.label).join(', ')}.`);
+  const toChange = SCORE_CATEGORIES.filter((c) => review.scores[c.id] === 'change');
+  if (toChange.length > 0)
+    blockers.push(`${RATING_LABELS.change} فـ: ${toChange.map((c) => c.label).join('، ')}.`);
 
   const openMustFix = review.mustFix
     .split('\n')
     .map((l) => l.trim())
     .filter((l) => l !== '' && !/^\[x\]/i.test(l));
   if (openMustFix.length > 0)
-    blockers.push(`Must Fix offen (${openMustFix.length}). Erledigte Zeilen mit [x] beginnen.`);
+    blockers.push(`Must Fix مازال مفتوح (${openMustFix.length}). السطورة اللي سالاو بداهم بـ [x].`);
 
   const openPosting = POSTING_CHECKLIST.length - new Set(review.posting).size;
-  if (openPosting > 0) blockers.push(`Posting-Checkliste: ${openPosting} offen.`);
+  if (openPosting > 0) blockers.push(`ليستة النشر: ${openPosting} مازال.`);
 
   return { ready: blockers.length === 0, blockers };
 }
@@ -952,67 +972,68 @@ export function postingReadiness(review: ReelReview): { ready: boolean; blockers
 /** The full review prompt, to paste into Claude together with a script or transcript. */
 export function buildReviewPrompt(): string {
   const lines: string[] = [];
-  lines.push('Natty Simo – Content Quality Control');
+  lines.push('Natty Simo – مراقبة الجودة ديال المحتوى');
   lines.push('');
   lines.push(
-    'Du bist mein Content Manager, Creative Director, Script Editor, Hook Specialist, Retention Analyst und Brand Guardian für Natty Simo. Nicht loben, streng prüfen. Keine Schönrederei.',
+    'نتا من دابا المانجر ديال المحتوى، الكرييتيف دايركتور، محرر السكريبت، سبيسياليست الهوك، محلل الريتونشن وحارس البراند ديال Natty Simo. ماتمدحش، راجع بصرامة. بلا مجاملة.',
+  );
+  lines.push(
+    'جاوب ديما بالدارجة المغربية بالحروف العربية. الكلمات PLAN و DEUTSCH و SQUAD، أسماء البراند والعلامات بحال [KEEP] خليهم كيف ما هوما. إلا كان فالريل شي جزء بالألمانية، خليه بالألمانية وشرحو بالدارجة. النسخة النهائية ديال السكريبت بالدارجة.',
   );
   lines.push('');
-  lines.push(`Urteile: ${VERDICTS.map((v) => `${v.verdict} (${v.when})`).join(', ')}.`);
-  lines.push(
-    `Script-Markierungen: ${SCRIPT_MARKS.map((m) => `${m.mark} = ${m.meaning}`).join(', ')}.`,
-  );
+  lines.push(`الأحكام: ${VERDICTS.map((v) => `${v.label} (${v.when})`).join('، ')}.`);
+  lines.push(`علامات السكريبت: ${SCRIPT_MARKS.map((m) => `${m.mark} = ${m.meaning}`).join('، ')}.`);
   lines.push('');
-  lines.push('BRAND');
-  lines.push(`${IDENTITY.summary} Claim: ${IDENTITY.claim}`);
-  lines.push(`Kette: ${IDENTITY.chain.join(' → ')}`);
-  lines.push(`Hierarchie: ${IDENTITY.hierarchy.map((h, i) => `${i + 1}. ${h}`).join(' ')}`);
+  lines.push('البراند');
+  lines.push(`${IDENTITY.summary} الشعار: ${IDENTITY.claim}`);
+  lines.push(`السلسلة: ${IDENTITY.chain.join(' ← ')}`);
+  lines.push(`الترتيب: ${IDENTITY.hierarchy.map((h, i) => `${i + 1}. ${h}`).join(' ')}`);
   lines.push(
-    'Schreibweise: Natty Simo = Person/Creator. NATYSIMO = Clothing Brand. Keine anderen Schreibweisen.',
+    'الكتابة: Natty Simo = الشخص والكرياتور. NATYSIMO = براند الحوايج. حتى كتابة أخرى ماكايناش.',
   );
   lines.push(IDENTITY.deutschNote);
-  lines.push(`Story: ${IDENTITY.storyChain.join(' → ')} → … (Rest offen, nichts erfinden)`);
+  lines.push(`القصة: ${IDENTITY.storyChain.join(' ← ')} ← … (الباقي مازال مفتوح، ماتخترع والو)`);
   lines.push('');
-  lines.push('ZIELGRUPPE');
+  lines.push('الجمهور');
   lines.push(AUDIENCE.summary);
   for (const p of AUDIENCE.points) lines.push(`- ${p.term}: ${p.text}`);
-  lines.push(`${AUDIENCE.protectionIntro} ${PROTECTION_RULES.join(', ')}.`);
+  lines.push(`${AUDIENCE.protectionIntro} ${PROTECTION_RULES.join('، ')}.`);
   lines.push('');
-  lines.push('REEL-SLOTS');
+  lines.push('السلوتات ديال الريلز');
   for (const r of REEL_SLOTS)
     lines.push(
-      `${r.slot}${r.optional ? ' (optional)' : ''}. ${r.topic} → CTA ${r.ctas.join(' oder ')}`,
+      `${r.slot}${r.optional ? ' (اختياري)' : ''}. ${r.topic} ← CTA ${r.ctas.join(' ولا ')}`,
     );
-  lines.push(`CTA-Keywords: ${CTAS.join(', ')}. Nicht „Like und Follow“.`);
+  lines.push(`الكلمات ديال CTA: ${CTAS.join('، ')}. ماشي «دير لايك وفولو».`);
   lines.push('');
-  lines.push('VOR DER BEARBEITUNG BEANTWORTEN');
+  lines.push('قبل ما تبدا، جاوب');
   for (const q of PRE_QUESTIONS) lines.push(`${q.id}. ${q.question} ${q.rule}`);
   lines.push('');
-  lines.push('PRÜFEN');
+  lines.push('راجع');
   for (const g of QUALITY_CHECK) {
-    lines.push(`${g.title.toUpperCase()}${g.note ? ` (${g.note})` : ''}`);
+    lines.push(`${g.title}${g.note ? ` (${g.note})` : ''}`);
     for (const i of g.items) lines.push(`- ${i}`);
   }
   lines.push('');
-  lines.push(`Markiere ${CONTENT_TYPES.map((c) => `„${c.label}“ (${c.text})`).join(' bzw. ')}`);
+  lines.push(`علّم ${CONTENT_TYPES.map((c) => `«${c.label}» (${c.text})`).join(' ولا ')}`);
   lines.push(
-    `FINALER SCORE, kein 10/10: ${SCORE_CATEGORIES.map((c) => c.label).join(', ')} – jeweils ${RATINGS.join(' / ')}. Danach MUST FIX, SHOULD FIX, OPTIONAL, KEEP.`,
+    `السكور النهائي، ماشي 10/10: ${SCORE_CATEGORIES.map((c) => c.label).join('، ')}، كل وحدة: ${RATINGS.map((r) => RATING_LABELS[r]).join(' / ')}. من بعد: MUST FIX، SHOULD FIX، OPTIONAL، KEEP.`,
   );
   lines.push('');
-  lines.push(`WICHTIG: ${REVIEW_RULE}`);
+  lines.push(`مهم: ${REVIEW_RULE}`);
   lines.push('');
-  lines.push('ANTWORTFORMAT (exakt in dieser Reihenfolge)');
+  lines.push('شكل الجواب (بهاد الترتيب بالضبط)');
   REVIEW_ANSWER_FORMAT.forEach((s, i) => lines.push(`${i + 1}. ${s}`));
   lines.push(
-    `Final Script mit ${FINAL_SCRIPT_MARKS.join(' ')}. Dazu 3 alternative Hooks und 3 Cover-Texte.`,
+    `السكريبت النهائي بـ ${FINAL_SCRIPT_MARKS.join(' ')}. وزيد 3 هوكات بديلة و3 نصوص للكوفر.`,
   );
   lines.push('');
-  lines.push('POSTING CHECKLIST');
+  lines.push('ليستة النشر');
   for (const p of POSTING_CHECKLIST) lines.push(`☐ ${p}`);
   lines.push('');
-  lines.push(`GOLDENE REGEL: ${GOLDEN_RULE.chain.join(' → ')}. ${GOLDEN_RULE.text}`);
+  lines.push(`القاعدة الذهبية: ${GOLDEN_RULE.chain.join(' ← ')}. ${GOLDEN_RULE.text}`);
   lines.push(IDENTITY.claim);
   lines.push('');
-  lines.push('HIER IST MEIN CONTENT:');
+  lines.push('ها المحتوى ديالي:');
   return lines.join('\n');
 }

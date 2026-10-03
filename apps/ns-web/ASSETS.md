@@ -117,6 +117,9 @@ or NattySimo anywhere in `lib/`, `app/` or `components/`.
 - **Not protected.** It is unlinked, not in the sitemap, disallowed in robots.txt and `noindex`,
   but anyone with the URL can open it. Keep only strategy and aggregate numbers there, never
   personal data.
+- Language: `/manager` and the copyable review prompt are in Moroccan Darija, Arabic script,
+  right-to-left (IBM Plex Sans Arabic). Brand names, the DM keywords PLAN / DEUTSCH / SQUAD, the
+  claim and the script tags stay in Latin script. The public store stays in English.
 - Checklist ticks, KPI numbers and reel reviews are stored in the browser (`natysimo.manager.v1`), per device.
 - The waitlist has no form: `/ig` sends people to DM `SQUAD` on Instagram. No data is collected
   by the site.

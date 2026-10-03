@@ -20,9 +20,9 @@ export function CopyButton({ text, label }: { text: string; label?: string }) {
       type="button"
       onClick={copy}
       className="tech shrink-0 border border-white/10 px-3 py-2 text-mist transition-colors hover:border-accent hover:text-accent"
-      aria-label={label ?? `Kopieren: ${text}`}
+      aria-label={label ?? `نسخ: ${text}`}
     >
-      {copied ? 'Kopiert' : (label ?? 'Kopieren')}
+      {copied ? 'تنسخ' : (label ?? 'نسخ')}
     </button>
   );
 }
