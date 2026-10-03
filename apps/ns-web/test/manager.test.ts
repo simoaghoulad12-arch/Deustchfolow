@@ -1,7 +1,16 @@
-import { readFileSync } from 'fs';
+import { readFileSync, readdirSync, statSync } from 'fs';
 import { join } from 'path';
 import {
   CTAS,
+  POSTING_CHECKLIST,
+  QUALITY_CHECK,
+  REVIEW_ANSWER_FORMAT,
+  SCORE_CATEGORIES,
+  buildReviewPrompt,
+  checkKey,
+  newReelReview,
+  postingReadiness,
+  type ReelReview,
   FUNNELS,
   HYBRID_STEPS,
   KPIS,
@@ -12,6 +21,31 @@ import {
 } from '@/lib/manager';
 import robots from '@/app/robots';
 import sitemap from '@/app/sitemap';
+
+const ROOT = join(__dirname, '..');
+
+function sourceFiles(dir: string): string[] {
+  return readdirSync(dir).flatMap((name) => {
+    const path = join(dir, name);
+    if (statSync(path).isDirectory()) return sourceFiles(path);
+    return /\.(ts|tsx)$/.test(name) ? [path] : [];
+  });
+}
+
+/** A review that passes every rule — tests break it one rule at a time. */
+function completeReview(overrides: Partial<ReelReview> = {}): ReelReview {
+  return {
+    ...newReelReview('t', '2026-10-04T08:00:00.000Z'),
+    title: 'Tag 12: Training nach der Spätschicht',
+    slot: 2,
+    cta: 'PLAN',
+    checks: QUALITY_CHECK.flatMap((g) => g.items.map((_, i) => checkKey(g.id, i))),
+    posting: POSTING_CHECKLIST.map((_, i) => i),
+    scores: Object.fromEntries(SCORE_CATEGORIES.map((c) => [c.id, 'OK'])),
+    mustFix: '[x] Hook kürzen',
+    ...overrides,
+  };
+}
 
 /** The management system's own rules, kept true in the data that renders /manager. */
 describe('manager system', () => {
@@ -61,9 +95,13 @@ describe('manager system', () => {
     expect(KPIS).toHaveLength(5);
   });
 
-  it('spells the brand NATYSIMO', () => {
-    const source = readFileSync(join(__dirname, '../lib/manager.ts'), 'utf8');
-    expect(source).not.toMatch(/NATTYSIMO/);
+  it('keeps the two brand names apart: Natty Simo (person), NATYSIMO (clothing)', () => {
+    const wrong = /NATTYSIMO|NATTY SIMO|NATTTY|NattySimo/;
+    const files = ['lib', 'app', 'components'].flatMap((dir) => sourceFiles(join(ROOT, dir)));
+    expect(files.length).toBeGreaterThan(10);
+    for (const file of files)
+      expect([file, readFileSync(file, 'utf8')]).not.toEqual([file, expect.stringMatching(wrong)]);
+    expect(buildReviewPrompt()).not.toMatch(wrong);
   });
 
   it('computes ISO week keys', () => {
@@ -82,5 +120,54 @@ describe('/manager stays out of search', () => {
 
   it('is not in the sitemap', () => {
     expect(sitemap().some((e) => e.url.includes('/manager'))).toBe(false);
+  });
+});
+
+describe('reel quality check', () => {
+  it('blocks an empty review', () => {
+    const { ready, blockers } = postingReadiness(newReelReview('e', ''));
+    expect(ready).toBe(false);
+    expect(blockers.join(' ')).toMatch(/Kein CTA/);
+  });
+
+  it('lets a fully checked reel post', () => {
+    expect(postingReadiness(completeReview())).toEqual({ ready: true, blockers: [] });
+  });
+
+  it('blocks a CTA that does not fit the slot', () => {
+    expect(postingReadiness(completeReview({ slot: 3, cta: 'PLAN' })).ready).toBe(false);
+  });
+
+  it('blocks any category rated ÄNDERN', () => {
+    const r = completeReview();
+    expect(postingReadiness({ ...r, scores: { ...r.scores, hook: 'ÄNDERN' } }).ready).toBe(false);
+  });
+
+  it('blocks open Must Fix lines and an incomplete posting checklist', () => {
+    expect(postingReadiness(completeReview({ mustFix: 'Untertitel prüfen' })).ready).toBe(false);
+    expect(postingReadiness(completeReview({ posting: [0, 1, 2] })).ready).toBe(false);
+  });
+
+  it('blocks a Deutsch reel without Natty Simo context', () => {
+    const r = completeReview({ slot: 4, cta: 'DEUTSCH' });
+    expect(postingReadiness(r).ready).toBe(true);
+    const deutsch = QUALITY_CHECK.find((g) => g.id === 'deutsch')!;
+    const ctx = deutsch.items.findIndex((i) => i.startsWith('Relevanter Natty-Simo-Kontext'));
+    expect(ctx).toBeGreaterThanOrEqual(0);
+    const without = { ...r, checks: r.checks.filter((k) => k !== checkKey('deutsch', ctx)) };
+    expect(postingReadiness(without).blockers.join(' ')).toMatch(/Natty-Simo-Kontext/);
+  });
+
+  it('blocks while a protection rule is unchecked', () => {
+    const r = completeReview();
+    const without = { ...r, checks: r.checks.filter((k) => k !== checkKey('risk', 0)) };
+    expect(postingReadiness(without).ready).toBe(false);
+  });
+
+  it('builds a review prompt with the full answer format and posting checklist', () => {
+    const prompt = buildReviewPrompt();
+    for (const step of REVIEW_ANSWER_FORMAT) expect(prompt).toContain(step);
+    for (const item of POSTING_CHECKLIST) expect(prompt).toContain(`☐ ${item}`);
+    expect(prompt).toContain('Discipline builds freedom.');
   });
 });

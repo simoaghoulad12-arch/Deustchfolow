@@ -28,7 +28,7 @@ export const SOCIAL = {
   communityLabel: '20K+',
   tiktok: process.env.NEXT_PUBLIC_TIKTOK_URL,
   youtube: process.env.NEXT_PUBLIC_YOUTUBE_URL,
-  /** The NATTYSIMO training plan (sold on Gumroad). Shown only when set. */
+  /** The Natty Simo training plan (personal brand, sold on Gumroad). Shown only when set. */
   planUrl: process.env.NEXT_PUBLIC_PLAN_URL,
   /** Natty Squad — the Instagram broadcast channel invite link. Shown only when set. */
   squadUrl: process.env.NEXT_PUBLIC_SQUAD_URL,

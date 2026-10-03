@@ -105,11 +105,18 @@ invented.
 ## Founder tools — `/manager`
 The 90-day management system (Natty Simo, 3 Oct 2026) lives in `lib/manager.ts` and renders at
 `/manager`: rules, reel slots, DM funnels with copyable replies, the Squad plan, the weekly rhythm,
-the "NICHT JETZT" list, a weekly checklist and a log for the five Sunday numbers.
+the "NICHT JETZT" list, a weekly checklist and a log for the five Sunday numbers, and the
+**Reel-Qualitäts-Check**: a per-reel review (quality check by group, a rating per category,
+Must Fix, posting checklist) that only shows "Bereit zum Posten" when `postingReadiness()` finds no
+blocker, plus a copyable review prompt for Claude.
+
+Naming: **Natty Simo** is the person / creator brand (content, training plan, Hybrid programme);
+**NATYSIMO** is the clothing brand. `test/manager.test.ts` fails on NATTYSIMO, NATTY SIMO, NATTTY
+or NattySimo anywhere in `lib/`, `app/` or `components/`.
 
 - **Not protected.** It is unlinked, not in the sitemap, disallowed in robots.txt and `noindex`,
   but anyone with the URL can open it. Keep only strategy and aggregate numbers there, never
   personal data.
-- Checklist ticks and KPI numbers are stored in the browser (`natysimo.manager.v1`), per device.
+- Checklist ticks, KPI numbers and reel reviews are stored in the browser (`natysimo.manager.v1`), per device.
 - The waitlist has no form: `/ig` sends people to DM `SQUAD` on Instagram. No data is collected
   by the site.
