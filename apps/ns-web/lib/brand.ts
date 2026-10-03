@@ -30,6 +30,8 @@ export const SOCIAL = {
   youtube: process.env.NEXT_PUBLIC_YOUTUBE_URL,
   /** The NATTYSIMO training plan (sold on Gumroad). Shown only when set. */
   planUrl: process.env.NEXT_PUBLIC_PLAN_URL,
+  /** Natty Squad — the Instagram broadcast channel invite link. Shown only when set. */
+  squadUrl: process.env.NEXT_PUBLIC_SQUAD_URL,
   /** Public support email. Shown only when set — never a personal address. */
   contactEmail: process.env.NEXT_PUBLIC_CONTACT_EMAIL,
   /** WhatsApp number in international format, digits only. Shown only when set. */

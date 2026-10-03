@@ -94,9 +94,22 @@ NEXT_PUBLIC_SITE_URL=https://natysimo.com
 NEXT_PUBLIC_PLAN_URL=<Gumroad plan URL>        # shows "The Training Plan" on /ig
 NEXT_PUBLIC_CONTACT_EMAIL=<brand support email> # shown on /legal/contact
 NEXT_PUBLIC_WHATSAPP=<digits, e.g. 2126…>       # shown on /legal/contact
+NEXT_PUBLIC_SQUAD_URL=<broadcast invite link>   # shows "Join Natty Squad" on /ig
 ```
 
 ## Before taking orders
 Imprint (Impressum § 5 DDG), privacy (GDPR + Moroccan law 09-08), terms (AGB) and the returns /
 withdrawal policy are marked "Pre-launch page". Supply the real legal details. Nothing legal is
 invented.
+
+## Founder tools — `/manager`
+The 90-day management system (Natty Simo, 3 Oct 2026) lives in `lib/manager.ts` and renders at
+`/manager`: rules, reel slots, DM funnels with copyable replies, the Squad plan, the weekly rhythm,
+the "NICHT JETZT" list, a weekly checklist and a log for the five Sunday numbers.
+
+- **Not protected.** It is unlinked, not in the sitemap, disallowed in robots.txt and `noindex`,
+  but anyone with the URL can open it. Keep only strategy and aggregate numbers there, never
+  personal data.
+- Checklist ticks and KPI numbers are stored in the browser (`natysimo.manager.v1`), per device.
+- The waitlist has no form: `/ig` sends people to DM `SQUAD` on Instagram. No data is collected
+  by the site.

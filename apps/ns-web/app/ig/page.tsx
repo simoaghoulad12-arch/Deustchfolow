@@ -77,6 +77,16 @@ export default function InstagramLanding() {
             The Training Plan <Icon name="arrow" className="h-4 w-4" />
           </a>
         )}
+        {SOCIAL.squadUrl && (
+          <a
+            href={SOCIAL.squadUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="btn-line w-full justify-between"
+          >
+            Join Natty Squad <Icon name="arrow" className="h-4 w-4" />
+          </a>
+        )}
       </nav>
 
       <div className="mt-8 grid grid-cols-3 gap-2">
@@ -124,11 +134,23 @@ export default function InstagramLanding() {
         </ul>
       </section>
 
+      {/* No form, no data collected: the waitlist runs through Simo's DMs. */}
       <a
         href={SOCIAL.instagram}
         target="_blank"
         rel="noreferrer"
-        className="label mt-10 flex items-center justify-center gap-2 py-4 text-ivory/70"
+        className="mt-10 flex flex-col items-center gap-1 border border-white/10 px-4 py-5 text-center transition-colors hover:border-accent"
+      >
+        <span className="label text-gold">Waitlist</span>
+        <span className="text-sm">
+          DM <span className="tech text-ivory">SQUAD</span> to {SOCIAL.instagramHandle}
+        </span>
+      </a>
+      <a
+        href={SOCIAL.instagram}
+        target="_blank"
+        rel="noreferrer"
+        className="label mt-2 flex items-center justify-center gap-2 py-4 text-ivory/70"
       >
         <Icon name="instagram" className="h-4 w-4" /> Questions? DM {SOCIAL.instagramHandle}
       </a>
