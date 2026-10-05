@@ -1,0 +1,26 @@
+# Render Blueprint for apps/api (free plan, Docker).
+# Render → New → Blueprint → this repo. Render reads this file and asks
+# for every `sync: false` value once. Step-by-step: DEPLOY_NEON_RENDER.md.
+services:
+  - type: web
+    name: deutschflow-api
+    runtime: docker
+    plan: free
+    region: frankfurt
+    # Build context must be the repo root (pnpm workspace) — see the
+    # header comment in apps/api/Dockerfile.
+    dockerContext: .
+    dockerfilePath: ./apps/api/Dockerfile
+    healthCheckPath: /api/v1/health
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        sync: false
+      - key: DIRECT_DATABASE_URL
+        sync: false
+      - key: SERVICE_TOKEN_SECRET
+        sync: false
+      - key: APP_URL
+        sync: false
