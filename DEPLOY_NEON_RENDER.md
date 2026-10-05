@@ -79,7 +79,7 @@ Registrierung über die Website funktioniert in Produktion noch nicht
 (kein E-Mail-Anbieter, siehe `DEPLOYMENT_STAGING.md` Abschnitt 10).
 Seed + Test-Account werden einmalig von einem Rechner (oder von Claude) aus mit der
 `DIRECT_DATABASE_URL` eingespielt — siehe `DEPLOYMENT_STAGING.md`
-Abschnitte 8 und 10.
+Abschnitte 9 (Seed) und 10 (Test-Account).
 
 ## 6. Aufräumen
 
