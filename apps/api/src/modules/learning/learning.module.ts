@@ -11,6 +11,7 @@ import { ExercisesService } from './exercises/exercises.service';
 import { ProgressController } from './progress/progress.controller';
 import { ProgressService } from './progress/progress.service';
 import { VocabularyService } from './vocabulary/vocabulary.service';
+import { MyVocabularyController, VocabularyController } from './vocabulary/vocabulary.controller';
 
 /**
  * Owns LearningProfile and the Learning Engine (Level -> Course -> Module
@@ -27,6 +28,8 @@ import { VocabularyService } from './vocabulary/vocabulary.service';
     LessonsController,
     ExercisesController,
     ProgressController,
+    VocabularyController,
+    MyVocabularyController,
   ],
   providers: [
     LevelsService,
