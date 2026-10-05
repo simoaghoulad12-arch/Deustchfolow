@@ -6,12 +6,12 @@
   :root {
     --background: 0 0% 100%;
     --foreground: 222 47% 11%;
-    --primary: 217 91% 40%;
+    --primary: 243 75% 59%;
     --primary-foreground: 0 0% 100%;
-    --muted: 210 40% 96%;
+    --muted: 220 33% 97%;
     --muted-foreground: 215 16% 42%;
-    --border: 214 32% 91%;
-    --radius: 0.75rem;
+    --border: 220 20% 90%;
+    --radius: 0.875rem;
   }
 
   * {
@@ -20,5 +20,37 @@
 
   body {
     @apply bg-background text-foreground;
+    font-feature-settings: 'cv11', 'ss01';
+  }
+
+  :focus-visible {
+    @apply outline-none ring-2 ring-primary ring-offset-2;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  .bg-hero {
+    background:
+      radial-gradient(60rem 30rem at 10% -10%, rgb(99 102 241 / 0.18), transparent 60%),
+      radial-gradient(50rem 30rem at 100% 0%, rgb(236 72 153 / 0.12), transparent 60%),
+      radial-gradient(40rem 30rem at 50% 110%, rgb(20 184 166 / 0.12), transparent 60%);
+  }
+  .scrollbar-none {
+    scrollbar-width: none;
+  }
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
   }
 }

@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { FormMessage } from '@/components/ui/form-message';
 import { registerAction } from './actions';
 
-export const metadata: Metadata = { title: 'Registrieren – DeutschFlow' };
+export const metadata: Metadata = { title: 'Sign up – DeutschFlow' };
 
 export default function RegisterPage({
   searchParams,
@@ -16,17 +16,17 @@ export default function RegisterPage({
   return (
     <div className="space-y-6">
       <div className="space-y-1 text-center">
-        <h1 className="text-xl font-semibold">Konto erstellen</h1>
-        <p className="text-sm text-muted-foreground">Starte kostenlos mit DeutschFlow.</p>
+        <h1 className="text-xl font-semibold">Create your account</h1>
+        <p className="text-sm text-muted-foreground">Start living a new language — free.</p>
       </div>
 
       <form action={registerAction} className="space-y-4">
         <div className="space-y-1.5">
-          <Label htmlFor="email">E-Mail-Adresse</Label>
+          <Label htmlFor="email">Email</Label>
           <Input id="email" name="email" type="email" autoComplete="email" required />
         </div>
         <div className="space-y-1.5">
-          <Label htmlFor="password">Passwort</Label>
+          <Label htmlFor="password">Password</Label>
           <Input
             id="password"
             name="password"
@@ -36,11 +36,11 @@ export default function RegisterPage({
             required
           />
           <p className="text-xs text-muted-foreground">
-            Mindestens 10 Zeichen, mit Buchstaben und Zahlen.
+            At least 10 characters, with letters and numbers.
           </p>
         </div>
         <div className="space-y-1.5">
-          <Label htmlFor="passwordConfirmation">Passwort bestätigen</Label>
+          <Label htmlFor="passwordConfirmation">Confirm password</Label>
           <Input
             id="passwordConfirmation"
             name="passwordConfirmation"
@@ -54,13 +54,13 @@ export default function RegisterPage({
         {searchParams.error && <FormMessage type="error">{searchParams.error}</FormMessage>}
 
         <Button type="submit" className="w-full">
-          Konto erstellen
+          Create account
         </Button>
 
         <p className="text-center text-sm text-muted-foreground">
-          Schon ein Konto?{' '}
+          Already have an account?{' '}
           <Link href="/login" className="font-medium text-primary underline-offset-4 hover:underline">
-            Anmelden
+            Log in
           </Link>
         </p>
       </form>
