@@ -84,9 +84,12 @@ export function generateLearningPlan(input: PlanInput): LearningPlanDoc {
     if (minutes >= 20) add({ kind: 'challenge', title: 'Daily challenge', minutes: Math.round(minutes * 0.15), href: '/home#challenge' });
     if (minutes >= 30) add({ kind: 'speaking', title: 'Brain mode sprint', minutes: 5, href: '/brain' });
   }
-  const used = routine.reduce((s, a) => s + a.minutes, 0);
+  // The mission absorbs rounding so the routine always adds up to the chosen time.
   const firstMission = routine.find((a) => a.kind === 'mission');
-  if (firstMission && used < minutes) firstMission.minutes += minutes - used;
+  if (firstMission) {
+    const others = routine.reduce((s, a) => (a === firstMission ? s : s + a.minutes), 0);
+    firstMission.minutes = Math.max(1, minutes - others);
+  }
 
   const themes = (input.goals.length ? input.goals : ['everyday']).flatMap((g) => GOAL_THEMES[g] ?? []);
   const uniqueThemes = [...new Set(themes)];

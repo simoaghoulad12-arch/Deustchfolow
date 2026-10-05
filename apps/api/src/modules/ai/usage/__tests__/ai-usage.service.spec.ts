@@ -86,7 +86,7 @@ describe('AiUsageService', () => {
 
     const summary = await service.getUsageSummary('user-1');
 
-    expect(summary.usedToday).toEqual({ tutor: 4, writing_correction: 1 });
+    expect(summary.usedToday).toEqual({ tutor: 4, writing_correction: 1, immersion: 1 });
     expect(summary.limits.tutorMessagesPerDay).toBeGreaterThan(0);
   });
 });

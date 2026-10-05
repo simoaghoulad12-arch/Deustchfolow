@@ -441,26 +441,59 @@ export function looksLikeEnglish(normalizedText: string): boolean {
   return hits / words.length > 0.4;
 }
 
-/** Simple tone cues for Emotion mode. */
+/**
+ * Tone cues for Emotion mode. Keys must match EMOTION_TONES in the practice
+ * prompt bank, otherwise a scenario's target tone can never be recognised.
+ */
 export const TONE_CUES: Record<string, Record<string, string[]>> = {
   de: {
-    formal: ['sie', 'ihnen', 'würden', 'könnten', 'sehr geehrte', 'bitte', 'gerne'],
-    friendly: ['hey', 'hallo', 'super', 'gern', 'cool', 'toll', 'danke dir', 'lieb'],
-    professional: ['termin', 'bezüglich', 'vorschlagen', 'abstimmen', 'freundlichen grüßen', 'besprechen'],
-    angry: ['unverschämt', 'sofort', 'inakzeptabel', 'reicht', 'ärgerlich', 'beschweren', '!'],
-    uncertain: ['vielleicht', 'ich glaube', 'eventuell', 'nicht sicher', 'weiß nicht', 'wahrscheinlich'],
-    enthusiastic: ['fantastisch', 'wunderbar', 'großartig', 'freue mich', 'genial', 'toll', '!'],
-    sarcastic: ['na toll', 'wie schön', 'klar doch', 'super gemacht', 'natürlich'],
-    diplomatic: ['ich verstehe', 'andererseits', 'vielleicht könnten', 'kompromiss', 'was halten sie', 'gemeinsam'],
+    polite: ['bitte', 'könnten sie', 'würden sie', 'wäre es möglich', 'danke', 'entschuldigung'],
+    friendly: ['hallo', 'hey', 'super', 'schön', 'danke dir', 'lieb', 'toll'],
+    formal: ['sehr geehrte', 'ihnen', 'mit freundlichen grüßen', 'hiermit', 'bezüglich', 'würden sie'],
+    casual: ['hey', 'na', 'lust', 'komm', 'cool', 'bock', 'bis dann'],
+    firm: ['muss', 'sofort', 'erwarte', 'inakzeptabel', 'bestehe', 'nicht mehr', 'verlange'],
+    apologetic: ['entschuldigung', 'tut mir leid', 'verzeihung', 'entschuldigen', 'leider', 'mein fehler'],
+    enthusiastic: ['fantastisch', 'wunderbar', 'großartig', 'freue mich', 'glückwunsch', 'toll', '!'],
+    sympathetic: ['tut mir leid', 'gute besserung', 'verstehe', 'schade', 'hoffentlich', 'für dich da'],
   },
   en: {
-    formal: ['would', 'could', 'kindly', 'dear', 'please', 'sincerely'],
-    friendly: ['hey', 'hi', 'awesome', 'cool', 'thanks', 'buddy'],
-    professional: ['regarding', 'schedule', 'propose', 'align', 'best regards', 'follow up'],
-    angry: ['unacceptable', 'immediately', 'ridiculous', 'enough', 'complain', '!'],
-    uncertain: ['maybe', 'i think', 'perhaps', 'not sure', 'probably', "don't know"],
-    enthusiastic: ['amazing', 'fantastic', 'love', "can't wait", 'great', '!'],
-    sarcastic: ['oh great', 'just perfect', 'sure', 'wonderful', 'of course'],
-    diplomatic: ['i understand', 'on the other hand', 'perhaps we could', 'compromise', 'what do you think', 'together'],
+    polite: ['please', 'could you', 'would you', 'would it be possible', 'thank you', 'excuse me'],
+    friendly: ['hi', 'hey', 'great', 'nice', 'thanks', 'lovely'],
+    formal: ['dear', 'sincerely', 'regarding', 'kind regards', 'i am writing', 'kindly'],
+    casual: ['hey', 'wanna', 'gonna', 'come over', 'cool', 'see you', 'fancy'],
+    firm: ['must', 'immediately', 'expect', 'unacceptable', 'insist', 'no longer', 'require'],
+    apologetic: ['sorry', 'apologise', 'apologize', 'my fault', 'forgive', 'excuse me'],
+    enthusiastic: ['amazing', 'fantastic', 'congratulations', 'so happy', "can't wait", 'great', '!'],
+    sympathetic: ['so sorry', 'get well', 'i understand', 'that must be', 'hope', 'here for you'],
+  },
+  es: {
+    polite: ['por favor', 'podría', 'podrías', 'sería posible', 'gracias', 'disculpe'],
+    friendly: ['hola', 'qué tal', 'genial', 'gracias', 'guay'],
+    formal: ['estimado', 'estimada', 'atentamente', 'le escribo', 'usted', 'cordialmente'],
+    casual: ['oye', 'vamos', 'te apetece', 'guay', 'nos vemos', 'quedamos'],
+    firm: ['tiene que', 'inmediatamente', 'exijo', 'inaceptable', 'insisto', 'ya no'],
+    apologetic: ['perdón', 'lo siento', 'disculpa', 'disculpe', 'culpa mía'],
+    enthusiastic: ['increíble', 'fantástico', 'enhorabuena', 'felicidades', 'qué bien', '!'],
+    sympathetic: ['lo siento mucho', 'que te mejores', 'entiendo', 'ánimo', 'ojalá'],
+  },
+  fr: {
+    polite: ["s'il vous plaît", "s'il te plaît", 'pourriez-vous', 'pourrais-tu', 'merci', 'excusez-moi'],
+    friendly: ['salut', 'coucou', 'super', 'merci', 'sympa'],
+    formal: ['madame', 'monsieur', 'veuillez', 'cordialement', 'je vous écris', 'je vous prie'],
+    casual: ['salut', 'ça te dit', 'on se voit', 'cool', 'viens'],
+    firm: ['dois', 'immédiatement', 'exige', 'inacceptable', 'insiste', 'plus jamais'],
+    apologetic: ['pardon', 'désolé', 'désolée', 'excusez-moi', 'je m\'excuse', 'ma faute'],
+    enthusiastic: ['génial', 'fantastique', 'félicitations', 'trop bien', 'super', '!'],
+    sympathetic: ['je suis désolé', 'bon rétablissement', 'je comprends', 'courage', "j'espère"],
+  },
+  it: {
+    polite: ['per favore', 'potrebbe', 'potresti', 'sarebbe possibile', 'grazie', 'scusi'],
+    friendly: ['ciao', 'bello', 'fantastico', 'grazie', 'dai'],
+    formal: ['gentile', 'egregio', 'cordiali saluti', 'le scrivo', 'distinti saluti'],
+    casual: ['ciao', 'ti va', 'ci vediamo', 'dai', 'vieni'],
+    firm: ['deve', 'immediatamente', 'esigo', 'inaccettabile', 'insisto', 'non più'],
+    apologetic: ['scusa', 'scusi', 'mi dispiace', 'perdono', 'colpa mia'],
+    enthusiastic: ['fantastico', 'meraviglioso', 'congratulazioni', 'complimenti', 'evviva', '!'],
+    sympathetic: ['mi dispiace tanto', 'guarisci presto', 'capisco', 'coraggio', 'spero'],
   },
 };

@@ -445,12 +445,7 @@ export class ConversationService {
 
   /** Mission vocabulary flows into the learner's spaced-repetition deck. */
   private async addKeyPhrasesToDeck(userId: string, languageCode: string, run: RunWithRelations) {
-    // Vocabulary rows store the bare word (article separately), so match
-    // the whole phrase and its last word ("die Rechnung" → "rechnung").
-    const terms = parseKeyPhrases(run.mission.keyPhrases).flatMap((p) => {
-      const lower = p.term.trim().toLowerCase().replace(/[.!?,]/g, '');
-      return [lower, lower.split(/\s+/).pop() ?? lower];
-    });
+    const terms = deckCandidates(parseKeyPhrases(run.mission.keyPhrases).map((p) => p.term));
     if (terms.length === 0) return;
     const vocab = await this.prisma.client.vocabulary.findMany({
       where: { languageCode, normalizedWord: { in: terms } },
@@ -462,6 +457,26 @@ export class ConversationService {
       skipDuplicates: true,
     });
   }
+}
+
+/** Definite articles vocabulary rows are stored with (display word = article + noun). */
+const ARTICLES = ['der', 'die', 'das', 'el', 'la', 'los', 'las', 'le', 'les', "l'", 'il', 'lo', 'i', 'gli', 'the'];
+
+/**
+ * Candidate `normalizedWord`s for a key phrase. Vocabulary is stored with
+ * its article ("der kaffee"), while phrases inflect it ("einen Kaffee"),
+ * so match the whole phrase, its last word and that word with each article.
+ */
+export function deckCandidates(phrases: string[]): string[] {
+  const out = new Set<string>();
+  for (const phrase of phrases) {
+    const lower = phrase.trim().toLowerCase().replace(/[.!?,¿¡]/g, '');
+    if (!lower) continue;
+    const last = lower.split(/\s+/).pop() ?? lower;
+    out.add(lower).add(last);
+    for (const a of ARTICLES) out.add(a.endsWith("'") ? `${a}${last}` : `${a} ${last}`);
+  }
+  return [...out];
 }
 
 function averageScores(scores: { grammar: number; vocabulary: number; fluency: number; task: number }[]) {
