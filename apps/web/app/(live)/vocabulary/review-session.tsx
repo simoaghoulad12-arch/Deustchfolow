@@ -31,7 +31,7 @@ export function ReviewSession({ cards, languageCode }: { cards: VocabularyCard[]
   return (
     <Card className="mx-auto max-w-xl text-center">
       <div className="mb-4 flex items-center gap-3 text-xs text-muted-foreground">
-        <span>
+        <span className="shrink-0 tabular-nums">
           {index + 1} / {cards.length}
         </span>
         <ProgressBar value={(index / cards.length) * 100} label="Review progress" />

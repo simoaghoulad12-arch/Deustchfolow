@@ -16,7 +16,7 @@ export default async function Page() {
   if (!prompts) return <ErrorState retryHref="/brain" />;
   return (
     <div>
-      <PageHeader eyebrow="Think in the language · {prompts.level}" title="Brain mode" description="Questions come fast and in the language you’re learning. Answer before the timer runs out — no time to translate." />
+      <PageHeader eyebrow={`Think in the language · ${prompts.level}`} title="Brain mode" description="Questions come fast and in the language you’re learning. Answer before the timer runs out — no time to translate." />
       <PracticeRunner mode="brain" items={prompts.items} timeLimitMs={prompts.timeLimitMs} languageCode={me?.targetLanguage?.code ?? 'de'} />
     </div>
   );

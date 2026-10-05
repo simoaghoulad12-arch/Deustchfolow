@@ -16,7 +16,7 @@ export default async function Page() {
   if (!prompts) return <ErrorState retryHref="/emotion" />;
   return (
     <div>
-      <PageHeader eyebrow="Tone & register · {prompts.level}" title="Emotion mode" description="Same words, different feelings. Respond in the requested tone and learn how polite, firm or warm sounds." />
+      <PageHeader eyebrow={`Tone & register · ${prompts.level}`} title="Emotion mode" description="Same words, different feelings. Respond in the requested tone and learn how polite, firm or warm sounds." />
       <PracticeRunner mode="emotion" items={prompts.items} timeLimitMs={prompts.timeLimitMs} languageCode={me?.targetLanguage?.code ?? 'de'} />
     </div>
   );

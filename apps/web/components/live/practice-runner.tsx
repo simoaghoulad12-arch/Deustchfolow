@@ -82,7 +82,7 @@ export function PracticeRunner({ mode, items, languageCode, timeLimitMs }: { mod
   return (
     <Card className="mx-auto max-w-2xl">
       <div className="mb-5 flex items-center gap-3 text-xs text-muted-foreground">
-        <span>
+        <span className="shrink-0 tabular-nums">
           {index + 1} / {items.length}
         </span>
         <ProgressBar value={(index / items.length) * 100} label="Session progress" />

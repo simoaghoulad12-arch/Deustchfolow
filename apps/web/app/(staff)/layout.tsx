@@ -5,14 +5,14 @@ import { LiveShell } from '@/components/live/live-shell';
 
 export const dynamic = 'force-dynamic';
 
-export default async function LiveLayout({ children }: { children: React.ReactNode }) {
+/**
+ * Staff area. Same chrome as the learner app, but staff accounts are not
+ * forced through onboarding or placement before they can manage content.
+ */
+export default async function StaffLayout({ children }: { children: React.ReactNode }) {
   const session = await getSession();
   if (!session) redirect('/login');
-
   const me = await liveGet<Me>(session, '/me');
-  if (me && !me.onboardingCompleted) redirect('/onboarding');
-  if (me?.needsPlacement) redirect('/placement');
-
   return (
     <LiveShell session={session} me={me}>
       {children}

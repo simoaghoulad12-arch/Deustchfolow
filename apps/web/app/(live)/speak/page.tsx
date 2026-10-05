@@ -16,7 +16,7 @@ export default async function Page() {
   if (!prompts) return <ErrorState retryHref="/speak" />;
   return (
     <div>
-      <PageHeader eyebrow="Speaking · {prompts.level}" title="Speaking practice" description="Answer out loud. You get feedback on pronunciation, grammar, fluency and naturalness." />
+      <PageHeader eyebrow={`Speaking · ${prompts.level}`} title="Speaking practice" description="Answer out loud. You get feedback on pronunciation, grammar, fluency and naturalness." />
       <PracticeRunner mode="speaking" items={prompts.items} timeLimitMs={prompts.timeLimitMs} languageCode={me?.targetLanguage?.code ?? 'de'} />
     </div>
   );

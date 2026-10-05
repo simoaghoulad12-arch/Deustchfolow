@@ -60,7 +60,11 @@ export function AnswerBox({
   const submit = async () => {
     const value = text.trim();
     if (value.length < minLength || busy) return;
-    await onSubmit(value, { spoken, speechConfidence: spoken ? speech.confidence : undefined, responseMs: Date.now() - startedAt.current });
+    await onSubmit(value, {
+      spoken,
+      speechConfidence: spoken ? speech.confidence : undefined,
+      responseMs: Date.now() - startedAt.current,
+    });
   };
 
   return (
@@ -71,7 +75,12 @@ export function AnswerBox({
         void submit();
       }}
     >
-      <div className={cn('flex items-end gap-2 rounded-2xl border border-border bg-white p-2 shadow-sm focus-within:border-indigo-300 focus-within:ring-2 focus-within:ring-indigo-100', busy && 'opacity-70')}>
+      <div
+        className={cn(
+          'flex flex-wrap items-end gap-2 rounded-2xl border border-border bg-white p-2 shadow-sm focus-within:border-indigo-300 focus-within:ring-2 focus-within:ring-indigo-100',
+          busy && 'opacity-70',
+        )}
+      >
         <label className="sr-only" htmlFor="answer-input">
           Your answer
         </label>
@@ -92,28 +101,43 @@ export function AnswerBox({
             }
           }}
           placeholder={speech.listening ? 'Listening…' : placeholder}
-          className="max-h-40 min-h-[44px] flex-1 resize-none bg-transparent px-2 py-2 text-base outline-none placeholder:text-slate-400"
+          className="max-h-40 min-h-[44px] w-full min-w-0 resize-none bg-transparent px-2 py-2 text-base outline-none placeholder:text-slate-400 focus-visible:outline-none sm:w-auto sm:flex-1"
           lang={languageCode}
           maxLength={2000}
         />
-        {speech.supported && (
+        <div className="ml-auto flex shrink-0 gap-2">
+          {speech.supported && (
+            <button
+              type="button"
+              onClick={() => (speech.listening ? speech.stop() : speech.start())}
+              disabled={busy}
+              aria-pressed={speech.listening}
+              aria-label={speech.listening ? 'Stop recording' : 'Answer with your voice'}
+              className={cn(
+                'flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-lg transition',
+                speech.listening
+                  ? 'animate-pulse bg-rose-500 text-white'
+                  : 'bg-slate-100 hover:bg-slate-200',
+              )}
+            >
+              <span aria-hidden>🎙️</span>
+            </button>
+          )}
           <button
-            type="button"
-            onClick={() => (speech.listening ? speech.stop() : speech.start())}
-            disabled={busy}
-            aria-pressed={speech.listening}
-            aria-label={speech.listening ? 'Stop recording' : 'Answer with your voice'}
-            className={cn(
-              'flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-lg transition',
-              speech.listening ? 'animate-pulse bg-rose-500 text-white' : 'bg-slate-100 hover:bg-slate-200',
-            )}
+            type="submit"
+            disabled={busy || text.trim().length < minLength}
+            className={cn(buttonClass('primary'), 'h-11 shrink-0')}
           >
-            <span aria-hidden>🎙️</span>
+            {busy ? (
+              <span
+                className="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white"
+                aria-label="Sending"
+              />
+            ) : (
+              submitLabel
+            )}
           </button>
-        )}
-        <button type="submit" disabled={busy || text.trim().length < minLength} className={cn(buttonClass('primary'), 'h-11 shrink-0')}>
-          {busy ? <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white" aria-label="Sending" /> : submitLabel}
-        </button>
+        </div>
       </div>
       {speech.error && (
         <p className="mt-2 text-xs text-rose-600" role="alert">

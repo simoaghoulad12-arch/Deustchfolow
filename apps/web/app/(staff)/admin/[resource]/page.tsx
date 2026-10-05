@@ -59,7 +59,7 @@ export default async function ResourcePage({ params, searchParams }: { params: {
             <tr>
               {entry.columns.map((c) => (
                 <th key={c} className="px-4 py-3 font-semibold">
-                  {c}
+                  {c.replace(/([a-z])([A-Z])/g, '$1 $2')}
                 </th>
               ))}
             </tr>

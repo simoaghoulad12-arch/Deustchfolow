@@ -72,8 +72,8 @@ export default async function HomePage() {
         <Stat icon="⏱️" label="Learning time" value={`${me.stats?.learningMinutes ?? 0} min`} hint={`${me.stats?.speakingMinutes ?? 0} min speaking`} />
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-3">
-        <div className="space-y-6 lg:col-span-2">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+        <div className="min-w-0 space-y-6 lg:col-span-2">
           {coach && (
             <Card>
               <SectionTitle action={<Badge tone="violet">AI coach</Badge>}>Your coach</SectionTitle>
