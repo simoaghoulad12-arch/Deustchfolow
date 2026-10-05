@@ -70,7 +70,7 @@ export function generateLearningPlan(input: PlanInput): LearningPlanDoc {
 
   const routine: PlanActivity[] = [];
   const add = (a: PlanActivity) => routine.push(a);
-  add({ kind: 'review', title: 'Review due words', minutes: minutes <= 5 ? 2 : 3, href: '/vocabulary' });
+  add({ kind: 'review', title: 'Review due words', minutes: minutes <= 5 ? 2 : 3, href: '/words' });
   if (minutes <= 5) {
     add({ kind: 'mission', title: 'One short mission scene', minutes: 3, href: '/world' });
   } else {

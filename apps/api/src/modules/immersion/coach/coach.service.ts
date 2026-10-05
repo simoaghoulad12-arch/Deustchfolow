@@ -126,7 +126,7 @@ export class CoachService {
     let recommendation: CoachMessage['recommendation'];
     const weakFocus = a.weakest ? DIM_TO_FOCUS[a.weakest.dimension] : undefined;
     if (a.reviewDue >= 10) {
-      recommendation = { title: `Review ${a.reviewDue} words`, href: '/vocabulary', minutes: 5, reason: 'Spaced repetition works best when reviews happen on time.' };
+      recommendation = { title: `Review ${a.reviewDue} words`, href: '/words', minutes: 5, reason: 'Spaced repetition works best when reviews happen on time.' };
     } else if (top && top.frequency >= 3) {
       recommendation = { title: 'Fix your top mistake', href: '/mistakes', minutes: 5, reason: `“${top.original}” keeps coming back — three correct uses in a row will master it.` };
     } else if (weakFocus === 'speaking' && a.stats.totalXp > 0) {

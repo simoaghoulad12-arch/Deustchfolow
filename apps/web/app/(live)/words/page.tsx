@@ -21,14 +21,14 @@ export default async function VocabularyPage({ searchParams }: { searchParams: {
     liveGet<{ total: number; page: number; pageSize: number; items: VocabularyCard[] }>(session, `/vocabulary/browse?${params.toString()}`),
     liveGet<Me>(session, '/me'),
   ]);
-  if (!overview || !due) return <ErrorState retryHref="/vocabulary" />;
+  if (!overview || !due) return <ErrorState retryHref="/words" />;
   const lang = me?.targetLanguage?.code ?? overview.languageCode;
   const page = browse?.page ?? 1;
   const pages = browse ? Math.max(1, Math.ceil(browse.total / browse.pageSize)) : 1;
   const link = (p: number) => {
     const q = new URLSearchParams(params);
     q.set('page', String(p));
-    return `/vocabulary?${q.toString()}#browse`;
+    return `/words?${q.toString()}#browse`;
   };
 
   return (
@@ -45,7 +45,7 @@ export default async function VocabularyPage({ searchParams }: { searchParams: {
 
       <section id="browse">
         <h2 className="mb-3 text-lg font-semibold">Browse all words</h2>
-        <form className="mb-4 flex flex-col gap-2 sm:flex-row" action="/vocabulary">
+        <form className="mb-4 flex flex-col gap-2 sm:flex-row" action="/words">
           <input name="q" defaultValue={searchParams.q} placeholder="Search a word or translation" aria-label="Search" className="h-11 flex-1 rounded-xl border border-border bg-white px-3" />
           <select name="level" defaultValue={searchParams.level ?? ''} aria-label="Level" className="h-11 rounded-xl border border-border bg-white px-3">
             <option value="">All levels</option>

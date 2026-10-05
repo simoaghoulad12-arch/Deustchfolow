@@ -7,6 +7,7 @@ import { getMySubscription } from '@/lib/api/subscription';
 import { getMyAiUsage } from '@/lib/api/ai-usage';
 import { getMyLiveLessonQuota } from '@/lib/api/live-lesson-quota';
 import { getMyBookingsAsStudent } from '@/lib/api/bookings';
+import { getMyVocabularySummary } from '@/lib/api/vocabulary';
 import { BookingTime } from '@/components/booking-time';
 import { Button } from '@/components/ui/button';
 
@@ -27,12 +28,13 @@ export default async function DashboardPage() {
   const session = await getSession();
   if (!session) return null;
 
-  const [progress, subscription, aiUsage, liveLessonQuota, bookings] = await Promise.all([
+  const [progress, subscription, aiUsage, liveLessonQuota, bookings, vocabulary] = await Promise.all([
     getMyProgress(session),
     getMySubscription(session),
     getMyAiUsage(session),
     getMyLiveLessonQuota(session),
     getMyBookingsAsStudent(session),
+    getMyVocabularySummary(session),
   ]);
 
   const currentPlan = subscription?.plan ?? SubscriptionPlan.FREE;
@@ -78,6 +80,26 @@ export default async function DashboardPage() {
           <p className="mt-1 text-xl font-semibold">{formatMinutes(progress?.totalTimeSpentMs ?? 0)}</p>
         </div>
       </section>
+
+      {vocabulary && (
+        <section className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-border p-4">
+          <div>
+            <p className="text-xs uppercase text-muted-foreground">Vokabeln heute</p>
+            <p className="mt-1 text-lg font-semibold">
+              {vocabulary.dueCount} fällig
+              <span className="text-base font-normal text-muted-foreground">
+                {' '}
+                · {vocabulary.masteredCount} gemeistert
+              </span>
+            </p>
+          </div>
+          <Link href={vocabulary.sessionSize > 0 ? '/vocabulary/review' : '/vocabulary'}>
+            <Button type="button" variant="outline" size="default">
+              {vocabulary.sessionSize > 0 ? `Üben (${vocabulary.sessionSize})` : 'Wortliste'}
+            </Button>
+          </Link>
+        </section>
+      )}
 
       <section className="rounded-lg border border-border p-4">
         <div className="flex flex-wrap items-center justify-between gap-2">

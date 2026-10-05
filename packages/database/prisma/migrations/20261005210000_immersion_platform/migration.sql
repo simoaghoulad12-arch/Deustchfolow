@@ -43,9 +43,11 @@ ADD COLUMN     "target_language_code" TEXT;
 ALTER TABLE "lessons" ADD COLUMN     "content" JSONB;
 
 -- AlterTable
+-- interval_days already exists (Leitner stages, 20261005090000); widen it so
+-- SM-2 can store fractional intervals such as the 10-minute relearn step.
 ALTER TABLE "user_vocabulary" ADD COLUMN     "confidence" INTEGER NOT NULL DEFAULT 0,
 ADD COLUMN     "ease_factor" DOUBLE PRECISION NOT NULL DEFAULT 2.5,
-ADD COLUMN     "interval_days" DOUBLE PRECISION NOT NULL DEFAULT 0,
+ALTER COLUMN   "interval_days" SET DATA TYPE DOUBLE PRECISION,
 ADD COLUMN     "repetitions" INTEGER NOT NULL DEFAULT 0;
 
 -- AlterTable

@@ -86,7 +86,7 @@ export async function reviewWordAction(id: string, grade: number): Promise<LiveR
 
 export async function introduceWordsAction(count = 8, category?: string): Promise<LiveResult<{ added: number }>> {
   const result = await liveSend<{ added: number }>(await user(), 'POST', '/vocabulary/introduce', { count, ...(category ? { category } : {}) });
-  revalidatePath('/vocabulary');
+  revalidatePath('/words');
   return result;
 }
 

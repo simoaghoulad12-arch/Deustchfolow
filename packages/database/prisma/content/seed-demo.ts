@@ -74,7 +74,7 @@ export async function seedDemo(prisma: PrismaClient) {
         estimatedWeeks: 45,
         focusSkills: ['SPEAKING', 'VOCABULARY'],
         dailyRoutine: [
-          { kind: 'review', title: 'Review due words', minutes: 3, href: '/vocabulary' },
+          { kind: 'review', title: 'Review due words', minutes: 3, href: '/words' },
           { kind: 'mission', title: 'Live a mission', minutes: 9, href: '/world' },
           { kind: 'speaking', title: 'Speaking practice', minutes: 5, href: '/speak' },
           { kind: 'challenge', title: 'Daily challenge', minutes: 3, href: '/home#challenge' },

@@ -8,7 +8,7 @@ export const PRIMARY_NAV: NavItem[] = [
   { href: '/home', label: 'Home', icon: '🏠' },
   { href: '/world', label: 'World', icon: '🌍' },
   { href: '/speak', label: 'Speak', icon: '🎙️' },
-  { href: '/vocabulary', label: 'Words', icon: '📚' },
+  { href: '/words', label: 'Words', icon: '📚' },
   { href: '/progress', label: 'Progress', icon: '📈' },
 ];
 
