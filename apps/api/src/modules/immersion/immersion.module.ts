@@ -16,6 +16,20 @@ import { LearnerController } from './learner/learner.controller';
 import { AssessmentService } from './practice/assessment.service';
 import { CoachService } from './coach/coach.service';
 import { CoachController } from './coach/coach.controller';
+import { PlacementService } from './placement/placement.service';
+import { PlacementController } from './placement/placement.controller';
+import { VocabularyService } from './vocabulary/vocabulary.service';
+import { VocabularyController } from './vocabulary/vocabulary.controller';
+import { GrammarService } from './grammar/grammar.service';
+import { GrammarController } from './grammar/grammar.controller';
+import { PracticeService } from './practice/practice.service';
+import { PracticeController } from './practice/practice.controller';
+import { JournalService } from './journal/journal.service';
+import { JournalController } from './journal/journal.controller';
+import { ProgressService } from './progress/progress.service';
+import { ProgressController } from './progress/progress.controller';
+import { AdminService } from './admin/admin.service';
+import { AdminController } from './admin/admin.controller';
 
 /**
  * Immersion platform ("Learn a language. Live it."): missions with AI
@@ -27,7 +41,18 @@ import { CoachController } from './coach/coach.controller';
  */
 @Module({
   imports: [AiModule, ThrottlerModule.forRoot([{ ttl: 60_000, limit: 30 }])],
-  controllers: [LearnerController, MissionsController, CoachController],
+  controllers: [
+    LearnerController,
+    MissionsController,
+    CoachController,
+    PlacementController,
+    VocabularyController,
+    GrammarController,
+    PracticeController,
+    JournalController,
+    ProgressController,
+    AdminController,
+  ],
   providers: [
     MockAiProvider,
     ImmersionAiService,
@@ -41,6 +66,13 @@ import { CoachController } from './coach/coach.controller';
     HomeService,
     AssessmentService,
     CoachService,
+    PlacementService,
+    VocabularyService,
+    GrammarService,
+    PracticeService,
+    JournalService,
+    ProgressService,
+    AdminService,
   ],
 })
 export class ImmersionModule {}

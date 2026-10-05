@@ -1,8 +1,8 @@
 import type { Level } from './types';
 
 export const ENVIRONMENTS: { slug: string; name: string; description: string; icon: string; accent: string; minLevel: Level }[] = [
-  { slug: 'home', name: 'Home', description: 'Neighbours, landlords and life in your new apartment.', icon: '🏠', accent: 'rose', minLevel: 'A1' },
   { slug: 'cafe', name: 'Café', description: 'Order, chat and pay like a local.', icon: '☕', accent: 'amber', minLevel: 'A1' },
+  { slug: 'home', name: 'Home', description: 'Neighbours, landlords and life in your new apartment.', icon: '🏠', accent: 'rose', minLevel: 'A1' },
   { slug: 'city', name: 'City', description: 'Find your way, meet people, explore.', icon: '🏙️', accent: 'sky', minLevel: 'A1' },
   { slug: 'restaurant', name: 'Restaurant', description: 'Reservations, menus and the occasional complaint.', icon: '🍽️', accent: 'orange', minLevel: 'A1' },
   { slug: 'supermarket', name: 'Supermarket', description: 'Shopping, prices and returns.', icon: '🛒', accent: 'lime', minLevel: 'A1' },

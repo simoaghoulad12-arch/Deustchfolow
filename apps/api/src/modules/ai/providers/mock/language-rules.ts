@@ -110,6 +110,13 @@ const RULES: Record<string, CorrectionRule[]> = {
       reuseTip: 'Give a reason with "weil" — remember: verb at the end.',
     },
     {
+      pattern: /\b(heute|morgen|gestern|dann|jetzt|danach|später|am (?:montag|dienstag|mittwoch|donnerstag|freitag|samstag|sonntag|wochenende|abend|morgen)) (ich|du|er|sie|es|wir|ihr) (habe|hast|hat|haben|bin|bist|ist|sind|war|warst|waren|gehe|gehst|geht|gehen|fahre|fährst|fährt|fahren|arbeite|arbeitest|arbeitet|arbeiten|muss|musst|müssen|kann|kannst|können|will|möchte|mache|machst|macht|machen|lerne|lernst|lernt|lernen)\b/i,
+      replace: (m) => `${m(1)} ${m(3)} ${m(2)}`,
+      explanation: 'The conjugated verb always comes second. If the sentence starts with a time word, the subject moves behind the verb: "Heute habe ich …".',
+      category: 'SENTENCE_STRUCTURE',
+      reuseTip: 'Start your next sentence with "Morgen" or "Dann" — verb second, then the subject.',
+    },
+    {
       pattern: /\bich komme von (marokko|deutschland|spanien|frankreich|italien|der türkei|syrien|ägypten|tunesien|algerien|polen|indien|china|brasilien)\b/i,
       replace: (m) => `ich komme aus ${cap(m(1))}`,
       explanation: 'For countries and cities of origin German uses "aus": "Ich komme aus Marokko."',
