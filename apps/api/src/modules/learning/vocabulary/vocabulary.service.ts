@@ -7,6 +7,11 @@ import { isTranslationCorrect, scheduleReview } from './spaced-repetition';
 export const DUE_QUEUE_LIMIT = 20;
 /** At most this many never-seen words are introduced per session. */
 export const NEW_WORDS_PER_SESSION = 10;
+/**
+ * This trainer is German-only. The vocabulary table also holds the
+ * immersion platform's en/es/fr/it words, so every query is scoped.
+ */
+export const TRAINER_LANGUAGE = 'de';
 
 const CARD_SELECT = {
   id: true,
@@ -55,7 +60,11 @@ export class VocabularyService {
    */
   async getDueCards(userId: string, now = new Date()) {
     const due = await this.prisma.client.userVocabulary.findMany({
-      where: { userId, OR: [{ nextReviewAt: { lte: now } }, { nextReviewAt: null }] },
+      where: {
+        userId,
+        vocabulary: { languageCode: TRAINER_LANGUAGE },
+        OR: [{ nextReviewAt: { lte: now } }, { nextReviewAt: null }],
+      },
       select: { status: true, vocabulary: { select: CARD_SELECT } },
       orderBy: { nextReviewAt: { sort: 'asc', nulls: 'first' } },
       take: DUE_QUEUE_LIMIT,
@@ -67,7 +76,11 @@ export class VocabularyService {
     if (newSlots > 0) {
       const level = await this.getCurrentLevel(userId);
       const fresh = await this.prisma.client.vocabulary.findMany({
-        where: { ...(level ? { level } : {}), userEntries: { none: { userId } } },
+        where: {
+          languageCode: TRAINER_LANGUAGE,
+          ...(level ? { level } : {}),
+          userEntries: { none: { userId } },
+        },
         select: CARD_SELECT,
         orderBy: [{ level: 'asc' }, { createdAt: 'asc' }],
         take: newSlots,
@@ -93,7 +106,11 @@ export class VocabularyService {
     const isCorrect = isTranslationCorrect(vocabulary.translation, answer);
     const schedule = scheduleReview(
       existing
-        ? { status: existing.status, intervalDays: existing.intervalDays, correctCount: existing.correctCount }
+        ? {
+            status: existing.status,
+            intervalDays: existing.intervalDays,
+            correctCount: existing.correctCount,
+          }
         : null,
       isCorrect,
       now,
@@ -125,6 +142,7 @@ export class VocabularyService {
   async list(query: { level?: CEFRLevel; search?: string; skip?: number; take?: number }) {
     const search = query.search?.trim();
     const where = {
+      languageCode: TRAINER_LANGUAGE,
       ...(query.level ? { level: query.level } : {}),
       ...(search
         ? {
@@ -155,15 +173,23 @@ export class VocabularyService {
     const level = await this.getCurrentLevel(userId);
     const [dueCount, byStatus, newAvailable] = await Promise.all([
       this.prisma.client.userVocabulary.count({
-        where: { userId, OR: [{ nextReviewAt: { lte: now } }, { nextReviewAt: null }] },
+        where: {
+          userId,
+          vocabulary: { languageCode: TRAINER_LANGUAGE },
+          OR: [{ nextReviewAt: { lte: now } }, { nextReviewAt: null }],
+        },
       }),
       this.prisma.client.userVocabulary.groupBy({
         by: ['status'],
-        where: { userId },
+        where: { userId, vocabulary: { languageCode: TRAINER_LANGUAGE } },
         _count: { _all: true },
       }),
       this.prisma.client.vocabulary.count({
-        where: { ...(level ? { level } : {}), userEntries: { none: { userId } } },
+        where: {
+          languageCode: TRAINER_LANGUAGE,
+          ...(level ? { level } : {}),
+          userEntries: { none: { userId } },
+        },
       }),
     ]);
 
@@ -173,7 +199,10 @@ export class VocabularyService {
     return {
       dueCount,
       newAvailable,
-      sessionSize: Math.min(DUE_QUEUE_LIMIT, dueCount + Math.min(NEW_WORDS_PER_SESSION, newAvailable)),
+      sessionSize: Math.min(
+        DUE_QUEUE_LIMIT,
+        dueCount + Math.min(NEW_WORDS_PER_SESSION, newAvailable),
+      ),
       learningCount: countFor(VocabularyStatus.NEW) + countFor(VocabularyStatus.LEARNING),
       masteredCount: countFor(VocabularyStatus.MASTERED),
     };
