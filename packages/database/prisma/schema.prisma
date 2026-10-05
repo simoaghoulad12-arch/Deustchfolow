@@ -5,7 +5,7 @@
 // a central PLAN_ENTITLEMENTS config (see packages/types).
 
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
   // "native" covers local dev. "debian-openssl-3.0.x" is for Railway
   // (apps/api's Docker build/runtime). "rhel-openssl-1.0.x" and
   // "rhel-openssl-3.0.x" are for Vercel's Amazon-Linux-based Node.js
@@ -142,6 +142,22 @@ model User {
 
   liveLessonQuotaConsumptions LiveLessonQuotaConsumption[]
 
+  // Immersion platform ("Learn a language. Live it.")
+  learnerStats     LearnerStats[]
+  xpEvents         XpEvent[]
+  missionRuns      MissionRun[]
+  mistakes         Mistake[]
+  dnaScores        DnaScore[]
+  grammarProgress  GrammarProgress[]
+  practiceAttempts PracticeAttempt[]
+  practiceSessions PracticeSession[]
+  achievements     UserAchievement[]
+  dailyChallenges  DailyChallenge[]
+  journalEntries   JournalEntry[]
+  learningPlans    LearningPlan[]
+  placementResults PlacementResult[]
+  reviewLogs       ReviewLog[]
+
   @@index([role])
   @@map("users")
 }
@@ -173,6 +189,16 @@ model LearningProfile {
   learningGoal        String?    @map("learning_goal")
   currentLevel        CEFRLevel? @map("current_level")
   targetLevel         CEFRLevel? @map("target_level")
+
+  /// Immersion platform onboarding. `targetLanguageCode` references
+  /// Language.code — stored as a code rather than an FK so a learner's
+  /// profile survives an admin deactivating a language.
+  targetLanguageCode    String?   @map("target_language_code")
+  goals                 String[]
+  dailyMinutes          Int?      @map("daily_minutes")
+  learningStyles        String[]  @map("learning_styles")
+  personalGoal          String?   @map("personal_goal")
+  onboardingCompletedAt DateTime? @map("onboarding_completed_at")
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
@@ -318,17 +344,21 @@ model Course {
   levelId String @db.Uuid
   level   Level  @relation(fields: [levelId], references: [id], onDelete: Cascade)
 
-  title       String
-  slug        String  @unique
-  description String?
-  order       Int
+  title        String
+  slug         String  @unique
+  description  String?
+  order        Int
+  /// Target language of this course (Language.code). Existing rows are
+  /// German, hence the default.
+  languageCode String  @default("de") @map("language_code")
 
   modules Module[]
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  @@unique([levelId, order])
+  @@unique([levelId, languageCode, order])
+  @@index([languageCode])
   @@index([levelId])
   @@map("courses")
 }
@@ -371,6 +401,10 @@ model Lesson {
   /// Structured, not free-text JSON — a simple string list of learning
   /// objectives (Postgres native array).
   objectives       String[]
+  /// Structured lesson body for the CEFR curriculum: vocabulary, grammar
+  /// focus, reading/listening text, speaking + writing prompts, AI practice
+  /// brief. Editable through the admin CMS.
+  content          Json?
 
   exercises          Exercise[]
   progress           LessonProgress[]
@@ -524,20 +558,31 @@ model UserSkillProgress {
 
 model Vocabulary {
   id              String    @id @default(uuid()) @db.Uuid
+  languageCode    String    @default("de") @map("language_code")
   word            String
   normalizedWord  String    @map("normalized_word")
+  /// English gloss — the pivot translation every native language falls back to.
   translation     String
   level           CEFRLevel
   partOfSpeech    String?   @map("part_of_speech")
   exampleSentence String?   @map("example_sentence")
+  article         String?
+  plural          String?
+  pronunciation   String?
+  category        String?
+  /// 1 (easy) – 5 (hard)
+  difficulty      Int       @default(1)
+  /// Corpus frequency rank bucket, 1 = most frequent.
+  frequency       Int       @default(3)
 
   userEntries UserVocabulary[]
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  @@unique([normalizedWord, level])
+  @@unique([languageCode, normalizedWord, level])
   @@index([level])
+  @@index([languageCode, level])
   @@map("vocabulary")
 }
 
@@ -555,6 +600,12 @@ model UserVocabulary {
   incorrectCount Int              @default(0) @map("incorrect_count")
   lastReviewedAt DateTime?        @map("last_reviewed_at")
   nextReviewAt   DateTime?        @map("next_review_at")
+  /// SM-2 scheduling state (see apps/api immersion/vocabulary/srs.ts).
+  repetitions    Int              @default(0)
+  intervalDays   Float            @default(0) @map("interval_days")
+  easeFactor     Float            @default(2.5) @map("ease_factor")
+  /// 0–100, the learner's last self-reported/derived confidence.
+  confidence     Int              @default(0)
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
@@ -588,6 +639,9 @@ model ConversationSession {
   /// originating catalog entry differs (see architecture decision record).
   simulationId String?     @db.Uuid
   simulation   Simulation? @relation(fields: [simulationId], references: [id])
+
+  /// Immersion platform: set when this conversation backs a mission run.
+  missionRun MissionRun?
 
   messages ConversationMessage[]
 
@@ -1430,4 +1484,577 @@ model LiveLessonQuotaConsumption {
 enum LiveLessonQuotaConsumptionStatus {
   ACTIVE
   RELEASED
+}
+
+// ---------------------------------------------------------------------------
+// Immersion platform — "Learn a language. Live it."
+// Multi-language (Language.code), mission-driven practice with AI characters,
+// error memory, Language DNA, spaced repetition, gamification and an admin
+// CMS. See docs/architecture-decisions/immersion-platform.md.
+// Content (missions, characters, grammar, vocabulary, curriculum) lives in
+// these tables and is editable via /admin — never hard-coded in React.
+// ---------------------------------------------------------------------------
+
+enum MissionMode {
+  MISSION
+  CHAOS
+  STORY
+  DEBATE
+  DAILY
+}
+
+enum MissionRunStatus {
+  ACTIVE
+  COMPLETED
+  ABANDONED
+}
+
+enum MistakeCategory {
+  GRAMMAR
+  VOCABULARY
+  PRONUNCIATION
+  SENTENCE_STRUCTURE
+  WORD_CHOICE
+  SPELLING
+  REGISTER
+}
+
+enum MasteryState {
+  NEW
+  PRACTICING
+  MASTERED
+}
+
+/// The ten Language DNA dimensions. Separate from LearningSkill (the six
+/// curriculum skills) because fluency/accuracy/response speed are derived
+/// signals, not things a lesson is "about".
+enum DnaDimension {
+  VOCABULARY
+  GRAMMAR
+  SPEAKING
+  LISTENING
+  READING
+  WRITING
+  PRONUNCIATION
+  FLUENCY
+  ACCURACY
+  RESPONSE_SPEED
+}
+
+enum PracticeExerciseType {
+  MULTIPLE_CHOICE
+  FILL_BLANK
+  SENTENCE_ORDER
+  TRANSLATION
+  ERROR_CORRECTION
+  MATCHING
+  READING_COMPREHENSION
+  LISTENING_COMPREHENSION
+  FREE_WRITING
+  SPEAKING
+  CONVERSATION
+}
+
+enum PracticeMode {
+  SPEAKING
+  BRAIN
+  EMOTION
+  PLACEMENT
+}
+
+enum GrammarStage {
+  EXPLANATION
+  EXAMPLES
+  GUIDED
+  AI_PRACTICE
+  FREE
+  ASSESSMENT
+  MASTERED
+}
+
+model Language {
+  id         String  @id @default(uuid()) @db.Uuid
+  /// ISO 639-1, e.g. "de", "en".
+  code       String  @unique
+  name       String
+  nativeName String  @map("native_name")
+  flag       String
+  /// Learnable as a target language (vs. only selectable as native language).
+  isTarget   Boolean @default(true) @map("is_target")
+  isActive   Boolean @default(true) @map("is_active")
+  order      Int     @default(0)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("languages")
+}
+
+/// Per user, per target language: XP, streak, adaptive difficulty.
+model LearnerStats {
+  id           String @id @default(uuid()) @db.Uuid
+  userId       String @db.Uuid
+  user         User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  languageCode String @map("language_code")
+
+  totalXp         Int     @default(0) @map("total_xp")
+  currentStreak   Int     @default(0) @map("current_streak")
+  longestStreak   Int     @default(0) @map("longest_streak")
+  lastActiveDate  String? @map("last_active_date") /// YYYY-MM-DD in the user's day
+  learningMinutes Int     @default(0) @map("learning_minutes")
+  speakingMinutes Int     @default(0) @map("speaking_minutes")
+  /// Adaptive engine estimate, 1.0 (very easy) – 10.0 (very hard).
+  difficulty      Float   @default(3)
+  /// Continuous proficiency estimate in "CEFR points" (A1=1 … C1=5).
+  proficiency     Float   @default(1)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@unique([userId, languageCode])
+  @@map("learner_stats")
+}
+
+/// Immutable XP ledger; LearnerStats.totalXp is its running sum.
+model XpEvent {
+  id           String   @id @default(uuid()) @db.Uuid
+  userId       String   @db.Uuid
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  languageCode String   @map("language_code")
+  source       String /// lesson | mission | speaking | daily_challenge | test | level | achievement | review | journal | practice
+  amount       Int
+  refId        String?  @map("ref_id")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  @@index([userId, createdAt])
+  @@map("xp_events")
+}
+
+model WorldEnvironment {
+  id          String    @id @default(uuid()) @db.Uuid
+  slug        String    @unique
+  name        String
+  description String
+  icon        String
+  /// Tailwind-safe accent key, e.g. "amber", "sky".
+  accent      String    @default("indigo")
+  minLevel    CEFRLevel @default(A1) @map("min_level")
+  order       Int       @default(0)
+  isActive    Boolean   @default(true) @map("is_active")
+
+  missions   Mission[]
+  characters Character[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("world_environments")
+}
+
+model Character {
+  id            String            @id @default(uuid()) @db.Uuid
+  slug          String            @unique
+  name          String
+  role          String
+  personality   String
+  speakingStyle String            @map("speaking_style")
+  avatar        String /// emoji or image URL
+  environmentId String?           @db.Uuid
+  environment   WorldEnvironment? @relation(fields: [environmentId], references: [id], onDelete: SetNull)
+
+  missions Mission[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("characters")
+}
+
+model Story {
+  id           String    @id @default(uuid()) @db.Uuid
+  slug         String    @unique
+  languageCode String    @map("language_code")
+  title        String
+  description  String
+  cefrLevel    CEFRLevel @map("cefr_level")
+  isActive     Boolean   @default(true) @map("is_active")
+
+  chapters Mission[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("stories")
+}
+
+/// A mission is a scenario brief, not a script: the AI character improvises
+/// within it. `criteria` (Json: [{id, description, keywords[], pattern,
+/// example}]) defines completion and powers the progressive hint system.
+model Mission {
+  id               String          @id @default(uuid()) @db.Uuid
+  slug             String
+  languageCode     String          @map("language_code")
+  mode             MissionMode     @default(MISSION)
+  title            String
+  description      String
+  objective        String
+  scenario         String /// Setup the AI receives (where, who, what's going on).
+  cefrLevel        CEFRLevel       @map("cefr_level")
+  difficulty       Int             @default(1) /// 1–5
+  requiredSkills   LearningSkill[] @map("required_skills")
+  estimatedMinutes Int             @default(5) @map("estimated_minutes")
+  xpReward         Int             @default(100) @map("xp_reward")
+  /// [{term, translation}]
+  keyPhrases       Json            @default("[]") @map("key_phrases")
+  grammarFocus     String?         @map("grammar_focus")
+  criteria         Json            @default("[]")
+  openingLine      String          @map("opening_line")
+  /// Debate missions: the AI's position. Story chapters: the choices.
+  extra            Json?
+  order            Int             @default(0)
+  isActive         Boolean         @default(true) @map("is_active")
+
+  environmentId String?           @db.Uuid
+  environment   WorldEnvironment? @relation(fields: [environmentId], references: [id], onDelete: SetNull)
+  characterId   String?           @db.Uuid
+  character     Character?        @relation(fields: [characterId], references: [id], onDelete: SetNull)
+  storyId       String?           @db.Uuid
+  story         Story?            @relation(fields: [storyId], references: [id], onDelete: SetNull)
+  chapter       Int?
+
+  runs MissionRun[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@unique([languageCode, slug])
+  @@index([languageCode, cefrLevel])
+  @@index([environmentId])
+  @@map("missions")
+}
+
+model MissionRun {
+  id             String              @id @default(uuid()) @db.Uuid
+  userId         String              @db.Uuid
+  user           User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  missionId      String              @db.Uuid
+  mission        Mission             @relation(fields: [missionId], references: [id], onDelete: Cascade)
+  conversationId String              @unique @db.Uuid
+  conversation   ConversationSession @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  status      MissionRunStatus @default(ACTIVE)
+  difficulty  Float            @default(3)
+  turnCount   Int              @default(0) @map("turn_count")
+  hintsUsed   Int              @default(0) @map("hints_used")
+  criteriaMet String[]         @map("criteria_met")
+  /// Rolling per-dimension scores (0–100) for the run.
+  scores      Json?
+  score       Int?
+  xpAwarded   Int              @default(0) @map("xp_awarded")
+  /// Chaos twist, story choices, debate stance, final summary.
+  state       Json?
+  startedAt   DateTime         @default(now()) @map("started_at")
+  completedAt DateTime?        @map("completed_at")
+
+  @@index([userId, status])
+  @@index([missionId])
+  @@map("mission_runs")
+}
+
+/// Personal error memory. One row per (user, language, normalized
+/// original→correction) — repeats bump `frequency` instead of duplicating.
+model Mistake {
+  id            String          @id @default(uuid()) @db.Uuid
+  userId        String          @db.Uuid
+  user          User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  languageCode  String          @map("language_code")
+  category      MistakeCategory
+  original      String
+  corrected     String
+  explanation   String
+  /// Stable key for "same mistake" detection.
+  key           String
+  frequency     Int             @default(1)
+  correctStreak Int             @default(0) @map("correct_streak")
+  masteryState  MasteryState    @default(NEW) @map("mastery_state")
+  source        String          @default("mission")
+  lastSeenAt    DateTime        @default(now()) @map("last_seen_at")
+  createdAt     DateTime        @default(now()) @map("created_at")
+  updatedAt     DateTime        @updatedAt @map("updated_at")
+
+  @@unique([userId, languageCode, key])
+  @@index([userId, masteryState])
+  @@map("mistakes")
+}
+
+model DnaScore {
+  userId       String       @db.Uuid
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  languageCode String       @map("language_code")
+  dimension    DnaDimension
+  /// 0–100, exponentially smoothed.
+  score        Float        @default(0)
+  samples      Int          @default(0)
+  updatedAt    DateTime     @updatedAt @map("updated_at")
+
+  @@id([userId, languageCode, dimension])
+  @@map("dna_scores")
+}
+
+/// Daily DNA snapshot for trend charts.
+model DnaSnapshot {
+  id           String   @id @default(uuid()) @db.Uuid
+  userId       String   @db.Uuid
+  languageCode String   @map("language_code")
+  day          String /// YYYY-MM-DD
+  scores       Json
+  xp           Int      @default(0)
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  @@unique([userId, languageCode, day])
+  @@map("dna_snapshots")
+}
+
+model GrammarTopic {
+  id             String    @id @default(uuid()) @db.Uuid
+  languageCode   String    @map("language_code")
+  slug           String
+  cefrLevel      CEFRLevel @map("cefr_level")
+  title          String
+  summary        String
+  explanation    String    @db.Text
+  /// [{target, translation, note?}]
+  examples       Json      @default("[]")
+  /// Free-practice prompt for the AI stage.
+  practicePrompt String    @map("practice_prompt")
+  order          Int       @default(0)
+  isActive       Boolean   @default(true) @map("is_active")
+
+  exercises PracticeExercise[]
+  progress  GrammarProgress[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@unique([languageCode, slug])
+  @@index([languageCode, cefrLevel])
+  @@map("grammar_topics")
+}
+
+model GrammarProgress {
+  userId    String       @db.Uuid
+  user      User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  topicId   String       @db.Uuid
+  topic     GrammarTopic @relation(fields: [topicId], references: [id], onDelete: Cascade)
+  stage     GrammarStage @default(EXPLANATION)
+  mastery   Int          @default(0)
+  attempts  Int          @default(0)
+  updatedAt DateTime     @updatedAt @map("updated_at")
+
+  @@id([userId, topicId])
+  @@map("grammar_progress")
+}
+
+/// Exercise engine for grammar/skills practice and the placement test.
+/// `payload` shape depends on `type` (see apps/api immersion/exercises).
+model PracticeExercise {
+  id             String               @id @default(uuid()) @db.Uuid
+  languageCode   String               @map("language_code")
+  cefrLevel      CEFRLevel            @map("cefr_level")
+  type           PracticeExerciseType
+  skill          LearningSkill
+  prompt         String
+  payload        Json
+  explanation    String?
+  difficulty     Int                  @default(1)
+  /// Included in the adaptive placement test pool.
+  isPlacement    Boolean              @default(false) @map("is_placement")
+  grammarTopicId String?              @db.Uuid
+  grammarTopic   GrammarTopic?        @relation(fields: [grammarTopicId], references: [id], onDelete: SetNull)
+
+  attempts PracticeAttempt[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([languageCode, cefrLevel])
+  @@index([grammarTopicId])
+  @@map("practice_exercises")
+}
+
+model PracticeAttempt {
+  id         String           @id @default(uuid()) @db.Uuid
+  userId     String           @db.Uuid
+  user       User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  exerciseId String           @db.Uuid
+  exercise   PracticeExercise @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
+  answer     String
+  isCorrect  Boolean          @map("is_correct")
+  score      Int              @default(0)
+  feedback   String?
+  createdAt  DateTime         @default(now()) @map("created_at")
+
+  @@index([userId, exerciseId])
+  @@map("practice_attempts")
+}
+
+/// Single-shot practice: speaking, brain mode, emotion mode.
+model PracticeSession {
+  id           String       @id @default(uuid()) @db.Uuid
+  userId       String       @db.Uuid
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  languageCode String       @map("language_code")
+  mode         PracticeMode
+  prompt       String
+  response     String
+  responseMs   Int?         @map("response_ms")
+  scores       Json
+  feedback     Json?
+  xpAwarded    Int          @default(0) @map("xp_awarded")
+  createdAt    DateTime     @default(now()) @map("created_at")
+
+  @@index([userId, mode, createdAt])
+  @@map("practice_sessions")
+}
+
+model ReviewLog {
+  id         String   @id @default(uuid()) @db.Uuid
+  userId     String   @db.Uuid
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  itemType   String   @map("item_type") /// vocabulary | mistake
+  itemId     String   @map("item_id")
+  grade      Int /// 0–5 (SM-2 quality)
+  reviewedAt DateTime @default(now()) @map("reviewed_at")
+
+  @@index([userId, reviewedAt])
+  @@map("review_logs")
+}
+
+model Achievement {
+  id          String @id @default(uuid()) @db.Uuid
+  code        String @unique
+  title       String
+  description String
+  icon        String
+  xpReward    Int    @default(0) @map("xp_reward")
+  /// {metric, threshold} — evaluated by AchievementService.
+  criteria    Json
+  order       Int    @default(0)
+
+  users UserAchievement[]
+
+  @@map("achievements")
+}
+
+model UserAchievement {
+  userId        String      @db.Uuid
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  achievementId String      @db.Uuid
+  achievement   Achievement @relation(fields: [achievementId], references: [id], onDelete: Cascade)
+  unlockedAt    DateTime    @default(now()) @map("unlocked_at")
+
+  @@id([userId, achievementId])
+  @@map("user_achievements")
+}
+
+/// Challenge templates (admin-editable); per-user instances are DailyChallenge.
+model ChallengeTemplate {
+  id           String    @id @default(uuid()) @db.Uuid
+  languageCode String    @map("language_code")
+  cefrLevel    CEFRLevel @map("cefr_level")
+  focus        String /// skill / mistake category it trains
+  prompt       String
+  isActive     Boolean   @default(true) @map("is_active")
+
+  @@index([languageCode, cefrLevel])
+  @@map("challenge_templates")
+}
+
+model DailyChallenge {
+  id           String    @id @default(uuid()) @db.Uuid
+  userId       String    @db.Uuid
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  languageCode String    @map("language_code")
+  day          String /// YYYY-MM-DD
+  prompt       String
+  focus        String
+  reason       String
+  response     String?
+  feedback     Json?
+  completedAt  DateTime? @map("completed_at")
+  xpAwarded    Int       @default(0) @map("xp_awarded")
+  createdAt    DateTime  @default(now()) @map("created_at")
+
+  @@unique([userId, languageCode, day])
+  @@map("daily_challenges")
+}
+
+model JournalEntry {
+  id            String   @id @default(uuid()) @db.Uuid
+  userId        String   @db.Uuid
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  languageCode  String   @map("language_code")
+  text          String   @db.Text
+  correctedText String?  @map("corrected_text") @db.Text
+  analysis      Json?
+  score         Int?
+  wordCount     Int      @default(0) @map("word_count")
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  @@index([userId, languageCode, createdAt])
+  @@map("journal_entries")
+}
+
+model LearningPlan {
+  id           String    @id @default(uuid()) @db.Uuid
+  userId       String    @db.Uuid
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  languageCode String    @map("language_code")
+  startLevel   CEFRLevel @map("start_level")
+  targetLevel  CEFRLevel @map("target_level")
+  dailyMinutes Int       @map("daily_minutes")
+  focusSkills  String[]  @map("focus_skills")
+  /// {headline, weeks:[{week, theme, activities[]}], dailyRoutine[]}
+  plan         Json
+  isActive     Boolean   @default(true) @map("is_active")
+  createdAt    DateTime  @default(now()) @map("created_at")
+
+  @@index([userId, languageCode, isActive])
+  @@map("learning_plans")
+}
+
+model PlacementResult {
+  id             String    @id @default(uuid()) @db.Uuid
+  userId         String    @db.Uuid
+  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  languageCode   String    @map("language_code")
+  estimatedLevel CEFRLevel @map("estimated_level")
+  /// {grammar, vocabulary, reading, listening, writing, speaking} 0–100
+  skillScores    Json      @map("skill_scores")
+  answers        Json
+  createdAt      DateTime  @default(now()) @map("created_at")
+
+  @@index([userId, languageCode])
+  @@map("placement_results")
+}
+
+model FeatureFlag {
+  key         String   @id
+  enabled     Boolean  @default(false)
+  description String?
+  /// 0–100
+  rollout     Int      @default(100)
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@map("feature_flags")
+}
+
+/// Admin-editable runtime settings (AI temperature/tone, correction
+/// frequency, XP table, …). Secrets never live here — only env vars.
+model SystemSetting {
+  key       String   @id
+  value     Json
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("system_settings")
 }

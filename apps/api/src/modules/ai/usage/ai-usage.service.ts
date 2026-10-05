@@ -41,12 +41,13 @@ export class AiUsageService {
     userId: string,
   ): Promise<{ limits: AiUsageLimits; usedToday: Record<AiUsageFeature, number> }> {
     const limits = await this.getLimitsForUser(userId);
-    const [tutor, writingCorrection] = await Promise.all([
+    const [tutor, writingCorrection, immersion] = await Promise.all([
       this.countUsedToday(userId, 'tutor'),
       this.countUsedToday(userId, 'writing_correction'),
+      this.countUsedToday(userId, 'immersion'),
     ]);
 
-    return { limits, usedToday: { tutor, writing_correction: writingCorrection } };
+    return { limits, usedToday: { tutor, writing_correction: writingCorrection, immersion } };
   }
 
   private async getLimitsForUser(userId: string): Promise<AiUsageLimits> {
@@ -55,7 +56,14 @@ export class AiUsageService {
   }
 
   private limitForFeature(limits: AiUsageLimits, feature: AiUsageFeature): number {
-    return feature === 'tutor' ? limits.tutorMessagesPerDay : limits.writingCorrectionsPerDay;
+    switch (feature) {
+      case 'tutor':
+        return limits.tutorMessagesPerDay;
+      case 'writing_correction':
+        return limits.writingCorrectionsPerDay;
+      case 'immersion':
+        return limits.immersionTurnsPerDay;
+    }
   }
 
   private async countUsedToday(userId: string, feature: AiUsageFeature): Promise<number> {

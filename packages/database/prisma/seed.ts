@@ -264,7 +264,7 @@ async function main() {
   for (const entry of vocabulary) {
     const normalizedWord = entry.word.trim().toLowerCase();
     await prisma.vocabulary.upsert({
-      where: { normalizedWord_level: { normalizedWord, level: 'A1' } },
+      where: { languageCode_normalizedWord_level: { languageCode: 'de', normalizedWord, level: 'A1' } },
       update: {},
       create: {
         word: entry.word,

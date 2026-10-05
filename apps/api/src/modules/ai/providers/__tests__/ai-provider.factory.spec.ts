@@ -1,33 +1,48 @@
 import { AiProviderFactory } from '../ai-provider.factory';
 import type { ClaudeProvider } from '../claude.provider';
+import { MockAiProvider } from '../mock/mock-ai.provider';
 
 describe('AiProviderFactory', () => {
-  const originalEnv = process.env.AI_PROVIDER;
+  const originalProvider = process.env.AI_PROVIDER;
+  const originalKey = process.env.ANTHROPIC_API_KEY;
+  const claudeProvider = { name: 'claude' } as unknown as ClaudeProvider;
+  const mockProvider = new MockAiProvider();
 
   afterEach(() => {
-    process.env.AI_PROVIDER = originalEnv;
+    process.env.AI_PROVIDER = originalProvider;
+    if (originalKey === undefined) delete process.env.ANTHROPIC_API_KEY;
+    else process.env.ANTHROPIC_API_KEY = originalKey;
   });
 
-  it('returns the ClaudeProvider by default when AI_PROVIDER is unset', () => {
+  it('returns the ClaudeProvider by default when a key is configured', () => {
     delete process.env.AI_PROVIDER;
-    const claudeProvider = { name: 'claude' } as unknown as ClaudeProvider;
-    const factory = new AiProviderFactory(claudeProvider);
+    process.env.ANTHROPIC_API_KEY = 'test-key';
+    const factory = new AiProviderFactory(claudeProvider, mockProvider);
 
     expect(factory.getProvider()).toBe(claudeProvider);
+    expect(factory.isRealProviderActive()).toBe(true);
   });
 
-  it('returns the ClaudeProvider when AI_PROVIDER=claude', () => {
+  it('falls back to the MockAiProvider when no key is configured', () => {
     process.env.AI_PROVIDER = 'claude';
-    const claudeProvider = { name: 'claude' } as unknown as ClaudeProvider;
-    const factory = new AiProviderFactory(claudeProvider);
+    delete process.env.ANTHROPIC_API_KEY;
+    const factory = new AiProviderFactory(claudeProvider, mockProvider);
 
-    expect(factory.getProvider()).toBe(claudeProvider);
+    expect(factory.getProvider()).toBe(mockProvider);
+    expect(factory.isRealProviderActive()).toBe(false);
+  });
+
+  it('returns the MockAiProvider when AI_PROVIDER=mock even with a key', () => {
+    process.env.AI_PROVIDER = 'mock';
+    process.env.ANTHROPIC_API_KEY = 'test-key';
+    const factory = new AiProviderFactory(claudeProvider, mockProvider);
+
+    expect(factory.getProvider()).toBe(mockProvider);
   });
 
   it('throws for an unknown provider name instead of silently falling back', () => {
     process.env.AI_PROVIDER = 'some-unsupported-provider';
-    const claudeProvider = { name: 'claude' } as unknown as ClaudeProvider;
-    const factory = new AiProviderFactory(claudeProvider);
+    const factory = new AiProviderFactory(claudeProvider, mockProvider);
 
     expect(() => factory.getProvider()).toThrow(/Unknown AI_PROVIDER/);
   });
