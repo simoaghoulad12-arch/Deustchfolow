@@ -541,9 +541,10 @@ model Vocabulary {
   @@map("vocabulary")
 }
 
-/// Spaced-repetition data only — no algorithm here. `nextReviewAt` is
-/// simply a field a future review-scheduling service reads and writes;
-/// see architecture decision record / spec section 11.
+/// Spaced-repetition state only — the (Leitner-style) algorithm lives in
+/// apps/api `vocabulary/spaced-repetition.ts`. `intervalDays` is the
+/// current Leitner stage; it cannot be derived from `correctCount`, which
+/// keeps counting across resets (see phase-4-vocabulary-training-plan.md).
 model UserVocabulary {
   userId       String     @db.Uuid
   user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -555,6 +556,7 @@ model UserVocabulary {
   incorrectCount Int              @default(0) @map("incorrect_count")
   lastReviewedAt DateTime?        @map("last_reviewed_at")
   nextReviewAt   DateTime?        @map("next_review_at")
+  intervalDays   Int              @default(1) @map("interval_days")
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")

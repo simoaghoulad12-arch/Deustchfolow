@@ -1,8 +1,22 @@
 # Phase 4 — Plan: Vocabulary Training Flow
 
-Status: **Planung, nicht implementiert.** Baut auf dem in Phase 3 bereits
-angelegten `Vocabulary`/`UserVocabulary`-Datenmodell und der
-`VocabularyService` (bisher ohne HTTP-Endpunkte) auf.
+Status: **Implementiert** (Oktober 2026). Baut auf dem in Phase 3 bereits
+angelegten `Vocabulary`/`UserVocabulary`-Datenmodell auf.
+
+Umsetzung im Überblick:
+
+- Migration `20261005090000_user_vocabulary_interval_days` (nur
+  `UserVocabulary.intervalDays`; die optionale Lesson↔Vocabulary-
+  Verknüpfung ist **nicht** gebaut — die Warteschlange füllt sich mit
+  ungesehenen Wörtern des aktuellen Levels, siehe §2).
+- Algorithmus + Antwortprüfung als reine Funktionen:
+  `apps/api/src/modules/learning/vocabulary/spaced-repetition.ts`.
+  Prüfung wie bei Exercises (Groß-/Kleinschreibung, Leerzeichen), zusätzlich
+  Alternativen per `/`, `,`, `;` und optionales englisches „to “.
+- Endpunkte wie in §4; `/vocabulary/due` liefert höchstens 20 Karten, davon
+  höchstens 10 neue Wörter, und nie die Übersetzung.
+- Frontend: `/vocabulary` (Übersicht + Wortliste mit Suche/Level-Filter),
+  `/vocabulary/review` (Trainer), Dashboard-Kachel „Vokabeln heute“.
 
 ---
 

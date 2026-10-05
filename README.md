@@ -125,6 +125,14 @@ deutschflow/
   `ProgressService.recordSkillAttempt()` — dieselbe Methode, die auch
   echte Lektionen nutzen. Details:
   `docs/architecture-decisions/phase-4-ai-learning-system.md`.
+- **Vokabeltraining (`apps/api/src/modules/learning/vocabulary`):**
+  Karteikasten-Prinzip (Leitner-Stufen 1/2/4/7/14/30/60 Tage, ab 30 Tagen
+  „gemeistert“), rein deterministisch und ohne KI. Endpunkte:
+  `GET /api/v1/vocabulary/due`, `POST /api/v1/vocabulary/:id/review`
+  (serverseitige Prüfung der getippten Übersetzung),
+  `GET /api/v1/vocabulary`, `GET /api/v1/me/vocabulary/summary`. Frontend:
+  `/vocabulary`, `/vocabulary/review`. Details:
+  `docs/architecture-decisions/phase-4-vocabulary-training-plan.md`.
 
 ## Lokale Installation
 

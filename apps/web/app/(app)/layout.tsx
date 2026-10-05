@@ -63,6 +63,9 @@ export default async function AppLayout({ children }: { children: React.ReactNod
             <Link href="/career" className="hover:text-foreground">
               Karriere
             </Link>
+            <Link href="/vocabulary" className="hover:text-foreground">
+              Vokabeln
+            </Link>
             <Link href="/writing" className="hover:text-foreground">
               Schreiben
             </Link>
