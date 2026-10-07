@@ -130,5 +130,39 @@ Checklisten-IDs sind identisch mit legacy (z. B. `A1.1.Mo#3`), damit Fortschritt
 **Was offen**
 - Barrierefreiheit und Kontraste werden in Phase 7 systematisch geprüft.
 
+## Phase 4 – Curriculum und Stunden-Ansicht ✅
+
+**Was geändert**
+- Extraktion erweitert: Vorlese-Skripte für alle 252 Stunden + Probestunde (`content/readouts/`) direkt aus dem
+  Original-Code (grammarScript, speakScript, testScript, probeScript), als Abschnitte mit Minuten, Vorlesetext,
+  Darija-Hinweis, Übungen mit Lösung und Tafelbild. Bereiche pro Stunde (legacy: areasOf) in `lessons/*.json`.
+- **Curriculum** (`/curriculum`): Level A1–B2, Fortschritt pro Level und Modul, Lernziele pro Modul
+  („Am Ende dieser Einheit kann der Schüler …“), Filter nach Bereich (Grammatik, Sprechen, Schreiben, Hören, Lesen,
+  Deutschland, Bewerbung) und Status (Offen, In Arbeit, Abgeschlossen), Kennzeichnung wie legacy.
+- **Lernziele** (`/lernziele`): pro Modul Lernziele, Grammatik, Wortschatz, Kommunikation, Praxis.
+- **Stunden-Ansicht** (`/stunde/[id]`): drei Modi wie legacy – Skript (Vorlesen, Darija-Hinweis, Lösungen zum
+  Aufklappen), Schritte (eine Aufgabe nach der anderen, „Danach“-Vorschau, „Stunde abgeschlossen“ mit nächster
+  Stunde) und Liste. Stunden-Timer zeigt, was laut Minute dran ist, und markiert es in der Liste.
+- **Rollen pro Wochentag** (PROPOSAL): Lehrkraft 1 Haupt Mo und Mi, Lehrkraft 2 Di und Do, Sprechstunden Fr und Sa.
+  Gespeichert in `app_settings.day_roles` (Migration `20261007130000_phase4_day_roles.sql`), von der Leitung in den
+  Einstellungen änderbar. Jede Person wählt in den Einstellungen „Meine Rolle im Team-Plan“ (pro Gerät, wie legacy)
+  und sieht nur ihre Aufgaben.
+- **Checklisten-Fortschritt** pro Person in `checklist_progress`; Stunde zurücksetzen.
+- **„Im Lehrbuch (Seite / Lektion)“** pro Stunde in `material_notes`, für das ganze Team.
+- Lesson System (9 Schritte mit Minuten) war bereits in Phase 3 fertig.
+
+**Was getestet**
+- Vitest 52 Tests, u. a.: Rollenplan und sichtbare Aufgaben je Person entsprechen genau legacy (dayRole, steps);
+  Skript-Text identisch mit dem HTML aus legacy; jede Stunde hat ein Skript; A1/A2-Skripte enthalten die 4 Übungen.
+- Playwright 26 Tests (je Handy 390 px und Desktop), neu: Curriculum mit Level und Filtern, Lernziele, Skript mit
+  Lösungen, Schritte und Liste speichern Häkchen (auch nach Neuladen), Timer, Lehrbuch-Feld, Rollen pro Wochentag
+  inkl. Änderung durch die Leitung; kein seitliches Scrollen.
+- typecheck, lint, build.
+
+**Was offen**
+- Speichern in Supabase (Häkchen, Notizen, Rollenplan) ist erst mit einem Supabase-Projekt testbar; die
+  Zugriffsregeln dafür sind bereits getestet (Phase 2).
+- „Meine Rolle im Team-Plan“ gilt pro Gerät. Ob die Leitung das fest pro Person zuordnen soll, kann später entschieden werden.
+
 ## Nächste Phase
-Phase 4 – Curriculum und Stunden-Ansicht (`docs/PROMPTS.md`).
+Phase 5 – Lehren, Dokumentieren, Messen (`docs/PROMPTS.md`).
