@@ -34,3 +34,19 @@ body {
   font-size: 16px;
   line-height: 1.5;
 }
+
+/* Basis-Komponenten (mobile first: min. 44 px Tippfläche, 16 px in Eingaben) */
+@layer components {
+  .card {
+    @apply rounded-xl border border-line bg-panel p-4;
+  }
+  .input {
+    @apply min-h-11 w-full rounded-lg border border-line bg-panel px-3 text-base text-ink;
+  }
+  .btn-primary {
+    @apply min-h-11 rounded-lg bg-red px-4 font-semibold text-white disabled:opacity-60;
+  }
+  .btn-secondary {
+    @apply min-h-11 rounded-lg border border-line bg-panel px-4 font-medium;
+  }
+}

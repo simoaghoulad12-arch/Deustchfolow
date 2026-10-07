@@ -1,0 +1,20 @@
+# Supabase CLI – lokale Entwicklung (`supabase start`). Für das gehostete Projekt dieselben
+# Einstellungen im Dashboard setzen, siehe docs/SUPABASE.md.
+project_id = "sda-app"
+
+[auth]
+site_url = "http://localhost:3000"
+additional_redirect_urls = ["http://localhost:3000/auth/confirm"]
+# Keine offene Registrierung: Zugänge nur per Einladung (Admin-Seite).
+enable_signup = false
+
+[auth.email]
+enable_signup = false
+
+[auth.email.template.invite]
+subject = "Einladung: Smart Deutsch Akademie"
+content_path = "./supabase/templates/invite.html"
+
+[auth.email.template.magic_link]
+subject = "Dein Anmeldelink: Smart Deutsch Akademie"
+content_path = "./supabase/templates/magic_link.html"

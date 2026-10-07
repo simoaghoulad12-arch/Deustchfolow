@@ -5,10 +5,16 @@ import speaking from '@/content/speaking.json';
 import activities from '@/content/activities.json';
 import templates from '@/content/templates.json';
 import type { Curriculum } from '@/content/types';
+import { requireMember } from '@/lib/auth';
+import { ROLE_LABELS } from '@/lib/roles';
+import { signOut } from './login/actions';
+
+export const dynamic = 'force-dynamic';
 
 // Startseite für Phase 1: zeigt, dass alle Inhalte aus legacy/index.html übernommen sind.
 // Navigation, Login und die eigentlichen Seiten folgen ab Phase 2/3 (docs/PROMPTS.md).
-export default function Home() {
+export default async function Home() {
+  const me = await requireMember();
   const levels = (curriculum as Curriculum).levels;
   const stats: [string, number][] = [
     ['Module', levels.reduce((n, l) => n + l.modules.length, 0)],
@@ -27,6 +33,21 @@ export default function Home() {
       <header className="-mx-4 mb-6 border-b-[3px] border-red bg-anth px-4 py-4 text-white">
         <p className="text-lg font-bold tracking-wide">SMART DEUTSCH AKADEMIE</p>
         <p className="text-sm opacity-70">Academy App · im Aufbau</p>
+        <div className="mt-3 flex flex-wrap items-center gap-3 text-sm">
+          <span>
+            {me.fullName || me.email} · {ROLE_LABELS[me.role]}
+          </span>
+          {me.role === 'admin' && (
+            <a href="/admin/team" className="inline-flex min-h-11 items-center underline">
+              Team und Zugänge
+            </a>
+          )}
+          <form action={signOut}>
+            <button type="submit" className="min-h-11 underline">
+              Abmelden
+            </button>
+          </form>
+        </div>
       </header>
       <h1 className="mb-2 text-2xl font-bold">Inhalte übernommen</h1>
       <p className="mb-4 text-muted">

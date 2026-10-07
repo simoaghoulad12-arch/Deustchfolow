@@ -57,5 +57,48 @@ Checklisten-IDs sind identisch mit legacy (z. B. `A1.1.Mo#3`), damit Fortschritt
 - B1/B2: keine Skripte, Übungen und Sprechdialoge in legacy (siehe `docs/CONTENT-STATUS.md`).
 - Technik-Entscheidung (Supabase, Vercel) wird in Phase 2 bestätigt.
 
+## Phase 2 – Datenbank, Login und Rollen ✅ (Code fertig, Supabase-Projekt noch anzulegen)
+
+**Was geändert**
+- `supabase/migrations/20261007120000_phase2_schema.sql`: Tabellen profiles, app_settings, groups, group_staff,
+  students, lesson_docs, errors, homework, material_notes, checklist_progress, decisions – jede mit Row Level Security.
+  - `group_staff` (zusätzlich zur Liste im Bauplan) ordnet Team-Mitglieder Gruppen zu. Ohne sie lässt sich
+    „nur eigene Gruppen“ nicht abbilden.
+  - `app_settings.staff_group_visibility`: OFFENE ENTSCHEIDUNG, ob das Team alle oder nur eigene Gruppen sieht.
+    Standard `own_groups`, umschaltbar durch admin.
+  - Wer Schülerdaten ändern darf, ist noch offen (Entscheidung dec#16). Vorläufig: Team liest und bearbeitet
+    Schülerdaten der sichtbaren Gruppen, löschen und anlegen von Schülern nur admin.
+  - Rolle `student` kommt erst in Phase 8 dazu.
+- `supabase/migrations/20261007120100_seed_decisions.sql`: die 21 offenen Entscheidungen aus legacy
+  (erzeugt aus `content/decisions.json` mit `pnpm --filter @sda/app gen:decisions`).
+- Anmeldung per **Magic Link** (E-Mail, ohne Passwort). Begründung: Das Team muss sich kein Passwort merken,
+  es gibt keine Passwörter, die geteilt oder vergessen werden; Zugang hängt allein an der E-Mail-Adresse.
+  `shouldCreateUser: false` und `enable_signup = false`: nur eingeladene Personen kommen hinein. Die Login-Seite
+  verrät nicht, ob eine Adresse eingeladen ist.
+- Admin-Seite **Team und Zugänge** (`/admin/team`): Personen einladen (Name, E-Mail, Rolle), Rollen ändern
+  (nicht die eigene), Sichtbarkeit der Gruppen umschalten.
+- Middleware schickt nicht angemeldete Personen zum Login; angemeldet ohne Profil = kein Zugang.
+- `.env.example`, `supabase/config.toml`, E-Mail-Vorlagen, Anleitung `docs/SUPABASE.md`.
+- Neue Bibliotheken mit Begründung:
+  - `@supabase/supabase-js`, `@supabase/ssr` – offizielle Supabase-Clients, Sitzung per Cookie im App Router.
+  - `server-only` – verhindert, dass der Service-Role-Schlüssel je in den Browser-Code gelangt.
+  - `@electric-sql/pglite` (nur Tests) – echtes Postgres im Testprozess, damit die Zugriffsregeln auch in der CI
+    (ohne Datenbank-Dienst) gegen die echten Migrationen getestet werden.
+
+**Was getestet** (41 Tests grün, dazu typecheck, lint, build)
+- 17 Tests für die Zugriffsregeln gegen die echten Migrationen: anonym und ohne Einladung kein Zugriff;
+  admin sieht alles und vergibt Rollen; Lehrkraft und Muttersprachler/in sehen bei Standard-Einstellung keine
+  fremden Gruppen, Schüler, Fehler, Hausaufgaben oder Dokumentationen und können dort nichts anlegen;
+  eigene Gruppe bearbeiten geht; keine Löschrechte, keine Rollen- oder Einstellungsänderung; mit Einstellung
+  „alle Gruppen“ sieht das Team alles; Häkchen nur eigene; 21 Entscheidungen angelegt, nur admin entscheidet.
+- Gegenprobe: Eine absichtlich geöffnete Regel lässt 3 Tests fehlschlagen.
+- Prüfung des Einladungsformulars.
+- App gestartet: ohne Supabase-Konfiguration leiten `/` und `/admin/team` zum Login, der einen Hinweis zeigt.
+
+**Was offen**
+- Supabase-Projekt anlegen und Zugangsdaten setzen (Anleitung `docs/SUPABASE.md`), erste Leitung anlegen.
+- Der Ablauf mit echten E-Mails (Einladung, Magic Link) ist erst mit einem Supabase-Projekt testbar.
+- Datenbank-Typen mit `supabase gen types` erzeugen, sobald das Projekt existiert.
+
 ## Nächste Phase
-Phase 2 – Datenbank, Login und Rollen (`docs/PROMPTS.md`).
+Phase 3 – App-Rahmen, Design und Sprachen (`docs/PROMPTS.md`).
