@@ -147,6 +147,12 @@ export default async function LessonPage({
         next={next ? { id: next.id, title: next.title } : undefined}
         script={readout ? <Readout sections={readout} lang={lang} /> : undefined}
       />
+
+      {(lesson.type === 'g' || lesson.type === 's') && (
+        <Link href={`/dokumentation/neu?stunde=${lesson.id}`} className="btn-primary mt-6 w-full">
+          Stunde dokumentieren
+        </Link>
+      )}
     </>
   );
 }

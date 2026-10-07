@@ -1,5 +1,6 @@
 'use client';
 
+import { Field } from '@/components/forms/Field';
 import { useFormState, useFormStatus } from 'react-dom';
 import { APP_ROLES, ROLE_LABELS } from '@/lib/roles';
 import { inviteMember, type ActionState } from './actions';
@@ -20,12 +21,10 @@ export function InviteForm() {
   });
   return (
     <form action={action} className="grid gap-3 sm:grid-cols-2">
-      <label className="block">
-        <span className="mb-1 block font-medium">Name</span>
+      <Field label="Name">
         <input name="fullName" required maxLength={120} autoComplete="off" className="input" />
-      </label>
-      <label className="block">
-        <span className="mb-1 block font-medium">E-Mail</span>
+      </Field>
+      <Field label="E-Mail">
         <input
           name="email"
           type="email"
@@ -34,9 +33,8 @@ export function InviteForm() {
           inputMode="email"
           className="input"
         />
-      </label>
-      <label className="block">
-        <span className="mb-1 block font-medium">Rolle</span>
+      </Field>
+      <Field label="Rolle">
         <select name="role" required defaultValue="" className="input">
           <option value="" disabled>
             – Rolle wählen –
@@ -47,7 +45,7 @@ export function InviteForm() {
             </option>
           ))}
         </select>
-      </label>
+      </Field>
       <div className="flex items-end">
         <Submit />
       </div>

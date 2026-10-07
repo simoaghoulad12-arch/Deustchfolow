@@ -164,5 +164,44 @@ Checklisten-IDs sind identisch mit legacy (z. B. `A1.1.Mo#3`), damit Fortschritt
   Zugriffsregeln dafür sind bereits getestet (Phase 2).
 - „Meine Rolle im Team-Plan“ gilt pro Gerät. Ob die Leitung das fest pro Person zuordnen soll, kann später entschieden werden.
 
+## Phase 5 – Lehren, Dokumentieren, Messen ✅
+
+**Was geändert**
+- Datenzugriff: `lib/data/repo.ts` (Supabase mit RLS; nur mit Testzugang in der Entwicklung im Arbeitsspeicher,
+  inkl. „on delete cascade“ wie in der Datenbank), Zeilentypen in `lib/data/types.ts`, Prüfung aller Formulare in
+  `lib/validation.ts`, Logik in `lib/school.ts`.
+- **Gruppen** (`/fortschritt/gruppen`, nur Leitung): anlegen, bearbeiten, löschen mit Bestätigung, Startdatum,
+  Team der Gruppe (Grundlage für „nur eigene Gruppen“).
+- **Schüler** (`/fortschritt`): anlegen und löschen (Leitung), bearbeiten (Team), Fertigkeiten 1–5, Stärken,
+  Schwächen, nächste Lernziele.
+- **Teacher Playbook „Heute“** (`/playbook`): pro Gruppe die Stunde laut Startdatum (legacy: lessonAt), sonst die
+  nächste offene Stunde; Schüler, zuletzt gemacht, offene Hausaufgaben, Probleme und offene Fehler, Lernziel heute,
+  gekennzeichnete Regeln „Während der Stunde“.
+- **Stunde dokumentieren** (`/dokumentation/neu`, Button in jeder Stunde und im Playbook): vorausgefüllt aus dem
+  Skript (legacy: docPrefill), Anwesenheit per Häkchen (nicht angehakt = abwesend), Option „Hausaufgabe für alle
+  Anwesenden anlegen“, Material wird als Lehrbuch-Notiz der Stunde übernommen. Liste und Bearbeiten.
+- **Student Progress**: Anwesenheit aus der Dokumentation, Hausaufgaben-Status, offene Fehler, Fertigkeiten als
+  Balken, letzte und nächste Stunde.
+- **Error Tracking** (`/fehler`): Kategorien und Status wie im Bauplan, Filter, Status direkt in der Liste änderbar.
+- **Hausaufgaben** (`/hausaufgaben`): Ziel, Deadline, Status, Feedback; auch für alle Schüler einer Gruppe.
+- **Dashboard**: Lernweg A1 → A2 → B1 → B2 → Deutschland mit Fortschritt, Kennzahlen aus den Daten.
+- Barrierefreiheit: Formularbeschriftungen über for/id statt Verschachtelung (sonst liest ein Screenreader alle
+  Optionen einer Auswahlliste mit vor); Formulare zeigen Fehlermeldungen als Hinweis.
+- „Heute“ wird in der Zeitzone Europe/Berlin bestimmt (nur kurz vor Mitternacht relevant; die Uhrzeiten der
+  Stunden sind eine OFFENE ENTSCHEIDUNG).
+
+**Was getestet**
+- Vitest 74 Tests, neu: Stunde von heute (lessonAt) und Vorausfüllung der Dokumentation identisch mit legacy,
+  Anwesenheit, Hausaufgaben-Kennzahlen, alle Formularprüfungen.
+- Playwright 32 Tests (je Handy 390 px und Desktop), neu: kompletter Ablauf Gruppe → Schüler → Playbook mit der
+  Stunde von heute → Stunde dokumentieren (vorausgefüllt, Abwesenheit, Hausaufgabe für Anwesende) → Hausaufgabe
+  und Fehler bearbeiten und filtern → Fortschritt (Anwesenheit 100 % / 0 %, Fertigkeiten) → Schüler löschen;
+  Dokumentieren aus der Stunden-Ansicht; Dashboard.
+- typecheck, lint, build.
+
+**Was offen**
+- Speichern in Supabase erst mit einem Supabase-Projekt testbar (Zugriffsregeln sind getestet).
+- Wer Schülerdaten ändern darf, bleibt OFFENE ENTSCHEIDUNG (vorläufige Regel siehe Phase 2).
+
 ## Nächste Phase
-Phase 5 – Lehren, Dokumentieren, Messen (`docs/PROMPTS.md`).
+Phase 6 – Qualität, Deutschland, Material, Suche (`docs/PROMPTS.md`).
