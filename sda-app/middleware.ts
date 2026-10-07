@@ -11,6 +11,9 @@ const PUBLIC_PATHS = ['/login', '/auth/'];
  */
 export async function middleware(request: NextRequest) {
   const isPublic = PUBLIC_PATHS.some((p) => request.nextUrl.pathname.startsWith(p));
+  // Testzugang nur in der lokalen Entwicklung (siehe lib/auth.ts, devMember).
+  if (process.env.NODE_ENV === 'development' && process.env.SDA_DEV_MEMBER_ROLE)
+    return NextResponse.next();
   const env = supabasePublicEnv();
   if (!env) {
     // Ohne Konfiguration nur die Login-Seite (zeigt einen Hinweis).

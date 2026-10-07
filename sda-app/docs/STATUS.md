@@ -100,5 +100,35 @@ Checklisten-IDs sind identisch mit legacy (z. B. `A1.1.Mo#3`), damit Fortschritt
 - Der Ablauf mit echten E-Mails (Einladung, Magic Link) ist erst mit einem Supabase-Projekt testbar.
 - Datenbank-Typen mit `supabase gen types` erzeugen, sobald das Projekt existiert.
 
+## Phase 3 – App-Rahmen, Design und Sprachen ✅
+
+**Was geändert**
+- App-Rahmen wie legacy: Kopfzeile mit Suche, Seitenleiste auf dem Desktop (ab 1024 px), Menü und untere Leiste
+  (Dashboard, Heute, Curriculum, Doku) auf dem Handy. „Zum Inhalt springen“, Menü schließt mit Escape.
+- Navigation mit allen 18 Seiten in den Gruppen aus legacy (Übersicht, Lehren, Dokumentieren & Messen, Akademie),
+  Beschriftungen DE + Darija aus legacy. Arabische Gruppennamen neu ergänzt.
+- Design-Tokens aus legacy (Anthrazit, Weiß, Rot, Gold sparsam), Hell/Dunkel nach Gerät oder fest in den Einstellungen.
+  Abweichung: Gold im hellen Modus dunkler (#8a6d27 statt #b08d3c), weil Text in #b08d3c auf Weiß zu wenig Kontrast hat.
+- Schriften wie legacy (IBM Plex Sans, IBM Plex Sans Arabic, Bricolage Grotesque), jetzt über `next/font` selbst
+  ausgeliefert: die Browser schicken keine Anfragen an Google (Datenschutz).
+- Sprachen: Deutsch und Arabisch/Darija mit RTL, Auswahl in den Einstellungen (Cookie). Unterrichtsinhalte bleiben
+  Deutsch und links nach rechts (`.de-content`).
+- Kennzeichnung: `Label`, `Statement`, `LabelLegend` (Farben wie legacy), Erklärung in den Einstellungen.
+- Seiten mit Inhalt: Dashboard (Lernweg, Umfang der Inhalte), Lesson System (9 Schritte), Offene Entscheidungen
+  (21, nur lesen), Einstellungen, Suche (Module, Stunden, Lernziele, Aktivitäten, Vorlagen).
+  Alle anderen Seiten zeigen, in welcher Phase sie gebaut werden.
+- Testzugang für Entwicklung und Playwright ohne Supabase: `SDA_DEV_MEMBER_ROLE=admin pnpm dev`.
+  Wirkt nur bei `NODE_ENV=development`, in Produktions-Builds nie.
+- Neue Bibliothek: `@playwright/test` (in CLAUDE.md vorgesehen). CI: neuer Job `sda-app-e2e`.
+
+**Was getestet**
+- Playwright (12 Tests, je Handy 390 px und Desktop): alle Seiten über die Navigation erreichbar, aktive Seite
+  markiert, kein seitliches Scrollen; untere Leiste nur auf dem Handy, Tippflächen ≥ 44 px; Suche in der Kopfzeile;
+  Arabisch schaltet auf RTL, Unterrichtsinhalt bleibt LTR; Hell/Dunkel; Kennzeichnungen sichtbar.
+- Vitest 41 Tests, typecheck, lint, build.
+
+**Was offen**
+- Barrierefreiheit und Kontraste werden in Phase 7 systematisch geprüft.
+
 ## Nächste Phase
-Phase 3 – App-Rahmen, Design und Sprachen (`docs/PROMPTS.md`).
+Phase 4 – Curriculum und Stunden-Ansicht (`docs/PROMPTS.md`).

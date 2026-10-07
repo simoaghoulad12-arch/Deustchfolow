@@ -43,7 +43,6 @@ export async function sendMagicLink(_prev: LoginState, formData: FormData): Prom
 }
 
 export async function signOut() {
-  const supabase = createClient();
-  await supabase.auth.signOut();
+  if (supabasePublicEnv()) await createClient().auth.signOut();
   redirect('/login');
 }

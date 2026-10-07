@@ -1,6 +1,7 @@
 import { Label } from '@/components/Label';
 import { requireAdmin } from '@/lib/auth';
 import { APP_ROLES, isAppRole, ROLE_LABELS, type GroupVisibility } from '@/lib/roles';
+import { supabasePublicEnv } from '@/lib/supabase/env';
 import { createClient } from '@/lib/supabase/server';
 import { changeRole, setGroupVisibility } from './actions';
 import { InviteForm } from './InviteForm';
@@ -16,6 +17,14 @@ interface ProfileRow {
 
 export default async function TeamPage() {
   const me = await requireAdmin();
+  if (!supabasePublicEnv()) {
+    return (
+      <p role="alert" className="card">
+        Supabase ist nicht konfiguriert (siehe <code>.env.example</code> und{' '}
+        <code>docs/SUPABASE.md</code>).
+      </p>
+    );
+  }
   const supabase = createClient();
   const [{ data: profiles }, { data: setting }] = await Promise.all([
     supabase.from('profiles').select('id, email, full_name, role').order('full_name'),
@@ -24,7 +33,7 @@ export default async function TeamPage() {
   const visibility: GroupVisibility = setting?.value === 'all' ? 'all' : 'own_groups';
 
   return (
-    <main className="mx-auto max-w-3xl px-4 py-6">
+    <>
       <h1 className="mb-1 text-2xl font-bold">Team und Zugänge</h1>
       <p className="mb-6 text-muted">
         Nur eingeladene Personen können sich anmelden. Es gibt keine offene Registrierung.
@@ -110,6 +119,6 @@ export default async function TeamPage() {
           </button>
         </form>
       </section>
-    </main>
+    </>
   );
 }

@@ -1,7 +1,7 @@
 import 'server-only';
 import { redirect } from 'next/navigation';
 import { createClient } from './supabase/server';
-import type { AppRole } from './roles';
+import { isAppRole, type AppRole } from './roles';
 
 export interface CurrentMember {
   id: string;
@@ -10,8 +10,21 @@ export interface CurrentMember {
   role: AppRole;
 }
 
+/**
+ * Nur für lokale Entwicklung und Playwright-Tests ohne Supabase: SDA_DEV_MEMBER_ROLE=admin|teacher|native.
+ * In einem Produktions-Build ist NODE_ENV immer 'production', dann ist das wirkungslos.
+ */
+export function devMember(): CurrentMember | null {
+  if (process.env.NODE_ENV !== 'development') return null;
+  const role = process.env.SDA_DEV_MEMBER_ROLE;
+  if (!isAppRole(role)) return null;
+  return { id: 'dev', email: 'entwicklung@localhost', fullName: 'Entwicklung (Testzugang)', role };
+}
+
 /** Angemeldete Person mit Profil, sonst null (nicht angemeldet oder nicht eingeladen). */
 export async function getCurrentMember(): Promise<CurrentMember | null> {
+  const dev = devMember();
+  if (dev) return dev;
   const supabase = createClient();
   const {
     data: { user },

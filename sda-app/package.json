@@ -12,7 +12,8 @@
     "test": "vitest run",
     "extract": "tsx scripts/extract-content.ts",
     "clean": "rm -rf .next",
-    "gen:decisions": "tsx scripts/gen-decisions-sql.ts"
+    "gen:decisions": "tsx scripts/gen-decisions-sql.ts",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",
@@ -24,6 +25,7 @@
   },
   "devDependencies": {
     "@electric-sql/pglite": "^0.5.8",
+    "@playwright/test": "1.56.1",
     "@types/node": "^20.16.11",
     "@types/react": "^18.3.11",
     "@types/react-dom": "^18.3.1",
