@@ -1,0 +1,2 @@
+# legacy/ darf nie verändert werden (Test prüft SHA-256) – keine Zeilenende-Umwandlung
+legacy/** -text

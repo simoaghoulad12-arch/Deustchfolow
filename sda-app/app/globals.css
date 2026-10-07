@@ -1,0 +1,36 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Design-Tokens aus legacy/index.html: Anthrazit, Weiß, Rot als Akzent, Gold sparsam. */
+:root {
+  --bg: #f4f4f5;
+  --panel: #ffffff;
+  --ink: #141518;
+  --muted: #5d6068;
+  --line: #e2e3e7;
+  --anth: #1b1d21;
+  --red: #c8102e;
+  --gold: #b08d3c;
+  color-scheme: light dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #111214;
+    --panel: #1a1c20;
+    --ink: #ececee;
+    --muted: #a0a3ab;
+    --line: #2c2f35;
+    --anth: #0b0c0e;
+    --red: #ef4a5f;
+    --gold: #d2b067;
+  }
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-size: 16px;
+  line-height: 1.5;
+}
