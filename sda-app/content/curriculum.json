@@ -1,0 +1,2661 @@
+{
+  "levels": [
+    {
+      "key": "A1",
+      "name": "A1 – Anfänger",
+      "goal": "Alltägliche Wendungen verstehen, sich und andere vorstellen, einfache Fragen stellen und beantworten.",
+      "modules": [
+        {
+          "id": "A1.1",
+          "level": "A1",
+          "number": 1,
+          "title": "Begrüßen & Vorstellen",
+          "grammar": [
+            {
+              "lessonId": "A1.1.Mo",
+              "day": "Mo",
+              "title": "Alphabet, Aussprache & Zahlen 0–20",
+              "kern": [
+                "Alphabet buchstabieren (A–Z, ä, ö, ü, ß)",
+                "Zahlen 0–20",
+                "Aussprache: ch, sch, sp/st, ei/ie"
+              ],
+              "beispiele": [
+                "Wie schreibt man das? – M-O-H-A-M-E-D.",
+                "Ich bin zwanzig."
+              ],
+              "wortschatz": "Alphabet, Zahlen"
+            },
+            {
+              "lessonId": "A1.1.Di",
+              "day": "Di",
+              "title": "Sich vorstellen: Konjugation im Präsens",
+              "kern": [
+                "Personalpronomen: ich, du, er/sie/es, wir, ihr, sie/Sie",
+                "Regelmäßige Endungen: -e, -st, -t, -en, -t, -en",
+                "Das Verb steht auf Position 2"
+              ],
+              "beispiele": [
+                "Ich heiße Amal. Ich komme aus Marokko. Ich wohne in Salé."
+              ],
+              "wortschatz": "Länder, Städte, Sprachen"
+            },
+            {
+              "lessonId": "A1.1.Mi",
+              "day": "Mi",
+              "title": "Fragen stellen: W-Fragen & Ja/Nein-Fragen",
+              "kern": [
+                "W-Fragen: wer, was, woher, wo, wie, wann",
+                "Ja/Nein-Frage: Verb auf Position 1",
+                "Antworten: ja, nein, doch"
+              ],
+              "beispiele": [
+                "Woher kommst du? – Kommst du aus Rabat?"
+              ],
+              "wortschatz": "Fragewörter"
+            },
+            {
+              "lessonId": "A1.1.Do",
+              "day": "Do",
+              "title": "Zahlen bis 1000, Alter & Telefonnummer",
+              "kern": [
+                "Zahlen 21–100 (einundzwanzig)",
+                "hundert, tausend",
+                "Alter: Ich bin 25 Jahre alt"
+              ],
+              "beispiele": [
+                "Meine Telefonnummer ist 0176 …"
+              ],
+              "wortschatz": "Zahlen, Kontaktdaten"
+            }
+          ],
+          "speaking": {
+            "thema": "Sich vorstellen",
+            "situation": "Kennenlernen im Kurs: Name, Land, Stadt, Alter, Sprachen",
+            "redemittel": [
+              "Ich heiße …",
+              "Ich komme aus …",
+              "Ich wohne in …",
+              "Ich spreche …"
+            ]
+          }
+        },
+        {
+          "id": "A1.2",
+          "level": "A1",
+          "number": 2,
+          "title": "Familie & Beruf",
+          "grammar": [
+            {
+              "lessonId": "A1.2.Mo",
+              "day": "Mo",
+              "title": "Possessivartikel: mein, dein, sein, ihr",
+              "kern": [
+                "Possessivartikel im Nominativ",
+                "Endung -e bei Femininum und Plural",
+                "Familienwörter: Mutter, Vater, Bruder, Schwester"
+              ],
+              "beispiele": [
+                "Das ist meine Schwester. Mein Bruder wohnt in Frankfurt."
+              ],
+              "wortschatz": "Familie"
+            },
+            {
+              "lessonId": "A1.2.Di",
+              "day": "Di",
+              "title": "Nomen & Artikel: der, die, das, Plural",
+              "kern": [
+                "Genus: der, die, das – Nomen immer mit Artikel lernen",
+                "Pluralformen: -e, -en, -n, -er, -s, Umlaut",
+                "Unbestimmter Artikel: ein, eine"
+              ],
+              "beispiele": [
+                "Das ist ein Tisch. Das sind zwei Tische."
+              ],
+              "wortschatz": "Gegenstände im Alltag"
+            },
+            {
+              "lessonId": "A1.2.Mi",
+              "day": "Mi",
+              "title": "Verneinung: nicht und kein",
+              "kern": [
+                "kein + Nomen (Ich habe kein Auto)",
+                "nicht + Verb/Adjektiv (Er arbeitet nicht)",
+                "Position von nicht"
+              ],
+              "beispiele": [
+                "Ich habe keinen Bruder. Das ist nicht teuer."
+              ],
+              "wortschatz": "Alltag"
+            },
+            {
+              "lessonId": "A1.2.Do",
+              "day": "Do",
+              "title": "Berufe & Arbeit: sein und haben",
+              "kern": [
+                "sein und haben im Präsens",
+                "Beruf ohne Artikel (Ich bin Krankenpfleger)",
+                "Pflege-Vokabular: Station, Patient, Schicht"
+              ],
+              "beispiele": [
+                "Ich arbeite im Krankenhaus. Ich habe Nachtschicht."
+              ],
+              "wortschatz": "Berufe, Arbeitsplatz"
+            }
+          ],
+          "speaking": {
+            "thema": "Familie und Beruf",
+            "situation": "Über die eigene Familie und den Beruf sprechen, Fragen stellen",
+            "redemittel": [
+              "Das ist mein/meine …",
+              "Ich habe … Geschwister",
+              "Was bist du von Beruf?",
+              "Ich arbeite als …"
+            ]
+          }
+        },
+        {
+          "id": "A1.3",
+          "level": "A1",
+          "number": 3,
+          "title": "Alltag & Uhrzeit",
+          "grammar": [
+            {
+              "lessonId": "A1.3.Mo",
+              "day": "Mo",
+              "title": "Uhrzeit: offiziell und im Alltag",
+              "kern": [
+                "Offiziell: 14:30 Uhr",
+                "Alltag: halb drei, Viertel vor/nach",
+                "Präpositionen um und von … bis"
+              ],
+              "beispiele": [
+                "Der Kurs beginnt um 18 Uhr. Es ist Viertel nach drei."
+              ],
+              "wortschatz": "Uhrzeit"
+            },
+            {
+              "lessonId": "A1.3.Di",
+              "day": "Di",
+              "title": "Trennbare Verben",
+              "kern": [
+                "Trennbare Verben: aufstehen, einkaufen, anrufen",
+                "Die Vorsilbe steht am Satzende",
+                "Mit Modalverb bleibt das Verb im Infinitiv zusammen"
+              ],
+              "beispiele": [
+                "Ich stehe um 6 Uhr auf. Ich rufe meine Mutter an."
+              ],
+              "wortschatz": "Tagesablauf"
+            },
+            {
+              "lessonId": "A1.3.Mi",
+              "day": "Mi",
+              "title": "Wochentage, Monate & Datum",
+              "kern": [
+                "Wochentage, Monate, Jahreszeiten",
+                "Präpositionen am, im, um",
+                "Ordnungszahlen: der erste, der zweite"
+              ],
+              "beispiele": [
+                "Am Montag habe ich Kurs. Mein Geburtstag ist am 5. Mai."
+              ],
+              "wortschatz": "Kalender"
+            },
+            {
+              "lessonId": "A1.3.Do",
+              "day": "Do",
+              "title": "Tagesablauf erzählen & Satzstellung",
+              "kern": [
+                "Zeitangabe am Satzanfang: Das Verb bleibt auf Position 2",
+                "Konnektoren und, aber, oder, denn",
+                "Zeitwörter: zuerst, dann, danach, am Ende"
+              ],
+              "beispiele": [
+                "Am Morgen stehe ich auf. Dann frühstücke ich."
+              ],
+              "wortschatz": "Tagesablauf"
+            }
+          ],
+          "speaking": {
+            "thema": "Mein Tag",
+            "situation": "Den eigenen Tagesablauf erzählen und nach dem Tagesablauf fragen",
+            "redemittel": [
+              "Um … Uhr stehe ich auf",
+              "Zuerst … dann … danach …",
+              "Wann beginnt …?",
+              "Wie spät ist es?"
+            ]
+          }
+        },
+        {
+          "id": "A1.4",
+          "level": "A1",
+          "number": 4,
+          "title": "Essen & Einkaufen",
+          "grammar": [
+            {
+              "lessonId": "A1.4.Mo",
+              "day": "Mo",
+              "title": "Akkusativ: den, einen, keinen",
+              "kern": [
+                "Akkusativ: nur das Maskulinum ändert sich (der → den, ein → einen)",
+                "Verben mit Akkusativ: haben, brauchen, kaufen",
+                "kein → keinen"
+              ],
+              "beispiele": [
+                "Ich kaufe einen Apfel. Ich brauche den Schlüssel."
+              ],
+              "wortschatz": "Lebensmittel"
+            },
+            {
+              "lessonId": "A1.4.Di",
+              "day": "Di",
+              "title": "Mengen & Preise",
+              "kern": [
+                "Mengenangaben: ein Kilo, ein Liter, eine Packung, eine Flasche",
+                "Preise sagen: 2,50 Euro",
+                "Wie viel kostet …? Was kostet …?"
+              ],
+              "beispiele": [
+                "Ein Kilo Äpfel kostet 2,50 Euro."
+              ],
+              "wortschatz": "Preise, Verpackung"
+            },
+            {
+              "lessonId": "A1.4.Mi",
+              "day": "Mi",
+              "title": "Essen & Trinken: möchten und Vokalwechsel",
+              "kern": [
+                "möchten (ich möchte, du möchtest …)",
+                "Vokalwechsel e→i: essen, nehmen, sprechen",
+                " e→ie: sehen",
+                "Mahlzeiten"
+              ],
+              "beispiele": [
+                "Ich möchte einen Tee. Er isst gern Reis."
+              ],
+              "wortschatz": "Mahlzeiten, Getränke"
+            },
+            {
+              "lessonId": "A1.4.Do",
+              "day": "Do",
+              "title": "Im Supermarkt & im Restaurant",
+              "kern": [
+                "Höfliche Bitte: Ich hätte gern …",
+                "Bestellen und bezahlen: Zusammen oder getrennt?",
+                "Dialog an der Kasse"
+              ],
+              "beispiele": [
+                "Ich hätte gern eine Cola. Die Rechnung, bitte."
+              ],
+              "wortschatz": "Restaurant, Einkaufen"
+            }
+          ],
+          "speaking": {
+            "thema": "Einkaufen und Restaurant",
+            "situation": "Rollenspiel: im Supermarkt und im Restaurant bestellen",
+            "redemittel": [
+              "Ich hätte gern …",
+              "Was kostet …?",
+              "Zusammen oder getrennt?",
+              "Stimmt so."
+            ]
+          }
+        },
+        {
+          "id": "A1.5",
+          "level": "A1",
+          "number": 5,
+          "title": "Wohnen & Stadt",
+          "grammar": [
+            {
+              "lessonId": "A1.5.Mo",
+              "day": "Mo",
+              "title": "Die Wohnung beschreiben",
+              "kern": [
+                "es gibt + Akkusativ",
+                "Zimmer und Möbel",
+                "Adjektive nach sein: Das Zimmer ist groß."
+              ],
+              "beispiele": [
+                "In meiner Wohnung gibt es einen Balkon. Die Küche ist klein."
+              ],
+              "wortschatz": "Zimmer, Möbel"
+            },
+            {
+              "lessonId": "A1.5.Di",
+              "day": "Di",
+              "title": "Wo ist …? Lokale Präpositionen mit Dativ",
+              "kern": [
+                "in, an, auf + Dativ (Wo?)",
+                "Formeln: im, am, auf dem, in der",
+                "Orte in der Stadt: Bank, Apotheke, Bahnhof"
+              ],
+              "beispiele": [
+                "Die Apotheke ist neben der Bank. Das Buch liegt auf dem Tisch."
+              ],
+              "wortschatz": "Orte, Stadt"
+            },
+            {
+              "lessonId": "A1.5.Mi",
+              "day": "Mi",
+              "title": "Modalverben: können, müssen, wollen",
+              "kern": [
+                "Konjugation: ich kann, du kannst, er kann …",
+                "Modalverb auf Position 2, Infinitiv am Satzende",
+                "Bedeutung: Fähigkeit, Pflicht, Wunsch"
+              ],
+              "beispiele": [
+                "Ich kann Auto fahren. Ich muss heute arbeiten."
+              ],
+              "wortschatz": "Alltag"
+            },
+            {
+              "lessonId": "A1.5.Do",
+              "day": "Do",
+              "title": "Imperativ & Wegbeschreibung",
+              "kern": [
+                "Imperativ du/ihr/Sie: Komm! Kommt! Kommen Sie!",
+                "Weg beschreiben: geradeaus, links, rechts, an der Ampel",
+                "Verkehrsmittel: mit dem Bus, mit der Bahn"
+              ],
+              "beispiele": [
+                "Gehen Sie geradeaus und dann links. Ich fahre mit dem Bus."
+              ],
+              "wortschatz": "Weg, Verkehr"
+            }
+          ],
+          "speaking": {
+            "thema": "Wohnen und Weg erklären",
+            "situation": "Wohnung beschreiben; jemandem den Weg erklären (Partnerübung mit Stadtplan)",
+            "redemittel": [
+              "Entschuldigung, wie komme ich zum/zur …?",
+              "Gehen Sie geradeaus …",
+              "Es gibt …",
+              "Wo ist …?"
+            ]
+          }
+        },
+        {
+          "id": "A1.6",
+          "level": "A1",
+          "number": 6,
+          "title": "Freizeit & Verabredungen",
+          "grammar": [
+            {
+              "lessonId": "A1.6.Mo",
+              "day": "Mo",
+              "title": "Freizeit & Hobbys",
+              "kern": [
+                "gern, lieber, am liebsten",
+                "Vokalwechsel a→ä: fahren, schlafen, laufen",
+                "Häufigkeit: immer, oft, manchmal, nie"
+              ],
+              "beispiele": [
+                "Ich spiele gern Fußball. Am liebsten schlafe ich lange."
+              ],
+              "wortschatz": "Hobbys"
+            },
+            {
+              "lessonId": "A1.6.Di",
+              "day": "Di",
+              "title": "Verabredungen treffen",
+              "kern": [
+                "Vorschlagen: Wollen wir …? Hast du Lust …?",
+                "Zustimmen und ablehnen: Gern! Leider kann ich nicht.",
+                "Modalverben dürfen und sollen"
+              ],
+              "beispiele": [
+                "Hast du am Samstag Zeit? Leider muss ich arbeiten."
+              ],
+              "wortschatz": "Verabredung"
+            },
+            {
+              "lessonId": "A1.6.Mi",
+              "day": "Mi",
+              "title": "Wetter, Jahreszeiten & Kleidung",
+              "kern": [
+                "Wetter: Es regnet, es ist kalt",
+                "Kleidung und Farben",
+                "Adjektive: schön, warm, teuer"
+              ],
+              "beispiele": [
+                "Im Winter ist es kalt. Ich trage eine Jacke."
+              ],
+              "wortschatz": "Wetter, Kleidung"
+            },
+            {
+              "lessonId": "A1.6.Do",
+              "day": "Do",
+              "title": "Kleidung kaufen",
+              "kern": [
+                "Größen und Preise",
+                "Das gefällt mir / Das passt mir (als feste Formel)",
+                "Akkusativ wiederholen"
+              ],
+              "beispiele": [
+                "Haben Sie die Jacke in Größe M? Das gefällt mir."
+              ],
+              "wortschatz": "Geschäft"
+            }
+          ],
+          "speaking": {
+            "thema": "Freizeit und Verabredung",
+            "situation": "Eine Verabredung per Telefon ausmachen (Zeit, Ort, Aktivität)",
+            "redemittel": [
+              "Hast du Lust, …?",
+              "Wann treffen wir uns?",
+              "Leider kann ich nicht, denn …",
+              "Super, bis dann!"
+            ]
+          }
+        },
+        {
+          "id": "A1.7",
+          "level": "A1",
+          "number": 7,
+          "title": "Gesundheit & Körper",
+          "grammar": [
+            {
+              "lessonId": "A1.7.Mo",
+              "day": "Mo",
+              "title": "Körperteile & Beschwerden",
+              "kern": [
+                "Körperteile mit Artikel",
+                "Beschwerden: Mein Kopf tut weh. Ich habe Fieber.",
+                "Pflege-Vokabular: Schmerzen, Blutdruck, Temperatur"
+              ],
+              "beispiele": [
+                "Mein Rücken tut weh. Ich habe Husten."
+              ],
+              "wortschatz": "Körper, Krankheit"
+            },
+            {
+              "lessonId": "A1.7.Di",
+              "day": "Di",
+              "title": "Beim Arzt: Termin & Gespräch",
+              "kern": [
+                "Termin vereinbaren: Ich möchte einen Termin.",
+                "Symptome beschreiben: Seit wann? Wie lange?",
+                "Anweisungen verstehen"
+              ],
+              "beispiele": [
+                "Seit drei Tagen habe ich Kopfschmerzen."
+              ],
+              "wortschatz": "Arzt, Termin"
+            },
+            {
+              "lessonId": "A1.7.Mi",
+              "day": "Mi",
+              "title": "Ratschläge geben: sollen & Imperativ",
+              "kern": [
+                "sollen: du sollst, Sie sollen",
+                "Imperativ für Ratschläge",
+                "Beispiel: Trinken Sie viel Wasser!"
+              ],
+              "beispiele": [
+                "Du sollst im Bett bleiben. Nehmen Sie die Tabletten dreimal am Tag."
+              ],
+              "wortschatz": "Gesundheit"
+            },
+            {
+              "lessonId": "A1.7.Do",
+              "day": "Do",
+              "title": "Apotheke & Medikamente",
+              "kern": [
+                "Medikamente: Tabletten, Tropfen, Salbe",
+                "Einnahme: vor/nach dem Essen, dreimal täglich",
+                "Rezept und Packungsangaben lesen"
+              ],
+              "beispiele": [
+                "Ich brauche etwas gegen Husten. Nehmen Sie zweimal täglich eine Tablette."
+              ],
+              "wortschatz": "Apotheke"
+            }
+          ],
+          "speaking": {
+            "thema": "Beim Arzt",
+            "situation": "Rollenspiel: Arztbesuch (Patient/in und Arzt/Ärztin), Beschwerden und Ratschläge",
+            "redemittel": [
+              "Was fehlt Ihnen?",
+              "Ich habe … / Mein … tut weh.",
+              "Seit wann?",
+              "Sie sollten …"
+            ]
+          }
+        },
+        {
+          "id": "A1.8",
+          "level": "A1",
+          "number": 8,
+          "title": "Wiederholung & Prüfung A1",
+          "grammar": [
+            {
+              "lessonId": "A1.8.Mo",
+              "day": "Mo",
+              "title": "Wiederholung: Verben & Satzbau",
+              "kern": [
+                "Konjugation: regelmäßig, Vokalwechsel, trennbar",
+                "Satzstellung: Aussage, Frage, Inversion",
+                "Modalverben"
+              ],
+              "beispiele": [
+                "Ich muss morgen früh aufstehen."
+              ],
+              "wortschatz": "Gemischt"
+            },
+            {
+              "lessonId": "A1.8.Di",
+              "day": "Di",
+              "title": "Wiederholung: Artikel, Akkusativ & Negation",
+              "kern": [
+                "der/die/das, ein/kein, Akkusativ",
+                "Plural",
+                "nicht oder kein?"
+              ],
+              "beispiele": [
+                "Ich habe keinen Termin. Das ist nicht mein Mantel."
+              ],
+              "wortschatz": "Gemischt"
+            },
+            {
+              "lessonId": "A1.8.Mi",
+              "day": "Mi",
+              "title": "Schreiben: Formular & kurze Nachricht",
+              "kern": [
+                "Formular ausfüllen: Name, Adresse, Geburtsdatum",
+                "Kurze Nachricht/SMS: Anrede, Text, Gruß",
+                "Einladung und Absage"
+              ],
+              "beispiele": [
+                "Liebe Anna, ich komme leider nicht. Viele Grüße, Mo"
+              ],
+              "wortschatz": "Schreiben"
+            },
+            {
+              "lessonId": "A1.8.Do",
+              "day": "Do",
+              "title": "Modelltest A1",
+              "kern": [
+                "Lesen, Hören, Schreiben unter Zeitdruck",
+                "Sprechen: Vorstellen, Fragen, Bitten",
+                "Auswertung und persönliche Rückmeldung"
+              ],
+              "beispiele": [],
+              "wortschatz": "Prüfung"
+            }
+          ],
+          "speaking": {
+            "thema": "Prüfungssimulation Sprechen A1",
+            "situation": "Sich vorstellen, Fragen zu Karten stellen und beantworten, Bitten formulieren",
+            "redemittel": [
+              "Ich heiße … und ich komme aus …",
+              "Wie alt bist du?",
+              "Können Sie mir bitte helfen?",
+              "Können Sie das wiederholen?"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "key": "A2",
+      "name": "A2 – Grundlegende Kenntnisse",
+      "goal": "Sich in Alltagssituationen verständigen, über Vergangenes und Pläne sprechen, einfache Briefe und E-Mails schreiben.",
+      "modules": [
+        {
+          "id": "A2.1",
+          "level": "A2",
+          "number": 1,
+          "title": "Vergangenheit: Perfekt",
+          "grammar": [
+            {
+              "lessonId": "A2.1.Mo",
+              "day": "Mo",
+              "title": "Perfekt mit haben",
+              "kern": [
+                "Perfekt = haben + Partizip II am Satzende",
+                "Regelmäßige Verben: ge- + Stamm + -t",
+                "Unregelmäßige Verben: ge- + Stamm + -en"
+              ],
+              "beispiele": [
+                "Ich habe gestern Deutsch gelernt. Wir haben Pizza gegessen."
+              ],
+              "wortschatz": "Wochenende"
+            },
+            {
+              "lessonId": "A2.1.Di",
+              "day": "Di",
+              "title": "Perfekt mit sein",
+              "kern": [
+                "sein bei Bewegung und Zustandsänderung",
+                "Partizipien: gegangen, gefahren, geblieben, aufgestanden",
+                "sein, bleiben, werden → Perfekt mit sein"
+              ],
+              "beispiele": [
+                "Er ist nach Frankfurt gefahren. Sie ist früh aufgestanden."
+              ],
+              "wortschatz": "Reisen, Bewegung"
+            },
+            {
+              "lessonId": "A2.1.Mi",
+              "day": "Mi",
+              "title": "Trennbare & untrennbare Verben im Perfekt",
+              "kern": [
+                "Trennbar: ein-ge-kauft, auf-ge-standen",
+                "Untrennbar: besucht, verstanden (kein ge-)",
+                "Verben auf -ieren: telefoniert"
+              ],
+              "beispiele": [
+                "Ich habe eingekauft. Ich habe meine Tante besucht."
+              ],
+              "wortschatz": "Alltag"
+            },
+            {
+              "lessonId": "A2.1.Do",
+              "day": "Do",
+              "title": "Perfekt im Alltag erzählen",
+              "kern": [
+                "Zeitangaben: gestern, letzte Woche, vor zwei Tagen",
+                "Reihenfolge: zuerst, dann, danach, schließlich",
+                "Fragen im Perfekt: Was hast du gemacht?"
+              ],
+              "beispiele": [
+                "Letzte Woche bin ich nach Darmstadt gefahren und habe Freunde getroffen."
+              ],
+              "wortschatz": "Wochenende, Ferien"
+            }
+          ],
+          "speaking": {
+            "thema": "Was habe ich gemacht?",
+            "situation": "Über Wochenende und Urlaub erzählen (Perfekt), Nachfragen stellen",
+            "redemittel": [
+              "Am Wochenende habe ich …",
+              "Und du? Was hast du gemacht?",
+              "Wie war …?",
+              "Das klingt toll!"
+            ]
+          }
+        },
+        {
+          "id": "A2.2",
+          "level": "A2",
+          "number": 2,
+          "title": "Präteritum & Modalverben",
+          "grammar": [
+            {
+              "lessonId": "A2.2.Mo",
+              "day": "Mo",
+              "title": "Präteritum von sein und haben",
+              "kern": [
+                "war, warst, war, waren, wart, waren",
+                "hatte, hattest, hatte …",
+                "Präteritum bei sein, haben und Modalverben üblich"
+              ],
+              "beispiele": [
+                "Gestern war ich müde. Ich hatte Kopfschmerzen."
+              ],
+              "wortschatz": "Gestern"
+            },
+            {
+              "lessonId": "A2.2.Di",
+              "day": "Di",
+              "title": "Präteritum der Modalverben",
+              "kern": [
+                "konnte, wollte, musste, durfte, sollte",
+                "Endungen: ich konnte, du konntest, wir konnten",
+                "Vergleich mit dem Präsens"
+              ],
+              "beispiele": [
+                "Ich musste früh aufstehen. Er wollte nicht kommen."
+              ],
+              "wortschatz": "Gründe, Pflichten"
+            },
+            {
+              "lessonId": "A2.2.Mi",
+              "day": "Mi",
+              "title": "Höfliche Bitten & Vorschläge",
+              "kern": [
+                "Könnten Sie …? Würden Sie …? Dürfte ich …?",
+                "Ich möchte … / Ich würde gern …",
+                "Bitten, Erlaubnis, Entschuldigung"
+              ],
+              "beispiele": [
+                "Könnten Sie mir bitte helfen? Dürfte ich kurz telefonieren?"
+              ],
+              "wortschatz": "Höflichkeit"
+            },
+            {
+              "lessonId": "A2.2.Do",
+              "day": "Do",
+              "title": "Telefonate & Nachrichten",
+              "kern": [
+                "Telefon: Hier spricht … Kann ich bitte … sprechen?",
+                "Nachricht hinterlassen, Termin absagen",
+                "Kurze E-Mail/SMS: Entschuldigung, Grund, Alternative"
+              ],
+              "beispiele": [
+                "Ich kann leider nicht kommen, denn ich bin krank."
+              ],
+              "wortschatz": "Telefon, Termine"
+            }
+          ],
+          "speaking": {
+            "thema": "Anruf und Termin",
+            "situation": "Telefonat: Termin vereinbaren, verschieben, absagen",
+            "redemittel": [
+              "Hier spricht …",
+              "Ich möchte einen Termin …",
+              "Könnten wir den Termin verschieben?",
+              "Vielen Dank, auf Wiederhören!"
+            ]
+          }
+        },
+        {
+          "id": "A2.3",
+          "level": "A2",
+          "number": 3,
+          "title": "Nebensätze",
+          "grammar": [
+            {
+              "lessonId": "A2.3.Mo",
+              "day": "Mo",
+              "title": "Nebensätze mit weil",
+              "kern": [
+                "weil-Satz: Verb am Ende",
+                "Hauptsatz + Nebensatz mit Komma",
+                "Antwort auf Warum?"
+              ],
+              "beispiele": [
+                "Ich lerne Deutsch, weil ich in Deutschland arbeiten möchte."
+              ],
+              "wortschatz": "Gründe"
+            },
+            {
+              "lessonId": "A2.3.Di",
+              "day": "Di",
+              "title": "Nebensätze mit dass",
+              "kern": [
+                "dass nach sagen, denken, glauben, hoffen",
+                "Verb am Ende",
+                "Es ist wichtig, dass …"
+              ],
+              "beispiele": [
+                "Ich glaube, dass Deutsch nicht leicht ist."
+              ],
+              "wortschatz": "Meinung"
+            },
+            {
+              "lessonId": "A2.3.Mi",
+              "day": "Mi",
+              "title": "Nebensätze mit wenn",
+              "kern": [
+                "wenn = Bedingung oder Wiederholung",
+                "Nebensatz vor dem Hauptsatz: Verb direkt nach dem Komma",
+                "wenn und als (Ausblick)"
+              ],
+              "beispiele": [
+                "Wenn ich Zeit habe, lerne ich Deutsch."
+              ],
+              "wortschatz": "Bedingungen"
+            },
+            {
+              "lessonId": "A2.3.Do",
+              "day": "Do",
+              "title": "obwohl, deshalb & darum",
+              "kern": [
+                "obwohl = Gegengrund (Nebensatz)",
+                "deshalb/darum = Folge (Hauptsatz, Verb auf Position 2)",
+                "weil und deshalb vergleichen"
+              ],
+              "beispiele": [
+                "Er ist müde, obwohl er lange geschlafen hat. Ich bin krank, deshalb bleibe ich zu Hause."
+              ],
+              "wortschatz": "Gründe, Folgen"
+            }
+          ],
+          "speaking": {
+            "thema": "Gründe nennen",
+            "situation": "Begründen: Warum lernst du Deutsch? Warum möchtest du nach Deutschland?",
+            "redemittel": [
+              "Ich lerne Deutsch, weil …",
+              "Ich glaube, dass …",
+              "Wenn ich … habe, dann …",
+              "Obwohl …, …"
+            ]
+          }
+        },
+        {
+          "id": "A2.4",
+          "level": "A2",
+          "number": 4,
+          "title": "Wohnen & Orte",
+          "grammar": [
+            {
+              "lessonId": "A2.4.Mo",
+              "day": "Mo",
+              "title": "Wechselpräpositionen: Wohin? Wo?",
+              "kern": [
+                "Akkusativ = Wohin? (Bewegung), Dativ = Wo? (Ort)",
+                "in, an, auf, über, unter, vor, hinter, neben, zwischen",
+                "Kontraktionen: ins, im, am, ans"
+              ],
+              "beispiele": [
+                "Ich gehe in die Küche. Ich bin in der Küche."
+              ],
+              "wortschatz": "Orte, Wohnung"
+            },
+            {
+              "lessonId": "A2.4.Di",
+              "day": "Di",
+              "title": "Stellungsverben: legen/liegen, stellen/stehen, hängen, setzen/sitzen",
+              "kern": [
+                "Wohin? → legen, stellen, hängen, setzen (Akkusativ)",
+                "Wo? → liegen, stehen, hängen, sitzen (Dativ)",
+                "Möbel einrichten"
+              ],
+              "beispiele": [
+                "Ich stelle die Lampe auf den Tisch. Die Lampe steht auf dem Tisch."
+              ],
+              "wortschatz": "Möbel"
+            },
+            {
+              "lessonId": "A2.4.Mi",
+              "day": "Mi",
+              "title": "Dativpräpositionen & Wegbeschreibung",
+              "kern": [
+                "aus, bei, mit, nach, seit, von, zu (immer Dativ)",
+                "zum, zur, beim, vom",
+                "Wege erklären: Fahren Sie mit der U-Bahn bis …"
+              ],
+              "beispiele": [
+                "Ich fahre mit dem Bus zur Arbeit. Ich komme aus dem Büro."
+              ],
+              "wortschatz": "Verkehr, Weg"
+            },
+            {
+              "lessonId": "A2.4.Do",
+              "day": "Do",
+              "title": "Wohnungssuche & Anzeigen",
+              "kern": [
+                "Anzeigen lesen: Kaltmiete, Nebenkosten, Kaution, Zimmer",
+                "Besichtigung: Fragen stellen",
+                "Kurze E-Mail an den Vermieter"
+              ],
+              "beispiele": [
+                "Ist die Wohnung noch frei? Wie hoch sind die Nebenkosten?"
+              ],
+              "wortschatz": "Wohnen, Miete"
+            }
+          ],
+          "speaking": {
+            "thema": "Wohnungsbesichtigung",
+            "situation": "Rollenspiel: Wohnungsbesichtigung (Mieter/in und Vermieter/in)",
+            "redemittel": [
+              "Ist die Wohnung noch frei?",
+              "Wie hoch ist die Miete?",
+              "Wo befindet sich …?",
+              "Ich interessiere mich für die Wohnung."
+            ]
+          }
+        },
+        {
+          "id": "A2.5",
+          "level": "A2",
+          "number": 5,
+          "title": "Vergleichen & Beschreiben",
+          "grammar": [
+            {
+              "lessonId": "A2.5.Mo",
+              "day": "Mo",
+              "title": "Komparativ",
+              "kern": [
+                "Komparativ: -er + als (schneller als)",
+                "Unregelmäßig: gut–besser, viel–mehr, gern–lieber",
+                "so … wie"
+              ],
+              "beispiele": [
+                "Mein Bruder ist größer als ich. Deutsch ist nicht so schwer wie Arabisch."
+              ],
+              "wortschatz": "Vergleiche"
+            },
+            {
+              "lessonId": "A2.5.Di",
+              "day": "Di",
+              "title": "Superlativ",
+              "kern": [
+                "am + -sten (am schnellsten)",
+                "Superlativ vor Nomen: der schnellste Zug",
+                "Unregelmäßig: am besten, am meisten, am liebsten"
+              ],
+              "beispiele": [
+                "Das ist die beste Lösung. Am liebsten esse ich Couscous."
+              ],
+              "wortschatz": "Rekorde, Vorlieben"
+            },
+            {
+              "lessonId": "A2.5.Mi",
+              "day": "Mi",
+              "title": "Adjektivendungen mit unbestimmtem Artikel",
+              "kern": [
+                "Nominativ: ein großer Tisch, eine große Lampe, ein großes Bett",
+                "Akkusativ: einen großen Tisch",
+                "Endungen -er, -e, -es, -en"
+              ],
+              "beispiele": [
+                "Ich suche eine kleine Wohnung. Das ist ein schöner Tag."
+              ],
+              "wortschatz": "Beschreiben"
+            },
+            {
+              "lessonId": "A2.5.Do",
+              "day": "Do",
+              "title": "Adjektivendungen mit bestimmtem Artikel & Personen beschreiben",
+              "kern": [
+                "der große Mann, die große Frau, das große Kind",
+                "Nominativ und Akkusativ: -e oder -en",
+                "Personen beschreiben: Aussehen, Charakter"
+              ],
+              "beispiele": [
+                "Die nette Kollegin sieht den neuen Patienten."
+              ],
+              "wortschatz": "Aussehen, Charakter"
+            }
+          ],
+          "speaking": {
+            "thema": "Vergleichen und beschreiben",
+            "situation": "Zwei Städte, zwei Wohnungen oder zwei Berufe vergleichen; eine Person beschreiben",
+            "redemittel": [
+              "… ist größer/besser als …",
+              "Am meisten mag ich …",
+              "Er/Sie sieht … aus",
+              "Ich finde … netter als …"
+            ]
+          }
+        },
+        {
+          "id": "A2.6",
+          "level": "A2",
+          "number": 6,
+          "title": "Reflexive Verben & Pläne",
+          "grammar": [
+            {
+              "lessonId": "A2.6.Mo",
+              "day": "Mo",
+              "title": "Reflexive Verben",
+              "kern": [
+                "Reflexivpronomen: mich, dich, sich, uns, euch, sich",
+                "sich waschen, sich freuen, sich treffen, sich erinnern",
+                "Position im Satz"
+              ],
+              "beispiele": [
+                "Ich freue mich auf das Wochenende. Wir treffen uns um 5."
+              ],
+              "wortschatz": "Alltag, Gefühle"
+            },
+            {
+              "lessonId": "A2.6.Di",
+              "day": "Di",
+              "title": "Dativ: Personalpronomen & Verben mit Dativ",
+              "kern": [
+                "mir, dir, ihm, ihr, uns, euch, ihnen/Ihnen",
+                "Verben: helfen, gefallen, gehören, schmecken, danken",
+                "Dativ vor Akkusativ-Nomen"
+              ],
+              "beispiele": [
+                "Das Kleid gefällt mir. Ich helfe dir."
+              ],
+              "wortschatz": "Gefallen, Hilfe"
+            },
+            {
+              "lessonId": "A2.6.Mi",
+              "day": "Mi",
+              "title": "Pläne & Zukunft: werden & Präsens",
+              "kern": [
+                "Futur I: werden + Infinitiv",
+                "Präsens mit Zeitangabe: Morgen fahre ich …",
+                "Vermutung: Er wird bestimmt kommen"
+              ],
+              "beispiele": [
+                "Nächstes Jahr werde ich B1 machen. Morgen fahre ich nach Berlin."
+              ],
+              "wortschatz": "Pläne, Zukunft"
+            },
+            {
+              "lessonId": "A2.6.Do",
+              "day": "Do",
+              "title": "Infinitiv mit zu & um … zu",
+              "kern": [
+                "Ich habe Lust, … zu + Infinitiv",
+                "um … zu = Zweck",
+                "Trennbare Verben: aufzustehen"
+              ],
+              "beispiele": [
+                "Ich lerne Deutsch, um in Deutschland zu arbeiten. Es ist schwer, früh aufzustehen."
+              ],
+              "wortschatz": "Ziele"
+            }
+          ],
+          "speaking": {
+            "thema": "Pläne und Ziele",
+            "situation": "Über Pläne, Wünsche und Ziele in 1, 3 und 5 Jahren sprechen",
+            "redemittel": [
+              "Ich plane …",
+              "Ich freue mich auf …",
+              "Ich hoffe, dass …",
+              "Um … zu …, muss ich …"
+            ]
+          }
+        },
+        {
+          "id": "A2.7",
+          "level": "A2",
+          "number": 7,
+          "title": "Arbeit & Behörden",
+          "grammar": [
+            {
+              "lessonId": "A2.7.Mo",
+              "day": "Mo",
+              "title": "Bewerbung & Lebenslauf",
+              "kern": [
+                "Lebenslauf: Ausbildung, Berufserfahrung, Sprachen",
+                "Stellenanzeige verstehen: Aufgaben, Anforderungen",
+                "Perfekt für Berufserfahrung"
+              ],
+              "beispiele": [
+                "Ich habe drei Jahre als Pflegehelfer gearbeitet."
+              ],
+              "wortschatz": "Beruf, Bewerbung"
+            },
+            {
+              "lessonId": "A2.7.Di",
+              "day": "Di",
+              "title": "Formelle E-Mail & Brief",
+              "kern": [
+                "Anrede: Sehr geehrte Frau …, Sehr geehrter Herr …",
+                "Gruß: Mit freundlichen Grüßen",
+                "Sie-Form, höfliche Wendungen"
+              ],
+              "beispiele": [
+                "Sehr geehrte Frau Müller, ich möchte mich um die Stelle bewerben."
+              ],
+              "wortschatz": "Brief, E-Mail"
+            },
+            {
+              "lessonId": "A2.7.Mi",
+              "day": "Mi",
+              "title": "Arbeitsalltag: Verben mit Präposition",
+              "kern": [
+                "warten auf, sich interessieren für, sich freuen auf, denken an, fragen nach",
+                "Präposition + Akkusativ/Dativ mitlernen",
+                "Fragen: Worauf? Wofür? Woran?"
+              ],
+              "beispiele": [
+                "Ich warte auf den Bus. Ich interessiere mich für die Pflege."
+              ],
+              "wortschatz": "Arbeit, Interessen"
+            },
+            {
+              "lessonId": "A2.7.Do",
+              "day": "Do",
+              "title": "Behörden & Formulare",
+              "kern": [
+                "Termin beim Amt, Formulare ausfüllen",
+                "Wichtige Wörter: Anmeldung, Aufenthalt, Krankenversicherung",
+                "Höflich nachfragen: Könnten Sie mir erklären, …?"
+              ],
+              "beispiele": [
+                "Ich möchte mich anmelden. Welche Unterlagen brauche ich?"
+              ],
+              "wortschatz": "Amt, Formular"
+            }
+          ],
+          "speaking": {
+            "thema": "Vorstellungsgespräch und Amt",
+            "situation": "Rollenspiel: kurzes Vorstellungsgespräch oder Termin beim Amt",
+            "redemittel": [
+              "Ich habe … gearbeitet",
+              "Ich interessiere mich für …",
+              "Welche Unterlagen brauche ich?",
+              "Könnten Sie das bitte wiederholen?"
+            ]
+          }
+        },
+        {
+          "id": "A2.8",
+          "level": "A2",
+          "number": 8,
+          "title": "Prüfungsvorbereitung A2",
+          "grammar": [
+            {
+              "lessonId": "A2.8.Mo",
+              "day": "Mo",
+              "title": "Lesen & Hören: Strategien",
+              "kern": [
+                "Globales Lesen: Überschrift, Bilder, Schlüsselwörter",
+                "Hören: Fragen vor dem Hören lesen, Notizen machen",
+                "Zeitmanagement"
+              ],
+              "beispiele": [],
+              "wortschatz": "Strategien"
+            },
+            {
+              "lessonId": "A2.8.Di",
+              "day": "Di",
+              "title": "Schreiben: E-Mail & kurze Texte",
+              "kern": [
+                "E-Mail: Anrede, Einleitung, 3 Inhaltspunkte, Gruß",
+                "Konnektoren: weil, deshalb, aber, außerdem",
+                "Fehler selbst korrigieren"
+              ],
+              "beispiele": [
+                "Liebe Lena, vielen Dank für deine Einladung. Leider kann ich nicht kommen, weil …"
+              ],
+              "wortschatz": "Schreiben"
+            },
+            {
+              "lessonId": "A2.8.Mi",
+              "day": "Mi",
+              "title": "Sprechen: Fragen, Bitten & Präsentation",
+              "kern": [
+                "Fragen zu Stichworten stellen",
+                "Um etwas bitten und reagieren",
+                "Kurze Präsentation über ein Thema"
+              ],
+              "beispiele": [
+                "Können Sie mir bitte sagen, wo …? Ich möchte über meine Familie sprechen."
+              ],
+              "wortschatz": "Sprechen"
+            },
+            {
+              "lessonId": "A2.8.Do",
+              "day": "Do",
+              "title": "Modelltest A2",
+              "kern": [
+                "Alle vier Teile unter Prüfungsbedingungen",
+                "Auswertung: Punkte pro Teil",
+                "Plan für die Schwächen"
+              ],
+              "beispiele": [],
+              "wortschatz": "Prüfung"
+            }
+          ],
+          "speaking": {
+            "thema": "Prüfungssimulation Sprechen A2",
+            "situation": "Sprechprüfung simulieren: Fragen stellen, Bitte, kurze Präsentation",
+            "redemittel": [
+              "Ich möchte über … sprechen.",
+              "Können Sie mir bitte helfen?",
+              "Das finde ich …, weil …",
+              "Entschuldigung, können Sie das wiederholen?"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "key": "B1",
+      "name": "B1 – Selbstständige Sprachverwendung",
+      "goal": "Sich zu vertrauten Themen zusammenhängend äußern, Erlebnisse und Meinungen begründen, Texte schreiben und verstehen.",
+      "modules": [
+        {
+          "id": "B1.1",
+          "level": "B1",
+          "number": 1,
+          "title": "Erzählen in der Vergangenheit",
+          "grammar": [
+            {
+              "lessonId": "B1.1.Mo",
+              "day": "Mo",
+              "title": "Präteritum: regelmäßige und starke Verben",
+              "kern": [
+                "Regelmäßig: -te (lernte, arbeitete)",
+                "Starke Verben: ging, kam, sah, fuhr",
+                "Präteritum in Erzähltexten, Perfekt im Gespräch"
+              ],
+              "beispiele": [
+                "Gestern ging ich nach der Arbeit nach Hause und sah einen Unfall."
+              ],
+              "wortschatz": "Erzählen"
+            },
+            {
+              "lessonId": "B1.1.Di",
+              "day": "Di",
+              "title": "Plusquamperfekt",
+              "kern": [
+                "hatte/war + Partizip II",
+                "Vorzeitigkeit: Was passierte zuerst?",
+                "Mit nachdem: Nachdem ich gegessen hatte, …"
+              ],
+              "beispiele": [
+                "Nachdem er gekommen war, begann die Sitzung."
+              ],
+              "wortschatz": "Reihenfolge"
+            },
+            {
+              "lessonId": "B1.1.Mi",
+              "day": "Mi",
+              "title": "Zeitliche Konjunktionen: als, wenn, nachdem, bevor, während",
+              "kern": [
+                "als = einmalig in der Vergangenheit",
+                "wenn = Wiederholung, Gegenwart, Zukunft",
+                "bevor, nachdem, während + Nebensatz"
+              ],
+              "beispiele": [
+                "Als ich ein Kind war, wohnte ich in Salé. Wenn ich Zeit habe, lese ich."
+              ],
+              "wortschatz": "Zeit"
+            },
+            {
+              "lessonId": "B1.1.Do",
+              "day": "Do",
+              "title": "Nebensatzstellung wiederholen & Erzählen üben",
+              "kern": [
+                "Verb am Ende: Hauptsatz, Nebensatz, Satzreihen",
+                "Nebensatz vor dem Hauptsatz",
+                "Eine Geschichte frei erzählen (Einleitung, Höhepunkt, Schluss)"
+              ],
+              "beispiele": [
+                "Als ich ankam, war niemand da, deshalb habe ich gewartet."
+              ],
+              "wortschatz": "Geschichten"
+            }
+          ],
+          "speaking": {
+            "thema": "Eine Geschichte erzählen",
+            "situation": "Eine Erinnerung oder ein besonderes Erlebnis erzählen; Nachfragen stellen",
+            "redemittel": [
+              "Es war einmal …",
+              "Zuerst … später … schließlich …",
+              "Das war ein unvergessliches Erlebnis",
+              "Und was ist dann passiert?"
+            ]
+          }
+        },
+        {
+          "id": "B1.2",
+          "level": "B1",
+          "number": 2,
+          "title": "Passiv",
+          "grammar": [
+            {
+              "lessonId": "B1.2.Mo",
+              "day": "Mo",
+              "title": "Vorgangspassiv im Präsens",
+              "kern": [
+                "werden + Partizip II",
+                "Der Handelnde wird oft nicht genannt",
+                "Passiv bei Abläufen: Der Patient wird gewaschen."
+              ],
+              "beispiele": [
+                "Der Patient wird gewaschen. Die Medikamente werden um 8 Uhr gegeben."
+              ],
+              "wortschatz": "Pflege, Abläufe"
+            },
+            {
+              "lessonId": "B1.2.Di",
+              "day": "Di",
+              "title": "Passiv Präteritum & Perfekt",
+              "kern": [
+                "Präteritum: wurde + Partizip II",
+                "Perfekt: ist … worden",
+                "von + Dativ, durch + Akkusativ"
+              ],
+              "beispiele": [
+                "Das Haus wurde 1990 gebaut. Der Brief ist gestern geschickt worden."
+              ],
+              "wortschatz": "Geschichte"
+            },
+            {
+              "lessonId": "B1.2.Mi",
+              "day": "Mi",
+              "title": "Passiv mit Modalverben",
+              "kern": [
+                "Modalverb + Partizip II + werden",
+                "Anweisungen und Regeln: Medikamente müssen gekühlt werden",
+                "Passiv auf Hinweisschildern"
+              ],
+              "beispiele": [
+                "Hier darf nicht geraucht werden. Der Termin kann verschoben werden."
+              ],
+              "wortschatz": "Regeln"
+            },
+            {
+              "lessonId": "B1.2.Do",
+              "day": "Do",
+              "title": "Passiversatz: man, sich lassen, -bar",
+              "kern": [
+                "man + Aktiv statt Passiv",
+                "sich lassen + Infinitiv (Das lässt sich lösen)",
+                "Adjektive auf -bar und -lich"
+              ],
+              "beispiele": [
+                "Man kann das leicht lösen. Das Problem lässt sich lösen."
+              ],
+              "wortschatz": "Alternativen"
+            }
+          ],
+          "speaking": {
+            "thema": "Abläufe beschreiben",
+            "situation": "Einen Arbeitsablauf im Passiv erklären (z. B. Aufnahme eines Patienten, Anmeldung beim Amt)",
+            "redemittel": [
+              "Zuerst wird …",
+              "Danach muss … werden",
+              "Das wird von … gemacht",
+              "Man sollte …"
+            ]
+          }
+        },
+        {
+          "id": "B1.3",
+          "level": "B1",
+          "number": 3,
+          "title": "Relativsätze",
+          "grammar": [
+            {
+              "lessonId": "B1.3.Mo",
+              "day": "Mo",
+              "title": "Relativsätze im Nominativ",
+              "kern": [
+                "Relativpronomen: der, die, das, die",
+                "Genus und Numerus vom Bezugswort, Kasus aus dem Relativsatz",
+                "Verb am Ende"
+              ],
+              "beispiele": [
+                "Das ist der Arzt, der mich behandelt."
+              ],
+              "wortschatz": "Personen, Dinge"
+            },
+            {
+              "lessonId": "B1.3.Di",
+              "day": "Di",
+              "title": "Relativsätze im Akkusativ",
+              "kern": [
+                "den, die, das, die",
+                "Relativsatz direkt nach dem Bezugswort",
+                "Mehr Information in einem Satz"
+              ],
+              "beispiele": [
+                "Das ist die Frau, die ich gestern gesehen habe."
+              ],
+              "wortschatz": "Beschreiben"
+            },
+            {
+              "lessonId": "B1.3.Mi",
+              "day": "Mi",
+              "title": "Relativsätze im Dativ & mit Präposition",
+              "kern": [
+                "dem, der, dem, denen",
+                "Präposition vor dem Relativpronomen: mit dem, für die",
+                "Fragen mit Präposition"
+              ],
+              "beispiele": [
+                "Das ist die Kollegin, mit der ich arbeite."
+              ],
+              "wortschatz": "Beziehungen"
+            },
+            {
+              "lessonId": "B1.3.Do",
+              "day": "Do",
+              "title": "Relativsätze in Texten anwenden",
+              "kern": [
+                "Zwei Sätze verbinden",
+                "Personen und Orte genauer beschreiben",
+                "Fehler vermeiden: Komma, Verbposition"
+              ],
+              "beispiele": [
+                "Die Stadt, in der ich wohne, ist sehr schön."
+              ],
+              "wortschatz": "Beschreibung"
+            }
+          ],
+          "speaking": {
+            "thema": "Personen und Orte beschreiben",
+            "situation": "Personen oder Orte so beschreiben, dass der Partner raten kann (Ratespiel)",
+            "redemittel": [
+              "Das ist jemand, der …",
+              "Das ist ein Ort, an dem …",
+              "Das ist etwas, das …",
+              "Meinst du den, der …?"
+            ]
+          }
+        },
+        {
+          "id": "B1.4",
+          "level": "B1",
+          "number": 4,
+          "title": "Konjunktiv II",
+          "grammar": [
+            {
+              "lessonId": "B1.4.Mo",
+              "day": "Mo",
+              "title": "Wünsche & Hypothesen: hätte, wäre, würde",
+              "kern": [
+                "wäre, hätte + würde + Infinitiv",
+                "Irreale Wünsche: Ich wäre gern …",
+                "Ich würde gern …"
+              ],
+              "beispiele": [
+                "Ich wäre gern Arzt. Ich hätte gern mehr Zeit."
+              ],
+              "wortschatz": "Wünsche"
+            },
+            {
+              "lessonId": "B1.4.Di",
+              "day": "Di",
+              "title": "Höfliche Bitten & Ratschläge",
+              "kern": [
+                "Könnten Sie …? Dürfte ich …? Würden Sie …?",
+                "Ratschläge: An deiner Stelle würde ich …",
+                "sollte, könnte als Rat"
+              ],
+              "beispiele": [
+                "An deiner Stelle würde ich einen Arzt anrufen."
+              ],
+              "wortschatz": "Ratschläge"
+            },
+            {
+              "lessonId": "B1.4.Mi",
+              "day": "Mi",
+              "title": "Irreale Bedingungssätze",
+              "kern": [
+                "Wenn ich … hätte, würde ich …",
+                "Wenn ich … wäre, …",
+                "Nebensatz zuerst: Verb-Verb-Position"
+              ],
+              "beispiele": [
+                "Wenn ich mehr Geld hätte, würde ich reisen."
+              ],
+              "wortschatz": "Traum, Hypothese"
+            },
+            {
+              "lessonId": "B1.4.Do",
+              "day": "Do",
+              "title": "Konjunktiv II der Vergangenheit",
+              "kern": [
+                "hätte/wäre + Partizip II",
+                "Verpasste Chancen: Hätte ich doch …!",
+                "Kritik und Bedauern"
+              ],
+              "beispiele": [
+                "Wenn ich früher gelernt hätte, wäre ich jetzt weiter."
+              ],
+              "wortschatz": "Bedauern"
+            }
+          ],
+          "speaking": {
+            "thema": "Wenn ich …",
+            "situation": "Über Träume und Hypothesen sprechen: Was würdest du tun, wenn …?",
+            "redemittel": [
+              "Was würdest du tun, wenn …?",
+              "An deiner Stelle würde ich …",
+              "Ich wäre gern …",
+              "Hätte ich doch …"
+            ]
+          }
+        },
+        {
+          "id": "B1.5",
+          "level": "B1",
+          "number": 5,
+          "title": "Infinitivsätze & Konnektoren",
+          "grammar": [
+            {
+              "lessonId": "B1.5.Mo",
+              "day": "Mo",
+              "title": "Indirekte Fragen",
+              "kern": [
+                "ob bei Ja/Nein-Fragen",
+                "W-Wort bei W-Fragen",
+                "Verb am Ende: Ich weiß nicht, ob sie kommt."
+              ],
+              "beispiele": [
+                "Können Sie mir sagen, wann der Zug fährt?"
+              ],
+              "wortschatz": "Höflich fragen"
+            },
+            {
+              "lessonId": "B1.5.Di",
+              "day": "Di",
+              "title": "Infinitiv mit zu: um … zu, ohne … zu, (an)statt … zu",
+              "kern": [
+                "um … zu, ohne … zu, (an)statt … zu",
+                "Infinitiv mit zu nach Adjektiv und Nomen",
+                "Trennbare Verben: aufzuräumen"
+              ],
+              "beispiele": [
+                "Er ging, ohne sich zu verabschieden."
+              ],
+              "wortschatz": "Absichten"
+            },
+            {
+              "lessonId": "B1.5.Mi",
+              "day": "Mi",
+              "title": "Verben mit Präposition & Pronominaladverbien",
+              "kern": [
+                "worauf?, womit?, wofür? / darauf, damit, dafür",
+                "Verben: sich ärgern über, sich kümmern um, abhängen von",
+                "da(r)- + Präposition + dass"
+              ],
+              "beispiele": [
+                "Ich kümmere mich darum, dass alles klappt."
+              ],
+              "wortschatz": "Verben"
+            },
+            {
+              "lessonId": "B1.5.Do",
+              "day": "Do",
+              "title": "Konnektoren: trotzdem, deswegen, außerdem, einerseits … andererseits",
+              "kern": [
+                "trotzdem, deswegen, außerdem: Position 1, danach das Verb",
+                "einerseits … andererseits",
+                "Satzverbindungen im Text"
+              ],
+              "beispiele": [
+                "Einerseits ist die Arbeit anstrengend, andererseits macht sie Spaß."
+              ],
+              "wortschatz": "Argumente"
+            }
+          ],
+          "speaking": {
+            "thema": "Meinungen begründen",
+            "situation": "Pro und Contra zu einem Alltagsthema (z. B. Schichtarbeit, Auswandern)",
+            "redemittel": [
+              "Einerseits …, andererseits …",
+              "Außerdem …",
+              "Trotzdem finde ich, dass …",
+              "Ich bin dafür/dagegen, weil …"
+            ]
+          }
+        },
+        {
+          "id": "B1.6",
+          "level": "B1",
+          "number": 6,
+          "title": "Adjektive, Genitiv & Wortbildung",
+          "grammar": [
+            {
+              "lessonId": "B1.6.Mo",
+              "day": "Mo",
+              "title": "Adjektivdeklination (Wiederholung)",
+              "kern": [
+                "Nach bestimmtem und unbestimmtem Artikel, ohne Artikel",
+                "Alle Kasus im Überblick",
+                "Typische Fehler"
+              ],
+              "beispiele": [
+                "Mit großer Freude, in einer neuen Stadt"
+              ],
+              "wortschatz": "Adjektive"
+            },
+            {
+              "lessonId": "B1.6.Di",
+              "day": "Di",
+              "title": "Genitiv & Präpositionen mit Genitiv",
+              "kern": [
+                "Genitiv: des Mannes, der Frau",
+                "wegen, trotz, während, statt",
+                "von + Dativ als Alternative im Gespräch"
+              ],
+              "beispiele": [
+                "Wegen des schlechten Wetters bleibe ich zu Hause."
+              ],
+              "wortschatz": "Gründe"
+            },
+            {
+              "lessonId": "B1.6.Mi",
+              "day": "Mi",
+              "title": "Partizip als Adjektiv",
+              "kern": [
+                "Partizip I: das schlafende Kind",
+                "Partizip II: das gelöste Problem",
+                "Endungen wie bei Adjektiven"
+              ],
+              "beispiele": [
+                "Das gelöste Problem ist nicht mehr wichtig."
+              ],
+              "wortschatz": "Beschreiben"
+            },
+            {
+              "lessonId": "B1.6.Do",
+              "day": "Do",
+              "title": "Wortbildung & Nominalisierung",
+              "kern": [
+                "Nomen aus Verben: -ung, -keit, -heit, Infinitiv",
+                "Zusammengesetzte Nomen: der Arbeitsplatz",
+                "Wortfamilien nutzen"
+              ],
+              "beispiele": [
+                "Die Anmeldung, die Möglichkeit, das Lernen"
+              ],
+              "wortschatz": "Wortschatz"
+            }
+          ],
+          "speaking": {
+            "thema": "Wortschatz & Beschreiben",
+            "situation": "Gegenstände oder Berufe umschreiben, ohne das Wort zu nennen (Tabu-Spiel)",
+            "redemittel": [
+              "Das ist etwas, womit man …",
+              "Es ist ein/e …, die/der …",
+              "Ein anderes Wort dafür ist …",
+              "Das bedeutet …"
+            ]
+          }
+        },
+        {
+          "id": "B1.7",
+          "level": "B1",
+          "number": 7,
+          "title": "Schreiben B1",
+          "grammar": [
+            {
+              "lessonId": "B1.7.Mo",
+              "day": "Mo",
+              "title": "Persönlicher Brief & E-Mail",
+              "kern": [
+                "Anrede, Einleitung, Hauptteil, Schluss",
+                "Einladung, Dank, Bitte, Rat",
+                "Gruß: Liebe Grüße, Bis bald"
+              ],
+              "beispiele": [
+                "Vielen Dank für deine Einladung. Leider kann ich nicht kommen, weil …"
+              ],
+              "wortschatz": "Brief"
+            },
+            {
+              "lessonId": "B1.7.Di",
+              "day": "Di",
+              "title": "Formeller Brief & Beschwerde",
+              "kern": [
+                "Sehr geehrte Damen und Herren",
+                "Beschwerde: Problem, Wunsch, Frist",
+                "Höfliche Wendungen im Konjunktiv II"
+              ],
+              "beispiele": [
+                "Ich möchte mich über … beschweren. Ich bitte Sie, …"
+              ],
+              "wortschatz": "Beschwerde"
+            },
+            {
+              "lessonId": "B1.7.Mi",
+              "day": "Mi",
+              "title": "Meinung äußern: Forumsbeitrag",
+              "kern": [
+                "Meinung, Argument, Beispiel, Schluss",
+                "Redemittel: Ich bin der Meinung, dass …",
+                "Pro und Contra"
+              ],
+              "beispiele": [
+                "Meiner Meinung nach sollten …"
+              ],
+              "wortschatz": "Argumentation"
+            },
+            {
+              "lessonId": "B1.7.Do",
+              "day": "Do",
+              "title": "Schreib-Training & Korrektur",
+              "kern": [
+                "Texte mit Stichpunkten planen",
+                "Selbstkorrektur-Checkliste",
+                "Feedback-Runde im Team"
+              ],
+              "beispiele": [],
+              "wortschatz": "Schreiben"
+            }
+          ],
+          "speaking": {
+            "thema": "Meinung sagen",
+            "situation": "Zu einem Forumsbeitrag mündlich Stellung nehmen",
+            "redemittel": [
+              "Meiner Meinung nach …",
+              "Ich bin der Ansicht, dass …",
+              "Dafür spricht, dass …",
+              "Ich stimme dir (nicht) zu, weil …"
+            ]
+          }
+        },
+        {
+          "id": "B1.8",
+          "level": "B1",
+          "number": 8,
+          "title": "Hören & Lesen B1",
+          "grammar": [
+            {
+              "lessonId": "B1.8.Mo",
+              "day": "Mo",
+              "title": "Lesestrategien",
+              "kern": [
+                "Globales, selektives, detailliertes Lesen",
+                "Textsorten: Anzeige, E-Mail, Zeitungsartikel",
+                "Unbekannte Wörter erschließen"
+              ],
+              "beispiele": [],
+              "wortschatz": "Lesen"
+            },
+            {
+              "lessonId": "B1.8.Di",
+              "day": "Di",
+              "title": "Hörstrategien",
+              "kern": [
+                "Vorwissen aktivieren, Fragen vorab lesen",
+                "Notizen machen (Stichwörter)",
+                "Radio, Durchsagen, Gespräche"
+              ],
+              "beispiele": [],
+              "wortschatz": "Hören"
+            },
+            {
+              "lessonId": "B1.8.Mi",
+              "day": "Mi",
+              "title": "Alltag in Deutschland: Behörden, Arzt, Versicherung",
+              "kern": [
+                "Texte von Behörden verstehen",
+                "Wichtige Begriffe: Bescheid, Frist, Antrag",
+                "Nachfragen formulieren"
+              ],
+              "beispiele": [
+                "Ich habe ein Schreiben erhalten. Was muss ich jetzt tun?"
+              ],
+              "wortschatz": "Behörden"
+            },
+            {
+              "lessonId": "B1.8.Do",
+              "day": "Do",
+              "title": "Wortschatz erweitern",
+              "kern": [
+                "Redewendungen und feste Verbindungen: eine Entscheidung treffen",
+                "Wortfelder: Gesundheit, Arbeit, Wohnen",
+                "Wortschatz-Training mit Karten"
+              ],
+              "beispiele": [
+                "eine Entscheidung treffen, Rücksicht nehmen"
+              ],
+              "wortschatz": "Wortschatz"
+            }
+          ],
+          "speaking": {
+            "thema": "Hören & Wiedergeben",
+            "situation": "Eine kurze Nachricht hören und mit eigenen Worten wiedergeben",
+            "redemittel": [
+              "Es ging um …",
+              "Der Sprecher sagt, dass …",
+              "Zusammengefasst …",
+              "Ich habe nicht alles verstanden, aber …"
+            ]
+          }
+        },
+        {
+          "id": "B1.9",
+          "level": "B1",
+          "number": 9,
+          "title": "Sprechen B1",
+          "grammar": [
+            {
+              "lessonId": "B1.9.Mo",
+              "day": "Mo",
+              "title": "Präsentation halten",
+              "kern": [
+                "Aufbau: Einleitung, Hauptteil, Schluss",
+                "Redemittel: Ich möchte über … sprechen",
+                "Folie und Stichpunkte nutzen"
+              ],
+              "beispiele": [
+                "Zuerst möchte ich über … sprechen."
+              ],
+              "wortschatz": "Präsentation"
+            },
+            {
+              "lessonId": "B1.9.Di",
+              "day": "Di",
+              "title": "Diskussion: Pro und Contra",
+              "kern": [
+                "Argumente nennen und widerlegen",
+                "Zustimmen und widersprechen",
+                "Höflich unterbrechen"
+              ],
+              "beispiele": [
+                "Da stimme ich dir zu. Das sehe ich anders."
+              ],
+              "wortschatz": "Diskussion"
+            },
+            {
+              "lessonId": "B1.9.Mi",
+              "day": "Mi",
+              "title": "Gemeinsam etwas planen",
+              "kern": [
+                "Vorschläge machen und aushandeln",
+                "Entscheiden und zusammenfassen",
+                "Prüfungsteil: gemeinsam planen"
+              ],
+              "beispiele": [
+                "Wir könnten … Was hältst du davon?"
+              ],
+              "wortschatz": "Planen"
+            },
+            {
+              "lessonId": "B1.9.Do",
+              "day": "Do",
+              "title": "Feedback geben & Hilfe formulieren",
+              "kern": [
+                "Nachfragen: Was bedeutet …?",
+                "Um Wiederholung bitten",
+                "Feedback höflich geben"
+              ],
+              "beispiele": [
+                "Könnten Sie das bitte anders erklären?"
+              ],
+              "wortschatz": "Kommunikation"
+            }
+          ],
+          "speaking": {
+            "thema": "Präsentation & Diskussion",
+            "situation": "Kurze Präsentation (3 Min.) mit anschließender Diskussion",
+            "redemittel": [
+              "Mein Thema ist …",
+              "Das Wichtigste ist …",
+              "Was meinen Sie dazu?",
+              "Da bin ich anderer Meinung."
+            ]
+          }
+        },
+        {
+          "id": "B1.10",
+          "level": "B1",
+          "number": 10,
+          "title": "Prüfungswoche B1",
+          "grammar": [
+            {
+              "lessonId": "B1.10.Mo",
+              "day": "Mo",
+              "title": "Modelltest Lesen & Hören",
+              "kern": [
+                "Lesen und Hören unter Zeitdruck",
+                "Strategien anwenden",
+                "Auswertung und Fehleranalyse"
+              ],
+              "beispiele": [],
+              "wortschatz": "Prüfung"
+            },
+            {
+              "lessonId": "B1.10.Di",
+              "day": "Di",
+              "title": "Modelltest Schreiben",
+              "kern": [
+                "Zwei Aufgaben: E-Mail/Brief + Forumsbeitrag",
+                "Zeit planen",
+                "Feedback mit Kriterien"
+              ],
+              "beispiele": [],
+              "wortschatz": "Prüfung"
+            },
+            {
+              "lessonId": "B1.10.Mi",
+              "day": "Mi",
+              "title": "Modelltest Sprechen",
+              "kern": [
+                "Präsentation, Diskussion, gemeinsam planen",
+                "Prüfer/in: Muttersprachler/in",
+                "Bewertung nach Kriterien"
+              ],
+              "beispiele": [],
+              "wortschatz": "Prüfung"
+            },
+            {
+              "lessonId": "B1.10.Do",
+              "day": "Do",
+              "title": "Auswertung & Übergang zu B2",
+              "kern": [
+                "Ergebnisgespräch pro Teilnehmer",
+                "Prüfungsanmeldung prüfen",
+                "Gruppe für B2 festlegen"
+              ],
+              "beispiele": [],
+              "wortschatz": "Abschluss"
+            }
+          ],
+          "speaking": {
+            "thema": "Prüfungssimulation Sprechen B1",
+            "situation": "Komplette Sprechprüfung simulieren (Muttersprachler/in als Prüfer/in)",
+            "redemittel": [
+              "Ich möchte über … sprechen",
+              "Wir könnten …",
+              "Das sehe ich anders, weil …",
+              "Vielen Dank für Ihre Aufmerksamkeit."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "key": "B2",
+      "name": "B2 – Fortgeschrittene Sprachverwendung",
+      "goal": "Komplexe Texte verstehen, sich spontan und flüssig verständigen, sich klar und detailliert mündlich und schriftlich ausdrücken.",
+      "modules": [
+        {
+          "id": "B2.1",
+          "level": "B2",
+          "number": 1,
+          "title": "Komplexe Sätze & Konnektoren",
+          "grammar": [
+            {
+              "lessonId": "B2.1.Mo",
+              "day": "Mo",
+              "title": "Konnektoren der Folge & des Gegensatzes",
+              "kern": [
+                "folglich, demnach, dennoch, allerdings",
+                "Position im Satz: Satzglied auf Position 1, Verb auf Position 2",
+                "Zwischen Argumenten verbinden"
+              ],
+              "beispiele": [
+                "Er hat viel gelernt, dennoch hat er die Prüfung nicht bestanden."
+              ],
+              "wortschatz": "Argumentation"
+            },
+            {
+              "lessonId": "B2.1.Di",
+              "day": "Di",
+              "title": "Doppelkonnektoren",
+              "kern": [
+                "sowohl … als auch, weder … noch, entweder … oder, nicht nur … sondern auch",
+                "Verbposition und Kongruenz",
+                "Beispiele aus dem Beruf"
+              ],
+              "beispiele": [
+                "Sie spricht sowohl Arabisch als auch Deutsch."
+              ],
+              "wortschatz": "Verbindungen"
+            },
+            {
+              "lessonId": "B2.1.Mi",
+              "day": "Mi",
+              "title": "Konzessiv & Kausal: zwar … aber, da, angesichts",
+              "kern": [
+                "zwar … aber, obwohl, trotzdem im Vergleich",
+                "da (bekannter Grund) und weil",
+                "angesichts, aufgrund + Genitiv"
+              ],
+              "beispiele": [
+                "Zwar ist die Arbeit schwer, aber sie macht Spaß."
+              ],
+              "wortschatz": "Gründe"
+            },
+            {
+              "lessonId": "B2.1.Do",
+              "day": "Do",
+              "title": "Finalsätze & Konsekutivsätze",
+              "kern": [
+                "damit oder um … zu (Unterschied bei gleichem Subjekt)",
+                "sodass, so … dass",
+                "Zweck und Folge"
+              ],
+              "beispiele": [
+                "Ich lerne täglich, damit ich die Prüfung bestehe."
+              ],
+              "wortschatz": "Zwecke"
+            }
+          ],
+          "speaking": {
+            "thema": "Argumente verbinden",
+            "situation": "Eine Meinung mit mindestens fünf verschiedenen Konnektoren begründen",
+            "redemittel": [
+              "Zwar …, aber …",
+              "Sowohl … als auch …",
+              "Folglich …",
+              "Dennoch bin ich der Meinung, dass …"
+            ]
+          }
+        },
+        {
+          "id": "B2.2",
+          "level": "B2",
+          "number": 2,
+          "title": "Passiv & Nominalstil",
+          "grammar": [
+            {
+              "lessonId": "B2.2.Mo",
+              "day": "Mo",
+              "title": "Passivformen im Überblick",
+              "kern": [
+                "Alle Zeiten: wird, wurde, ist worden, wird werden",
+                "Passiv mit Modalverben",
+                "Passiv oder Aktiv wählen"
+              ],
+              "beispiele": [
+                "Der Bericht wird morgen abgegeben werden."
+              ],
+              "wortschatz": "Berichte"
+            },
+            {
+              "lessonId": "B2.2.Di",
+              "day": "Di",
+              "title": "Zustandspassiv",
+              "kern": [
+                "sein + Partizip II: Das Fenster ist geöffnet",
+                "Vorgang oder Zustand?",
+                "Typisch in Anleitungen und Aushängen"
+              ],
+              "beispiele": [
+                "Die Praxis ist von 8 bis 12 Uhr geöffnet."
+              ],
+              "wortschatz": "Zustand"
+            },
+            {
+              "lessonId": "B2.2.Mi",
+              "day": "Mi",
+              "title": "Nominalisierung & Verbalisierung",
+              "kern": [
+                "Verb → Nomen: durch die Verwendung",
+                "Nebensatz → Nominalphrase: wegen + Genitiv",
+                "Nominalstil in Fachtexten"
+              ],
+              "beispiele": [
+                "Wegen der Verspätung fällt der Kurs aus."
+              ],
+              "wortschatz": "Fachsprache"
+            },
+            {
+              "lessonId": "B2.2.Do",
+              "day": "Do",
+              "title": "Partizipialattribute",
+              "kern": [
+                "das gelesene Buch, der schlafende Patient",
+                "Erweiterte Partizipialattribute: der von dem Arzt untersuchte Patient",
+                "In Relativsätze auflösen"
+              ],
+              "beispiele": [
+                "Der gestern aufgenommene Patient schläft."
+              ],
+              "wortschatz": "Texte verstehen"
+            }
+          ],
+          "speaking": {
+            "thema": "Fachtexte erklären",
+            "situation": "Einen Abschnitt eines Fachtextes in einfachen Worten erklären",
+            "redemittel": [
+              "Das bedeutet, dass …",
+              "Mit anderen Worten …",
+              "Es handelt sich um …",
+              "Zusammenfassend lässt sich sagen …"
+            ]
+          }
+        },
+        {
+          "id": "B2.3",
+          "level": "B2",
+          "number": 3,
+          "title": "Konjunktiv",
+          "grammar": [
+            {
+              "lessonId": "B2.3.Mo",
+              "day": "Mo",
+              "title": "Konjunktiv II: Gegenwart & Vergangenheit",
+              "kern": [
+                "Starke Formen: wäre, hätte, käme, ginge",
+                "Vergangenheit: hätte/wäre + Partizip II",
+                "Konjunktiv II mit Modalverben"
+              ],
+              "beispiele": [
+                "Ich hätte das früher machen können."
+              ],
+              "wortschatz": "Hypothese"
+            },
+            {
+              "lessonId": "B2.3.Di",
+              "day": "Di",
+              "title": "Konjunktiv I: indirekte Rede",
+              "kern": [
+                "Bildung: er sei, er habe, er komme",
+                "Wenn Konjunktiv I = Indikativ, dann Konjunktiv II",
+                "Berichten, was jemand gesagt hat"
+              ],
+              "beispiele": [
+                "Der Minister sagte, er sei bereit."
+              ],
+              "wortschatz": "Berichten"
+            },
+            {
+              "lessonId": "B2.3.Mi",
+              "day": "Mi",
+              "title": "Irreale Vergleiche: als ob, als wenn",
+              "kern": [
+                "Konjunktiv II nach als ob",
+                "Er tut so, als ob er alles wüsste",
+                "Verbstellung: als ob + Nebensatz"
+              ],
+              "beispiele": [
+                "Sie tut so, als ob sie nichts wüsste."
+              ],
+              "wortschatz": "Vergleiche"
+            },
+            {
+              "lessonId": "B2.3.Do",
+              "day": "Do",
+              "title": "Höflichkeit & Register",
+              "kern": [
+                "Formell: Dürfte ich Sie bitten, …?",
+                "Informell und formell umschreiben",
+                "Diplomatisch widersprechen"
+              ],
+              "beispiele": [
+                "Dürfte ich Sie bitten, kurz zu warten?"
+              ],
+              "wortschatz": "Höflichkeit"
+            }
+          ],
+          "speaking": {
+            "thema": "Indirekt berichten",
+            "situation": "Eine Nachricht oder ein Gespräch indirekt wiedergeben (Konjunktiv I oder Indikativ)",
+            "redemittel": [
+              "Er sagte, er sei …",
+              "Sie meinte, dass …",
+              "Angeblich …",
+              "Wie ich gehört habe, …"
+            ]
+          }
+        },
+        {
+          "id": "B2.4",
+          "level": "B2",
+          "number": 4,
+          "title": "Relativsätze & Satzbau",
+          "grammar": [
+            {
+              "lessonId": "B2.4.Mo",
+              "day": "Mo",
+              "title": "Relativsätze mit was, wo, wer",
+              "kern": [
+                "was nach alles, etwas, nichts, das Beste",
+                "wo für Orte und Zeit",
+                "wer = jeder, der …"
+              ],
+              "beispiele": [
+                "Alles, was ich weiß, habe ich gelernt."
+              ],
+              "wortschatz": "Relativ"
+            },
+            {
+              "lessonId": "B2.4.Di",
+              "day": "Di",
+              "title": "Genitivattribute",
+              "kern": [
+                "des Hauses, der Frau, der Kinder",
+                "Genitiv statt von + Dativ im Schriftlichen",
+                "Stellung nach dem Nomen"
+              ],
+              "beispiele": [
+                "Die Meinung des Chefs ist wichtig."
+              ],
+              "wortschatz": "Genitiv"
+            },
+            {
+              "lessonId": "B2.4.Mi",
+              "day": "Mi",
+              "title": "Präpositionen mit Genitiv & feste Verbindungen",
+              "kern": [
+                "aufgrund, innerhalb, außerhalb, trotz, anstelle",
+                "Feste Verb-Nomen-Verbindungen: in Frage stellen, zur Verfügung stehen",
+                "Formelle Sprache"
+              ],
+              "beispiele": [
+                "Aufgrund der Krankheit fällt der Termin aus."
+              ],
+              "wortschatz": "Formell"
+            },
+            {
+              "lessonId": "B2.4.Do",
+              "day": "Do",
+              "title": "Wortstellung: Mittelfeld & Satzklammer",
+              "kern": [
+                "Reihenfolge im Mittelfeld: Zeit, Grund, Art, Ort",
+                "Satzklammer: Verb 1 … Verb 2",
+                "Betonung durch Stellung"
+              ],
+              "beispiele": [
+                "Ich habe heute wegen des Regens im Büro gearbeitet."
+              ],
+              "wortschatz": "Satzbau"
+            }
+          ],
+          "speaking": {
+            "thema": "Genau beschreiben",
+            "situation": "Komplexe Sachverhalte genau beschreiben (Relativsätze, Genitiv, Satzbau)",
+            "redemittel": [
+              "Das ist etwas, was …",
+              "Der Grund dafür ist …",
+              "Das hängt davon ab, ob …",
+              "Genauer gesagt …"
+            ]
+          }
+        },
+        {
+          "id": "B2.5",
+          "level": "B2",
+          "number": 5,
+          "title": "Meinung & Argumentation",
+          "grammar": [
+            {
+              "lessonId": "B2.5.Mo",
+              "day": "Mo",
+              "title": "Erörterung: Aufbau",
+              "kern": [
+                "Einleitung, Argumente (Pro/Contra), Schluss",
+                "Beispiele und Belege",
+                "Roter Faden"
+              ],
+              "beispiele": [
+                "Zunächst möchte ich auf … eingehen."
+              ],
+              "wortschatz": "Argumentation"
+            },
+            {
+              "lessonId": "B2.5.Di",
+              "day": "Di",
+              "title": "Stellung nehmen: Redemittel",
+              "kern": [
+                "Meiner Meinung nach …, Ich bin überzeugt, dass …",
+                "Zustimmen, widersprechen, relativieren",
+                "Höflich widersprechen"
+              ],
+              "beispiele": [
+                "Ich bin davon überzeugt, dass …"
+              ],
+              "wortschatz": "Meinung"
+            },
+            {
+              "lessonId": "B2.5.Mi",
+              "day": "Mi",
+              "title": "Grafiken beschreiben & auswerten",
+              "kern": [
+                "Beschreiben: Die Grafik zeigt …",
+                "Zahlen vergleichen: steigen, sinken, gleich bleiben",
+                "Schlussfolgern"
+              ],
+              "beispiele": [
+                "Die Zahl der Teilnehmer ist von 50 auf 80 gestiegen."
+              ],
+              "wortschatz": "Statistik"
+            },
+            {
+              "lessonId": "B2.5.Do",
+              "day": "Do",
+              "title": "Diskussion führen & moderieren",
+              "kern": [
+                "Das Wort ergreifen, unterbrechen, zusammenfassen",
+                "Argumente aufgreifen: Sie haben vorhin gesagt, …",
+                "Fazit ziehen"
+              ],
+              "beispiele": [
+                "Darf ich kurz ergänzen?"
+              ],
+              "wortschatz": "Diskussion"
+            }
+          ],
+          "speaking": {
+            "thema": "Diskussion & Debatte",
+            "situation": "Eine strukturierte Debatte zu einem gesellschaftlichen Thema führen (Pro/Contra)",
+            "redemittel": [
+              "Einerseits …, andererseits …",
+              "Dem möchte ich entgegnen, dass …",
+              "Sie haben recht, dennoch …",
+              "Zusammenfassend …"
+            ]
+          }
+        },
+        {
+          "id": "B2.6",
+          "level": "B2",
+          "number": 6,
+          "title": "Beruf & Pflege",
+          "grammar": [
+            {
+              "lessonId": "B2.6.Mo",
+              "day": "Mo",
+              "title": "Bewerbung & Vorstellungsgespräch",
+              "kern": [
+                "Anschreiben: Motivation, Qualifikation, Schluss",
+                "Typische Fragen im Vorstellungsgespräch beantworten",
+                "Stärken und Schwächen"
+              ],
+              "beispiele": [
+                "Ich bin sehr teamfähig und belastbar."
+              ],
+              "wortschatz": "Bewerbung"
+            },
+            {
+              "lessonId": "B2.6.Di",
+              "day": "Di",
+              "title": "Pflege-Fachsprache: Dokumentation & Übergabe",
+              "kern": [
+                "Pflegebericht schreiben: objektiv und präzise",
+                "Übergabe: Situation, Hintergrund, Beurteilung, Empfehlung",
+                "Abkürzungen und Fachbegriffe"
+              ],
+              "beispiele": [
+                "Der Patient klagt über Schmerzen im Bauchbereich."
+              ],
+              "wortschatz": "Pflege"
+            },
+            {
+              "lessonId": "B2.6.Mi",
+              "day": "Mi",
+              "title": "Gespräche mit Patienten & Angehörigen",
+              "kern": [
+                "Empathisch sprechen: Ich verstehe, dass …",
+                "Schwierige Nachrichten höflich überbringen",
+                "Verständlich erklären statt Fachsprache"
+              ],
+              "beispiele": [
+                "Ich verstehe, dass Sie sich Sorgen machen."
+              ],
+              "wortschatz": "Patientenkontakt"
+            },
+            {
+              "lessonId": "B2.6.Do",
+              "day": "Do",
+              "title": "Konflikte & Feedback im Team",
+              "kern": [
+                "Kritik höflich äußern (Ich-Botschaften)",
+                "Auf Kritik reagieren",
+                "Absprachen treffen"
+              ],
+              "beispiele": [
+                "Mir ist aufgefallen, dass …",
+                "Könnten wir vereinbaren, dass …?"
+              ],
+              "wortschatz": "Team"
+            }
+          ],
+          "speaking": {
+            "thema": "Pflegealltag im Gespräch",
+            "situation": "Rollenspiel: Übergabe im Team und Gespräch mit Patient/in oder Angehörigen",
+            "redemittel": [
+              "Zur Situation: …",
+              "Der Patient wurde … aufgenommen",
+              "Ich verstehe, dass …",
+              "Dürfte ich Ihnen das erklären?"
+            ]
+          }
+        },
+        {
+          "id": "B2.7",
+          "level": "B2",
+          "number": 7,
+          "title": "Medien & Gesellschaft",
+          "grammar": [
+            {
+              "lessonId": "B2.7.Mo",
+              "day": "Mo",
+              "title": "Zeitungsartikel lesen",
+              "kern": [
+                "Überschrift, Lead, Kernaussagen",
+                "Meinung und Tatsache unterscheiden",
+                "Schlüsselwörter markieren"
+              ],
+              "beispiele": [],
+              "wortschatz": "Lesen"
+            },
+            {
+              "lessonId": "B2.7.Di",
+              "day": "Di",
+              "title": "Hören: Vortrag & Radio",
+              "kern": [
+                "Strukturierte Notizen: Thema, Argumente, Beispiele",
+                "Sprechtempo und Dialekt",
+                "Kernaussagen zusammenfassen"
+              ],
+              "beispiele": [],
+              "wortschatz": "Hören"
+            },
+            {
+              "lessonId": "B2.7.Mi",
+              "day": "Mi",
+              "title": "Zusammenfassen & Paraphrasieren",
+              "kern": [
+                "Mit eigenen Worten wiedergeben",
+                "Synonyme und Umschreibungen",
+                "Kürzen, ohne Information zu verlieren"
+              ],
+              "beispiele": [
+                "Der Autor behauptet, dass …"
+              ],
+              "wortschatz": "Zusammenfassung"
+            },
+            {
+              "lessonId": "B2.7.Do",
+              "day": "Do",
+              "title": "Wortschatz: Umwelt, Politik, Technik, Redewendungen",
+              "kern": [
+                "Wortfelder zu aktuellen Themen",
+                "Redewendungen und Kollokationen",
+                "Abstrakte Nomen"
+              ],
+              "beispiele": [
+                "Maßnahmen ergreifen, einen Beitrag leisten"
+              ],
+              "wortschatz": "Gesellschaft"
+            }
+          ],
+          "speaking": {
+            "thema": "Nachrichten besprechen",
+            "situation": "Über einen aktuellen Nachrichtenartikel berichten und diskutieren",
+            "redemittel": [
+              "In dem Artikel geht es um …",
+              "Der Autor kritisiert, dass …",
+              "Meiner Meinung nach …",
+              "Das finde ich nachvollziehbar, weil …"
+            ]
+          }
+        },
+        {
+          "id": "B2.8",
+          "level": "B2",
+          "number": 8,
+          "title": "Schreiben B2",
+          "grammar": [
+            {
+              "lessonId": "B2.8.Mo",
+              "day": "Mo",
+              "title": "Formelle E-Mail & Beschwerde",
+              "kern": [
+                "Anlass, Sachverhalt, Forderung, Frist",
+                "Formelle Konnektoren und Nominalstil",
+                "Höflich, aber klar"
+              ],
+              "beispiele": [
+                "Hiermit möchte ich mich über … beschweren."
+              ],
+              "wortschatz": "Beschwerde"
+            },
+            {
+              "lessonId": "B2.8.Di",
+              "day": "Di",
+              "title": "Leserbrief & Forumsbeitrag",
+              "kern": [
+                "Bezug auf den Artikel, These, Argumente, Fazit",
+                "Meinung begründen",
+                "Beispiele und Gegenargumente"
+              ],
+              "beispiele": [
+                "In Ihrem Artikel haben Sie geschrieben, dass …"
+              ],
+              "wortschatz": "Meinung"
+            },
+            {
+              "lessonId": "B2.8.Mi",
+              "day": "Mi",
+              "title": "Stil & Register",
+              "kern": [
+                "Formell, neutral, umgangssprachlich",
+                "Wortwahl und Satzlänge",
+                "Wiederholungen vermeiden"
+              ],
+              "beispiele": [],
+              "wortschatz": "Stil"
+            },
+            {
+              "lessonId": "B2.8.Do",
+              "day": "Do",
+              "title": "Korrektur & Selbstüberarbeitung",
+              "kern": [
+                "Korrekturcode: Gr, R, W, Z, A",
+                "Text in 3 Durchgängen überarbeiten",
+                "Peer-Feedback im Team"
+              ],
+              "beispiele": [],
+              "wortschatz": "Korrektur"
+            }
+          ],
+          "speaking": {
+            "thema": "Texte besprechen",
+            "situation": "Einen eigenen Text vorlesen und gemeinsam verbessern (Feedback geben und annehmen)",
+            "redemittel": [
+              "Mir gefällt, dass …",
+              "Hier könnte man …",
+              "Das Wort … passt besser, weil …",
+              "Danke für den Hinweis."
+            ]
+          }
+        },
+        {
+          "id": "B2.9",
+          "level": "B2",
+          "number": 9,
+          "title": "Sprechen B2",
+          "grammar": [
+            {
+              "lessonId": "B2.9.Mo",
+              "day": "Mo",
+              "title": "Präsentation mit Folien",
+              "kern": [
+                "Struktur und Zeitplan (5–7 Min.)",
+                "Folien: wenig Text, ein Gedanke pro Folie",
+                "Überleitungen"
+              ],
+              "beispiele": [
+                "Damit komme ich zum nächsten Punkt."
+              ],
+              "wortschatz": "Vortrag"
+            },
+            {
+              "lessonId": "B2.9.Di",
+              "day": "Di",
+              "title": "Diskussion & Argumentation",
+              "kern": [
+                "Argumente gewichten",
+                "Gegenargumente aufgreifen",
+                "Konzessiv: Zwar …, aber …"
+              ],
+              "beispiele": [
+                "Das ist zwar richtig, aber …"
+              ],
+              "wortschatz": "Diskussion"
+            },
+            {
+              "lessonId": "B2.9.Mi",
+              "day": "Mi",
+              "title": "Spontan reagieren, nachfragen & verhandeln",
+              "kern": [
+                "Rückfragen stellen",
+                "Kompromisse vorschlagen",
+                "Verhandeln"
+              ],
+              "beispiele": [
+                "Wären Sie damit einverstanden, wenn …?"
+              ],
+              "wortschatz": "Verhandlung"
+            },
+            {
+              "lessonId": "B2.9.Do",
+              "day": "Do",
+              "title": "Aussprache & Intonation",
+              "kern": [
+                "Satzmelodie, Betonung, Pausen",
+                "Typische Fehler: ch, r, ö/ü, Wortakzent",
+                "Sprechtempo steuern"
+              ],
+              "beispiele": [],
+              "wortschatz": "Aussprache"
+            }
+          ],
+          "speaking": {
+            "thema": "Vortrag & Diskussion",
+            "situation": "Vortrag (5 Min.) mit Rückfragen und Diskussion durch die Gruppe",
+            "redemittel": [
+              "Zunächst …",
+              "Anschließend …",
+              "Ich komme zum Fazit",
+              "Haben Sie Fragen?"
+            ]
+          }
+        },
+        {
+          "id": "B2.10",
+          "level": "B2",
+          "number": 10,
+          "title": "Prüfungswoche B2",
+          "grammar": [
+            {
+              "lessonId": "B2.10.Mo",
+              "day": "Mo",
+              "title": "Modelltest Lesen",
+              "kern": [
+                "Textsorten und Aufgabentypen",
+                "Zeitmanagement pro Teil",
+                "Fehleranalyse"
+              ],
+              "beispiele": [],
+              "wortschatz": "Prüfung"
+            },
+            {
+              "lessonId": "B2.10.Di",
+              "day": "Di",
+              "title": "Modelltest Hören",
+              "kern": [
+                "Aufgabentypen: Gespräch, Vortrag, Interview",
+                "Notizen unter Zeitdruck",
+                "Auswertung"
+              ],
+              "beispiele": [],
+              "wortschatz": "Prüfung"
+            },
+            {
+              "lessonId": "B2.10.Mi",
+              "day": "Mi",
+              "title": "Modelltest Schreiben & Sprechen",
+              "kern": [
+                "Beschwerde oder Leserbrief nach Kriterien",
+                "Präsentation und Diskussion",
+                "Prüfer/in: Muttersprachler/in"
+              ],
+              "beispiele": [],
+              "wortschatz": "Prüfung"
+            },
+            {
+              "lessonId": "B2.10.Do",
+              "day": "Do",
+              "title": "Auswertung, Anmeldung & Abschluss",
+              "kern": [
+                "Ergebnisgespräch pro Teilnehmer",
+                "Prüfungsanmeldung (Termine und Gebühren prüfen)",
+                "Abschluss und Feedback"
+              ],
+              "beispiele": [],
+              "wortschatz": "Abschluss"
+            }
+          ],
+          "speaking": {
+            "thema": "Prüfungssimulation Sprechen B2",
+            "situation": "Komplette Sprechprüfung B2 simulieren; strukturiertes Feedback",
+            "redemittel": [
+              "Ich möchte Ihnen heute … vorstellen",
+              "Dem stimme ich (nicht) zu, weil …",
+              "Zusammenfassend lässt sich sagen …",
+              "Vielen Dank für Ihre Aufmerksamkeit."
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

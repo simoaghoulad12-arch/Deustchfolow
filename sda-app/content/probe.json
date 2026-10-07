@@ -1,0 +1,73 @@
+[
+  {
+    "zeit": "0–5",
+    "titel": "Begrüßung",
+    "lines": [
+      "Herzlich willkommen zur Probestunde bei Smart Deutsch! Ich bin Simo. Ich lebe in Deutschland und arbeite in der Pflege.",
+      "Das sind meine Kolleginnen und Kollegen. Sie stellen sich gleich kurz vor.",
+      "Heute zeigen wir euch, was ihr in A2 lernt und wie unser Kurs funktioniert. Am Ende machen wir schon die erste kleine Lektion zusammen.",
+      "Eine Regel für heute: Fragen sind immer erlaubt, und Fehler sind ganz normal.",
+      "Bitte schreibt jetzt in den Chat: Euren Namen, eure Stadt und warum ihr Deutsch lernen möchtet."
+    ],
+    "darija": "مرحبا بيكم فالحصة التجريبية. اليوم غادي نوريوكم شنو كتتعلمو فـ A2 وكيفاش خدام الكورس، وفالأخير غادي ندير درس صغير. الأسئلة مرحب بها والغلط عادي."
+  },
+  {
+    "zeit": "5–15",
+    "titel": "Die Ziele von A2",
+    "lines": [
+      "A2 ist die zweite Stufe im Europäischen Referenzrahmen.",
+      "Nach A2 könnt ihr euch im Alltag verständigen: beim Einkaufen, beim Arzt, bei der Arbeit, mit Nachbarn und am Telefon.",
+      "Hören: Ihr versteht kurze, klare Gespräche. Lesen: Ihr versteht kurze Texte und E-Mails. Sprechen: Ihr erzählt über Vergangenes und über Pläne. Schreiben: Ihr schreibt kurze Nachrichten und E-Mails.",
+      "Wichtige Grammatik in A2: das Perfekt, Nebensätze mit weil und dass, Wechselpräpositionen und der Komparativ.",
+      "Jetzt eine kurze Umfrage im Chat: Was möchtet ihr nach A2 können? Arbeit, Ausbildung, Alltag, Prüfung oder Familie?"
+    ],
+    "darija": "A2 هو المستوى الثاني. من بعدو غادي تقدرو تتفاهمو فالحياة اليومية: السوق، الطبيب، الخدمة، التلفون."
+  },
+  {
+    "zeit": "15–23",
+    "titel": "So läuft der Kurs ab",
+    "lines": [
+      "Unser Kurs hat eine klare Struktur. Ihr müsst nicht raten, was als Nächstes kommt.",
+      "Wir lernen zehn Stunden pro Woche: acht Stunden Grammatik und Vokabeln, von Montag bis Donnerstag, und zwei Stunden Sprechen mit Muttersprachlern.",
+      "Zuerst klären wir euer Niveau und euer Ziel. Dann lernen wir Schritt für Schritt: Erklärung, Übungen, Hausaufgaben mit Feedback in unserer Community.",
+      "Regelmäßig machen wir Mini-Tests und Modelltests im Stil der Prüfung.",
+      "Das Besondere bei uns: Ihr sprecht regelmäßig mit echten Muttersprachlern. So bleibt Deutsch nicht nur Theorie, sondern ihr benutzt es wirklich."
+    ],
+    "darija": "الكورس منظم: 8 ساعات قواعد من الإثنين للخميس + ساعتين تحدث مع ناطقين أصليين. وكاين تمارين وواجبات واختبارات."
+  },
+  {
+    "zeit": "23–48",
+    "titel": "Mini-Lektion: Das Perfekt",
+    "lines": [
+      "Jetzt fangen wir mit dem ersten Thema an. Wir lernen das Perfekt. Damit könnt ihr sofort erzählen, was ihr gestern oder am Wochenende gemacht habt.",
+      "Das Perfekt besteht aus haben oder sein und dem Partizip II. Haben oder sein steht auf Position 2, das Partizip am Satzende.",
+      "Beispiel: Ich habe gestern Deutsch gelernt. Er ist nach Frankfurt gefahren.",
+      "Haben benutzen wir bei den meisten Verben. Sein benutzen wir bei Bewegung und Zustandsänderung, zum Beispiel gehen, fahren, aufstehen.",
+      "Regelmäßige Verben: machen, gemacht. Lernen, gelernt. Unregelmäßige Verben: essen, gegessen. Trinken, getrunken. Mit sein: gehen, gegangen. Fahren, gefahren.",
+      "Jetzt eine Übung: Übung A, Lückentext: Gestern ___ ich Deutsch ___. Er ___ nach Frankfurt ___. Wir ___ Pizza ___. Lösungen: habe gelernt. Ist gefahren. Haben gegessen."
+    ],
+    "darija": "الـ Perfekt = haben أو sein + Partizip II. مع الحركة كنستعملو sein، ومع الباقي haben."
+  },
+  {
+    "zeit": "48–55",
+    "titel": "Sprechen",
+    "lines": [
+      "Jetzt sprecht ihr. Keine Angst vor Fehlern. Wir helfen euch.",
+      "Wir teilen euch in zwei Gruppen. Die Frage lautet: Was hast du am Wochenende gemacht?",
+      "Hilfe: Am Wochenende habe ich … gearbeitet, gelernt, gekocht. Am Samstag bin ich … in die Stadt gefahren.",
+      "Wir loben zuerst und korrigieren nur ein oder zwei Fehler."
+    ],
+    "darija": "المجموعات الصغيرة: الناطق الأصلي مع كل مجموعة، وكل واحد كيجاوب بجملة أو جوج."
+  },
+  {
+    "zeit": "55–60",
+    "titel": "Abschluss und Anmeldung",
+    "lines": [
+      "Heute habt ihr gesehen, was A2 bedeutet, wie unser Kurs abläuft und dass ihr schon im Perfekt erzählen könnt.",
+      "Unser Angebot: zehn Stunden pro Woche mit Grammatik, Vokabeln und Sprechen mit Muttersprachlern. Der Preis ist 1000 Dirham pro Monat.",
+      "Wenn ihr weitermachen möchtet, könnt ihr euch bei uns anmelden. Den Link für WhatsApp und die Website schicken wir euch jetzt in den Chat.",
+      "Eure Hausaufgabe: Schreibt fünf Sätze im Perfekt über euren gestrigen Tag. Vielen Dank fürs Mitmachen!"
+    ],
+    "darija": "قدم العرض بوضوح: 10 ساعات فالأسبوع، 1000 درهم فالشهر. صيفط رابط WhatsApp والموقع فالشات."
+  }
+]

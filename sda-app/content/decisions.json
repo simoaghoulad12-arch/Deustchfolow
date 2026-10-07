@@ -1,0 +1,170 @@
+[
+  {
+    "id": "dec#0",
+    "label": "OFFENE ENTSCHEIDUNG",
+    "text": {
+      "de": "Name der Lehrkraft 2 festlegen",
+      "ar": "حدد اسم الأستاذ الثاني"
+    }
+  },
+  {
+    "id": "dec#1",
+    "label": "OFFENE ENTSCHEIDUNG",
+    "text": {
+      "de": "Namen der Muttersprachler/innen festlegen; Vergütung oder ehrenamtlich klären",
+      "ar": "حدد أسماء الناطقين، وواش بمقابل ولا تطوع"
+    }
+  },
+  {
+    "id": "dec#2",
+    "label": "OFFENE ENTSCHEIDUNG",
+    "text": {
+      "de": "Tage und Uhrzeiten festlegen (Marokko und Deutschland)",
+      "ar": "حدد الأيام والساعات (المغرب وألمانيا)"
+    }
+  },
+  {
+    "id": "dec#3",
+    "label": "OFFENE ENTSCHEIDUNG",
+    "text": {
+      "de": "Zahlungsweg und monatlichen Zahlungstag festlegen",
+      "ar": "حدد طريقة الأداء ويوم الأداء الشهري"
+    }
+  },
+  {
+    "id": "dec#4",
+    "label": "OFFENE ENTSCHEIDUNG",
+    "text": {
+      "de": "Maximale Gruppengröße festlegen (Vorschlag: 6–10)",
+      "ar": "حدد العدد الأقصى فالمجموعة (اقتراح: 6–10)"
+    }
+  },
+  {
+    "id": "dec#5",
+    "label": "OFFENE ENTSCHEIDUNG",
+    "text": {
+      "de": "Zoom: Im kostenlosen Plan enden Gruppenmeetings ab 3 Personen nach 40 Minuten. Für 60- und 120-Minuten-Stunden Zoom Pro für den Host oder eine Alternative wählen und aktuelle Limits prüfen.",
+      "ar": "Zoom: فالنسخة المجانية الاجتماعات الجماعية كتوقف بعد 40 دقيقة. للحصص ديال 60 و120 دقيقة خاص Zoom Pro للمضيف ولا بديل، وشوفو الحدود الحالية."
+    }
+  },
+  {
+    "id": "dec#6",
+    "label": "OFFENE ENTSCHEIDUNG",
+    "text": {
+      "de": "Entscheiden: Ist die Probestunde kostenlos?",
+      "ar": "قرر: واش الحصة التجريبية مجانية؟"
+    }
+  },
+  {
+    "id": "dec#7",
+    "label": "OFFENE ENTSCHEIDUNG",
+    "text": {
+      "de": "Regeln bei Absage, Kündigung und Erstattung festlegen",
+      "ar": "حدد قواعد الإلغاء والاسترجاع"
+    }
+  },
+  {
+    "id": "dec#8",
+    "label": "OFFENE ENTSCHEIDUNG",
+    "text": {
+      "de": "Datenschutz: Einwilligung für Aufnahmen und Fotos, kurzer Text für Teilnehmer",
+      "ar": "حماية المعطيات: موافقة على التسجيل والصور ونص قصير للطلبة"
+    }
+  },
+  {
+    "id": "dec#9",
+    "label": "OFFENE ENTSCHEIDUNG",
+    "text": {
+      "de": "Festlegen, wann die Bewerbungsbegleitung mit Alfred Schmitt beginnt",
+      "ar": "حدد متى كتبدا مرافقة ملف الخدمة مع Alfred Schmitt"
+    }
+  },
+  {
+    "id": "dec#10",
+    "label": "OFFENE ENTSCHEIDUNG",
+    "text": {
+      "de": "Mission und Ziel der Akademie als Text festlegen",
+      "ar": "حددو نص المهمة والهدف ديال الأكاديمية"
+    }
+  },
+  {
+    "id": "dec#11",
+    "label": "OFFENE ENTSCHEIDUNG",
+    "text": {
+      "de": "Kursdauer pro Level bestätigen (Vorschlag: A1 8, A2 8, B1 10, B2 10 Wochen)",
+      "ar": "أكدو مدة كل مستوى (اقتراح: 8، 8، 10، 10 أسابيع)"
+    }
+  },
+  {
+    "id": "dec#12",
+    "label": "OFFENE ENTSCHEIDUNG",
+    "text": {
+      "de": "Tage der Sprechstunden bestätigen (Vorschlag: Freitag und Samstag)",
+      "ar": "أكدو أيام حصص التحدث (اقتراح: الجمعة والسبت)"
+    }
+  },
+  {
+    "id": "dec#13",
+    "label": "OFFENE ENTSCHEIDUNG",
+    "text": {
+      "de": "Rollenwechsel bestätigen (Vorschlag: Lehrkraft 1 Mo + Mi, Lehrkraft 2 Di + Do)",
+      "ar": "أكدو تبادل الأدوار (اقتراح: الأول الإثنين والأربعاء، الثاني الثلاثاء والخميس)"
+    }
+  },
+  {
+    "id": "dec#14",
+    "label": "OFFENE ENTSCHEIDUNG",
+    "text": {
+      "de": "Qualitätskontrolle: Häufigkeit von Tests, Monatsgesprächen und Reviews festlegen",
+      "ar": "حددو وتيرة الاختبارات والمقابلات والمراجعات"
+    }
+  },
+  {
+    "id": "dec#15",
+    "label": "OFFENE ENTSCHEIDUNG",
+    "text": {
+      "de": "Warnschwellen festlegen: Anwesenheit, Hausaufgaben, fehlende Dokumentation",
+      "ar": "حددو حدود التنبيه: الحضور، الواجبات، غياب التوثيق"
+    }
+  },
+  {
+    "id": "dec#16",
+    "label": "OFFENE ENTSCHEIDUNG",
+    "text": {
+      "de": "Festlegen, wer Schülerdaten im System sehen und ändern darf",
+      "ar": "حددو شكون يقدر يشوف ويبدل معطيات الطلبة"
+    }
+  },
+  {
+    "id": "dec#17",
+    "label": "OFFENE ENTSCHEIDUNG",
+    "text": {
+      "de": "Inhalte für Ausbildung und Studium in Deutschland festlegen",
+      "ar": "حددو محتوى التكوين والدراسة فألمانيا"
+    }
+  },
+  {
+    "id": "dec#18",
+    "label": "OFFENE ENTSCHEIDUNG",
+    "text": {
+      "de": "Internen Kommunikationskanal des Teams festlegen",
+      "ar": "حددو قناة التواصل الداخلي للفريق"
+    }
+  },
+  {
+    "id": "dec#19",
+    "label": "OFFENE ENTSCHEIDUNG",
+    "text": {
+      "de": "Lehrwerk festlegen, mit dem die Akademie arbeitet",
+      "ar": "حددو الكتاب اللي غادي تخدم بيه الأكاديمية"
+    }
+  },
+  {
+    "id": "dec#20",
+    "label": "OFFENE ENTSCHEIDUNG",
+    "text": {
+      "de": "Kontakte und Zahlungen: weiter in Google Sheets oder in diesem System?",
+      "ar": "جهات الاتصال والأداءات: فـ Google Sheets ولا فهاد النظام؟"
+    }
+  }
+]

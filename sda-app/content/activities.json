@@ -1,0 +1,242 @@
+[
+  {
+    "name": "Satzkette",
+    "niveau": "A1–B2",
+    "dauer": "5 Min.",
+    "tool": "ohne",
+    "ablauf": [
+      "Die Lehrkraft sagt den ersten Satz zum Thema.",
+      "Die nächste Person wiederholt ihn und ergänzt einen Satz.",
+      "Nach sechs Sätzen beginnt eine neue Kette."
+    ],
+    "ziel": "Sprechmut und Wiederholung",
+    "ar": "كل واحد كيعاود الجملة اللي قبلو ويزيد وحدة."
+  },
+  {
+    "name": "Foto-Detektiv",
+    "niveau": "A1–B1",
+    "dauer": "10 Min.",
+    "tool": "Bildschirm teilen",
+    "ablauf": [
+      "Zeige 20 Sekunden ein Alltagsfoto, zum Beispiel Markt, Bahnhof oder Küche.",
+      "Dann verstecke das Foto.",
+      "Die Gruppe beschreibt, was sie gesehen hat.",
+      "Zeige das Foto noch einmal und vergleiche."
+    ],
+    "ziel": "Wortschatz und Präpositionen",
+    "ar": "صورة كتبان 20 ثانية والطلبة كيوصفو شنو شافو."
+  },
+  {
+    "name": "20 Fragen",
+    "niveau": "A1–A2",
+    "dauer": "10 Min.",
+    "tool": "ohne",
+    "ablauf": [
+      "Eine Person denkt an einen Beruf oder Gegenstand.",
+      "Die Gruppe stellt nur Ja/Nein-Fragen.",
+      "Wer richtig rät, denkt sich das Nächste aus."
+    ],
+    "ziel": "Ja/Nein-Fragen",
+    "ar": "لعبة تخمين بأسئلة نعم أو لا."
+  },
+  {
+    "name": "Wer war es? (Perfekt-Krimi)",
+    "niveau": "A2",
+    "dauer": "15 Min.",
+    "tool": "Chat und Breakout",
+    "ablauf": [
+      "Die Lehrkraft erzählt einen kleinen Fall: Der Kuchen ist verschwunden.",
+      "Jede Person bekommt ein Alibi im Perfekt, zum Beispiel: Ich bin um acht einkaufen gegangen.",
+      "In Breakout-Räumen befragen sich Paare.",
+      "Im Plenum: Wer war es?"
+    ],
+    "ziel": "Perfekt in einer Geschichte",
+    "ar": "لغز بسيط كيخلي الطلبة يستعملو الـ Perfekt."
+  },
+  {
+    "name": "Wortschatz-Bingo",
+    "niveau": "A1–B1",
+    "dauer": "10 Min.",
+    "tool": "Whiteboard oder Papier",
+    "ablauf": [
+      "Jede Person zeichnet ein 3x3-Feld und schreibt neun Wörter zum Thema.",
+      "Die Lehrkraft beschreibt Wörter auf Deutsch.",
+      "Wer drei in einer Reihe hat, ruft Bingo."
+    ],
+    "ziel": "Hörverstehen und Wortschatz",
+    "ar": "بينغو بالمفردات."
+  },
+  {
+    "name": "Würfeldialog",
+    "niveau": "A1–A2",
+    "dauer": "15 Min.",
+    "tool": "Online-Würfel",
+    "ablauf": [
+      "Zwei Würfel: Der erste bestimmt das Fragewort (1 Wer, 2 Was, 3 Wo, 4 Wann, 5 Warum, 6 Wie).",
+      "Der zweite bestimmt das Thema aus einer Liste.",
+      "Partnerinterview im Breakout-Raum."
+    ],
+    "ziel": "Fragen stellen",
+    "ar": "النرد كيحدد السؤال والموضوع."
+  },
+  {
+    "name": "Rollenspiel Pflegealltag",
+    "niveau": "A2–B2",
+    "dauer": "20 Min.",
+    "tool": "Rollenkarten",
+    "ablauf": [
+      "Rollen: Patient/in, Pfleger/in, Angehörige.",
+      "Situationen: Aufnahme, Schmerzen erfragen, Medikamente erklären, Übergabe.",
+      "Eine Person beobachtet und notiert Redemittel und zwei Fehler.",
+      "Danach werden die Rollen getauscht."
+    ],
+    "ziel": "Berufsnahes Sprechen",
+    "ar": "لعب أدوار من الحياة المهنية فالرعاية الصحية."
+  },
+  {
+    "name": "Sprachnachrichten-Kette",
+    "niveau": "A1–B2",
+    "dauer": "Hausaufgabe",
+    "tool": "Circle",
+    "ablauf": [
+      "Aufgabe: 30 bis 60 Sekunden Sprachnachricht zum Wochenthema.",
+      "Jede Person hört eine andere Nachricht.",
+      "Feedback: zwei Sterne und ein Wunsch."
+    ],
+    "ziel": "Aussprache und Peer-Feedback",
+    "ar": "رسائل صوتية وكل واحد كيسمع وكيعطي رأي لزميلو."
+  },
+  {
+    "name": "Fehlerjagd",
+    "niveau": "A2–B2",
+    "dauer": "5 Min.",
+    "tool": "ohne",
+    "ablauf": [
+      "Die Lehrkraft sagt oder schreibt einen Satz mit einem Fehler.",
+      "Wer den Fehler findet, hebt die Hand oder schreibt ihn in den Chat.",
+      "Die Gruppe korrigiert gemeinsam."
+    ],
+    "ziel": "Fehlerbewusstsein",
+    "ar": "لعبة البحث على الغلط فالجملة."
+  },
+  {
+    "name": "Satzpuzzle",
+    "niveau": "A1–B1",
+    "dauer": "10 Min.",
+    "tool": "Chat oder Whiteboard",
+    "ablauf": [
+      "Wörter durcheinander an das Whiteboard schreiben.",
+      "Teams bauen den Satz.",
+      "Wer zuerst richtig ist, bekommt einen Punkt.",
+      "Danach das Verb markieren: Position 2 oder Satzende."
+    ],
+    "ziel": "Satzstellung",
+    "ar": "ترتيب الكلمات باش تولي جملة صحيحة."
+  },
+  {
+    "name": "Blitzquiz",
+    "niveau": "A1–B2",
+    "dauer": "10 Min.",
+    "tool": "Kahoot oder Wordwall",
+    "ablauf": [
+      "Zehn Fragen zum Wochenthema vorbereiten.",
+      "Teilnehmer treten über einen Link bei.",
+      "Nach jeder Frage 20 Sekunden erklären, warum die Antwort richtig ist."
+    ],
+    "ziel": "Wiederholung mit Spaß",
+    "ar": "اختبار سريع بمنافسة. جربو قبل الحصة."
+  },
+  {
+    "name": "Zeitungs-Schlagzeilen",
+    "niveau": "B1–B2",
+    "dauer": "15 Min.",
+    "tool": "Bildschirm teilen",
+    "ablauf": [
+      "Zeige fünf Schlagzeilen.",
+      "Gruppen raten den Inhalt und schreiben zwei Sätze Zusammenfassung.",
+      "Dann lesen alle den Artikel und vergleichen."
+    ],
+    "ziel": "Leseverstehen und Zusammenfassen",
+    "ar": "تخمين محتوى الخبر من العنوان."
+  },
+  {
+    "name": "Stille Post",
+    "niveau": "A1–B1",
+    "dauer": "10 Min.",
+    "tool": "Breakout und privater Chat",
+    "ablauf": [
+      "Die Lehrkraft schickt einen Satz privat an die erste Person.",
+      "Jede Person schreibt oder sagt ihn weiter.",
+      "Die letzte Person sagt den Satz laut.",
+      "Vergleich mit dem Original."
+    ],
+    "ziel": "Genauigkeit und Aussprache",
+    "ar": "الجملة كتمشي من واحد لواحد وكنشوفو شنو تبدل."
+  },
+  {
+    "name": "Mini-Podcast",
+    "niveau": "B1–B2",
+    "dauer": "Hausaufgabe",
+    "tool": "Circle",
+    "ablauf": [
+      "Aufgabe: zwei Minuten Podcast zum Thema der Woche.",
+      "Peer-Feedback nach drei Kriterien: Struktur, Wortschatz, Aussprache.",
+      "Das beste Beispiel wird in der nächsten Stunde vorgespielt."
+    ],
+    "ziel": "Zusammenhängendes Sprechen",
+    "ar": "بودكاست قصير ورأي من الزملاء."
+  },
+  {
+    "name": "30-Tage-Challenge",
+    "niveau": "A1–B2",
+    "dauer": "5 Min. täglich",
+    "tool": "Circle",
+    "ablauf": [
+      "Jeden Tag eine kleine Aufgabe: ein Satz, ein Foto, ein neues Wort.",
+      "Der Fortschritt steht in einem Circle-Beitrag.",
+      "Am Ende gibt es eine Urkunde oder eine öffentliche Anerkennung."
+    ],
+    "ziel": "Regelmäßigkeit",
+    "ar": "تحدي يومي صغير كيخلي الطلبة يتعودو."
+  },
+  {
+    "name": "Karteikarten-Routine",
+    "niveau": "A1–B2",
+    "dauer": "5 Min. täglich",
+    "tool": "Quizlet oder Anki",
+    "ablauf": [
+      "Jede Woche ein Kartenset mit 20 Wörtern, Artikel und Beispielsatz.",
+      "Teilnehmer lernen täglich fünf Minuten.",
+      "Am Freitag teilen sie ihre Quote."
+    ],
+    "ziel": "Wortschatz dauerhaft lernen",
+    "ar": "بطاقات المفردات يوميا 5 دقائق."
+  },
+  {
+    "name": "Debatten-Duell",
+    "niveau": "B1–B2",
+    "dauer": "20 Min.",
+    "tool": "Breakout",
+    "ablauf": [
+      "Thema: Schichtarbeit, gut oder schlecht?",
+      "Zwei Teams bereiten sich drei Minuten vor.",
+      "Je eine Minute Statement, danach Gegenfragen.",
+      "Der/die Muttersprachler/in bewertet nach Argumenten."
+    ],
+    "ziel": "Argumentieren",
+    "ar": "نقاش بين فريقين."
+  },
+  {
+    "name": "Reise-Planer",
+    "niveau": "A2–B1",
+    "dauer": "20 Min.",
+    "tool": "Google Maps",
+    "ablauf": [
+      "Zu zweit eine Reise nach Deutschland planen: Route, Zeit, Kosten.",
+      "Dann eine Minute präsentieren.",
+      "Die Gruppe stellt zwei Fragen."
+    ],
+    "ziel": "Planen und Präsentieren",
+    "ar": "تخطيط رحلة لألمانيا وتقديمها."
+  }
+]

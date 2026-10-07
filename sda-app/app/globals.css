@@ -1,0 +1,114 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+ * Design-Tokens aus legacy/index.html: Anthrazit, Weiß, Rot als Akzent, Gold sehr sparsam.
+ * Hell/Dunkel folgt dem Gerät; data-theme="light"|"dark" auf <html> überschreibt das (Einstellungen).
+ */
+:root {
+  --bg: #f4f4f5;
+  --panel: #ffffff;
+  --ink: #141518;
+  --muted: #5d6068;
+  --line: #e2e3e7;
+  --anth: #1b1d21;
+  --anth2: #26292f;
+  --anth-ink: #f4f4f5;
+  --red: #c8102e;
+  --red-soft: #fbe8eb;
+  --gold: #8a6d27;
+  --gold-soft: #f6f1e4;
+  --ok: #2d7a4f;
+  --ok-soft: #e3f2e8;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --bg: #111214;
+    --panel: #1a1c20;
+    --ink: #ececee;
+    --muted: #a0a3ab;
+    --line: #2c2f35;
+    --anth: #0b0c0e;
+    --anth2: #17191c;
+    --anth-ink: #ececee;
+    --red: #ef4a5f;
+    --red-soft: #3a1a20;
+    --gold: #d2b067;
+    --gold-soft: #2f2a1c;
+    --ok: #52b882;
+    --ok-soft: #173225;
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme='dark'] {
+  --bg: #111214;
+  --panel: #1a1c20;
+  --ink: #ececee;
+  --muted: #a0a3ab;
+  --line: #2c2f35;
+  --anth: #0b0c0e;
+  --anth2: #17191c;
+  --anth-ink: #ececee;
+  --red: #ef4a5f;
+  --red-soft: #3a1a20;
+  --gold: #d2b067;
+  --gold-soft: #2f2a1c;
+  --ok: #52b882;
+  --ok-soft: #173225;
+  color-scheme: dark;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-plex), var(--font-plex-ar), system-ui, -apple-system, 'Segoe UI', sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+[dir='rtl'] body {
+  font-family: var(--font-plex-ar), var(--font-plex), system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-head), var(--font-plex), var(--font-plex-ar), system-ui, sans-serif;
+  line-height: 1.2;
+}
+
+/* Deutsche Unterrichtsinhalte bleiben links nach rechts, auch in der arabischen Oberfläche. */
+.de-content {
+  direction: ltr;
+  text-align: start;
+  unicode-bidi: isolate;
+}
+
+:focus-visible {
+  outline: 3px solid var(--red);
+  outline-offset: 2px;
+}
+
+/* Basis-Komponenten (mobile first: min. 44 px Tippfläche, 16 px in Eingaben) */
+@layer components {
+  .card {
+    @apply rounded-xl border border-line bg-panel p-4;
+  }
+  .input {
+    @apply min-h-11 w-full rounded-lg border border-line bg-panel px-3 text-base text-ink;
+  }
+  .btn-primary {
+    @apply inline-flex min-h-11 items-center justify-center rounded-lg bg-red px-4 font-semibold text-white disabled:opacity-60;
+  }
+  .btn-secondary {
+    @apply inline-flex min-h-11 items-center justify-center rounded-lg border border-line bg-panel px-4 font-medium;
+  }
+}

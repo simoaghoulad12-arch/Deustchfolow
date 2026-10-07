@@ -4,3 +4,7 @@ dist
 coverage
 .turbo
 pnpm-lock.yaml
+
+# Smart Deutsch Akademie: generierte Inhalte und unveränderliche Quelle
+sda-app/legacy
+sda-app/content/**/*.json

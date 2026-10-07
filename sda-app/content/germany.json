@@ -1,0 +1,77 @@
+[
+  {
+    "thema": "Behörden und Formulare",
+    "lessonIds": [
+      "A2.7.Do",
+      "A1.8.Mi",
+      "B1.8.Mi"
+    ]
+  },
+  {
+    "thema": "Arzt, Apotheke und Gesundheit",
+    "lessonIds": [
+      "A1.7.Mo",
+      "A1.7.Di",
+      "A1.7.Mi",
+      "A1.7.Do",
+      "A1.7.Fr"
+    ]
+  },
+  {
+    "thema": "Versicherung, Fristen, Anträge, Bescheide",
+    "lessonIds": [
+      "B1.8.Mi",
+      "A2.7.Do"
+    ]
+  },
+  {
+    "thema": "Wohnen",
+    "lessonIds": [
+      "A1.5.Mo",
+      "A2.4.Do",
+      "A2.4.Fr"
+    ]
+  },
+  {
+    "thema": "Telefon und Termine",
+    "lessonIds": [
+      "A2.2.Do",
+      "A2.2.Fr"
+    ]
+  },
+  {
+    "thema": "Bewerbung, Lebenslauf, Stellenanzeigen",
+    "lessonIds": [
+      "A2.7.Mo",
+      "A2.7.Di",
+      "A2.7.Fr",
+      "B2.6.Mo"
+    ]
+  },
+  {
+    "thema": "Formelle E-Mail und Brief, Beschwerde",
+    "lessonIds": [
+      "A2.7.Di",
+      "B1.7.Di",
+      "B2.8.Mo"
+    ]
+  },
+  {
+    "thema": "Vorstellungsgespräch",
+    "lessonIds": [
+      "A2.7.Fr",
+      "B2.6.Mo"
+    ]
+  },
+  {
+    "thema": "Beruf und Pflege",
+    "lessonIds": [
+      "A1.2.Do",
+      "B1.2.Mo",
+      "B2.6.Di",
+      "B2.6.Mi",
+      "B2.6.Do",
+      "B2.6.Fr"
+    ]
+  }
+]

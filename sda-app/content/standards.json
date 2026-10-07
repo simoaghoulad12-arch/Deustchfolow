@@ -1,0 +1,72 @@
+[
+  {
+    "titel": "Technik",
+    "ar": "التقنية",
+    "punkte": [
+      "Headset mit Mikrofon statt Laptop-Mikrofon",
+      "Licht von vorn, nicht von hinten",
+      "Ruhiger, neutraler Hintergrund",
+      "Netzwerkkabel oder stabiles WLAN, zweites Gerät oder Hotspot als Backup",
+      "Zoom vor der ersten Stunde aktualisieren",
+      "Laden und Strom prüfen"
+    ]
+  },
+  {
+    "titel": "Zoom-Einstellungen",
+    "ar": "إعدادات Zoom",
+    "punkte": [
+      "Warteraum und Passcode einschalten",
+      "Mikrofone beim Eintritt stumm",
+      "Breakout-Räume vor der Stunde anlegen",
+      "Anzeigename: Vorname plus Gruppe",
+      "Aufnahme nur mit Einwilligung",
+      "Assistenz als Co-Host festlegen, falls verfügbar"
+    ]
+  },
+  {
+    "titel": "Kommunikation",
+    "ar": "التواصل",
+    "punkte": [
+      "Antwortzeit werktags unter 2 Stunden (Vorschlag)",
+      "Textbausteine für alle Standardfälle verwenden",
+      "Immer beide Uhrzeiten nennen: Marokko und Deutschland",
+      "Dateinamen einheitlich: A1_W03_Di_Skript_v1",
+      "Ein Ordner pro Woche",
+      "Abends keine spontanen Privatchats, feste Antwortzeiten nennen"
+    ]
+  },
+  {
+    "titel": "Datenschutz und Recht",
+    "ar": "حماية المعطيات",
+    "punkte": [
+      "Einwilligung für Aufnahmen, Fotos und Gruppenchats einholen",
+      "Nur nötige Daten speichern",
+      "Aufnahmen nach der Auswertung löschen",
+      "Impressum und Datenschutzerklärung auf der Website prüfen",
+      "Belege und Rechnungen sauber ablegen",
+      "Rechtliche Fragen mit einer Fachperson klären"
+    ]
+  },
+  {
+    "titel": "Qualität",
+    "ar": "الجودة",
+    "punkte": [
+      "Nach jeder Stunde eine Frage im Chat: Wie hilfreich war die Stunde von 1 bis 5?",
+      "Wochen-Review (15 Minuten) mit Fehlerliste und Zahlen",
+      "Monatliche Kennzahlen: Anwesenheit, Hausaufgaben, Zufriedenheit",
+      "Einmal im Monat sieht die Assistenz die Stunde der Hauptlehrkraft mit einem Beobachtungsbogen"
+    ]
+  },
+  {
+    "titel": "Online-Didaktik",
+    "ar": "التدريس عن بعد",
+    "punkte": [
+      "Alle 10 bis 15 Minuten die Aktivität wechseln: hören, sprechen, tippen",
+      "Aufgaben immer sagen und schreiben",
+      "Kurze Aufträge mit Zeitangabe: 2 Minuten",
+      "Kamera-an-Kultur, Mikro nur bei Bedarf",
+      "Sprechzeit der Teilnehmer bewusst messen",
+      "Regelmäßige Pausen"
+    ]
+  }
+]

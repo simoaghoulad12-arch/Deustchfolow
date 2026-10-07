@@ -1,0 +1,216 @@
+{
+  "roles": {
+    "H": {
+      "de": "Haupt",
+      "ar": "الرئيسي"
+    },
+    "A": {
+      "de": "Assistenz",
+      "ar": "المساعد"
+    },
+    "N": {
+      "de": "Muttersprachler/in",
+      "ar": "الناطق الأصلي"
+    },
+    "T": {
+      "de": "Lehrkräfte",
+      "ar": "الأساتذة"
+    },
+    "ALL": {
+      "de": "Alle",
+      "ar": "الكل"
+    }
+  },
+  "phases": {
+    "v": {
+      "de": "Vorher",
+      "ar": "قبل الحصة"
+    },
+    "w": {
+      "de": "Während",
+      "ar": "أثناء الحصة"
+    },
+    "n": {
+      "de": "Nachher",
+      "ar": "بعد الحصة"
+    }
+  },
+  "days": {
+    "Mo": {
+      "de": "Montag",
+      "ar": "الإثنين"
+    },
+    "Di": {
+      "de": "Dienstag",
+      "ar": "الثلاثاء"
+    },
+    "Mi": {
+      "de": "Mittwoch",
+      "ar": "الأربعاء"
+    },
+    "Do": {
+      "de": "Donnerstag",
+      "ar": "الخميس"
+    },
+    "Fr": {
+      "de": "Freitag",
+      "ar": "الجمعة"
+    },
+    "Sa": {
+      "de": "Samstag",
+      "ar": "السبت"
+    },
+    "So": {
+      "de": "Sonntag",
+      "ar": "الأحد"
+    }
+  },
+  "nav": [
+    {
+      "group": "Übersicht",
+      "items": [
+        {
+          "key": "dash",
+          "label": {
+            "de": "Dashboard",
+            "ar": "لوحة القيادة"
+          }
+        },
+        {
+          "key": "play",
+          "label": {
+            "de": "05 Teacher Playbook · Heute",
+            "ar": "دليل الأستاذ · اليوم"
+          }
+        },
+        {
+          "key": "search",
+          "label": {
+            "de": "Suche",
+            "ar": "بحث"
+          }
+        }
+      ]
+    },
+    {
+      "group": "Lehren",
+      "items": [
+        {
+          "key": "cur",
+          "label": {
+            "de": "02 Curriculum A1–B2",
+            "ar": "المنهج"
+          }
+        },
+        {
+          "key": "lo",
+          "label": {
+            "de": "03 Lernziele",
+            "ar": "أهداف التعلم"
+          }
+        },
+        {
+          "key": "lsys",
+          "label": {
+            "de": "04 Lesson System",
+            "ar": "نظام الحصة"
+          }
+        },
+        {
+          "key": "de",
+          "label": {
+            "de": "09 Germany Preparation",
+            "ar": "التحضير لألمانيا"
+          }
+        },
+        {
+          "key": "mat",
+          "label": {
+            "de": "13 Materialien",
+            "ar": "المواد"
+          }
+        }
+      ]
+    },
+    {
+      "group": "Dokumentieren & Messen",
+      "items": [
+        {
+          "key": "doc",
+          "label": {
+            "de": "11 Dokumentation",
+            "ar": "التوثيق"
+          }
+        },
+        {
+          "key": "prog",
+          "label": {
+            "de": "06 Student Progress",
+            "ar": "تقدم الطلبة"
+          }
+        },
+        {
+          "key": "err",
+          "label": {
+            "de": "07 Error Tracking",
+            "ar": "تتبع الأخطاء"
+          }
+        },
+        {
+          "key": "hw",
+          "label": {
+            "de": "08 Hausaufgaben",
+            "ar": "الواجبات"
+          }
+        },
+        {
+          "key": "qc",
+          "label": {
+            "de": "12 Quality Control",
+            "ar": "مراقبة الجودة"
+          }
+        }
+      ]
+    },
+    {
+      "group": "Akademie",
+      "items": [
+        {
+          "key": "std",
+          "label": {
+            "de": "01 Academy Standard",
+            "ar": "معايير الأكاديمية"
+          }
+        },
+        {
+          "key": "onb",
+          "label": {
+            "de": "10 Onboarding",
+            "ar": "استقبال الطلبة"
+          }
+        },
+        {
+          "key": "ops",
+          "label": {
+            "de": "Betrieb & Plattformen",
+            "ar": "التشغيل والمنصات"
+          }
+        },
+        {
+          "key": "dec",
+          "label": {
+            "de": "14 Offene Entscheidungen",
+            "ar": "القرارات المفتوحة"
+          }
+        },
+        {
+          "key": "set",
+          "label": {
+            "de": "Einstellungen & Daten",
+            "ar": "الإعدادات والبيانات"
+          }
+        }
+      ]
+    }
+  ]
+}
