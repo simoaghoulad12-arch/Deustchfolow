@@ -38,7 +38,7 @@ export async function asUser<T>(
 export async function addMember(
   db: PGlite,
   id: string,
-  role: 'admin' | 'teacher' | 'native' | null,
+  role: 'admin' | 'teacher' | 'native' | 'student' | null,
 ) {
   await db.query('insert into auth.users (id, email) values ($1, $2)', [
     id,

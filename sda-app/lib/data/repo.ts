@@ -93,6 +93,9 @@ function memoryRepo(): Repo {
     lesson_docs: [],
     errors: [],
     homework: [],
+    exercise_attempts: [],
+    test_results: [],
+    submissions: [],
     // wie die Migration 20261007120100_seed_decisions.sql
     decisions: content.decisions.map((d, i) => ({
       id: d.id,
@@ -151,9 +154,18 @@ function memoryRepo(): Repo {
       // Wie die Fremdschlüssel in der Migration: on delete cascade / set null
       const ids = new Set(gone.map((r) => field(r, 'id')));
       if (table === 'students') {
-        all.errors = all.errors!.filter((r) => !ids.has(field(r, 'student_id')));
-        all.homework = all.homework!.filter((r) => !ids.has(field(r, 'student_id')));
+        for (const t2 of [
+          'errors',
+          'homework',
+          'exercise_attempts',
+          'test_results',
+          'submissions',
+        ]) {
+          all[t2] = all[t2]!.filter((r) => !ids.has(field(r, 'student_id')));
+        }
       }
+      if (table === 'homework')
+        all.submissions = all.submissions!.filter((r) => !ids.has(field(r, 'homework_id')));
       if (table === 'groups') {
         all.lesson_docs = all.lesson_docs!.filter((r) => !ids.has(field(r, 'group_id')));
         all.group_staff = all.group_staff!.filter((r) => !ids.has(field(r, 'group_id')));

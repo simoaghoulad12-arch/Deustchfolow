@@ -265,3 +265,22 @@ export function normalizeThresholds(v: unknown): QcThresholds {
     daysWithoutDocMax: num(o.daysWithoutDocMax),
   };
 }
+
+/** Gewichte (0–10) und Bestehensgrenze (0–100, leer = nicht festgelegt) der Fortschritts-Formel. */
+export function parseFormula(
+  f: Form,
+): Parsed<{ wAttendance: number; wExercises: number; wTest: number; passPercent: number | null }> {
+  const w = (k: string) => optInt(str(f, k), 10);
+  const a = w('wAttendance');
+  const e = w('wExercises');
+  const t = w('wTest');
+  const p = optInt(str(f, 'passPercent'), 100);
+  if (a === 'bad' || e === 'bad' || t === 'bad' || a === null || e === null || t === null) {
+    return { ok: false, error: 'Gewichte bitte als ganze Zahl von 0 bis 10.' };
+  }
+  if (a + e + t === 0)
+    return { ok: false, error: 'Mindestens ein Gewicht muss größer als 0 sein.' };
+  if (p === 'bad')
+    return { ok: false, error: 'Bestehensgrenze bitte als ganze Zahl von 0 bis 100.' };
+  return { ok: true, data: { wAttendance: a, wExercises: e, wTest: t, passPercent: p } };
+}

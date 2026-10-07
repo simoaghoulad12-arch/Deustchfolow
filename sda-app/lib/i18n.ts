@@ -108,6 +108,18 @@ export const UI = {
   },
   beforeModule1: { de: 'Vor Modul 1', ar: 'قبل الوحدة 1' },
   module: { de: 'Modul', ar: 'الوحدة' },
+  myPath: { de: 'Mein Weg', ar: 'طريقي' },
+  myHomework: { de: 'Hausaufgaben', ar: 'الواجبات' },
+  myErrors: { de: 'Meine Fehler', ar: 'أخطائي' },
+  germany: { de: 'Deutschland', ar: 'ألمانيا' },
+  settings: { de: 'Einstellungen', ar: 'الإعدادات' },
+  learnApp: { de: 'Lern-App', ar: 'تطبيق التعلم' },
+  check: { de: 'Prüfen', ar: 'تحقق' },
+  correct: { de: 'Richtig!', ar: 'صحيح!' },
+  wrong: { de: 'Noch nicht richtig.', ar: 'ماشي صحيح.' },
+  examPassed: { de: 'Prüfung bestanden', ar: 'نجحت فالامتحان' },
+  locked: { de: 'Noch nicht freigeschaltet', ar: 'مازال ما تفتحش' },
+  total: { de: 'Gesamt A1 → B2', ar: 'المجموع A1 → B2' },
 } satisfies Record<string, Bilingual>;
 
 export type UIKey = keyof typeof UI;

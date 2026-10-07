@@ -4,6 +4,7 @@ import { StatusSelect } from '@/components/forms/StatusSelect';
 import { PageHeader } from '@/components/PageHeader';
 import { requireMember } from '@/lib/auth';
 import { loadSchool, nameOf } from '@/lib/data/queries';
+import { getRepo } from '@/lib/data/repo';
 import { HOMEWORK_STATUSES, type HomeworkStatus } from '@/lib/data/types';
 import { getPrefs } from '@/lib/prefs';
 import { pageLabel } from '@/lib/statements';
@@ -17,7 +18,10 @@ export default async function HomeworkPage({
 }) {
   await requireMember();
   const { lang } = getPrefs();
-  const data = await loadSchool();
+  const [data, submissions] = await Promise.all([
+    loadSchool(),
+    getRepo().list('submissions', { order: { column: 'created_at', ascending: false } }),
+  ]);
   const status = HOMEWORK_STATUSES.includes(searchParams.status as HomeworkStatus)
     ? searchParams.status
     : null;
@@ -62,6 +66,19 @@ export default async function HomeworkPage({
               <dt className="text-muted">Feedback</dt>
               <dd>{h.feedback || '–'}</dd>
             </dl>
+            {submissions
+              .filter((x) => x.homework_id === h.id)
+              .slice(0, 1)
+              .map((x) => (
+                <div key={x.id} className="mb-2">
+                  <p className="text-sm font-medium">
+                    Abgabe in der Lern-App ({x.created_at.slice(0, 10)})
+                  </p>
+                  <p className="de-content whitespace-pre-wrap rounded bg-bg p-2 text-sm">
+                    {x.text}
+                  </p>
+                </div>
+              ))}
             <div className="flex flex-wrap items-center gap-2">
               <StatusSelect
                 action={setHomeworkStatus}

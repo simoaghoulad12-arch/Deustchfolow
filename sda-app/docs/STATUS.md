@@ -262,5 +262,35 @@ Checklisten-IDs sind identisch mit legacy (z. B. `A1.1.Mo#3`), damit Fortschritt
 - Login mit echten E-Mails ist erst mit einem Supabase-Projekt testbar (in den Tests: Testzugang).
 - Lighthouse-Messung auf dem echten Server nach dem Veröffentlichen.
 
+## Phase 8 – Lern-App für Schüler ✅
+
+**Was geändert**
+- Datenbank (`20261008090000_phase8_student_role.sql`, `20261008090100_phase8_learning.sql`): Rolle `student`,
+  Verknüpfung `students.profile_id` ↔ Login, neue Tabellen `exercise_attempts`, `test_results`, `submissions`.
+  **Wichtig:** `is_staff()` schließt Schüler jetzt ausdrücklich aus (vorher: jede Rolle). Schüler lesen nur eigene
+  Daten; Ergebnisse von Übungen und Tests schreibt nur der Server nach der Auswertung (Service-Role), damit niemand
+  Punkte fälschen kann; Hausaufgaben über die Funktion `submit_homework`; Anwesenheit über `my_attendance()` ohne
+  Einblick in die Dokumentation.
+- **Einladung** zur Lern-App durch Leitung oder Lehrkraft auf der Seite des Schülers (Magic Link per E-Mail).
+- **Lern-App** (`/lernen`, eigener Rahmen): „Mein Weg“ A1 → A2 → B1 → B2 → Prüfung bestanden mit Prozent pro Level,
+  Modul und gesamt; Module mit Lernzielen, Regeln (Kernpunkte), Beispielsätzen, Wortfeldern, Sprechthema und
+  Übungen mit automatischer Prüfung; Wochen-Mini-Test pro Modul (2 Fragen pro Grammatikstunde wie legacy);
+  Hausaufgaben mit Abgabe als Text, Status und Feedback; persönliche Fehlerliste mit Wiederholungsübung;
+  Fertigkeiten als Balken; Deutschland-Bereich aus `content/germany`.
+- Ein Schüler sieht nur sein Level und die darunter; Team-Seiten (Skripte, Notizen, Dokumentation) leiten zur Lern-App.
+- **Fortschritts-Formel** als PROPOSAL (`lib/learn.ts`, dokumentiert): Anwesenheit, Übungen, Mini-Test. Gewichtung
+  und Bestehensgrenze sind OFFENE ENTSCHEIDUNG und in den Einstellungen der Leitung einstellbar (Standard: gleiche
+  Gewichte, keine Bestehensgrenze).
+- Team sieht in der Lern-App-Karte des Schülers Mini-Tests, gelöste Übungen und Abgaben; Abgaben auch bei den Hausaufgaben.
+- Keine neuen Inhalte erfunden: B1/B2 haben noch keine Übungen, Wortlisten fehlen noch – die App sagt das
+  (siehe `docs/CONTENT-STATUS.md`).
+
+**Was getestet**
+- Vitest 112 Tests, neu: 8 Zugriffsregel-Tests für Schüler (nur eigene Daten, keine Team-Inhalte, nichts selbst
+  schreibbar, Abgabe nur eigener Hausaufgaben, Anwesenheit ohne Dokumentation, Team sieht nur eigene Gruppen) mit
+  Gegenprobe; Übungen, Mini-Test identisch mit legacy, Antwortprüfung, Fortschritts-Formel.
+- Playwright: Einladung → Mein Weg → Übung falsch/richtig → Mini-Test 8/8 → Hausaufgabe abgeben → Fehler wiederholen
+  → Team-Seiten gesperrt, B1 gesperrt → Team sieht Ergebnis und Abgabe; Barrierefreiheit der Lern-App hell/dunkel.
+
 ## Nächste Phase
-Phase 8 – Lern-App für Schüler (`docs/PROMPTS.md`).
+Phase 9 – Prüfungsvorbereitung bis B2 (`docs/PROMPTS.md`).

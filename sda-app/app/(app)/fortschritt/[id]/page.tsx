@@ -3,9 +3,11 @@ import { notFound } from 'next/navigation';
 import { deleteStudent } from '@/app/actions/school';
 import { ConfirmDelete } from '@/components/forms/ConfirmDelete';
 import { StudentForm } from '@/components/school/StudentForm';
+import { StudentLearning } from '@/components/school/StudentLearning';
 import { StudentSummary } from '@/components/school/StudentSummary';
 import { requireMember } from '@/lib/auth';
 import { loadSchool } from '@/lib/data/queries';
+import { getRepo } from '@/lib/data/repo';
 
 export const dynamic = 'force-dynamic';
 
@@ -14,6 +16,13 @@ export default async function StudentPage({ params }: { params: { id: string } }
   const data = await loadSchool();
   const s = data.students.find((x) => x.id === params.id);
   if (!s) notFound();
+  const repo = getRepo();
+  const eq = { eq: { student_id: s.id } };
+  const [tests, attempts, submissions] = await Promise.all([
+    repo.list('test_results', { ...eq, order: { column: 'created_at', ascending: false } }),
+    repo.list('exercise_attempts', eq),
+    repo.list('submissions', eq),
+  ]);
   return (
     <>
       <Link
@@ -28,6 +37,7 @@ export default async function StudentPage({ params }: { params: { id: string } }
       <section className="card mb-4">
         <StudentSummary s={s} data={data} />
       </section>
+      <StudentLearning student={s} tests={tests} attempts={attempts} submissions={submissions} />
       <h2 className="mb-2 text-xl font-bold">Bearbeiten</h2>
       <section className="card mb-4">
         <StudentForm student={s} groups={data.groups} />

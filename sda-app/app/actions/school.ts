@@ -3,7 +3,9 @@
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { findLesson } from '@/content';
-import { requireAdmin, requireMember } from '@/lib/auth';
+import { headers } from 'next/headers';
+import { devMember, requireAdmin, requireMember } from '@/lib/auth';
+import { createAdminClient } from '@/lib/supabase/admin';
 import { AccessError, getRepo } from '@/lib/data/repo';
 import { getStore } from '@/lib/data/store';
 import {
@@ -17,6 +19,7 @@ import {
   parseDecision,
   parseDoc,
   parseError,
+  parseFormula,
   parseGroup,
   parseHomework,
   parseStudent,
@@ -257,4 +260,68 @@ export async function saveThresholds(_prev: FormState, fd: FormData): Promise<Fo
   const failed = await attempt(() => getStore().setSetting('qc_thresholds', p.data, admin.id));
   if (failed) return failed;
   done(['/qualitaet'], '/qualitaet');
+}
+
+// ------------------------------------------------------------------ Lern-App (Phase 8)
+
+/**
+ * Schüler zur Lern-App einladen (Leitung oder Lehrkraft, nur sichtbare Schüler).
+ * Legt den Login mit Rolle 'student' an und verknüpft ihn mit dem Schüler-Datensatz.
+ */
+export async function inviteStudent(_prev: FormState, fd: FormData): Promise<FormState> {
+  await requireMember();
+  const studentId = id(fd);
+  const email = String(fd.get('email') ?? '')
+    .trim()
+    .toLowerCase();
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
+    return { error: 'Bitte eine gültige E-Mail-Adresse eingeben.' };
+  const repo = getRepo();
+  const student = await repo.get('students', studentId); // RLS: nur sichtbare Schüler
+  if (!student) return { error: 'Dafür fehlt die Berechtigung.' };
+  if (student.profile_id) return { error: 'Dieser Schüler hat bereits einen Zugang.' };
+
+  if (devMember()) {
+    // Testmodus: keine E-Mail; mit dem Testschüler-Zugang verknüpfen.
+    for (const other of await repo.list('students', { eq: { profile_id: 'dev-student' } })) {
+      await repo.update('students', other.id, { profile_id: null });
+    }
+    await repo.update('students', studentId, { profile_id: 'dev-student' });
+    done([`/fortschritt/${studentId}`], `/fortschritt/${studentId}`);
+  }
+
+  const admin = createAdminClient();
+  const origin = headers().get('origin') ?? process.env.NEXT_PUBLIC_SITE_URL ?? '';
+  const { data, error } = await admin.auth.admin.inviteUserByEmail(email, {
+    redirectTo: `${origin}/auth/confirm`,
+    data: { full_name: student.name },
+  });
+  if (error || !data.user) {
+    const exists = error?.status === 422 || /already/i.test(error?.message ?? '');
+    return {
+      error: exists
+        ? 'Diese Adresse ist bereits registriert.'
+        : 'Einladung fehlgeschlagen. Bitte später erneut versuchen.',
+    };
+  }
+  const { error: pErr } = await admin
+    .from('profiles')
+    .upsert({ id: data.user.id, email, full_name: student.name, role: 'student' });
+  const { error: sErr } = await admin
+    .from('students')
+    .update({ profile_id: data.user.id })
+    .eq('id', studentId);
+  if (pErr || sErr)
+    return { error: 'Einladung gesendet, aber die Verknüpfung ist fehlgeschlagen.' };
+  done([`/fortschritt/${studentId}`], `/fortschritt/${studentId}`);
+}
+
+/** Fortschritts-Formel (Gewichte PROPOSAL, Bestehensgrenze OFFENE ENTSCHEIDUNG) – nur Leitung. */
+export async function saveFormula(_prev: FormState, fd: FormData): Promise<FormState> {
+  const admin = await requireAdmin();
+  const p = parseFormula(fd);
+  if (!p.ok) return { error: p.error };
+  const failed = await attempt(() => getStore().setSetting('progress_formula', p.data, admin.id));
+  if (failed) return failed;
+  done(['/einstellungen', '/lernen'], '/einstellungen');
 }

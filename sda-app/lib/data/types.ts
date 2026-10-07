@@ -19,7 +19,7 @@ export interface ProfileRow {
   id: string;
   email: string;
   full_name: string;
-  role: 'admin' | 'teacher' | 'native';
+  role: 'admin' | 'teacher' | 'native' | 'student';
 }
 
 export const SKILLS = [
@@ -42,6 +42,8 @@ export interface StudentRow extends Record<SkillKey, number | null> {
   strengths: string;
   weaknesses: string;
   next_goals: string;
+  /** Login des Schülers (Lern-App), null = noch nicht eingeladen */
+  profile_id: string | null;
   created_at: string;
 }
 
@@ -116,6 +118,32 @@ export interface DecisionRow {
   sort_order: number;
 }
 
+export interface ExerciseAttemptRow {
+  id: string;
+  student_id: string;
+  exercise_id: string;
+  answer: string;
+  correct: boolean;
+  created_at: string;
+}
+
+export interface TestResultRow {
+  id: string;
+  student_id: string;
+  module_id: string;
+  score: number;
+  max_score: number;
+  created_at: string;
+}
+
+export interface SubmissionRow {
+  id: string;
+  homework_id: string;
+  student_id: string;
+  text: string;
+  created_at: string;
+}
+
 export interface Tables {
   groups: GroupRow;
   group_staff: GroupStaffRow;
@@ -125,5 +153,8 @@ export interface Tables {
   errors: ErrorRow;
   homework: HomeworkRow;
   decisions: DecisionRow;
+  exercise_attempts: ExerciseAttemptRow;
+  test_results: TestResultRow;
+  submissions: SubmissionRow;
 }
 export type TableName = keyof Tables;
