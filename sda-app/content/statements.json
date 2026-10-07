@@ -1,0 +1,626 @@
+[
+  {
+    "page": "std",
+    "section": "Mission und Ziel",
+    "label": "OFFENE ENTSCHEIDUNG",
+    "text": "Ein formulierter Missionstext existiert noch nicht."
+  },
+  {
+    "page": "std",
+    "section": "Mission und Ziel",
+    "label": "EXISTING",
+    "text": "Live-Online-Unterricht in Gruppen, 10 Stunden pro Woche (8 Stunden Grammatik und Vokabeln, 2 Stunden Sprechen mit Muttersprachlern), Weg von A1 bis B2 mit Bezug zu Alltag, Arbeit und Pflege in Deutschland. Preis laut Probestunden-Skript: 1000 DH pro Monat."
+  },
+  {
+    "page": "std",
+    "section": "Rollen",
+    "label": "EXISTING",
+    "text": "Lehrkraft 1 und Lehrkraft 2 (marokkanisch, Grammatik): Hauptlehrkraft und Assistenz."
+  },
+  {
+    "page": "std",
+    "section": "Rollen",
+    "label": "EXISTING",
+    "text": "Hauptlehrkraft: leitet die Stunde, erklärt Grammatik. Assistenz: Übungen, Chat, Breakout-Räume, Zeit, Hausaufgaben."
+  },
+  {
+    "page": "std",
+    "section": "Rollen",
+    "label": "EXISTING",
+    "text": "Muttersprachler/in 1 und 2: Sprechstunden, nur Deutsch, Fehlerliste."
+  },
+  {
+    "page": "std",
+    "section": "Rollen",
+    "label": "PROPOSAL",
+    "text": "Rollenwechsel: Lehrkraft 1 Haupt am Mo und Mi, Lehrkraft 2 am Di und Do."
+  },
+  {
+    "page": "std",
+    "section": "Rollen",
+    "label": "OFFENE ENTSCHEIDUNG",
+    "text": "Namen von Lehrkraft 2 und der Muttersprachler/innen."
+  },
+  {
+    "page": "std",
+    "section": "Unterricht und Umgang mit Schülern",
+    "label": "EXISTING",
+    "text": "Teilnehmer sprechen mindestens 60 % der Zeit, das Team höchstens 40 %."
+  },
+  {
+    "page": "std",
+    "section": "Unterricht und Umgang mit Schülern",
+    "label": "EXISTING",
+    "text": "Beispiele immer auf Deutsch. Darija nur, um eine schwere Regel einmal zu erklären."
+  },
+  {
+    "page": "std",
+    "section": "Unterricht und Umgang mit Schülern",
+    "label": "EXISTING",
+    "text": "Erst loben, dann nur 1–2 wichtige Fehler korrigieren."
+  },
+  {
+    "page": "std",
+    "section": "Unterricht und Umgang mit Schülern",
+    "label": "EXISTING",
+    "text": "Eine Stimme zur Zeit."
+  },
+  {
+    "page": "std",
+    "section": "Unterricht und Umgang mit Schülern",
+    "label": "EXISTING",
+    "text": "Nach jeder Stunde 10 Minuten Debrief."
+  },
+  {
+    "page": "std",
+    "section": "Pünktlichkeit und Zuverlässigkeit",
+    "label": "EXISTING",
+    "text": "Team ist 20 Minuten vor der Stunde online (Probestunde: 30 Minuten)."
+  },
+  {
+    "page": "std",
+    "section": "Pünktlichkeit und Zuverlässigkeit",
+    "label": "EXISTING",
+    "text": "Teilnehmer sind 5 Minuten vorher da, Kamera an, Mikrofon aus, Hausaufgaben pünktlich."
+  },
+  {
+    "page": "std",
+    "section": "Pünktlichkeit und Zuverlässigkeit",
+    "label": "EXISTING",
+    "text": "Notfallplan für Ausfälle (unter Betrieb & Plattformen)."
+  },
+  {
+    "page": "std",
+    "section": "Kommunikationsstandard",
+    "label": "PROPOSAL",
+    "text": "Antwortzeit werktags unter 2 Stunden (Vorschlag)"
+  },
+  {
+    "page": "std",
+    "section": "Kommunikationsstandard",
+    "label": "PROPOSAL",
+    "text": "Textbausteine für alle Standardfälle verwenden"
+  },
+  {
+    "page": "std",
+    "section": "Kommunikationsstandard",
+    "label": "PROPOSAL",
+    "text": "Immer beide Uhrzeiten nennen: Marokko und Deutschland"
+  },
+  {
+    "page": "std",
+    "section": "Kommunikationsstandard",
+    "label": "PROPOSAL",
+    "text": "Dateinamen einheitlich: A1_W03_Di_Skript_v1"
+  },
+  {
+    "page": "std",
+    "section": "Kommunikationsstandard",
+    "label": "PROPOSAL",
+    "text": "Ein Ordner pro Woche"
+  },
+  {
+    "page": "std",
+    "section": "Kommunikationsstandard",
+    "label": "PROPOSAL",
+    "text": "Abends keine spontanen Privatchats, feste Antwortzeiten nennen"
+  },
+  {
+    "page": "std",
+    "section": "Kommunikationsstandard",
+    "label": "EXISTING",
+    "text": "WhatsApp-Vorlagen für Erstkontakt, Einladung, Erinnerung, Follow-up, Bestätigung, Willkommen."
+  },
+  {
+    "page": "std",
+    "section": "Kommunikationsstandard",
+    "label": "OFFENE ENTSCHEIDUNG",
+    "text": "Interner Kommunikationskanal des Teams."
+  },
+  {
+    "page": "std",
+    "section": "Datenschutz",
+    "label": "EXISTING",
+    "text": "Aufnahmen und Fotos nur mit Einwilligung."
+  },
+  {
+    "page": "std",
+    "section": "Datenschutz",
+    "label": "EXISTING",
+    "text": "Informationen über Schüler bleiben im Team."
+  },
+  {
+    "page": "std",
+    "section": "Datenschutz",
+    "label": "PROPOSAL",
+    "text": "Nur nötige Daten speichern"
+  },
+  {
+    "page": "std",
+    "section": "Datenschutz",
+    "label": "PROPOSAL",
+    "text": "Aufnahmen nach der Auswertung löschen"
+  },
+  {
+    "page": "std",
+    "section": "Datenschutz",
+    "label": "PROPOSAL",
+    "text": "Impressum und Datenschutzerklärung auf der Website prüfen"
+  },
+  {
+    "page": "std",
+    "section": "Datenschutz",
+    "label": "PROPOSAL",
+    "text": "Belege und Rechnungen sauber ablegen"
+  },
+  {
+    "page": "std",
+    "section": "Datenschutz",
+    "label": "PROPOSAL",
+    "text": "Rechtliche Fragen mit einer Fachperson klären"
+  },
+  {
+    "page": "std",
+    "section": "Datenschutz",
+    "label": "OFFENE ENTSCHEIDUNG",
+    "text": "Einwilligungstext und wer im System Schülerdaten sehen darf."
+  },
+  {
+    "page": "cur",
+    "section": "02 Curriculum A1–B2",
+    "label": "EXISTING",
+    "text": "Themen, Stunden und Skripte"
+  },
+  {
+    "page": "cur",
+    "section": "02 Curriculum A1–B2",
+    "label": "IMPROVEMENT",
+    "text": "Lernziele aus den Themen abgeleitet"
+  },
+  {
+    "page": "cur",
+    "section": "02 Curriculum A1–B2",
+    "label": "PROPOSAL",
+    "text": "8 Module pro Level"
+  },
+  {
+    "page": "lo",
+    "section": "03 Lernziele",
+    "label": "IMPROVEMENT",
+    "text": "03 Lernziele"
+  },
+  {
+    "page": "lsys",
+    "section": "04 Lesson System",
+    "label": "EXISTING",
+    "text": "CHECK-IN"
+  },
+  {
+    "page": "lsys",
+    "section": "04 Lesson System",
+    "label": "EXISTING",
+    "text": "WIEDERHOLUNG"
+  },
+  {
+    "page": "lsys",
+    "section": "04 Lesson System",
+    "label": "EXISTING",
+    "text": "INPUT"
+  },
+  {
+    "page": "lsys",
+    "section": "04 Lesson System",
+    "label": "EXISTING",
+    "text": "GUIDED PRACTICE"
+  },
+  {
+    "page": "lsys",
+    "section": "04 Lesson System",
+    "label": "EXISTING",
+    "text": "COMMUNICATION"
+  },
+  {
+    "page": "lsys",
+    "section": "04 Lesson System",
+    "label": "EXISTING",
+    "text": "CORRECTION"
+  },
+  {
+    "page": "lsys",
+    "section": "04 Lesson System",
+    "label": "IMPROVEMENT",
+    "text": "CORRECTION"
+  },
+  {
+    "page": "lsys",
+    "section": "04 Lesson System",
+    "label": "EXISTING",
+    "text": "RECAP"
+  },
+  {
+    "page": "lsys",
+    "section": "04 Lesson System",
+    "label": "EXISTING",
+    "text": "HOMEWORK"
+  },
+  {
+    "page": "lsys",
+    "section": "04 Lesson System",
+    "label": "IMPROVEMENT",
+    "text": "HOMEWORK"
+  },
+  {
+    "page": "lsys",
+    "section": "04 Lesson System",
+    "label": "EXISTING",
+    "text": "DOCUMENTATION"
+  },
+  {
+    "page": "lsys",
+    "section": "04 Lesson System",
+    "label": "IMPROVEMENT",
+    "text": "DOCUMENTATION"
+  },
+  {
+    "page": "lsys",
+    "section": "So nutzt ihr das System in der Stunde",
+    "label": "EXISTING",
+    "text": "So nutzt ihr das System in der Stunde"
+  },
+  {
+    "page": "play",
+    "section": "Während der Stunde",
+    "label": "IMPROVEMENT",
+    "text": "Lernziel zu Beginn nennen und am Ende prüfen."
+  },
+  {
+    "page": "play",
+    "section": "Während der Stunde",
+    "label": "EXISTING",
+    "text": "Teilnehmer sprechen lassen: mindestens 60 % Sprechzeit."
+  },
+  {
+    "page": "play",
+    "section": "Während der Stunde",
+    "label": "EXISTING",
+    "text": "Assistenz beobachtet Fehler und notiert sie."
+  },
+  {
+    "page": "play",
+    "section": "Während der Stunde",
+    "label": "EXISTING",
+    "text": "Verständnis prüfen: Übung C einzeln, Lösungen vergleichen."
+  },
+  {
+    "page": "play",
+    "section": "Während der Stunde",
+    "label": "EXISTING",
+    "text": "Übungen A, B, C laut Skript durchführen."
+  },
+  {
+    "page": "play",
+    "section": "Während der Stunde",
+    "label": "EXISTING",
+    "text": "Praxis: jede Person 3 neue Sätze zum Thema."
+  },
+  {
+    "page": "play",
+    "section": "Nach der Stunde",
+    "label": "IMPROVEMENT",
+    "text": "Nach der Stunde"
+  },
+  {
+    "page": "prog",
+    "section": "06 Student Progress",
+    "label": "IMPROVEMENT",
+    "text": "06 Student Progress"
+  },
+  {
+    "page": "err",
+    "section": "07 Error Tracking",
+    "label": "IMPROVEMENT",
+    "text": "07 Error Tracking"
+  },
+  {
+    "page": "hw",
+    "section": "08 Hausaufgaben",
+    "label": "IMPROVEMENT",
+    "text": "08 Hausaufgaben"
+  },
+  {
+    "page": "de",
+    "section": "09 Germany Preparation",
+    "label": "IMPROVEMENT",
+    "text": "09 Germany Preparation"
+  },
+  {
+    "page": "de",
+    "section": "09 Germany Preparation",
+    "label": "EXISTING",
+    "text": "Behörden und Formulare"
+  },
+  {
+    "page": "de",
+    "section": "09 Germany Preparation",
+    "label": "EXISTING",
+    "text": "Arzt, Apotheke und Gesundheit"
+  },
+  {
+    "page": "de",
+    "section": "09 Germany Preparation",
+    "label": "EXISTING",
+    "text": "Versicherung, Fristen, Anträge, Bescheide"
+  },
+  {
+    "page": "de",
+    "section": "09 Germany Preparation",
+    "label": "EXISTING",
+    "text": "Wohnen"
+  },
+  {
+    "page": "de",
+    "section": "09 Germany Preparation",
+    "label": "EXISTING",
+    "text": "Telefon und Termine"
+  },
+  {
+    "page": "de",
+    "section": "09 Germany Preparation",
+    "label": "EXISTING",
+    "text": "Bewerbung, Lebenslauf, Stellenanzeigen"
+  },
+  {
+    "page": "de",
+    "section": "09 Germany Preparation",
+    "label": "EXISTING",
+    "text": "Formelle E-Mail und Brief, Beschwerde"
+  },
+  {
+    "page": "de",
+    "section": "09 Germany Preparation",
+    "label": "EXISTING",
+    "text": "Vorstellungsgespräch"
+  },
+  {
+    "page": "de",
+    "section": "09 Germany Preparation",
+    "label": "EXISTING",
+    "text": "Beruf und Pflege"
+  },
+  {
+    "page": "de",
+    "section": "Ausbildung und Studium",
+    "label": "OFFENE ENTSCHEIDUNG",
+    "text": "Im bestehenden Material gibt es noch keine eigenen Stunden zu Ausbildung oder Studium in Deutschland. Ausbildung kommt bisher nur als Lernziel der Teilnehmer vor (Probestunde, Erstkontakt)."
+  },
+  {
+    "page": "de",
+    "section": "Bewerbungsbegleitung",
+    "label": "EXISTING",
+    "text": "Bewerbungsbegleitung mit Alfred Schmitt ist im Ablauf vorgesehen."
+  },
+  {
+    "page": "de",
+    "section": "Bewerbungsbegleitung",
+    "label": "OFFENE ENTSCHEIDUNG",
+    "text": "Ab wann sie beginnt."
+  },
+  {
+    "page": "onb",
+    "section": "Vor Start",
+    "label": "EXISTING",
+    "text": "Vor Start"
+  },
+  {
+    "page": "onb",
+    "section": "Erste Woche",
+    "label": "EXISTING",
+    "text": "Erste Woche"
+  },
+  {
+    "page": "onb",
+    "section": "Laufend",
+    "label": "EXISTING",
+    "text": "Unterricht nach Lesson System und Skript."
+  },
+  {
+    "page": "onb",
+    "section": "Laufend",
+    "label": "IMPROVEMENT",
+    "text": "Hausaufgaben mit Status im Hausaufgaben-System."
+  },
+  {
+    "page": "onb",
+    "section": "Laufend",
+    "label": "EXISTING",
+    "text": "Feedback: Monatsgespräch 10 Minuten pro Teilnehmer."
+  },
+  {
+    "page": "onb",
+    "section": "Laufend",
+    "label": "IMPROVEMENT",
+    "text": "Fortschritt im Student Progress."
+  },
+  {
+    "page": "doc",
+    "section": "11 Dokumentation",
+    "label": "IMPROVEMENT",
+    "text": "11 Dokumentation"
+  },
+  {
+    "page": "qc",
+    "section": "Bestehende Kontrollpunkte",
+    "label": "EXISTING",
+    "text": "Mini-Test am Ende jeder Woche aus den Übungen der Woche."
+  },
+  {
+    "page": "qc",
+    "section": "Bestehende Kontrollpunkte",
+    "label": "EXISTING",
+    "text": "Teilnehmer unter 50 % im Mini-Test persönlich anschreiben."
+  },
+  {
+    "page": "qc",
+    "section": "Bestehende Kontrollpunkte",
+    "label": "EXISTING",
+    "text": "Monatsabschluss: Gespräch 10 Min., Sprechtest 5 Min., schriftlicher Test."
+  },
+  {
+    "page": "qc",
+    "section": "Bestehende Kontrollpunkte",
+    "label": "EXISTING",
+    "text": "Levelwechsel nach Abschlussergebnis und Anwesenheit."
+  },
+  {
+    "page": "qc",
+    "section": "Bestehende Kontrollpunkte",
+    "label": "EXISTING",
+    "text": "Debrief nach jeder Stunde."
+  },
+  {
+    "page": "qc",
+    "section": "Bestehende Kontrollpunkte",
+    "label": "PROPOSAL",
+    "text": "Feedbackfrage 1–5 nach jeder Stunde, Wochen-Review, Peer-Beobachtung einmal im Monat."
+  },
+  {
+    "page": "qc",
+    "section": "Noch festzulegen",
+    "label": "OFFENE ENTSCHEIDUNG",
+    "text": "Häufigkeit von Tests, Gesprächen und Reviews."
+  },
+  {
+    "page": "qc",
+    "section": "Noch festzulegen",
+    "label": "OFFENE ENTSCHEIDUNG",
+    "text": "Warnschwellen für Anwesenheit, Hausaufgaben und fehlende Dokumentation."
+  },
+  {
+    "page": "qc",
+    "section": "Noch festzulegen",
+    "label": "OFFENE ENTSCHEIDUNG",
+    "text": "Wer die Qualitätskontrolle verantwortet."
+  },
+  {
+    "page": "mat",
+    "section": "Lehrbücher",
+    "label": "EXISTING",
+    "text": "Die Wochen folgen dem Referenzrahmen und den typischen Themen gängiger Lehrwerke. Die Texte hier sind eigene Texte und ersetzen das Lehrbuch nicht."
+  },
+  {
+    "page": "mat",
+    "section": "Lehrbücher",
+    "label": "OFFENE ENTSCHEIDUNG",
+    "text": "Mit welchem Lehrwerk die Akademie arbeitet."
+  },
+  {
+    "page": "mat",
+    "section": "Eigene Texte und Übungen",
+    "label": "EXISTING",
+    "text": "Vorlese-Skripte mit Darija-Hinweis: 64 Grammatikstunden (A1 und A2 vollständig)."
+  },
+  {
+    "page": "mat",
+    "section": "Eigene Texte und Übungen",
+    "label": "EXISTING",
+    "text": "Eigene Übungen mit Lösungen: 256."
+  },
+  {
+    "page": "mat",
+    "section": "Eigene Texte und Übungen",
+    "label": "EXISTING",
+    "text": "Sprechdialoge und Fragekarten: 16 Sprechstunden (A1, A2)."
+  },
+  {
+    "page": "mat",
+    "section": "Eigene Texte und Übungen",
+    "label": "EXISTING",
+    "text": "B1 und B2: Basis-Skripte aus den Kernpunkten, noch ohne eigene Übungen."
+  },
+  {
+    "page": "mat",
+    "section": "Eigene Texte und Übungen",
+    "label": "EXISTING",
+    "text": "Probestunden-Skript, WhatsApp-Vorlagen, 18 kreative Aktivitäten."
+  },
+  {
+    "page": "mat",
+    "section": "Quellen und Werkzeuge",
+    "label": "PROPOSAL",
+    "text": "Übungen live: Wordwall, Kahoot oder Quizlet"
+  },
+  {
+    "page": "mat",
+    "section": "Quellen und Werkzeuge",
+    "label": "PROPOSAL",
+    "text": "Tafelbild: Zoom Whiteboard oder Miro"
+  },
+  {
+    "page": "mat",
+    "section": "Quellen und Werkzeuge",
+    "label": "PROPOSAL",
+    "text": "Nachschlagen: DWDS, Duden online, dict.cc, verbformen.de"
+  },
+  {
+    "page": "mat",
+    "section": "Lektion und Seiten je Stunde",
+    "label": "IMPROVEMENT",
+    "text": "Lektion und Seiten je Stunde"
+  },
+  {
+    "page": "dec",
+    "section": "14 Offene Entscheidungen",
+    "label": "OFFENE ENTSCHEIDUNG",
+    "text": "14 Offene Entscheidungen"
+  },
+  {
+    "page": "ops",
+    "section": "Betrieb & Plattformen",
+    "label": "EXISTING",
+    "text": "Betrieb & Plattformen"
+  },
+  {
+    "page": "ops",
+    "section": "Betrieb & Plattformen",
+    "label": "EXISTING",
+    "text": "Geplant waren Tabellen für Kontakte, Anwesenheit, Hausaufgaben, Fehlerliste, Fortschritt und Zahlungen."
+  },
+  {
+    "page": "ops",
+    "section": "Betrieb & Plattformen",
+    "label": "IMPROVEMENT",
+    "text": "Anwesenheit, Hausaufgaben, Fehler und Fortschritt laufen jetzt direkt in diesem System."
+  },
+  {
+    "page": "ops",
+    "section": "Betrieb & Plattformen",
+    "label": "OFFENE ENTSCHEIDUNG",
+    "text": "Kontakte und Zahlungen: weiter in Sheets oder auch hier?"
+  },
+  {
+    "page": "lesson",
+    "section": "Alphabet, Aussprache & Zahlen 0–20",
+    "label": "IMPROVEMENT",
+    "text": "Lernziel der Einheit"
+  }
+]

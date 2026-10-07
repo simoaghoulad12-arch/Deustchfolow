@@ -1,0 +1,288 @@
+[
+  {
+    "moduleId": "A1.1",
+    "dialog": [
+      "Anna: Hallo! Ich heiße Anna. Und du?",
+      "Karim: Hallo Anna, ich heiße Karim.",
+      "Anna: Woher kommst du?",
+      "Karim: Ich komme aus Marokko, aus Rabat. Und du?",
+      "Anna: Ich komme aus Deutschland, aus Frankfurt.",
+      "Karim: Wie alt bist du?",
+      "Anna: Ich bin 28 Jahre alt."
+    ],
+    "karten": [
+      "Wie heißt du?",
+      "Woher kommst du?",
+      "Wo wohnst du?",
+      "Wie alt bist du?",
+      "Welche Sprachen sprichst du?"
+    ]
+  },
+  {
+    "moduleId": "A1.2",
+    "dialog": [
+      "Lena: Hast du Geschwister?",
+      "Omar: Ja, ich habe zwei Schwestern und einen Bruder.",
+      "Lena: Was sind sie von Beruf?",
+      "Omar: Meine Schwester ist Lehrerin. Mein Bruder ist Krankenpfleger.",
+      "Lena: Und was bist du von Beruf?",
+      "Omar: Ich bin Student."
+    ],
+    "karten": [
+      "Hast du Geschwister?",
+      "Wie heißt deine Mutter?",
+      "Was bist du von Beruf?",
+      "Was ist dein Vater von Beruf?",
+      "Hast du Kinder?"
+    ]
+  },
+  {
+    "moduleId": "A1.3",
+    "dialog": [
+      "Tom: Wann stehst du auf?",
+      "Sara: Ich stehe um sechs Uhr auf.",
+      "Tom: Und was machst du dann?",
+      "Sara: Dann dusche ich und frühstücke. Um sieben gehe ich zur Arbeit.",
+      "Tom: Wann hast du Feierabend?",
+      "Sara: Um halb fünf."
+    ],
+    "karten": [
+      "Wann stehst du auf?",
+      "Wann beginnt deine Arbeit?",
+      "Was machst du am Abend?",
+      "Wann gehst du schlafen?",
+      "Was machst du am Sonntag?"
+    ]
+  },
+  {
+    "moduleId": "A1.4",
+    "dialog": [
+      "Verkäuferin: Guten Tag! Was darf es sein?",
+      "Kunde: Ich hätte gern ein Kilo Äpfel, bitte.",
+      "Verkäuferin: Sonst noch etwas?",
+      "Kunde: Ja, eine Packung Reis und zwei Liter Milch. Was kostet das?",
+      "Verkäuferin: Das macht acht Euro fünfzig.",
+      "Kunde: Hier bitte. Auf Wiedersehen!"
+    ],
+    "karten": [
+      "Was isst du gern?",
+      "Was trinkst du am Morgen?",
+      "Was kaufst du im Supermarkt?",
+      "Wie viel kostet ein Kilo Äpfel?",
+      "Was bestellst du im Restaurant?"
+    ]
+  },
+  {
+    "moduleId": "A1.5",
+    "dialog": [
+      "Paul: Entschuldigung, wie komme ich zum Bahnhof?",
+      "Frau: Gehen Sie hier geradeaus und dann links.",
+      "Paul: Ist das weit?",
+      "Frau: Nein, zu Fuß zehn Minuten. Der Bahnhof ist neben der Post.",
+      "Paul: Vielen Dank!"
+    ],
+    "karten": [
+      "Wie sieht deine Wohnung aus?",
+      "Wo ist der Supermarkt?",
+      "Wie komme ich zur Apotheke?",
+      "Hast du einen Balkon?",
+      "Wie fährst du zur Arbeit?"
+    ]
+  },
+  {
+    "moduleId": "A1.6",
+    "dialog": [
+      "Mia: Hast du am Samstag Zeit?",
+      "Ali: Ja, warum?",
+      "Mia: Wollen wir ins Kino gehen?",
+      "Ali: Gute Idee! Um wie viel Uhr?",
+      "Mia: Um 19 Uhr vor dem Kino.",
+      "Ali: Perfekt, bis dann!"
+    ],
+    "karten": [
+      "Was machst du in der Freizeit?",
+      "Welchen Sport machst du gern?",
+      "Wie ist das Wetter heute?",
+      "Was ziehst du im Winter an?",
+      "Hast du am Wochenende Zeit?"
+    ]
+  },
+  {
+    "moduleId": "A1.7",
+    "dialog": [
+      "Arzt: Guten Tag. Was fehlt Ihnen?",
+      "Patient: Ich habe Kopfschmerzen und Fieber.",
+      "Arzt: Seit wann?",
+      "Patient: Seit drei Tagen.",
+      "Arzt: Bleiben Sie im Bett und trinken Sie viel Wasser. Hier ist ein Rezept.",
+      "Patient: Vielen Dank."
+    ],
+    "karten": [
+      "Was tut dir weh?",
+      "Warst du schon einmal beim Arzt?",
+      "Was machst du bei Husten?",
+      "Wo ist die Apotheke?",
+      "Was sagst du, wenn du einen Termin brauchst?"
+    ]
+  },
+  {
+    "moduleId": "A1.8",
+    "dialog": [
+      "Prüfer: Guten Tag. Wie heißen Sie?",
+      "Teilnehmer: Ich heiße Amal.",
+      "Prüfer: Woher kommen Sie?",
+      "Teilnehmer: Ich komme aus Marokko.",
+      "Prüfer: Können Sie bitte das Fenster öffnen?",
+      "Teilnehmer: Ja, gern."
+    ],
+    "karten": [
+      "Stell dich vor.",
+      "Frage nach dem Alter.",
+      "Bitte um Hilfe.",
+      "Bitte um Wiederholung.",
+      "Frage nach der Uhrzeit."
+    ]
+  },
+  {
+    "moduleId": "A2.1",
+    "dialog": [
+      "Lena: Was hast du am Wochenende gemacht?",
+      "Omar: Am Samstag bin ich nach Darmstadt gefahren und habe Freunde getroffen.",
+      "Lena: Und was habt ihr gemacht?",
+      "Omar: Wir haben gegessen und Fußball gespielt.",
+      "Lena: Wie war es?",
+      "Omar: Es war super!"
+    ],
+    "karten": [
+      "Was hast du gestern gemacht?",
+      "Wohin bist du letzte Woche gefahren?",
+      "Was hast du heute Morgen gegessen?",
+      "Was hast du am Sonntag gemacht?",
+      "Wie war dein Urlaub?"
+    ]
+  },
+  {
+    "moduleId": "A2.2",
+    "dialog": [
+      "Rezeption: Praxis Dr. Weber, guten Tag.",
+      "Anrufer: Guten Tag, hier spricht Amal Karimi. Ich möchte einen Termin vereinbaren.",
+      "Rezeption: Haben Sie morgen um zehn Zeit?",
+      "Anrufer: Leider muss ich arbeiten. Könnten wir den Termin verschieben?",
+      "Rezeption: Ja, am Donnerstag um 14 Uhr.",
+      "Anrufer: Das passt. Vielen Dank, auf Wiederhören!"
+    ],
+    "karten": [
+      "Wie meldest du dich am Telefon?",
+      "Wie vereinbarst du einen Termin?",
+      "Wie sagst du einen Termin ab?",
+      "Was machst du, wenn du etwas nicht verstehst?",
+      "Warum konntest du gestern nicht kommen?"
+    ]
+  },
+  {
+    "moduleId": "A2.3",
+    "dialog": [
+      "Lisa: Warum lernst du Deutsch?",
+      "Ali: Ich lerne Deutsch, weil ich in Deutschland arbeiten möchte.",
+      "Lisa: Was möchtest du machen?",
+      "Ali: Ich glaube, dass ich in der Pflege gut arbeiten kann.",
+      "Lisa: Obwohl es schwer ist?",
+      "Ali: Ja, obwohl es schwer ist, macht es mir Spaß."
+    ],
+    "karten": [
+      "Warum lernst du Deutsch?",
+      "Warum möchtest du nach Deutschland?",
+      "Was machst du, wenn du Zeit hast?",
+      "Was ist wichtig für dich?",
+      "Wann bleibst du zu Hause?"
+    ]
+  },
+  {
+    "moduleId": "A2.4",
+    "dialog": [
+      "Vermieter: Die Wohnung hat drei Zimmer und einen Balkon.",
+      "Mieter: Wie hoch ist die Miete?",
+      "Vermieter: Die Kaltmiete ist 650 Euro, dazu kommen 120 Euro Nebenkosten.",
+      "Mieter: Wo liegt die Wohnung genau?",
+      "Vermieter: Sie ist im zweiten Stock, neben dem Supermarkt.",
+      "Mieter: Ab wann kann ich einziehen?"
+    ],
+    "karten": [
+      "Wo liegt das Buch?",
+      "Wohin stellst du den Tisch?",
+      "Wie kommst du zur Arbeit?",
+      "Wie viel Miete bezahlst du?",
+      "Wie sieht dein Traumzimmer aus?"
+    ]
+  },
+  {
+    "moduleId": "A2.5",
+    "dialog": [
+      "Anna: Welche Stadt gefällt dir besser: Frankfurt oder Berlin?",
+      "Karim: Frankfurt ist kleiner als Berlin, aber ich finde es gemütlicher.",
+      "Anna: Und welche Stadt ist am teuersten?",
+      "Karim: Ich glaube, München ist am teuersten.",
+      "Anna: Wie sieht dein neuer Kollege aus?",
+      "Karim: Er ist groß und hat kurze, schwarze Haare."
+    ],
+    "karten": [
+      "Wer in deiner Familie ist am ältesten?",
+      "Welche Stadt ist größer?",
+      "Beschreibe deinen besten Freund.",
+      "Was ist besser: Sommer oder Winter?",
+      "Was isst du am liebsten?"
+    ]
+  },
+  {
+    "moduleId": "A2.6",
+    "dialog": [
+      "Mia: Worauf freust du dich?",
+      "Ali: Ich freue mich auf den Urlaub. Und du?",
+      "Mia: Ich werde nächstes Jahr die B1-Prüfung machen.",
+      "Ali: Was hast du vor, um sie zu bestehen?",
+      "Mia: Ich lerne jeden Tag, um besser zu werden.",
+      "Ali: Das ist ein guter Plan."
+    ],
+    "karten": [
+      "Worauf freust du dich?",
+      "Was wirst du nächstes Jahr machen?",
+      "Wo wirst du in fünf Jahren wohnen?",
+      "Wem hilfst du oft?",
+      "Was gefällt dir an Deutschland?"
+    ]
+  },
+  {
+    "moduleId": "A2.7",
+    "dialog": [
+      "Chef: Guten Tag, nehmen Sie bitte Platz. Erzählen Sie etwas über sich.",
+      "Bewerber: Ich heiße Amal und habe drei Jahre als Pflegehelferin gearbeitet.",
+      "Chef: Warum interessieren Sie sich für diese Stelle?",
+      "Bewerber: Ich interessiere mich für die Arbeit mit Menschen.",
+      "Chef: Welche Sprachen sprechen Sie?",
+      "Bewerber: Arabisch, Deutsch und Französisch."
+    ],
+    "karten": [
+      "Wo hast du schon gearbeitet?",
+      "Wofür interessierst du dich?",
+      "Welche Unterlagen brauchst du?",
+      "Wie sagst du höflich, dass du etwas nicht verstehst?",
+      "Worauf wartest du?"
+    ]
+  },
+  {
+    "moduleId": "A2.8",
+    "dialog": [
+      "Prüfer: Erzählen Sie bitte etwas über Ihre Familie.",
+      "Teilnehmer: Ich möchte über meine Familie sprechen. Zuerst stelle ich meine Eltern vor. Dann erzähle ich von meinen Geschwistern. Zum Schluss sage ich, was wir zusammen machen.",
+      "Prüfer: Danke. Können Sie mir bitte sagen, wo der Bahnhof ist?",
+      "Teilnehmer: Gern. Gehen Sie geradeaus und dann links."
+    ],
+    "karten": [
+      "Stell dich vor.",
+      "Präsentiere deine Familie.",
+      "Frage nach dem Weg.",
+      "Bitte um Wiederholung.",
+      "Plane einen Ausflug."
+    ]
+  }
+]

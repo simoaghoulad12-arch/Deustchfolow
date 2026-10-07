@@ -1,0 +1,30 @@
+[
+  {
+    "titel": "Vorlage 1: Erstantwort",
+    "text": "السلام عليكم [Name]، مرحبا بيك فـ Smart Deutsch Akademie. باش نفهمك مزيان، جاوبني على 3 أسئلة: 1) فين كتسكن؟ 2) شنو المستوى ديالك فالألمانية؟ 3) علاش بغيتي تتعلم الألمانية (خدمة، تكوين، لم الشمل، دراسة)؟ من بعد غادي نقترح عليك الحصة التجريبية."
+  },
+  {
+    "titel": "Vorlage 2: Einladung zur Probestunde",
+    "text": "كاينة حصة تجريبية نهار [Datum] على [Uhrzeit] بتوقيت المغرب ([Uhrzeit] بتوقيت ألمانيا) عبر Zoom، ومدتها 60 دقيقة. فيها: أهداف A2، كيفاش خدام الكورس، درس صغير فـ Perfekt مع تمارين، وحصة تحدث مع ناطقين ألمان. البلايص محدودة (5). واش نحجز ليك بلاصة؟"
+  },
+  {
+    "titel": "Vorlage 3: Erinnerung 24 Std.",
+    "text": "تذكير: غدا [Uhrzeit] الحصة التجريبية. الرابط: [Zoom-Link]. جيب معاك قلم وورقة، ودخل 5 دقائق قبل. نتسناك!"
+  },
+  {
+    "titel": "Vorlage 4: Erinnerung 1 Std.",
+    "text": "بعد ساعة كتبدا الحصة. هذا الرابط: [Zoom-Link]. تأكد من الميكرو والإنترنت. بالتوفيق!"
+  },
+  {
+    "titel": "Vorlage 5: Follow-up nach der Probestunde",
+    "text": "شكرا [Name] على الحضور اليوم! شنو كان أحسن شي عندك؟ إلا بغيتي تبدا معانا، التسجيل من هنا: [Link]. وإلا عندك أي سؤال، أنا هنا."
+  },
+  {
+    "titel": "Vorlage 6: Anmeldebestätigung",
+    "text": "تم تسجيلك [Name]. الكورس كيبدا نهار [Datum]، المستوى: [Niveau]. طريقة الأداء: [Zahlungsweg]. غادي نصيفط ليك جدول الحصص وروابط Circle وZoom. مرحبا بيك!"
+  },
+  {
+    "titel": "Vorlage 7: Willkommensnachricht",
+    "text": "مرحبا بيك [Name] فمجموعة [Gruppe]! هادو الروابط: Zoom [Zoom-Link]، Circle [Link]. أول حاجة: سجل لينا رسالة صوتية 30 ثانية: Ich heiße …, ich komme aus …, ich möchte … . وأول حصة نهار [Datum] على [Uhrzeit]."
+  }
+]

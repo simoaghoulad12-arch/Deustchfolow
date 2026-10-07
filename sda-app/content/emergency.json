@@ -1,0 +1,42 @@
+[
+  {
+    "fall": "Lehrkraft 1 fällt aus",
+    "massnahme": "Lehrkraft 2 übernimmt, Muttersprachler/in unterstützt im Chat."
+  },
+  {
+    "fall": "Lehrkraft 2 fällt aus",
+    "massnahme": "Lehrkraft 1 unterrichtet allein, Muttersprachler/in übernimmt den Chat."
+  },
+  {
+    "fall": "Muttersprachler/in fällt aus",
+    "massnahme": "Sprechen in einer Gruppe, Lehrkraft im Hintergrund; oder Termin verschieben."
+  },
+  {
+    "fall": "Zoom fällt aus",
+    "massnahme": "Backup-Link (z. B. Google Meet) vorher vorbereiten, Info per WhatsApp-Gruppe."
+  },
+  {
+    "fall": "Zu wenige Teilnehmer (1–2)",
+    "massnahme": "Stunde trotzdem durchführen, mehr Sprechzeit pro Person."
+  },
+  {
+    "fall": "Teilnehmer reagiert nicht mehr",
+    "massnahme": "Eine Nachricht senden, danach Pause; Status im Sheet aktualisieren."
+  },
+  {
+    "fall": "Beschwerde oder Streit",
+    "massnahme": "Ruhig bleiben, privat sprechen, nichts vor der Gruppe klären."
+  },
+  {
+    "fall": "Teilnehmer versteht kaum Deutsch",
+    "massnahme": "Langsamer und in kurzen Sätzen sprechen; das Schlüsselwort einmal auf Darija erklären."
+  },
+  {
+    "fall": "Teilnehmer spricht nur Darija",
+    "massnahme": "Sagen: Bitte auf Deutsch – ein Satz reicht. Einen Satz zum Nachsprechen geben."
+  },
+  {
+    "fall": "Frage nach dem Preis mitten in der Stunde",
+    "massnahme": "Sagen: Gute Frage – ich beantworte das am Ende. An die Tafel schreiben: Preis: am Ende."
+  }
+]

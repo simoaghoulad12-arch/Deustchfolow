@@ -1,0 +1,74 @@
+[
+  {
+    "zweck": "Live-Unterricht",
+    "empfehlung": "Zoom (Pro-Lizenz für den Host)",
+    "warum": "Im kostenlosen Plan enden Gruppenmeetings ab 3 Personen nach 40 Minuten. Breakout-Räume, Bildschirmfreigabe und lokale Aufnahme gibt es schon im kostenlosen Plan.",
+    "ar": "فالنسخة المجانية الاجتماع الجماعي كيوقف بعد 40 دقيقة. حصصنا 60 و120 دقيقة، يعني خاص نسخة Pro للمضيف.",
+    "alternative": "Google Meet oder Microsoft Teams: Zeitlimits und Breakout-Funktionen vorher selbst prüfen.",
+    "hinweis": "Einen festen Link pro Gruppe verwenden. Das spart Fragen wie «Wo ist der Link?»."
+  },
+  {
+    "zweck": "Community und Material",
+    "empfehlung": "Circle",
+    "warum": "Ein Bereich pro Level, Beiträge für Hausaufgaben, Termine und Material an einem Ort.",
+    "ar": "كل مستوى عندو Space، وفيه الواجبات والمواعيد والمواد.",
+    "alternative": "Google Classroom oder Moodle.",
+    "hinweis": "Funktionen und Preise vor dem Kauf auf der Seite des Anbieters prüfen."
+  },
+  {
+    "zweck": "Kundenkontakt",
+    "empfehlung": "WhatsApp Business App",
+    "warum": "Profil, Begrüßungsnachricht, Schnellantworten, Labels und Abwesenheitsnachricht helfen, schnell und einheitlich zu antworten.",
+    "ar": "كنستعملو الرسائل الجاهزة والتصنيفات باش نجاوبو بسرعة وبنفس الأسلوب.",
+    "alternative": "E-Mail mit Formular.",
+    "hinweis": "In normalen WhatsApp-Gruppen sehen alle Mitglieder die Telefonnummern der anderen. Vorher Einwilligung einholen."
+  },
+  {
+    "zweck": "Daten und Organisation",
+    "empfehlung": "Google Sheets, Forms und Drive",
+    "warum": "Kontakte, Anwesenheit, Fortschritt, Einstufungstest, Anmeldung und Feedback in einem System.",
+    "ar": "كلشي فمكان واحد: جهات الاتصال، الحضور، التقدم، الاختبار، الاستمارة.",
+    "alternative": "Excel mit OneDrive.",
+    "hinweis": "Zugriff nur für das Team. Teilnehmerdaten sparsam speichern."
+  },
+  {
+    "zweck": "Übungen live",
+    "empfehlung": "Wordwall, Kahoot oder Quizlet",
+    "warum": "Quiz, Zuordnung, Karteikarten und Wettbewerb machen den Wiederholungsteil lebendig.",
+    "ar": "تمارين تفاعلية كتحمس الطلبة فجزء المراجعة.",
+    "alternative": "Mentimeter oder Padlet.",
+    "hinweis": "Kostenlose Pläne sind oft begrenzt. Vorher in der Generalprobe testen."
+  },
+  {
+    "zweck": "Tafelbild",
+    "empfehlung": "Zoom Whiteboard oder Miro",
+    "warum": "Tafelbild, Satzpuzzle, Mindmap und gemeinsame Notizen.",
+    "ar": "سبورة مشتركة لجداول القواعد وألعاب الجمل.",
+    "alternative": "Folien in PowerPoint oder Google Slides teilen.",
+    "hinweis": "Im kostenlosen Zoom-Plan sind nur 3 Whiteboards möglich."
+  },
+  {
+    "zweck": "Nachschlagen",
+    "empfehlung": "DWDS, Duden online, dict.cc, verbformen.de",
+    "warum": "Bedeutung, Beispiele und Konjugation schnell prüfen.",
+    "ar": "مواقع باش نتأكدو من المعنى والتصريف.",
+    "alternative": "Gedruckte Wörterbücher.",
+    "hinweis": "Für Aussprache lieber die Aufnahmen der Muttersprachler im Team nutzen."
+  },
+  {
+    "zweck": "Termine",
+    "empfehlung": "Google Kalender (Terminplan) oder Calendly",
+    "warum": "Interessenten können Probestunden selbst buchen.",
+    "ar": "الطلبة كيحجزو الحصة التجريبية بوحدهم.",
+    "alternative": "Terminvergabe per WhatsApp.",
+    "hinweis": "Zeitzone prüfen: Europe/Berlin und Africa/Casablanca."
+  },
+  {
+    "zweck": "Zahlung",
+    "empfehlung": "Noch offen",
+    "warum": "Zahlungsweg und Zahlungstag müssen vom Team entschieden werden.",
+    "ar": "خاص نقررو طريقة الأداء.",
+    "alternative": "Banküberweisung oder ein Zahlungsdienst.",
+    "hinweis": "Rechtliche und steuerliche Fragen mit einer Fachperson klären."
+  }
+]

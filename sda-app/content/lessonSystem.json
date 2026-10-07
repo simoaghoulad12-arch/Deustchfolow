@@ -1,0 +1,95 @@
+[
+  {
+    "nr": 1,
+    "schritt": "CHECK-IN",
+    "beschreibung": "Begrüßen, Frage des Tages, Anwesenheit notieren.",
+    "minutenGrammatik": "0–10",
+    "minutenSprechen": "0–5",
+    "labels": [
+      "EXISTING"
+    ]
+  },
+  {
+    "nr": 2,
+    "schritt": "WIEDERHOLUNG",
+    "beschreibung": "5 Quizfragen zur letzten Stunde (im Skript automatisch aus den Übungen der Vorstunde).",
+    "minutenGrammatik": "10–20",
+    "minutenSprechen": "5–10 (Warm-up)",
+    "labels": [
+      "EXISTING"
+    ]
+  },
+  {
+    "nr": 3,
+    "schritt": "INPUT",
+    "beschreibung": "Regel, Tafelbild, Beispielsätze zum Nachsprechen, Darija-Hinweis.",
+    "minutenGrammatik": "20–55",
+    "minutenSprechen": "10–35 (Beispieldialog, Teil 1)",
+    "labels": [
+      "EXISTING"
+    ]
+  },
+  {
+    "nr": 4,
+    "schritt": "GUIDED PRACTICE",
+    "beschreibung": "Übung A gemeinsam, Übung B im Breakout, Übung C einzeln.",
+    "minutenGrammatik": "65–95",
+    "minutenSprechen": "10–35 (Partnerdialoge)",
+    "labels": [
+      "EXISTING"
+    ]
+  },
+  {
+    "nr": 5,
+    "schritt": "COMMUNICATION",
+    "beschreibung": "Jede Person sagt 3 neue Sätze zum Thema.",
+    "minutenGrammatik": "95–112",
+    "minutenSprechen": "45–55 (Rollenspiel, zweite Runde)",
+    "labels": [
+      "EXISTING"
+    ]
+  },
+  {
+    "nr": 6,
+    "schritt": "CORRECTION",
+    "beschreibung": "Erst loben, dann 1–2 wichtige Fehler pro Person. Fehler im Error Tracking festhalten.",
+    "minutenGrammatik": "95–112",
+    "minutenSprechen": "35–45 (3 gute Sätze, 3 Fehler)",
+    "labels": [
+      "EXISTING",
+      "IMPROVEMENT"
+    ]
+  },
+  {
+    "nr": 7,
+    "schritt": "RECAP",
+    "beschreibung": "Zusammenfassung in 3 Sätzen, Vorschau auf die nächste Stunde.",
+    "minutenGrammatik": "112–120",
+    "minutenSprechen": "55–60 (Satz der Woche)",
+    "labels": [
+      "EXISTING"
+    ]
+  },
+  {
+    "nr": 8,
+    "schritt": "HOMEWORK",
+    "beschreibung": "Hausaufgabe aus dem Skript, mit Ziel, Deadline und Status im Hausaufgaben-System.",
+    "minutenGrammatik": "112–120",
+    "minutenSprechen": "55–60 (Sprachnachricht 30 Sek.)",
+    "labels": [
+      "EXISTING",
+      "IMPROVEMENT"
+    ]
+  },
+  {
+    "nr": 9,
+    "schritt": "DOCUMENTATION",
+    "beschreibung": "Direkt danach: Dokumentationsformular (Thema, Anwesenheit, Fehler, Hausaufgabe, nächste Stunde) und Debrief.",
+    "minutenGrammatik": "danach",
+    "minutenSprechen": "danach",
+    "labels": [
+      "EXISTING",
+      "IMPROVEMENT"
+    ]
+  }
+]

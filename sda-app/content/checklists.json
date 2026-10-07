@@ -1,0 +1,1194 @@
+{
+  "generalprobe": {
+    "id": "probe.gp",
+    "type": "x",
+    "title": "Generalprobe (interne Probe)",
+    "dauer": "120 Min.",
+    "groups": [
+      {
+        "name": {
+          "de": "Vorbereitung (3 Tage bis 1 Tag vorher)",
+          "ar": "التحضير (من 3 أيام حتى يوم قبل)"
+        },
+        "items": [
+          {
+            "id": "probe.gp#0",
+            "role": "ALL",
+            "zeit": "T–3",
+            "text": {
+              "de": "Skript der Probestunde lesen",
+              "ar": "اقرا نص الحصة التجريبية"
+            }
+          },
+          {
+            "id": "probe.gp#1",
+            "role": "H",
+            "zeit": "T–3",
+            "text": {
+              "de": "Folien/Tafel: Perfekt-Regel und Partizip-Tabelle fertig",
+              "ar": "الشرائح/السبورة: قاعدة Perfekt وجدول Partizip II واجدين"
+            }
+          },
+          {
+            "id": "probe.gp#2",
+            "role": "A",
+            "zeit": "T–3",
+            "text": {
+              "de": "Übungen A, B, C + Lösungen als Text für den Chat",
+              "ar": "التمارين A وB وC مع الحلول كنص للشات"
+            }
+          },
+          {
+            "id": "probe.gp#3",
+            "role": "N",
+            "zeit": "T–2",
+            "text": {
+              "de": "6 Sprechkarten für Teil 5 vorbereiten",
+              "ar": "حضّر 6 بطاقات للتحدث (الجزء 5)"
+            }
+          },
+          {
+            "id": "probe.gp#4",
+            "role": "A",
+            "zeit": "T–2",
+            "text": {
+              "de": "Zoom testen: Warteraum, Breakout, Bildschirmfreigabe, Chat",
+              "ar": "جرب Zoom: قاعة الانتظار، الغرف الصغيرة، مشاركة الشاشة، الشات"
+            }
+          },
+          {
+            "id": "probe.gp#5",
+            "role": "H",
+            "zeit": "T–2",
+            "text": {
+              "de": "Einladungen per WhatsApp senden (Vorlage 2)",
+              "ar": "صيفط الدعوات عبر WhatsApp (الرسالة 2)"
+            }
+          },
+          {
+            "id": "probe.gp#6",
+            "role": "H",
+            "zeit": "T–1",
+            "text": {
+              "de": "Erinnerung 24 Std. vorher senden (Vorlage 3)",
+              "ar": "صيفط التذكير قبل 24 ساعة (الرسالة 3)"
+            }
+          },
+          {
+            "id": "probe.gp#7",
+            "role": "ALL",
+            "zeit": "T–1",
+            "text": {
+              "de": "Rollen und Zeitplan ausdrucken oder auf zweitem Bildschirm öffnen",
+              "ar": "اطبع الأدوار والجدول ولا حلهم فشاشة ثانية"
+            }
+          }
+        ]
+      },
+      {
+        "name": {
+          "de": "Ablauf der Generalprobe (120 Min.)",
+          "ar": "سير التجربة الداخلية (120 دقيقة)"
+        },
+        "items": [
+          {
+            "id": "probe.gp#8",
+            "role": "A",
+            "zeit": "0–10",
+            "text": {
+              "de": "Technik-Check: Ton, Kamera, Freigabe, Chat, Breakout",
+              "ar": "فحص تقني: الصوت، الكاميرا، المشاركة، الشات، الغرف"
+            }
+          },
+          {
+            "id": "probe.gp#9",
+            "role": "H",
+            "zeit": "0–10",
+            "text": {
+              "de": "Rollen und Regeln der Probe erklären",
+              "ar": "اشرح الأدوار وقوانين التجربة"
+            }
+          },
+          {
+            "id": "probe.gp#10",
+            "role": "H",
+            "zeit": "10–70",
+            "text": {
+              "de": "Probestunde in Echtzeit unterrichten (60 Min.)",
+              "ar": "درّس الحصة التجريبية بالوقت الحقيقي (60 دقيقة)"
+            }
+          },
+          {
+            "id": "probe.gp#11",
+            "role": "A",
+            "zeit": "10–70",
+            "text": {
+              "de": "Zeit stoppen, Abweichungen notieren",
+              "ar": "احسب الوقت وسجل الانحرافات"
+            }
+          },
+          {
+            "id": "probe.gp#12",
+            "role": "N",
+            "zeit": "10–70",
+            "text": {
+              "de": "Als Teilnehmer mitspielen, typische Fehler machen",
+              "ar": "شارك كطالب وديرو أخطاء عادية"
+            }
+          },
+          {
+            "id": "probe.gp#13",
+            "role": "T",
+            "zeit": "70–75",
+            "text": {
+              "de": "Kurzpause und Notizen",
+              "ar": "استراحة قصيرة وملاحظات"
+            }
+          },
+          {
+            "id": "probe.gp#14",
+            "role": "A",
+            "zeit": "75–90",
+            "text": {
+              "de": "Rollentausch: Teil 4 (Mini-Lektion) in Kurzfassung unterrichten",
+              "ar": "تبادل الأدوار: درّس الجزء 4 (الدرس الصغير) باختصار"
+            }
+          },
+          {
+            "id": "probe.gp#15",
+            "role": "ALL",
+            "zeit": "90–100",
+            "text": {
+              "de": "3 Problemfälle spielen: kein Deutsch, Mikro defekt, Frage nach dem Preis",
+              "ar": "مثلو 3 مشاكل: ما كيفهمش الألمانية، الميكرو ما خدامش، سؤال على الثمن"
+            }
+          },
+          {
+            "id": "probe.gp#16",
+            "role": "ALL",
+            "zeit": "100–120",
+            "text": {
+              "de": "Feedback-Bogen ausfüllen und Änderungsliste schreiben",
+              "ar": "عمر ورقة التقييم واكتب لائحة التعديلات"
+            }
+          }
+        ]
+      },
+      {
+        "name": {
+          "de": "Go / No-Go",
+          "ar": "نمشيو ولا لا؟"
+        },
+        "items": [
+          {
+            "id": "probe.gp#17",
+            "role": "ALL",
+            "zeit": "Ende",
+            "text": {
+              "de": "Alle Vorbereitungen oben erledigt",
+              "ar": "كل التحضيرات فوق مكملة"
+            }
+          },
+          {
+            "id": "probe.gp#18",
+            "role": "ALL",
+            "zeit": "Ende",
+            "text": {
+              "de": "Durchlauf dauerte 60 Min. ±5",
+              "ar": "الجولة دازت فـ 60 دقيقة ±5"
+            }
+          },
+          {
+            "id": "probe.gp#19",
+            "role": "ALL",
+            "zeit": "Ende",
+            "text": {
+              "de": "Kein technisches Problem offen",
+              "ar": "ما بقى حتى مشكل تقني"
+            }
+          },
+          {
+            "id": "probe.gp#20",
+            "role": "ALL",
+            "zeit": "Ende",
+            "text": {
+              "de": "Jede/r kennt die eigene Rolle ohne Papier",
+              "ar": "كل واحد عارف دورو بلا ورقة"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "probestunde": {
+    "id": "probe.ps",
+    "type": "x",
+    "title": "Echte Probestunde",
+    "dauer": "60 Min.",
+    "groups": [
+      {
+        "name": {
+          "de": "Vorher",
+          "ar": "قبل"
+        },
+        "items": [
+          {
+            "id": "probe.ps#0",
+            "role": "ALL",
+            "zeit": "–30 Min.",
+            "text": {
+              "de": "Team online: Technik, Licht, Hintergrund, Mikrofon",
+              "ar": "الفريق أونلاين: التقنية، الإضاءة، الخلفية، الميكرو"
+            }
+          },
+          {
+            "id": "probe.ps#1",
+            "role": "H",
+            "zeit": "–30 Min.",
+            "text": {
+              "de": "Zoom-Meeting öffnen, Ablauf wiederholen",
+              "ar": "حل Zoom وعاود الخطة"
+            }
+          },
+          {
+            "id": "probe.ps#2",
+            "role": "H",
+            "zeit": "–10 Min.",
+            "text": {
+              "de": "Warteraum öffnen, Teilnehmer einzeln mit Namen begrüßen",
+              "ar": "حل قاعة الانتظار ورحب بكل واحد باسمو"
+            }
+          },
+          {
+            "id": "probe.ps#3",
+            "role": "A",
+            "zeit": "–10 Min.",
+            "text": {
+              "de": "Chat beobachten, Namen notieren",
+              "ar": "راقب الشات وسجل الأسماء"
+            }
+          }
+        ]
+      },
+      {
+        "name": {
+          "de": "Die 60 Minuten",
+          "ar": "الستين دقيقة"
+        },
+        "items": [
+          {
+            "id": "probe.ps#4",
+            "role": "H",
+            "zeit": "0–5",
+            "text": {
+              "de": "Begrüßung (Skript), Regel: Fragen immer erlaubt, Fehler sind normal",
+              "ar": "الترحيب (النص)، القاعدة: الأسئلة مرحب بها والغلط عادي"
+            }
+          },
+          {
+            "id": "probe.ps#5",
+            "role": "A",
+            "zeit": "0–5",
+            "text": {
+              "de": "Name, Stadt und Ziel jedes Teilnehmers notieren",
+              "ar": "سجل الاسم والمدينة والهدف ديال كل مشارك"
+            }
+          },
+          {
+            "id": "probe.ps#6",
+            "role": "N",
+            "zeit": "0–5",
+            "text": {
+              "de": "Sich kurz vorstellen: Ich bin … aus …",
+              "ar": "قدم راسك: Ich bin … aus …"
+            }
+          },
+          {
+            "id": "probe.ps#7",
+            "role": "H",
+            "zeit": "5–15",
+            "text": {
+              "de": "Ziele von A2 erklären: 4 Fertigkeiten und wichtige Grammatik",
+              "ar": "اشرح أهداف A2: المهارات الأربع والقواعد المهمة"
+            }
+          },
+          {
+            "id": "probe.ps#8",
+            "role": "A",
+            "zeit": "5–15",
+            "text": {
+              "de": "Mini-Check im Chat: Arbeit / Ausbildung / Alltag / Prüfung / Familie",
+              "ar": "Mini-Check فالشات: خدمة / تكوين / حياة يومية / امتحان / عائلة"
+            }
+          },
+          {
+            "id": "probe.ps#9",
+            "role": "H",
+            "zeit": "15–23",
+            "text": {
+              "de": "Kursablauf in 5 Schritten zeigen, 10 Std./Woche erklären",
+              "ar": "اعرض الكورس فـ 5 خطوات واشرح 10 ساعات فالأسبوع"
+            }
+          },
+          {
+            "id": "probe.ps#10",
+            "role": "A",
+            "zeit": "15–23",
+            "text": {
+              "de": "Wochenplan auf dem Bildschirm zeigen",
+              "ar": "اعرض جدول الأسبوع فالشاشة"
+            }
+          },
+          {
+            "id": "probe.ps#11",
+            "role": "N",
+            "zeit": "15–23",
+            "text": {
+              "de": "Sagen: Wir sprechen 2 Stunden pro Woche mit euch.",
+              "ar": "قول: Wir sprechen 2 Stunden pro Woche mit euch."
+            }
+          },
+          {
+            "id": "probe.ps#12",
+            "role": "H",
+            "zeit": "23–33",
+            "text": {
+              "de": "Perfekt-Regel (5 Min.) und Partizip-II-Tabelle (5 Min.) erklären",
+              "ar": "اشرح قاعدة Perfekt (5 د) وجدول Partizip II (5 د)"
+            }
+          },
+          {
+            "id": "probe.ps#13",
+            "role": "A",
+            "zeit": "33–41",
+            "text": {
+              "de": "Übung A (Lückentext) leiten",
+              "ar": "سير التمرين A (ملء الفراغات)"
+            }
+          },
+          {
+            "id": "probe.ps#14",
+            "role": "A",
+            "zeit": "41–45",
+            "text": {
+              "de": "Übung B (Satzbau) leiten",
+              "ar": "سير التمرين B (ترتيب الجمل)"
+            }
+          },
+          {
+            "id": "probe.ps#15",
+            "role": "A",
+            "zeit": "45–48",
+            "text": {
+              "de": "Übung C (Mini-Quiz) leiten",
+              "ar": "سير التمرين C (اختبار صغير)"
+            }
+          },
+          {
+            "id": "probe.ps#16",
+            "role": "N",
+            "zeit": "23–48",
+            "text": {
+              "de": "Aussprache beim Vorlesen korrigieren",
+              "ar": "صحح النطق ملي كيقراو"
+            }
+          },
+          {
+            "id": "probe.ps#17",
+            "role": "N",
+            "zeit": "48–55",
+            "text": {
+              "de": "Breakout leiten: Was hast du am Wochenende gemacht? (N1 Raum 1, N2 Raum 2)",
+              "ar": "سير الغرف الصغيرة: Was hast du am Wochenende gemacht? (N1 غرفة 1، N2 غرفة 2)"
+            }
+          },
+          {
+            "id": "probe.ps#18",
+            "role": "T",
+            "zeit": "48–55",
+            "text": {
+              "de": "Durch die Räume gehen und Fehler notieren",
+              "ar": "دوز بين الغرف وسجل الأخطاء"
+            }
+          },
+          {
+            "id": "probe.ps#19",
+            "role": "H",
+            "zeit": "55–60",
+            "text": {
+              "de": "Angebot nennen: 10 Std./Woche, 1000 DH/Monat, nächster Schritt",
+              "ar": "قدم العرض: 10 ساعات/أسبوع، 1000 درهم/شهر، الخطوة الجاية"
+            }
+          },
+          {
+            "id": "probe.ps#20",
+            "role": "A",
+            "zeit": "55–60",
+            "text": {
+              "de": "WhatsApp- und Website-Link in den Chat posten",
+              "ar": "حط رابط WhatsApp والموقع فالشات"
+            }
+          },
+          {
+            "id": "probe.ps#21",
+            "role": "N",
+            "zeit": "55–60",
+            "text": {
+              "de": "Verabschieden und für Fragen bleiben",
+              "ar": "ودّع وبقى متاح للأسئلة"
+            }
+          }
+        ]
+      },
+      {
+        "name": {
+          "de": "Nachher",
+          "ar": "بعد"
+        },
+        "items": [
+          {
+            "id": "probe.ps#22",
+            "role": "ALL",
+            "zeit": "Direkt danach",
+            "text": {
+              "de": "Debrief 15 Min.: Was lief gut? Was ändern wir?",
+              "ar": "Debrief 15 دقيقة: شنو داز مزيان؟ شنو نبدلو؟"
+            }
+          },
+          {
+            "id": "probe.ps#23",
+            "role": "H",
+            "zeit": "Gleicher Abend",
+            "text": {
+              "de": "Follow-up senden (Vorlage 5)",
+              "ar": "صيفط رسالة المتابعة (الرسالة 5)"
+            }
+          },
+          {
+            "id": "probe.ps#24",
+            "role": "H",
+            "zeit": "Tag +1",
+            "text": {
+              "de": "Kurz nachfragen: Fragen? Möchtest du starten?",
+              "ar": "سول بإيجاز: عندك أسئلة؟ بغيتي تبدا؟"
+            }
+          },
+          {
+            "id": "probe.ps#25",
+            "role": "H",
+            "zeit": "Tag +3",
+            "text": {
+              "de": "Letzte Erinnerung, ohne Druck",
+              "ar": "آخر تذكير بلا ضغط"
+            }
+          },
+          {
+            "id": "probe.ps#26",
+            "role": "A",
+            "zeit": "Tag +1",
+            "text": {
+              "de": "Status im Kontakte-Sheet aktualisieren",
+              "ar": "حدّث الستاتي فجدول جهات الاتصال"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "einrichtung": {
+    "id": "setup",
+    "type": "x",
+    "title": "Plattformen einrichten (einmalig)",
+    "dauer": "einmalig",
+    "groups": [
+      {
+        "name": {
+          "de": "Zoom",
+          "ar": "Zoom"
+        },
+        "items": [
+          {
+            "id": "setup#0",
+            "role": "ALL",
+            "zeit": "Einmalig",
+            "text": {
+              "de": "Entscheiden: Zoom Pro für den Host (Gruppenstunden über 40 Minuten) oder anderes Tool. Aktuelle Limits auf der Anbieter-Seite prüfen.",
+              "ar": "قرروا: Zoom Pro للمضيف (الحصص أكثر من 40 دقيقة) ولا أداة أخرى. شوفو الحدود الحالية فموقع الشركة."
+            }
+          },
+          {
+            "id": "setup#1",
+            "role": "A",
+            "zeit": "Einmalig",
+            "text": {
+              "de": "Pro Gruppe einen festen Meeting-Link mit Passcode anlegen.",
+              "ar": "صاوب رابط ثابت مع كلمة سر لكل مجموعة."
+            }
+          },
+          {
+            "id": "setup#2",
+            "role": "A",
+            "zeit": "Einmalig",
+            "text": {
+              "de": "Warteraum einschalten und Mikrofone beim Eintritt stumm stellen.",
+              "ar": "شعل قاعة الانتظار وسد الميكروات عند الدخول."
+            }
+          },
+          {
+            "id": "setup#3",
+            "role": "A",
+            "zeit": "Einmalig",
+            "text": {
+              "de": "Testmeeting mit 2 Breakout-Räumen und Timer durchführen.",
+              "ar": "جرب اجتماع فيه غرفتين صغار ومؤقت."
+            }
+          },
+          {
+            "id": "setup#4",
+            "role": "A",
+            "zeit": "Einmalig",
+            "text": {
+              "de": "Backup-Link (z. B. Google Meet) vorbereiten und in der WhatsApp-Gruppe anpinnen.",
+              "ar": "حضر رابط بديل وثبتو فمجموعة WhatsApp."
+            }
+          }
+        ]
+      },
+      {
+        "name": {
+          "de": "Circle (Community)",
+          "ar": "Circle (المجتمع)"
+        },
+        "items": [
+          {
+            "id": "setup#5",
+            "role": "H",
+            "zeit": "Einmalig",
+            "text": {
+              "de": "Bereiche anlegen: Willkommen, Regeln, A1 bis B2, Hausaufgaben, Sprechen.",
+              "ar": "صاوب الأقسام: ترحيب، قوانين، A1 حتى B2، واجبات، تحدث."
+            }
+          },
+          {
+            "id": "setup#6",
+            "role": "H",
+            "zeit": "Einmalig",
+            "text": {
+              "de": "Willkommens-Beitrag und Regeln anpinnen.",
+              "ar": "ثبت رسالة الترحيب والقوانين."
+            }
+          },
+          {
+            "id": "setup#7",
+            "role": "A",
+            "zeit": "Einmalig",
+            "text": {
+              "de": "Vorlage für Hausaufgaben-Beiträge erstellen: Woche, Tag, Aufgabe, Abgabe.",
+              "ar": "صاوب نموذج لمنشور الواجب: الأسبوع، النهار، المهمة، التسليم."
+            }
+          },
+          {
+            "id": "setup#8",
+            "role": "A",
+            "zeit": "Einmalig",
+            "text": {
+              "de": "Termine für Stunden und Sprechstunden im Kalender eintragen.",
+              "ar": "دخل مواعيد الحصص وحصص التحدث فالتقويم."
+            }
+          }
+        ]
+      },
+      {
+        "name": {
+          "de": "WhatsApp Business",
+          "ar": "WhatsApp Business"
+        },
+        "items": [
+          {
+            "id": "setup#9",
+            "role": "H",
+            "zeit": "Einmalig",
+            "text": {
+              "de": "Profil ausfüllen: Name, Beschreibung, Website, Zeiten mit Zeitzone.",
+              "ar": "عمر البروفايل: الاسم، الوصف، الموقع، الأوقات مع المنطقة الزمنية."
+            }
+          },
+          {
+            "id": "setup#10",
+            "role": "H",
+            "zeit": "Einmalig",
+            "text": {
+              "de": "Begrüßungs- und Abwesenheitsnachricht einrichten.",
+              "ar": "فعل رسالة الترحيب ورسالة الغياب."
+            }
+          },
+          {
+            "id": "setup#11",
+            "role": "H",
+            "zeit": "Einmalig",
+            "text": {
+              "de": "Die 7 Vorlagen als Schnellantworten speichern.",
+              "ar": "خزن الرسائل السبعة كردود سريعة."
+            }
+          },
+          {
+            "id": "setup#12",
+            "role": "H",
+            "zeit": "Einmalig",
+            "text": {
+              "de": "Labels anlegen: Neu, Probestunde, Angemeldet, Später.",
+              "ar": "صاوب تصنيفات: جديد، تجريبية، مسجل، لاحقا."
+            }
+          }
+        ]
+      },
+      {
+        "name": {
+          "de": "Google: Drive, Sheets, Forms",
+          "ar": "Google: Drive وSheets وForms"
+        },
+        "items": [
+          {
+            "id": "setup#13",
+            "role": "A",
+            "zeit": "Einmalig",
+            "text": {
+              "de": "Drive-Ordner anlegen: 01_Verwaltung, 02_A1 bis 05_B2 mit Wochen 01–10, 06_Vorlagen.",
+              "ar": "صاوب المجلدات: 01_Verwaltung و02_A1 حتى 05_B2 مع الأسابيع، و06_Vorlagen."
+            }
+          },
+          {
+            "id": "setup#14",
+            "role": "A",
+            "zeit": "Einmalig",
+            "text": {
+              "de": "6 Tabellen anlegen: Kontakte, Anwesenheit, Hausaufgaben, Fehlerliste, Fortschritt, Zahlungen.",
+              "ar": "6 جداول: جهات الاتصال، الحضور، الواجبات، لائحة الأخطاء، التقدم، الأداءات."
+            }
+          },
+          {
+            "id": "setup#15",
+            "role": "A",
+            "zeit": "Einmalig",
+            "text": {
+              "de": "Einstufungstest (15 Fragen), Anmeldeformular und Feedback-Formular in Forms bauen.",
+              "ar": "صاوب اختبار المستوى (15 سؤال) واستمارة التسجيل واستمارة الرأي."
+            }
+          },
+          {
+            "id": "setup#16",
+            "role": "H",
+            "zeit": "Einmalig",
+            "text": {
+              "de": "Zugriffsrechte prüfen: nur das Team.",
+              "ar": "شوف الصلاحيات: غير الفريق."
+            }
+          }
+        ]
+      },
+      {
+        "name": {
+          "de": "Recht und Datenschutz",
+          "ar": "القانون وحماية المعطيات"
+        },
+        "items": [
+          {
+            "id": "setup#17",
+            "role": "H",
+            "zeit": "Einmalig",
+            "text": {
+              "de": "Kurzen Einwilligungstext schreiben: Aufnahmen, Fotos, Gruppenchat.",
+              "ar": "كتب نص قصير للموافقة: التسجيل، الصور، مجموعة الدردشة."
+            }
+          },
+          {
+            "id": "setup#18",
+            "role": "H",
+            "zeit": "Einmalig",
+            "text": {
+              "de": "Impressum und Datenschutzerklärung auf der Website prüfen.",
+              "ar": "راجع Impressum وسياسة الخصوصية فالموقع."
+            }
+          },
+          {
+            "id": "setup#19",
+            "role": "H",
+            "zeit": "Einmalig",
+            "text": {
+              "de": "Regeln für Absage, Kündigung und Erstattung festlegen.",
+              "ar": "حدد قواعد الإلغاء والاسترجاع."
+            }
+          },
+          {
+            "id": "setup#20",
+            "role": "H",
+            "zeit": "Einmalig",
+            "text": {
+              "de": "Zahlungsweg festlegen und Beleg-Vorlage erstellen.",
+              "ar": "حدد طريقة الأداء وصاوب نموذج وصل."
+            }
+          },
+          {
+            "id": "setup#21",
+            "role": "ALL",
+            "zeit": "Einmalig",
+            "text": {
+              "de": "Rechtliche und steuerliche Fragen mit einer Fachperson klären.",
+              "ar": "استشيرو مختص فالأمور القانونية والضريبية."
+            }
+          }
+        ]
+      },
+      {
+        "name": {
+          "de": "Technik-Probe",
+          "ar": "تجربة التقنية"
+        },
+        "items": [
+          {
+            "id": "setup#22",
+            "role": "ALL",
+            "zeit": "Einmalig",
+            "text": {
+              "de": "Alle vier testen mit Handy und Laptop: Ton, Kamera, Freigabe.",
+              "ar": "كلكم جربو بالهاتف واللابتوب: الصوت، الكاميرا، المشاركة."
+            }
+          },
+          {
+            "id": "setup#23",
+            "role": "ALL",
+            "zeit": "Einmalig",
+            "text": {
+              "de": "Internet-Backup (Hotspot) testen.",
+              "ar": "جربو الإنترنت البديل (Hotspot)."
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "onboarding": {
+    "id": "onb",
+    "type": "x",
+    "title": "Neuer Teilnehmer: von Anfrage bis Onboarding",
+    "dauer": "pro Person",
+    "groups": [
+      {
+        "name": {
+          "de": "Erstkontakt und Einladung",
+          "ar": "أول تواصل والدعوة"
+        },
+        "items": [
+          {
+            "id": "onb#0",
+            "role": "H",
+            "zeit": "< 2 Std.",
+            "text": {
+              "de": "Erstantwort senden (Vorlage 1), spätestens nach 24 Std.",
+              "ar": "صيفط الجواب الأول (الرسالة 1)، على الأكثر بعد 24 ساعة"
+            }
+          },
+          {
+            "id": "onb#1",
+            "role": "A",
+            "zeit": "Danach",
+            "text": {
+              "de": "Name, Telefon, Stadt, Niveau, Ziel und Datum ins Sheet eintragen",
+              "ar": "دخل الاسم والهاتف والمدينة والمستوى والهدف والتاريخ فالجدول"
+            }
+          },
+          {
+            "id": "onb#2",
+            "role": "H",
+            "zeit": "Danach",
+            "text": {
+              "de": "Zwei Termine zur Probestunde anbieten, beide Uhrzeiten schreiben (Marokko und Deutschland)",
+              "ar": "اعرض موعدين للحصة التجريبية، واكتب التوقيتين (المغرب وألمانيا)"
+            }
+          },
+          {
+            "id": "onb#3",
+            "role": "H",
+            "zeit": "24 Std. vorher",
+            "text": {
+              "de": "Erinnerung senden (Vorlage 3)",
+              "ar": "صيفط التذكير (الرسالة 3)"
+            }
+          },
+          {
+            "id": "onb#4",
+            "role": "H",
+            "zeit": "1 Std. vorher",
+            "text": {
+              "de": "Erinnerung mit Zoom-Link senden (Vorlage 4)",
+              "ar": "صيفط التذكير مع رابط Zoom (الرسالة 4)"
+            }
+          }
+        ]
+      },
+      {
+        "name": {
+          "de": "Nach der Probestunde",
+          "ar": "بعد الحصة التجريبية"
+        },
+        "items": [
+          {
+            "id": "onb#5",
+            "role": "H",
+            "zeit": "Gleicher Abend",
+            "text": {
+              "de": "Follow-up senden (Vorlage 5)",
+              "ar": "صيفط المتابعة (الرسالة 5)"
+            }
+          },
+          {
+            "id": "onb#6",
+            "role": "H",
+            "zeit": "Tag +1",
+            "text": {
+              "de": "Nachfragen",
+              "ar": "سول عن القرار"
+            }
+          },
+          {
+            "id": "onb#7",
+            "role": "H",
+            "zeit": "Tag +3",
+            "text": {
+              "de": "Letzte Erinnerung, danach Status auf Später",
+              "ar": "آخر تذكير، من بعد الستاتي: Später"
+            }
+          }
+        ]
+      },
+      {
+        "name": {
+          "de": "Anmeldung und Zahlung",
+          "ar": "التسجيل والأداء"
+        },
+        "items": [
+          {
+            "id": "onb#8",
+            "role": "A",
+            "zeit": "Anmeldung",
+            "text": {
+              "de": "Formular vollständig: Name, Telefon, E-Mail, Stadt, Niveau, Lernziel",
+              "ar": "الاستمارة كاملة: الاسم، الهاتف، الإيميل، المدينة، المستوى، الهدف"
+            }
+          },
+          {
+            "id": "onb#9",
+            "role": "H",
+            "zeit": "Anmeldung",
+            "text": {
+              "de": "Zahlungsweg und monatlichen Zahlungstag bestätigen",
+              "ar": "أكد طريقة الأداء ويوم الأداء الشهري"
+            }
+          },
+          {
+            "id": "onb#10",
+            "role": "H",
+            "zeit": "Anmeldung",
+            "text": {
+              "de": "Anmeldebestätigung senden (Vorlage 6)",
+              "ar": "صيفط تأكيد التسجيل (الرسالة 6)"
+            }
+          },
+          {
+            "id": "onb#11",
+            "role": "H",
+            "zeit": "Nach Zahlung",
+            "text": {
+              "de": "Beleg ausstellen, im Sheet auf Bezahlt setzen",
+              "ar": "اصدر وصل الأداء وحط الستاتي: Bezahlt"
+            }
+          }
+        ]
+      },
+      {
+        "name": {
+          "de": "Einstufung und Gruppe",
+          "ar": "اختبار المستوى والمجموعة"
+        },
+        "items": [
+          {
+            "id": "onb#12",
+            "role": "A",
+            "zeit": "Vor Start",
+            "text": {
+              "de": "Einstufungstest (15 Fragen) senden",
+              "ar": "صيفط اختبار المستوى (15 سؤال)"
+            }
+          },
+          {
+            "id": "onb#13",
+            "role": "A",
+            "zeit": "Vor Start",
+            "text": {
+              "de": "Test korrigieren. Vorschlag: 0–4 = A1, 5–9 = A2, 10–13 = B1, 14–15 = Gespräch zu B1/B2",
+              "ar": "صحح الاختبار. اقتراح: 0–4 = A1، 5–9 = A2، 10–13 = B1، 14–15 = حوار على B1/B2"
+            }
+          },
+          {
+            "id": "onb#14",
+            "role": "H",
+            "zeit": "Vor Start",
+            "text": {
+              "de": "Gruppe zuweisen (Vorschlag: 6–10 Teilnehmer pro Gruppe)",
+              "ar": "وزع الطالب على مجموعة (اقتراح: 6–10 فالمجموعة)"
+            }
+          }
+        ]
+      },
+      {
+        "name": {
+          "de": "Onboarding (Tag 0)",
+          "ar": "الاستقبال (اليوم 0)"
+        },
+        "items": [
+          {
+            "id": "onb#15",
+            "role": "H",
+            "zeit": "Tag 0",
+            "text": {
+              "de": "Willkommensnachricht senden (Vorlage 7)",
+              "ar": "صيفط رسالة الترحيب (الرسالة 7)"
+            }
+          },
+          {
+            "id": "onb#16",
+            "role": "A",
+            "zeit": "Tag 0",
+            "text": {
+              "de": "In WhatsApp-Gruppe, Circle und Zoom aufnehmen",
+              "ar": "ضمو لمجموعة WhatsApp وCircle وZoom"
+            }
+          },
+          {
+            "id": "onb#17",
+            "role": "A",
+            "zeit": "Tag 0",
+            "text": {
+              "de": "Hausaufgabe 0: Sprachnachricht (30 Sek.): Ich heiße …, ich komme aus …, ich möchte …",
+              "ar": "الواجب 0: رسالة صوتية 30 ثانية"
+            }
+          },
+          {
+            "id": "onb#18",
+            "role": "A",
+            "zeit": "Vor Stunde 1",
+            "text": {
+              "de": "Technik-Test (Zoom, Ton, Kamera), 5 Min.",
+              "ar": "فحص تقني (Zoom، الصوت، الكاميرا) 5 دقائق"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "entscheidungen": {
+    "id": "dec",
+    "type": "x",
+    "title": "Offene Entscheidungen",
+    "dauer": "Team",
+    "groups": [
+      {
+        "name": {
+          "de": "Vor dem Start klären",
+          "ar": "خاص نقررو قبل البداية"
+        },
+        "items": [
+          {
+            "id": "dec#0",
+            "role": "ALL",
+            "zeit": "Offen",
+            "text": {
+              "de": "Name der Lehrkraft 2 festlegen",
+              "ar": "حدد اسم الأستاذ الثاني"
+            }
+          },
+          {
+            "id": "dec#1",
+            "role": "ALL",
+            "zeit": "Offen",
+            "text": {
+              "de": "Namen der Muttersprachler/innen festlegen; Vergütung oder ehrenamtlich klären",
+              "ar": "حدد أسماء الناطقين، وواش بمقابل ولا تطوع"
+            }
+          },
+          {
+            "id": "dec#2",
+            "role": "ALL",
+            "zeit": "Offen",
+            "text": {
+              "de": "Tage und Uhrzeiten festlegen (Marokko und Deutschland)",
+              "ar": "حدد الأيام والساعات (المغرب وألمانيا)"
+            }
+          },
+          {
+            "id": "dec#3",
+            "role": "ALL",
+            "zeit": "Offen",
+            "text": {
+              "de": "Zahlungsweg und monatlichen Zahlungstag festlegen",
+              "ar": "حدد طريقة الأداء ويوم الأداء الشهري"
+            }
+          },
+          {
+            "id": "dec#4",
+            "role": "ALL",
+            "zeit": "Offen",
+            "text": {
+              "de": "Maximale Gruppengröße festlegen (Vorschlag: 6–10)",
+              "ar": "حدد العدد الأقصى فالمجموعة (اقتراح: 6–10)"
+            }
+          },
+          {
+            "id": "dec#5",
+            "role": "ALL",
+            "zeit": "Offen",
+            "text": {
+              "de": "Zoom: Im kostenlosen Plan enden Gruppenmeetings ab 3 Personen nach 40 Minuten. Für 60- und 120-Minuten-Stunden Zoom Pro für den Host oder eine Alternative wählen und aktuelle Limits prüfen.",
+              "ar": "Zoom: فالنسخة المجانية الاجتماعات الجماعية كتوقف بعد 40 دقيقة. للحصص ديال 60 و120 دقيقة خاص Zoom Pro للمضيف ولا بديل، وشوفو الحدود الحالية."
+            }
+          },
+          {
+            "id": "dec#6",
+            "role": "ALL",
+            "zeit": "Offen",
+            "text": {
+              "de": "Entscheiden: Ist die Probestunde kostenlos?",
+              "ar": "قرر: واش الحصة التجريبية مجانية؟"
+            }
+          },
+          {
+            "id": "dec#7",
+            "role": "ALL",
+            "zeit": "Offen",
+            "text": {
+              "de": "Regeln bei Absage, Kündigung und Erstattung festlegen",
+              "ar": "حدد قواعد الإلغاء والاسترجاع"
+            }
+          },
+          {
+            "id": "dec#8",
+            "role": "ALL",
+            "zeit": "Offen",
+            "text": {
+              "de": "Datenschutz: Einwilligung für Aufnahmen und Fotos, kurzer Text für Teilnehmer",
+              "ar": "حماية المعطيات: موافقة على التسجيل والصور ونص قصير للطلبة"
+            }
+          },
+          {
+            "id": "dec#9",
+            "role": "ALL",
+            "zeit": "Offen",
+            "text": {
+              "de": "Festlegen, wann die Bewerbungsbegleitung mit Alfred Schmitt beginnt",
+              "ar": "حدد متى كتبدا مرافقة ملف الخدمة مع Alfred Schmitt"
+            }
+          },
+          {
+            "id": "dec#10",
+            "role": "ALL",
+            "zeit": "Offen",
+            "text": {
+              "de": "Mission und Ziel der Akademie als Text festlegen",
+              "ar": "حددو نص المهمة والهدف ديال الأكاديمية"
+            }
+          },
+          {
+            "id": "dec#11",
+            "role": "ALL",
+            "zeit": "Offen",
+            "text": {
+              "de": "Kursdauer pro Level bestätigen (Vorschlag: A1 8, A2 8, B1 10, B2 10 Wochen)",
+              "ar": "أكدو مدة كل مستوى (اقتراح: 8، 8، 10، 10 أسابيع)"
+            }
+          },
+          {
+            "id": "dec#12",
+            "role": "ALL",
+            "zeit": "Offen",
+            "text": {
+              "de": "Tage der Sprechstunden bestätigen (Vorschlag: Freitag und Samstag)",
+              "ar": "أكدو أيام حصص التحدث (اقتراح: الجمعة والسبت)"
+            }
+          },
+          {
+            "id": "dec#13",
+            "role": "ALL",
+            "zeit": "Offen",
+            "text": {
+              "de": "Rollenwechsel bestätigen (Vorschlag: Lehrkraft 1 Mo + Mi, Lehrkraft 2 Di + Do)",
+              "ar": "أكدو تبادل الأدوار (اقتراح: الأول الإثنين والأربعاء، الثاني الثلاثاء والخميس)"
+            }
+          },
+          {
+            "id": "dec#14",
+            "role": "ALL",
+            "zeit": "Offen",
+            "text": {
+              "de": "Qualitätskontrolle: Häufigkeit von Tests, Monatsgesprächen und Reviews festlegen",
+              "ar": "حددو وتيرة الاختبارات والمقابلات والمراجعات"
+            }
+          },
+          {
+            "id": "dec#15",
+            "role": "ALL",
+            "zeit": "Offen",
+            "text": {
+              "de": "Warnschwellen festlegen: Anwesenheit, Hausaufgaben, fehlende Dokumentation",
+              "ar": "حددو حدود التنبيه: الحضور، الواجبات، غياب التوثيق"
+            }
+          },
+          {
+            "id": "dec#16",
+            "role": "ALL",
+            "zeit": "Offen",
+            "text": {
+              "de": "Festlegen, wer Schülerdaten im System sehen und ändern darf",
+              "ar": "حددو شكون يقدر يشوف ويبدل معطيات الطلبة"
+            }
+          },
+          {
+            "id": "dec#17",
+            "role": "ALL",
+            "zeit": "Offen",
+            "text": {
+              "de": "Inhalte für Ausbildung und Studium in Deutschland festlegen",
+              "ar": "حددو محتوى التكوين والدراسة فألمانيا"
+            }
+          },
+          {
+            "id": "dec#18",
+            "role": "ALL",
+            "zeit": "Offen",
+            "text": {
+              "de": "Internen Kommunikationskanal des Teams festlegen",
+              "ar": "حددو قناة التواصل الداخلي للفريق"
+            }
+          },
+          {
+            "id": "dec#19",
+            "role": "ALL",
+            "zeit": "Offen",
+            "text": {
+              "de": "Lehrwerk festlegen, mit dem die Akademie arbeitet",
+              "ar": "حددو الكتاب اللي غادي تخدم بيه الأكاديمية"
+            }
+          },
+          {
+            "id": "dec#20",
+            "role": "ALL",
+            "zeit": "Offen",
+            "text": {
+              "de": "Kontakte und Zahlungen: weiter in Google Sheets oder in diesem System?",
+              "ar": "جهات الاتصال والأداءات: فـ Google Sheets ولا فهاد النظام؟"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}
