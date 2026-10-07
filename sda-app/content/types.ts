@@ -188,8 +188,41 @@ export interface Lesson {
   day?: Day;
   /** Lehrkraft laut legacy-Rollenplan (nur Grammatik). PROPOSAL, siehe Offene Entscheidungen. */
   lead?: string;
+  /** Bereiche für den Curriculum-Filter (legacy: areasOf) */
+  areas: Area[];
   groups: ChecklistGroup[];
 }
+
+export const AREAS = [
+  'Grammatik',
+  'Sprechen',
+  'Test',
+  'Schreiben',
+  'Hören',
+  'Lesen',
+  'Deutschland',
+  'Bewerbung',
+] as const;
+export type Area = (typeof AREAS)[number];
+
+// ---------------------------------------------------------------- readouts/*.json
+
+/** Baustein des Vorlese-Skripts einer Stunde (legacy: grammarScript, speakScript, testScript, probeScript). */
+export type ReadoutBlock =
+  | { type: 'say'; text: string }
+  | { type: 'darija'; text: string }
+  | { type: 'exercises'; items: Exercise[] }
+  | { type: 'facts'; groups: { title: string; items: string[] }[] };
+
+export interface ReadoutSection {
+  /** Minuten oder Zeitpunkt, z. B. "20–55" */
+  zeit: string;
+  titel: Bilingual;
+  blocks: ReadoutBlock[];
+}
+
+/** Vorlese-Skript pro Stunden-ID */
+export type Readouts = Record<string, ReadoutSection[]>;
 
 /** Einmalige Abläufe: Generalprobe, Probestunde, Einrichtung, Onboarding, Offene Entscheidungen. */
 export type SpecialChecklistKey =

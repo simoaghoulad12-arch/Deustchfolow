@@ -12,7 +12,7 @@ const outDir = path.join(__dirname, '..', 'content');
 const write = (file: string, data: unknown) =>
   writeFileSync(path.join(outDir, file), JSON.stringify(data, null, 2) + '\n', 'utf8');
 
-const { lessons, ...rest } = extractContent();
+const { lessons, readouts, ...rest } = extractContent();
 for (const [name, data] of Object.entries(rest)) write(`${name}.json`, data);
 
 // Stunden-Checklisten pro Level, damit die App nur das nötige Level laden muss.
@@ -24,6 +24,14 @@ for (const k of LEVEL_KEYS)
     lessons.filter((l) => l.level === k),
   );
 
+// Vorlese-Skripte pro Level (+ Probestunde)
+rmSync(path.join(outDir, 'readouts'), { recursive: true, force: true });
+mkdirSync(path.join(outDir, 'readouts'));
+const byPrefix = (prefix: string) =>
+  Object.fromEntries(Object.entries(readouts).filter(([id]) => id.startsWith(prefix)));
+for (const k of LEVEL_KEYS) write(`readouts/${k}.json`, byPrefix(`${k}.`));
+write('readouts/probe.json', byPrefix('probe.'));
+
 console.log(
-  `content/: ${Object.keys(rest).length} Dateien + lessons/ (${lessons.length} Stunden) geschrieben`,
+  `content/: ${Object.keys(rest).length} Dateien + lessons/ (${lessons.length} Stunden) + readouts/ (${Object.keys(readouts).length} Skripte) geschrieben`,
 );

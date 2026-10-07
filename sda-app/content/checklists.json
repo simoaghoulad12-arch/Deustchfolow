@@ -4,6 +4,7 @@
     "type": "x",
     "title": "Generalprobe (interne Probe)",
     "dauer": "120 Min.",
+    "areas": [],
     "groups": [
       {
         "name": {
@@ -225,6 +226,7 @@
     "type": "x",
     "title": "Echte Probestunde",
     "dauer": "60 Min.",
+    "areas": [],
     "groups": [
       {
         "name": {
@@ -500,6 +502,7 @@
     "type": "x",
     "title": "Plattformen einrichten (einmalig)",
     "dauer": "einmalig",
+    "areas": [],
     "groups": [
       {
         "name": {
@@ -772,6 +775,7 @@
     "type": "x",
     "title": "Neuer Teilnehmer: von Anfrage bis Onboarding",
     "dauer": "pro Person",
+    "areas": [],
     "groups": [
       {
         "name": {
@@ -991,6 +995,7 @@
     "type": "x",
     "title": "Offene Entscheidungen",
     "dauer": "Team",
+    "areas": [],
     "groups": [
       {
         "name": {

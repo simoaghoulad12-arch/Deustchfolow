@@ -5,6 +5,10 @@
  */
 import type {
   Activity,
+  Area,
+  ReadoutBlock,
+  Readouts,
+  ReadoutSection,
   Bilingual,
   ChecklistGroup,
   Curriculum,
@@ -53,6 +57,7 @@ interface RawGroup {
 }
 interface RawLesson {
   id: string;
+  areas?: Area[];
   type: Lesson['type'];
   title: string;
   dur: string;
@@ -109,6 +114,7 @@ function convertLesson(L: RawLesson): Lesson {
     ...(L.lv && L.wi !== undefined ? { moduleId: `${L.lv}.${L.wi + 1}` } : {}),
     ...(L.day ? { day: L.day } : {}),
     ...(L.head ? { lead: L.head } : {}),
+    areas: L.areas ?? [],
     groups: convertGroups(L.groups),
   };
 }
@@ -312,6 +318,56 @@ function renderPages(rt: LegacyRuntime): Record<string, string> {
   return html;
 }
 
+// ------------------------------------------------------------------ Vorlese-Skripte
+
+const strip = (h: string) => norm(decode(h.replace(/<[^>]+>/g, ' ')));
+
+/**
+ * Zerlegt das Skript-HTML aus legacy (scriptHTML) in Abschnitte und Bausteine.
+ * Das HTML ist flach: h3.sch, p.say, div.dj, ol.ex, div.facts, label.note (Lehrbuch-Feld, entfällt).
+ */
+export function parseReadout(html: string): ReadoutSection[] {
+  const sections: ReadoutSection[] = [];
+  const re = /<(h3|p|div|ol|label)\b([^>]*)>([\s\S]*?)<\/\1>/g;
+  for (let m = re.exec(html); m; m = re.exec(html)) {
+    const [, tag, attrs = '', inner = ''] = m;
+    const cls = /class="([^"]*)"/.exec(attrs)?.[1] ?? '';
+    if (tag === 'label') continue;
+    if (tag === 'h3' && cls.includes('sch')) {
+      const zeit = strip(/<span class="tm">([\s\S]*?)<\/span>/.exec(inner)?.[1] ?? '');
+      const titel = strip(inner.replace(/<span class="tm">[\s\S]*?<\/span>/, ''));
+      sections.push({ zeit, titel: { de: titel, ar: '' }, blocks: [] });
+      continue;
+    }
+    let block: ReadoutBlock | null = null;
+    if (tag === 'p' && cls.includes('say')) block = { type: 'say', text: decode(inner) };
+    else if (tag === 'div' && cls.includes('dj'))
+      block = { type: 'darija', text: strip(inner.replace(/<b>[\s\S]*?<\/b>/, '')) };
+    else if (tag === 'ol' && cls.includes('ex')) {
+      const items = [
+        ...inner.matchAll(
+          /<li>([\s\S]*?)<details class="sol"><summary>[\s\S]*?<\/summary><div>([\s\S]*?)<\/div><\/details><\/li>/g,
+        ),
+      ].map((x) => ({ frage: decode(x[1] ?? ''), loesung: decode(x[2] ?? '') }));
+      block = { type: 'exercises', items };
+    } else if (tag === 'div' && cls.includes('facts')) {
+      const groups: { title: string; items: string[] }[] = [];
+      for (const line of inner.split(/<br\s*\/?>/)) {
+        const title = /<b>([\s\S]*?)<\/b>/.exec(line)?.[1];
+        if (title !== undefined) groups.push({ title: strip(title).replace(/:$/, ''), items: [] });
+        const rest = strip(line.replace(/<b>[\s\S]*?<\/b>/, ''));
+        if (rest) groups[groups.length - 1]?.items.push(rest.replace(/^•\s*/, ''));
+      }
+      block = { type: 'facts', groups };
+    }
+    if (!block) throw new Error(`Unbekannter Skript-Baustein: <${tag} class="${cls}">`);
+    const current = sections[sections.length - 1];
+    if (!current) throw new Error('Skript-Baustein vor dem ersten Abschnitt');
+    current.blocks.push(block);
+  }
+  return sections;
+}
+
 // ------------------------------------------------------------------ Gesamtextraktion
 
 export interface ExtractedContent {
@@ -327,6 +383,7 @@ export interface ExtractedContent {
   emergency: EmergencyCase[];
   germany: GermanyGroup[];
   lessons: Lesson[];
+  readouts: Readouts;
   checklists: SpecialChecklists;
   decisions: OpenDecision[];
   statements: Statement[];
@@ -441,7 +498,7 @@ export function extractContent(rt: LegacyRuntime = loadLegacy()): ExtractedConte
   // Alle Stunden in der Reihenfolge der App: Level-Start, dann pro Woche Mo–So.
   const lessons = rt
     .run<RawLesson[]>(
-      `LV.reduce(function(a,lv){a.push(getStart(lv));lv.weeks.forEach(function(w,wi){DAYS.forEach(function(d){a.push(getLesson(lv,wi,d));});});return a;},[])`,
+      `LV.reduce(function(a,lv){a.push(getStart(lv));lv.weeks.forEach(function(w,wi){DAYS.forEach(function(d){a.push(getLesson(lv,wi,d));});});return a;},[]).map(function(L){var o=Object.assign({},L);o.areas=areasOf(L);return o;})`,
     )
     .map(convertLesson);
 
@@ -501,6 +558,26 @@ export function extractContent(rt: LegacyRuntime = loadLegacy()): ExtractedConte
 
   const html = renderPages(rt);
 
+  // Vorlese-Skripte: legacy erzeugt sie aus Daten + festen Sätzen. Deutsch und Arabisch rendern,
+  // Arabisch liefert nur die Abschnittstitel (Unterrichtsinhalt bleibt Deutsch).
+  const scriptIds = lessons.filter((l) => l.type !== 'x').map((l) => l.id);
+  scriptIds.push('probe.ps');
+  const readouts: Readouts = {};
+  for (const id of scriptIds) {
+    const render = (lang: string) =>
+      renderLegacyPage(
+        rt,
+        `state.lang=${JSON.stringify(lang)}`,
+        `scriptHTML(findLesson(${JSON.stringify(id)}))`,
+      );
+    const de = parseReadout(render('de'));
+    const ar = parseReadout(render('ar'));
+    readouts[id] = de.map((sec, i) => ({
+      ...sec,
+      titel: { de: sec.titel.de, ar: ar[i]?.titel.de ?? '' },
+    }));
+  }
+
   return {
     curriculum,
     objectives,
@@ -514,6 +591,7 @@ export function extractContent(rt: LegacyRuntime = loadLegacy()): ExtractedConte
     emergency,
     germany,
     lessons,
+    readouts,
     checklists,
     decisions,
     statements: Object.entries(html).flatMap(([page, h]) => labelledStatements(h, page)),

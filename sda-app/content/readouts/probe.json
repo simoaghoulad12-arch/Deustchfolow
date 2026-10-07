@@ -1,0 +1,198 @@
+{
+  "probe.ps": [
+    {
+      "zeit": "0–5 Min.",
+      "titel": {
+        "de": "Begrüßung",
+        "ar": "Begrüßung"
+      },
+      "blocks": [
+        {
+          "type": "say",
+          "text": "Herzlich willkommen zur Probestunde bei Smart Deutsch! Ich bin Simo. Ich lebe in Deutschland und arbeite in der Pflege."
+        },
+        {
+          "type": "say",
+          "text": "Das sind meine Kolleginnen und Kollegen. Sie stellen sich gleich kurz vor."
+        },
+        {
+          "type": "say",
+          "text": "Heute zeigen wir euch, was ihr in A2 lernt und wie unser Kurs funktioniert. Am Ende machen wir schon die erste kleine Lektion zusammen."
+        },
+        {
+          "type": "say",
+          "text": "Eine Regel für heute: Fragen sind immer erlaubt, und Fehler sind ganz normal."
+        },
+        {
+          "type": "say",
+          "text": "Bitte schreibt jetzt in den Chat: Euren Namen, eure Stadt und warum ihr Deutsch lernen möchtet."
+        },
+        {
+          "type": "darija",
+          "text": "مرحبا بيكم فالحصة التجريبية. اليوم غادي نوريوكم شنو كتتعلمو فـ A2 وكيفاش خدام الكورس، وفالأخير غادي ندير درس صغير. الأسئلة مرحب بها والغلط عادي."
+        }
+      ]
+    },
+    {
+      "zeit": "5–15 Min.",
+      "titel": {
+        "de": "Die Ziele von A2",
+        "ar": "Die Ziele von A2"
+      },
+      "blocks": [
+        {
+          "type": "say",
+          "text": "A2 ist die zweite Stufe im Europäischen Referenzrahmen."
+        },
+        {
+          "type": "say",
+          "text": "Nach A2 könnt ihr euch im Alltag verständigen: beim Einkaufen, beim Arzt, bei der Arbeit, mit Nachbarn und am Telefon."
+        },
+        {
+          "type": "say",
+          "text": "Hören: Ihr versteht kurze, klare Gespräche. Lesen: Ihr versteht kurze Texte und E-Mails. Sprechen: Ihr erzählt über Vergangenes und über Pläne. Schreiben: Ihr schreibt kurze Nachrichten und E-Mails."
+        },
+        {
+          "type": "say",
+          "text": "Wichtige Grammatik in A2: das Perfekt, Nebensätze mit weil und dass, Wechselpräpositionen und der Komparativ."
+        },
+        {
+          "type": "say",
+          "text": "Jetzt eine kurze Umfrage im Chat: Was möchtet ihr nach A2 können? Arbeit, Ausbildung, Alltag, Prüfung oder Familie?"
+        },
+        {
+          "type": "darija",
+          "text": "A2 هو المستوى الثاني. من بعدو غادي تقدرو تتفاهمو فالحياة اليومية: السوق، الطبيب، الخدمة، التلفون."
+        }
+      ]
+    },
+    {
+      "zeit": "15–23 Min.",
+      "titel": {
+        "de": "So läuft der Kurs ab",
+        "ar": "So läuft der Kurs ab"
+      },
+      "blocks": [
+        {
+          "type": "say",
+          "text": "Unser Kurs hat eine klare Struktur. Ihr müsst nicht raten, was als Nächstes kommt."
+        },
+        {
+          "type": "say",
+          "text": "Wir lernen zehn Stunden pro Woche: acht Stunden Grammatik und Vokabeln, von Montag bis Donnerstag, und zwei Stunden Sprechen mit Muttersprachlern."
+        },
+        {
+          "type": "say",
+          "text": "Zuerst klären wir euer Niveau und euer Ziel. Dann lernen wir Schritt für Schritt: Erklärung, Übungen, Hausaufgaben mit Feedback in unserer Community."
+        },
+        {
+          "type": "say",
+          "text": "Regelmäßig machen wir Mini-Tests und Modelltests im Stil der Prüfung."
+        },
+        {
+          "type": "say",
+          "text": "Das Besondere bei uns: Ihr sprecht regelmäßig mit echten Muttersprachlern. So bleibt Deutsch nicht nur Theorie, sondern ihr benutzt es wirklich."
+        },
+        {
+          "type": "darija",
+          "text": "الكورس منظم: 8 ساعات قواعد من الإثنين للخميس + ساعتين تحدث مع ناطقين أصليين. وكاين تمارين وواجبات واختبارات."
+        }
+      ]
+    },
+    {
+      "zeit": "23–48 Min.",
+      "titel": {
+        "de": "Mini-Lektion: Das Perfekt",
+        "ar": "Mini-Lektion: Das Perfekt"
+      },
+      "blocks": [
+        {
+          "type": "say",
+          "text": "Jetzt fangen wir mit dem ersten Thema an. Wir lernen das Perfekt. Damit könnt ihr sofort erzählen, was ihr gestern oder am Wochenende gemacht habt."
+        },
+        {
+          "type": "say",
+          "text": "Das Perfekt besteht aus haben oder sein und dem Partizip II. Haben oder sein steht auf Position 2, das Partizip am Satzende."
+        },
+        {
+          "type": "say",
+          "text": "Beispiel: Ich habe gestern Deutsch gelernt. Er ist nach Frankfurt gefahren."
+        },
+        {
+          "type": "say",
+          "text": "Haben benutzen wir bei den meisten Verben. Sein benutzen wir bei Bewegung und Zustandsänderung, zum Beispiel gehen, fahren, aufstehen."
+        },
+        {
+          "type": "say",
+          "text": "Regelmäßige Verben: machen, gemacht. Lernen, gelernt. Unregelmäßige Verben: essen, gegessen. Trinken, getrunken. Mit sein: gehen, gegangen. Fahren, gefahren."
+        },
+        {
+          "type": "say",
+          "text": "Jetzt eine Übung: Übung A, Lückentext: Gestern ___ ich Deutsch ___. Er ___ nach Frankfurt ___. Wir ___ Pizza ___. Lösungen: habe gelernt. Ist gefahren. Haben gegessen."
+        },
+        {
+          "type": "darija",
+          "text": "الـ Perfekt = haben أو sein + Partizip II. مع الحركة كنستعملو sein، ومع الباقي haben."
+        }
+      ]
+    },
+    {
+      "zeit": "48–55 Min.",
+      "titel": {
+        "de": "Sprechen",
+        "ar": "Sprechen"
+      },
+      "blocks": [
+        {
+          "type": "say",
+          "text": "Jetzt sprecht ihr. Keine Angst vor Fehlern. Wir helfen euch."
+        },
+        {
+          "type": "say",
+          "text": "Wir teilen euch in zwei Gruppen. Die Frage lautet: Was hast du am Wochenende gemacht?"
+        },
+        {
+          "type": "say",
+          "text": "Hilfe: Am Wochenende habe ich … gearbeitet, gelernt, gekocht. Am Samstag bin ich … in die Stadt gefahren."
+        },
+        {
+          "type": "say",
+          "text": "Wir loben zuerst und korrigieren nur ein oder zwei Fehler."
+        },
+        {
+          "type": "darija",
+          "text": "المجموعات الصغيرة: الناطق الأصلي مع كل مجموعة، وكل واحد كيجاوب بجملة أو جوج."
+        }
+      ]
+    },
+    {
+      "zeit": "55–60 Min.",
+      "titel": {
+        "de": "Abschluss und Anmeldung",
+        "ar": "Abschluss und Anmeldung"
+      },
+      "blocks": [
+        {
+          "type": "say",
+          "text": "Heute habt ihr gesehen, was A2 bedeutet, wie unser Kurs abläuft und dass ihr schon im Perfekt erzählen könnt."
+        },
+        {
+          "type": "say",
+          "text": "Unser Angebot: zehn Stunden pro Woche mit Grammatik, Vokabeln und Sprechen mit Muttersprachlern. Der Preis ist 1000 Dirham pro Monat."
+        },
+        {
+          "type": "say",
+          "text": "Wenn ihr weitermachen möchtet, könnt ihr euch bei uns anmelden. Den Link für WhatsApp und die Website schicken wir euch jetzt in den Chat."
+        },
+        {
+          "type": "say",
+          "text": "Eure Hausaufgabe: Schreibt fünf Sätze im Perfekt über euren gestrigen Tag. Vielen Dank fürs Mitmachen!"
+        },
+        {
+          "type": "darija",
+          "text": "قدم العرض بوضوح: 10 ساعات فالأسبوع، 1000 درهم فالشهر. صيفط رابط WhatsApp والموقع فالشات."
+        }
+      ]
+    }
+  ]
+}

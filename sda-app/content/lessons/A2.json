@@ -5,6 +5,7 @@
     "title": "Level-Start A2",
     "dauer": "einmalig",
     "level": "A2",
+    "areas": [],
     "groups": [
       {
         "name": {
@@ -78,6 +79,9 @@
     "moduleId": "A2.1",
     "day": "Mo",
     "lead": "Lehrkraft 1",
+    "areas": [
+      "Grammatik"
+    ],
     "groups": [
       {
         "phase": "v",
@@ -339,6 +343,9 @@
     "moduleId": "A2.1",
     "day": "Di",
     "lead": "Lehrkraft 2",
+    "areas": [
+      "Grammatik"
+    ],
     "groups": [
       {
         "phase": "v",
@@ -600,6 +607,9 @@
     "moduleId": "A2.1",
     "day": "Mi",
     "lead": "Lehrkraft 1",
+    "areas": [
+      "Grammatik"
+    ],
     "groups": [
       {
         "phase": "v",
@@ -861,6 +871,9 @@
     "moduleId": "A2.1",
     "day": "Do",
     "lead": "Lehrkraft 2",
+    "areas": [
+      "Grammatik"
+    ],
     "groups": [
       {
         "phase": "v",
@@ -1121,6 +1134,9 @@
     "level": "A2",
     "moduleId": "A2.1",
     "day": "Fr",
+    "areas": [
+      "Sprechen"
+    ],
     "groups": [
       {
         "phase": "v",
@@ -1282,6 +1298,9 @@
     "level": "A2",
     "moduleId": "A2.1",
     "day": "Sa",
+    "areas": [
+      "Sprechen"
+    ],
     "groups": [
       {
         "phase": "v",
@@ -1443,6 +1462,9 @@
     "level": "A2",
     "moduleId": "A2.1",
     "day": "So",
+    "areas": [
+      "Test"
+    ],
     "groups": [
       {
         "name": {
@@ -1517,6 +1539,9 @@
     "moduleId": "A2.2",
     "day": "Mo",
     "lead": "Lehrkraft 1",
+    "areas": [
+      "Grammatik"
+    ],
     "groups": [
       {
         "phase": "v",
@@ -1778,6 +1803,9 @@
     "moduleId": "A2.2",
     "day": "Di",
     "lead": "Lehrkraft 2",
+    "areas": [
+      "Grammatik"
+    ],
     "groups": [
       {
         "phase": "v",
@@ -2039,6 +2067,9 @@
     "moduleId": "A2.2",
     "day": "Mi",
     "lead": "Lehrkraft 1",
+    "areas": [
+      "Grammatik"
+    ],
     "groups": [
       {
         "phase": "v",
@@ -2300,6 +2331,10 @@
     "moduleId": "A2.2",
     "day": "Do",
     "lead": "Lehrkraft 2",
+    "areas": [
+      "Grammatik",
+      "Sprechen"
+    ],
     "groups": [
       {
         "phase": "v",
@@ -2560,6 +2595,9 @@
     "level": "A2",
     "moduleId": "A2.2",
     "day": "Fr",
+    "areas": [
+      "Sprechen"
+    ],
     "groups": [
       {
         "phase": "v",
@@ -2721,6 +2759,9 @@
     "level": "A2",
     "moduleId": "A2.2",
     "day": "Sa",
+    "areas": [
+      "Sprechen"
+    ],
     "groups": [
       {
         "phase": "v",
@@ -2882,6 +2923,9 @@
     "level": "A2",
     "moduleId": "A2.2",
     "day": "So",
+    "areas": [
+      "Test"
+    ],
     "groups": [
       {
         "name": {
@@ -2956,6 +3000,9 @@
     "moduleId": "A2.3",
     "day": "Mo",
     "lead": "Lehrkraft 1",
+    "areas": [
+      "Grammatik"
+    ],
     "groups": [
       {
         "phase": "v",
@@ -3217,6 +3264,9 @@
     "moduleId": "A2.3",
     "day": "Di",
     "lead": "Lehrkraft 2",
+    "areas": [
+      "Grammatik"
+    ],
     "groups": [
       {
         "phase": "v",
@@ -3478,6 +3528,9 @@
     "moduleId": "A2.3",
     "day": "Mi",
     "lead": "Lehrkraft 1",
+    "areas": [
+      "Grammatik"
+    ],
     "groups": [
       {
         "phase": "v",
@@ -3739,6 +3792,9 @@
     "moduleId": "A2.3",
     "day": "Do",
     "lead": "Lehrkraft 2",
+    "areas": [
+      "Grammatik"
+    ],
     "groups": [
       {
         "phase": "v",
@@ -3999,6 +4055,9 @@
     "level": "A2",
     "moduleId": "A2.3",
     "day": "Fr",
+    "areas": [
+      "Sprechen"
+    ],
     "groups": [
       {
         "phase": "v",
@@ -4160,6 +4219,9 @@
     "level": "A2",
     "moduleId": "A2.3",
     "day": "Sa",
+    "areas": [
+      "Sprechen"
+    ],
     "groups": [
       {
         "phase": "v",
@@ -4321,6 +4383,9 @@
     "level": "A2",
     "moduleId": "A2.3",
     "day": "So",
+    "areas": [
+      "Test"
+    ],
     "groups": [
       {
         "name": {
@@ -4395,6 +4460,10 @@
     "moduleId": "A2.4",
     "day": "Mo",
     "lead": "Lehrkraft 1",
+    "areas": [
+      "Grammatik",
+      "Deutschland"
+    ],
     "groups": [
       {
         "phase": "v",
@@ -4656,6 +4725,10 @@
     "moduleId": "A2.4",
     "day": "Di",
     "lead": "Lehrkraft 2",
+    "areas": [
+      "Grammatik",
+      "Bewerbung"
+    ],
     "groups": [
       {
         "phase": "v",
@@ -4917,6 +4990,10 @@
     "moduleId": "A2.4",
     "day": "Mi",
     "lead": "Lehrkraft 1",
+    "areas": [
+      "Grammatik",
+      "Schreiben"
+    ],
     "groups": [
       {
         "phase": "v",
@@ -5178,6 +5255,10 @@
     "moduleId": "A2.4",
     "day": "Do",
     "lead": "Lehrkraft 2",
+    "areas": [
+      "Grammatik",
+      "Deutschland"
+    ],
     "groups": [
       {
         "phase": "v",
@@ -5438,6 +5519,10 @@
     "level": "A2",
     "moduleId": "A2.4",
     "day": "Fr",
+    "areas": [
+      "Sprechen",
+      "Deutschland"
+    ],
     "groups": [
       {
         "phase": "v",
@@ -5599,6 +5684,10 @@
     "level": "A2",
     "moduleId": "A2.4",
     "day": "Sa",
+    "areas": [
+      "Sprechen",
+      "Deutschland"
+    ],
     "groups": [
       {
         "phase": "v",
@@ -5760,6 +5849,9 @@
     "level": "A2",
     "moduleId": "A2.4",
     "day": "So",
+    "areas": [
+      "Test"
+    ],
     "groups": [
       {
         "name": {
@@ -5878,6 +5970,9 @@
     "moduleId": "A2.5",
     "day": "Mo",
     "lead": "Lehrkraft 1",
+    "areas": [
+      "Grammatik"
+    ],
     "groups": [
       {
         "phase": "v",
@@ -6139,6 +6234,9 @@
     "moduleId": "A2.5",
     "day": "Di",
     "lead": "Lehrkraft 2",
+    "areas": [
+      "Grammatik"
+    ],
     "groups": [
       {
         "phase": "v",
@@ -6400,6 +6498,10 @@
     "moduleId": "A2.5",
     "day": "Mi",
     "lead": "Lehrkraft 1",
+    "areas": [
+      "Grammatik",
+      "Schreiben"
+    ],
     "groups": [
       {
         "phase": "v",
@@ -6661,6 +6763,10 @@
     "moduleId": "A2.5",
     "day": "Do",
     "lead": "Lehrkraft 2",
+    "areas": [
+      "Grammatik",
+      "Schreiben"
+    ],
     "groups": [
       {
         "phase": "v",
@@ -6921,6 +7027,10 @@
     "level": "A2",
     "moduleId": "A2.5",
     "day": "Fr",
+    "areas": [
+      "Sprechen",
+      "Schreiben"
+    ],
     "groups": [
       {
         "phase": "v",
@@ -7082,6 +7192,10 @@
     "level": "A2",
     "moduleId": "A2.5",
     "day": "Sa",
+    "areas": [
+      "Sprechen",
+      "Schreiben"
+    ],
     "groups": [
       {
         "phase": "v",
@@ -7243,6 +7357,9 @@
     "level": "A2",
     "moduleId": "A2.5",
     "day": "So",
+    "areas": [
+      "Test"
+    ],
     "groups": [
       {
         "name": {
@@ -7317,6 +7434,9 @@
     "moduleId": "A2.6",
     "day": "Mo",
     "lead": "Lehrkraft 1",
+    "areas": [
+      "Grammatik"
+    ],
     "groups": [
       {
         "phase": "v",
@@ -7578,6 +7698,9 @@
     "moduleId": "A2.6",
     "day": "Di",
     "lead": "Lehrkraft 2",
+    "areas": [
+      "Grammatik"
+    ],
     "groups": [
       {
         "phase": "v",
@@ -7839,6 +7962,9 @@
     "moduleId": "A2.6",
     "day": "Mi",
     "lead": "Lehrkraft 1",
+    "areas": [
+      "Grammatik"
+    ],
     "groups": [
       {
         "phase": "v",
@@ -8100,6 +8226,9 @@
     "moduleId": "A2.6",
     "day": "Do",
     "lead": "Lehrkraft 2",
+    "areas": [
+      "Grammatik"
+    ],
     "groups": [
       {
         "phase": "v",
@@ -8360,6 +8489,9 @@
     "level": "A2",
     "moduleId": "A2.6",
     "day": "Fr",
+    "areas": [
+      "Sprechen"
+    ],
     "groups": [
       {
         "phase": "v",
@@ -8521,6 +8653,9 @@
     "level": "A2",
     "moduleId": "A2.6",
     "day": "Sa",
+    "areas": [
+      "Sprechen"
+    ],
     "groups": [
       {
         "phase": "v",
@@ -8682,6 +8817,9 @@
     "level": "A2",
     "moduleId": "A2.6",
     "day": "So",
+    "areas": [
+      "Test"
+    ],
     "groups": [
       {
         "name": {
@@ -8756,6 +8894,11 @@
     "moduleId": "A2.7",
     "day": "Mo",
     "lead": "Lehrkraft 1",
+    "areas": [
+      "Grammatik",
+      "Schreiben",
+      "Bewerbung"
+    ],
     "groups": [
       {
         "phase": "v",
@@ -9017,6 +9160,10 @@
     "moduleId": "A2.7",
     "day": "Di",
     "lead": "Lehrkraft 2",
+    "areas": [
+      "Grammatik",
+      "Schreiben"
+    ],
     "groups": [
       {
         "phase": "v",
@@ -9278,6 +9425,9 @@
     "moduleId": "A2.7",
     "day": "Mi",
     "lead": "Lehrkraft 1",
+    "areas": [
+      "Grammatik"
+    ],
     "groups": [
       {
         "phase": "v",
@@ -9539,6 +9689,12 @@
     "moduleId": "A2.7",
     "day": "Do",
     "lead": "Lehrkraft 2",
+    "areas": [
+      "Grammatik",
+      "Schreiben",
+      "Hören",
+      "Deutschland"
+    ],
     "groups": [
       {
         "phase": "v",
@@ -9799,6 +9955,11 @@
     "level": "A2",
     "moduleId": "A2.7",
     "day": "Fr",
+    "areas": [
+      "Sprechen",
+      "Deutschland",
+      "Bewerbung"
+    ],
     "groups": [
       {
         "phase": "v",
@@ -9960,6 +10121,11 @@
     "level": "A2",
     "moduleId": "A2.7",
     "day": "Sa",
+    "areas": [
+      "Sprechen",
+      "Deutschland",
+      "Bewerbung"
+    ],
     "groups": [
       {
         "phase": "v",
@@ -10121,6 +10287,9 @@
     "level": "A2",
     "moduleId": "A2.7",
     "day": "So",
+    "areas": [
+      "Test"
+    ],
     "groups": [
       {
         "name": {
@@ -10195,6 +10364,11 @@
     "moduleId": "A2.8",
     "day": "Mo",
     "lead": "Lehrkraft 1",
+    "areas": [
+      "Grammatik",
+      "Hören",
+      "Lesen"
+    ],
     "groups": [
       {
         "phase": "v",
@@ -10447,6 +10621,10 @@
     "moduleId": "A2.8",
     "day": "Di",
     "lead": "Lehrkraft 2",
+    "areas": [
+      "Grammatik",
+      "Schreiben"
+    ],
     "groups": [
       {
         "phase": "v",
@@ -10708,6 +10886,10 @@
     "moduleId": "A2.8",
     "day": "Mi",
     "lead": "Lehrkraft 1",
+    "areas": [
+      "Grammatik",
+      "Sprechen"
+    ],
     "groups": [
       {
         "phase": "v",
@@ -10969,6 +11151,9 @@
     "moduleId": "A2.8",
     "day": "Do",
     "lead": "Lehrkraft 2",
+    "areas": [
+      "Grammatik"
+    ],
     "groups": [
       {
         "phase": "v",
@@ -11220,6 +11405,9 @@
     "level": "A2",
     "moduleId": "A2.8",
     "day": "Fr",
+    "areas": [
+      "Sprechen"
+    ],
     "groups": [
       {
         "phase": "v",
@@ -11381,6 +11569,9 @@
     "level": "A2",
     "moduleId": "A2.8",
     "day": "Sa",
+    "areas": [
+      "Sprechen"
+    ],
     "groups": [
       {
         "phase": "v",
@@ -11542,6 +11733,9 @@
     "level": "A2",
     "moduleId": "A2.8",
     "day": "So",
+    "areas": [
+      "Test"
+    ],
     "groups": [
       {
         "name": {

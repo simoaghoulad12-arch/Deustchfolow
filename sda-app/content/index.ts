@@ -18,6 +18,11 @@ import objectives from './objectives.json';
 import pages from './pages.json';
 import platforms from './platforms.json';
 import probe from './probe.json';
+import readoutsA1 from './readouts/A1.json';
+import readoutsA2 from './readouts/A2.json';
+import readoutsB1 from './readouts/B1.json';
+import readoutsB2 from './readouts/B2.json';
+import readoutsProbe from './readouts/probe.json';
 import scripts from './scripts.json';
 import speaking from './speaking.json';
 import standards from './standards.json';
@@ -38,6 +43,7 @@ import type {
   OpenDecision,
   Platform,
   ProbeSection,
+  Readouts,
   SpecialChecklists,
   SpeakingDialogue,
   Standard,
@@ -63,6 +69,13 @@ export const content = {
     LevelKey,
     Lesson[]
   >,
+  readouts: {
+    ...readoutsA1,
+    ...readoutsA2,
+    ...readoutsB1,
+    ...readoutsB2,
+    ...readoutsProbe,
+  } as Readouts,
   checklists: checklists as SpecialChecklists,
   decisions: decisions as OpenDecision[],
   statements: statements as Statement[],
@@ -70,6 +83,14 @@ export const content = {
   pages: pages as LegacyPages,
   meta: meta as Meta,
 };
+
+/** Stunde (oder einmaliger Ablauf wie Probestunde) zu einer ID, sonst undefined. */
+export function findLesson(id: string): Lesson | undefined {
+  const special = Object.values(content.checklists).find((l) => l.id === id);
+  if (special) return special;
+  const level = id.split('.')[0] as LevelKey;
+  return content.lessonsByLevel[level]?.find((l) => l.id === id);
+}
 
 /** Alle Stunden A1–B2 in der Reihenfolge der App (Level-Start, dann pro Woche Mo–So). */
 export const allLessons = (): Lesson[] => Object.values(content.lessonsByLevel).flat();

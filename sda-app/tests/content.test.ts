@@ -122,6 +122,50 @@ describe('Online-Leitfaden und Betrieb', () => {
   });
 });
 
+describe('Vorlese-Skripte', () => {
+  it('jede Grammatik-, Sprech- und Teststunde hat ein Skript, dazu die Probestunde', () => {
+    for (const l of lessons.filter((x) => x.type !== 'x')) {
+      expect(content.readouts[l.id]?.length, l.id).toBeGreaterThan(0);
+    }
+    expect(content.readouts['probe.ps']).toHaveLength(6);
+    expect(Object.keys(content.readouts)).toHaveLength(252 + 1);
+  });
+
+  it('A1/A2-Grammatikskripte enthalten Text, Darija-Hinweis und die 4 Übungen mit Lösung', () => {
+    for (const s of content.scripts) {
+      const blocks = (content.readouts[s.lessonId] ?? []).flatMap((x) => x.blocks);
+      expect(
+        blocks.some((b) => b.type === 'darija' && b.text === s.darija),
+        s.lessonId,
+      ).toBe(true);
+      const own = blocks
+        .filter((b) => b.type === 'exercises')
+        .slice(-3)
+        .flatMap((b) => (b.type === 'exercises' ? b.items : []));
+      expect(own, s.lessonId).toEqual(s.exercises);
+    }
+  });
+
+  it('jeder Abschnitt hat Zeit und Titel auf Deutsch und Arabisch', () => {
+    for (const [id, sections] of Object.entries(content.readouts)) {
+      for (const s of sections) {
+        expect(s.zeit, id).not.toBe('');
+        expect(s.titel.de, id).not.toBe('');
+        expect(s.titel.ar, id).not.toBe('');
+      }
+    }
+  });
+});
+
+describe('Bereiche (Filter)', () => {
+  it('jede Unterrichtsstunde hat mindestens einen Bereich', () => {
+    for (const l of lessons.filter((x) => x.type !== 'x'))
+      expect(l.areas.length, l.id).toBeGreaterThan(0);
+    expect(lessons.some((l) => l.areas.includes('Deutschland'))).toBe(true);
+    expect(lessons.some((l) => l.areas.includes('Bewerbung'))).toBe(true);
+  });
+});
+
 describe('Checklisten', () => {
   it('hat alle Stunden: 4 Level-Starts + 36 Wochen × 7 Tage', () => {
     expect(lessons).toHaveLength(4 + 36 * 7);
@@ -188,5 +232,39 @@ describe('content/ entspricht legacy/index.html', () => {
     const { lessonsByLevel, ...stored } = content;
     expect(stored).toEqual(rest);
     expect(Object.values(lessonsByLevel).flat()).toEqual(freshLessons);
+  });
+
+  it('Skript-HTML aus legacy wird vollständig zerlegt (kein Text geht verloren)', () => {
+    const rt = loadLegacy();
+    for (const id of ['A1.1.Di', 'A2.3.Fr', 'B2.10.So', 'probe.ps']) {
+      const html = rt.run<string>(
+        `(function(){state.lang="de";return scriptHTML(findLesson(${JSON.stringify(id)}));})()`,
+      );
+      const legacyText = html
+        .replace(/<label class="note">[\s\S]*?<\/label>/, '')
+        .replace(/<span class="tm">[^<]*<\/span>/g, '')
+        .replace(/<summary>[^<]*<\/summary>/g, '')
+        .replace(/<b>بالدارجة:<\/b>/g, '')
+        .replace(/<[^>]+>/g, ' ')
+        .replace(/&amp;/g, '&')
+        .replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>')
+        .replace(/&quot;/g, '"')
+        .replace(/[\s•:]+/g, '');
+      const ours = (content.readouts[id] ?? [])
+        .flatMap((s) => [
+          s.titel.de,
+          ...s.blocks.flatMap((b) =>
+            b.type === 'exercises'
+              ? b.items.flatMap((e) => [e.frage, e.loesung])
+              : b.type === 'facts'
+                ? b.groups.flatMap((g) => [g.title, ...g.items])
+                : [b.text],
+          ),
+        ])
+        .join('')
+        .replace(/[\s•:]+/g, '');
+      expect(ours, id).toBe(legacyText);
+    }
   });
 });
