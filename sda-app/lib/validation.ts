@@ -1,5 +1,7 @@
 import { LEVEL_KEYS, type LevelKey } from '@/content/types';
 import {
+  DECISION_STATUSES,
+  type DecisionStatus,
   ERROR_CATEGORIES,
   ERROR_STATUSES,
   HOMEWORK_STATUSES,
@@ -203,5 +205,63 @@ export function parseDoc(
       problems: str(f, 'problems'),
       homeworkForPresent: f.get('homework_for_present') === 'on',
     },
+  };
+}
+
+export interface DecisionInput {
+  status: DecisionStatus;
+  decision: string;
+  decided_at: string | null;
+}
+
+/** Entscheidung eintragen: „entschieden“ braucht einen Text; Datum standardmäßig heute. */
+export function parseDecision(f: Form, today: string): Parsed<DecisionInput> {
+  const status = str(f, 'status') as DecisionStatus;
+  const decision = str(f, 'decision', 2000);
+  const date = str(f, 'decided_at');
+  if (!DECISION_STATUSES.includes(status))
+    return { ok: false, error: 'Bitte einen Status wählen.' };
+  if (status === 'entschieden' && !decision)
+    return { ok: false, error: 'Bitte die Entscheidung eintragen.' };
+  if (date && !isDate(date)) return { ok: false, error: 'Bitte ein gültiges Datum eingeben.' };
+  return {
+    ok: true,
+    data: { status, decision, decided_at: status === 'entschieden' ? date || today : null },
+  };
+}
+
+export interface QcThresholds {
+  /** Mindest-Anwesenheit in Prozent */
+  attendanceMin: number | null;
+  /** Mindestanteil erledigter Hausaufgaben in Prozent */
+  homeworkDoneMin: number | null;
+  /** Höchstens so viele Tage ohne Dokumentation */
+  daysWithoutDocMax: number | null;
+}
+
+const optInt = (v: string, max: number): number | null | 'bad' => {
+  if (!v) return null;
+  const n = Number(v);
+  return Number.isInteger(n) && n >= 0 && n <= max ? n : 'bad';
+};
+
+/** Warnschwellen der Qualitätskontrolle (OFFENE ENTSCHEIDUNG, nur Leitung). Leer = keine Schwelle. */
+export function parseThresholds(f: Form): Parsed<QcThresholds> {
+  const a = optInt(str(f, 'attendanceMin'), 100);
+  const h = optInt(str(f, 'homeworkDoneMin'), 100);
+  const d = optInt(str(f, 'daysWithoutDocMax'), 365);
+  if (a === 'bad' || h === 'bad')
+    return { ok: false, error: 'Prozentwerte bitte als ganze Zahl von 0 bis 100.' };
+  if (d === 'bad') return { ok: false, error: 'Tage bitte als ganze Zahl von 0 bis 365.' };
+  return { ok: true, data: { attendanceMin: a, homeworkDoneMin: h, daysWithoutDocMax: d } };
+}
+
+export function normalizeThresholds(v: unknown): QcThresholds {
+  const o = (v ?? {}) as Record<string, unknown>;
+  const num = (x: unknown) => (typeof x === 'number' && Number.isFinite(x) ? x : null);
+  return {
+    attendanceMin: num(o.attendanceMin),
+    homeworkDoneMin: num(o.homeworkDoneMin),
+    daysWithoutDocMax: num(o.daysWithoutDocMax),
   };
 }

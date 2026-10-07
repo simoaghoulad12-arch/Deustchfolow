@@ -203,5 +203,33 @@ Checklisten-IDs sind identisch mit legacy (z. B. `A1.1.Mo#3`), damit Fortschritt
 - Speichern in Supabase erst mit einem Supabase-Projekt testbar (Zugriffsregeln sind getestet).
 - Wer Schülerdaten ändern darf, bleibt OFFENE ENTSCHEIDUNG (vorläufige Regel siehe Phase 2).
 
+## Phase 6 – Qualität, Deutschland, Material, Suche ✅
+
+**Was geändert**
+- **Quality Control** (`/qualitaet`): Kennzahlen (Schüler, Ø Anwesenheit, Hausaufgaben erledigt, Fehler offen /
+  verbessert, Dokumentationen, davon letzte 7 Tage) und Listen (niedrigste Anwesenheit, meiste offene Fehler, am
+  längsten ohne Dokumentation). Warnschwellen sind eine OFFENE ENTSCHEIDUNG: ohne Festlegung keine Warnungen; nur
+  die Leitung kann sie setzen (`app_settings.qc_thresholds`). Bestehende Kontrollpunkte mit Kennzeichnung.
+- **Academy Standard, Germany Preparation, Materialien, Onboarding**: Regeln und Hinweise direkt aus den
+  gekennzeichneten Aussagen der bestehenden Version (`StatementSections`); Germany Preparation mit Links auf die
+  Stunden; Materialien mit der Tabelle aller Lehrbuch-Einträge; Onboarding mit Checkliste zum Abhaken.
+- **Betrieb & Plattformen**: Abläufe (Einrichtung, Generalprobe, Probestunde mit Vorlese-Skript),
+  Online-Profi-Leitfaden (Plattformen, Standards, 18 Aktivitäten mit Niveau-Filter, Wochenroutine des Teams),
+  WhatsApp-Vorlagen mit Kopier-Button, Notfallplan, Zeitunterschied, bisheriger Sheets-Plan.
+- Extraktion ergänzt: Online-Profi-Leitfaden als Seitentext und die Wochenroutine (`weeklyRoutine.json`) – sie
+  hatte in legacy keine eigene Daten-Variable. Ein Test prüft, dass alle fest im Seiten-Code stehenden Texte
+  wörtlich aus legacy stammen.
+- **Offene Entscheidungen** aus der Tabelle `decisions`: die Leitung trägt Entscheidung, Status und Datum ein;
+  „entschieden“ braucht einen Text. Dashboard zählt die noch offenen.
+- **Suche** über Stunden, Module, Lernziele, Aktivitäten, Vorlagen, Schüler und Dokumentationen, mit Filter nach
+  Level und Bereich; Groß/klein und Akzente egal.
+- Formularfelder haben eindeutige IDs (mehrere gleiche Formulare auf einer Seite).
+
+**Was getestet**
+- Vitest 91 Tests, neu: Suche (Filter, Schüler, Dokumentationen), Kennzahlen und Warnschwellen, feste Texte aus legacy.
+- Playwright 44 Tests (je 390 px und Desktop), neu: Standard, Deutschland, Materialien, Onboarding, Betrieb inkl.
+  Kopieren einer Vorlage, Probestunde, Entscheidung eintragen und zurücksetzen, Warnschwellen, Suche mit Filtern.
+- typecheck, lint, build.
+
 ## Nächste Phase
-Phase 6 – Qualität, Deutschland, Material, Suche (`docs/PROMPTS.md`).
+Phase 7 – Handy-App, Tests und Veröffentlichung (`docs/PROMPTS.md`).

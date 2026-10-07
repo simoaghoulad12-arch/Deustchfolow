@@ -1,9 +1,10 @@
-import { cloneElement, isValidElement } from 'react';
+import { cloneElement, isValidElement, useId } from 'react';
 
 /**
  * Beschriftetes Formularfeld (mobile first: große Eingaben, 16 px).
  * Beschriftung über for/id statt Verschachtelung: sonst liest ein Screenreader bei Auswahllisten
- * alle Optionen als Teil der Beschriftung vor.
+ * alle Optionen als Teil der Beschriftung vor. Die ID ist pro Feld eindeutig (useId), auch wenn
+ * dasselbe Formular mehrfach auf einer Seite steht.
  */
 export function Field({
   label,
@@ -11,10 +12,11 @@ export function Field({
   hint,
 }: {
   label: string;
-  children: React.ReactElement<{ id?: string; name?: string }>;
+  children: React.ReactElement<{ id?: string }>;
   hint?: string;
 }) {
-  const id = children.props.id ?? `feld-${children.props.name ?? label.replace(/\W+/g, '-')}`;
+  const auto = useId();
+  const id = children.props.id ?? `feld${auto.replace(/:/g, '-')}`;
   return (
     <div>
       <label htmlFor={id} className="mb-1 block font-medium">

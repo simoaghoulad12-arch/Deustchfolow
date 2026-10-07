@@ -13,7 +13,15 @@ import {
   type HomeworkStatus,
 } from '@/lib/data/types';
 import { todayISO } from '@/lib/school';
-import { parseDoc, parseError, parseGroup, parseHomework, parseStudent } from '@/lib/validation';
+import {
+  parseDecision,
+  parseDoc,
+  parseError,
+  parseGroup,
+  parseHomework,
+  parseStudent,
+  parseThresholds,
+} from '@/lib/validation';
 
 export interface FormState {
   error: string;
@@ -224,4 +232,29 @@ export async function deleteDoc(fd: FormData): Promise<void> {
   await requireAdmin();
   await getRepo().remove('lesson_docs', { id: id(fd) });
   done(['/dokumentation', '/fortschritt', '/playbook'], '/dokumentation');
+}
+
+// ------------------------------------------------------------------ Offene Entscheidungen und Qualität (nur Leitung)
+
+export async function saveDecision(_prev: FormState, fd: FormData): Promise<FormState> {
+  const admin = await requireAdmin();
+  const p = parseDecision(fd, todayISO());
+  if (!p.ok) return { error: p.error };
+  const failed = await attempt(() =>
+    getRepo().update('decisions', id(fd), {
+      ...p.data,
+      decided_by: p.data.status === 'entschieden' ? admin.id : null,
+    }),
+  );
+  if (failed) return failed;
+  done(['/entscheidungen', '/'], `/entscheidungen#${encodeURIComponent(id(fd))}`);
+}
+
+export async function saveThresholds(_prev: FormState, fd: FormData): Promise<FormState> {
+  const admin = await requireAdmin();
+  const p = parseThresholds(fd);
+  if (!p.ok) return { error: p.error };
+  const failed = await attempt(() => getStore().setSetting('qc_thresholds', p.data, admin.id));
+  if (failed) return failed;
+  done(['/qualitaet'], '/qualitaet');
 }

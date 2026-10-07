@@ -313,6 +313,8 @@ function renderPages(rt: LegacyRuntime): Record<string, string> {
       `${PAGE_FUNCS}[${JSON.stringify(page)}]()`,
     );
   }
+  // Online-Profi-Leitfaden (eigene Ansicht in legacy, enthält u. a. die Wochenroutine des Teams)
+  html.guide = renderLegacyPage(rt, `${setup};state.cur="guide"`, 'pageGuide()');
   // Stunden-Ansicht (Rahmen für jede Stunde gleich): mit der ersten Stunde rendern
   html.lesson = renderLegacyPage(rt, `${setup};state.cur="A1.1.Mo"`, 'pageLessonV2()');
   return html;
@@ -388,6 +390,7 @@ export interface ExtractedContent {
   decisions: OpenDecision[];
   statements: Statement[];
   lessonSystem: LessonSystemStep[];
+  weeklyRoutine: { tag: string; aufgabe: string }[];
   pages: Record<string, string[]>;
   meta: Meta;
 }
@@ -596,6 +599,13 @@ export function extractContent(rt: LegacyRuntime = loadLegacy()): ExtractedConte
     decisions,
     statements: Object.entries(html).flatMap(([page, h]) => labelledStatements(h, page)),
     lessonSystem,
+    // Wochenroutine des Teams aus dem Leitfaden (Tabelle ohne eigene Datenvariable in legacy)
+    weeklyRoutine: [
+      ...(html.guide ?? '').matchAll(/<tr><th>([^<]*)<\/th><td>([^<]*)<\/td><\/tr>/g),
+    ].map((m) => ({
+      tag: decode(m[1] ?? ''),
+      aufgabe: decode(m[2] ?? ''),
+    })),
     pages: Object.fromEntries(Object.entries(html).map(([page, h]) => [page, pageText(h)])),
     meta,
   };

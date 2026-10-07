@@ -261,6 +261,14 @@ export interface LessonSystemStep {
   labels: Label[];
 }
 
+// ---------------------------------------------------------------- weeklyRoutine.json
+
+/** Wochenroutine des Teams (legacy: Online-Profi-Leitfaden, Abschnitt 4). */
+export interface RoutineDay {
+  tag: string;
+  aufgabe: string;
+}
+
 // ---------------------------------------------------------------- pages.json
 
 /** Vollständiger Text jeder Legacy-Seite (ein Block pro Zeile, Kennzeichnungen als [LABEL]). Referenz, damit nichts verloren geht. */

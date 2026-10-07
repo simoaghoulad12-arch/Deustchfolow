@@ -102,6 +102,20 @@ export interface HomeworkRow {
   created_at: string;
 }
 
+export const DECISION_STATUSES = ['offen', 'entschieden'] as const;
+export type DecisionStatus = (typeof DECISION_STATUSES)[number];
+
+export interface DecisionRow {
+  id: string;
+  title: string;
+  title_ar: string;
+  status: DecisionStatus;
+  decision: string;
+  decided_at: string | null;
+  decided_by: string | null;
+  sort_order: number;
+}
+
 export interface Tables {
   groups: GroupRow;
   group_staff: GroupStaffRow;
@@ -110,5 +124,6 @@ export interface Tables {
   lesson_docs: LessonDocRow;
   errors: ErrorRow;
   homework: HomeworkRow;
+  decisions: DecisionRow;
 }
 export type TableName = keyof Tables;

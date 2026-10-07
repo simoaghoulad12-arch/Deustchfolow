@@ -1,5 +1,6 @@
 import 'server-only';
 import { devMember } from '@/lib/auth';
+import { content } from '@/content';
 import { createClient } from '@/lib/supabase/server';
 import type { TableName, Tables } from './types';
 
@@ -92,6 +93,17 @@ function memoryRepo(): Repo {
     lesson_docs: [],
     errors: [],
     homework: [],
+    // wie die Migration 20261007120100_seed_decisions.sql
+    decisions: content.decisions.map((d, i) => ({
+      id: d.id,
+      title: d.text.de,
+      title_ar: d.text.ar,
+      status: 'offen' as const,
+      decision: '',
+      decided_at: null,
+      decided_by: null,
+      sort_order: i,
+    })),
   });
   const field = (row: object, col: string) => (row as unknown as Record<string, unknown>)[col];
   const matches = (row: object, match: Record<string, unknown>) =>

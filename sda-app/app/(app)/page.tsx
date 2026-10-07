@@ -4,6 +4,7 @@ import { ProgressBar } from '@/components/ProgressBar';
 import { content } from '@/content';
 import { requireMember } from '@/lib/auth';
 import { loadSchool } from '@/lib/data/queries';
+import { getRepo } from '@/lib/data/repo';
 import { getStore } from '@/lib/data/store';
 import { getPrefs } from '@/lib/prefs';
 import { lessonProgress, sumProgress } from '@/lib/progress';
