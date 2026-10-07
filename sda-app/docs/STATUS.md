@@ -292,5 +292,34 @@ Checklisten-IDs sind identisch mit legacy (z. B. `A1.1.Mo#3`), damit Fortschritt
 - Playwright: Einladung → Mein Weg → Übung falsch/richtig → Mini-Test 8/8 → Hausaufgabe abgeben → Fehler wiederholen
   → Team-Seiten gesperrt, B1 gesperrt → Team sieht Ergebnis und Abgabe; Barrierefreiheit der Lern-App hell/dunkel.
 
-## Nächste Phase
-Phase 9 – Prüfungsvorbereitung bis B2 (`docs/PROMPTS.md`).
+## Phase 9 – Prüfungsvorbereitung bis B2 ✅
+
+**Was geändert**
+- Datenbank (`20261008120000_phase9_exams.sql`): `model_test_results` (Punkte pro Prüfungsteil Lesen, Hören,
+  Schreiben, Sprechen) und `exam_registrations` (Anbieter, Datum, Ort, Ergebnis offen/bestanden/nicht bestanden,
+  Notiz). Team trägt für sichtbare Schüler ein, Löschen nur Leitung, Schüler lesen nur eigene.
+- **Termine, Gebühren und Formate werden nicht eingetragen oder vorgegeben** – überall der Hinweis „beim
+  Prüfungsanbieter prüfen“.
+- **Prüfungsbereich pro Level** (Lern-App `/lernen/pruefung`): Aufbau mit den vier Teilen, die Prüfungsstunden des
+  Kurses (z. B. „Modelltest Hören“ in B2), „Bereit für die Prüfung?“, eigene Anmeldungen.
+- **Eigene Modelltests** gibt es laut `docs/CONTENT-STATUS.md` noch nicht – nichts erfunden. Stattdessen trägt das
+  Team nach einem Modelltest die Punkte pro Teil ein; die App wertet pro Teil aus.
+- **„Bereit für die Prüfung?“**: letztes Ergebnis pro Teil, schwächster Teil, Empfehlung zum Wiederholen (Stunden des
+  Levels im passenden Bereich). Keine erfundene Bestehensgrenze.
+- **Ergebnis „bestanden“** setzt das Level in der Lern-App auf 100 % und schaltet das nächste Level frei. Den
+  Stufenwechsel selbst (Level des Schülers) entscheidet weiterhin das Team (wie in legacy).
+- **Übersicht** (`/pruefungen`, neu in der Navigation): Schüler pro Level, Anmeldungen, bestanden/nicht bestanden,
+  Prüfungsstunden im Kurs. Prüfungen pro Schüler auf der Seite des Schülers.
+- Gefunden und behoben: Formularfelder mit Umlaut im Namen (`score-Hören`) kamen beim Absenden nicht an – jetzt
+  ASCII-Namen; ein Test prüft alle Feldnamen der App.
+
+**Was getestet**
+- Vitest 121 Tests, neu: Zugriffsregeln Prüfungen (inkl. Punkte ≤ Maximum), „Bereit?“-Auswertung, Freischaltung,
+  Prüfungsstunden, ASCII-Feldnamen.
+- Playwright: Modelltest eintragen (mit Fehlerprüfung) → schwächster Teil → Anmeldung „bestanden“ → Übersicht →
+  Schüler: Level 100 %, nächstes Level offen, Prüfungsbereich mit Hinweis.
+
+## Alle Phasen abgeschlossen
+Siehe `docs/ABSCHLUSSBERICHT.md`. Inhalte, die laut `docs/CONTENT-STATUS.md` noch fehlen (B1/B2-Skripte und Übungen,
+Wortlisten, Regel-Zusammenfassungen, Modelltests, Hörtexte), werden im gleichen Format ergänzt und vor der Freigabe
+geprüft (Status `entwurf` → `geprüft`).

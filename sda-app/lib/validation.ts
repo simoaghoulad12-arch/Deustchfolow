@@ -1,5 +1,10 @@
 import { LEVEL_KEYS, type LevelKey } from '@/content/types';
 import {
+  EXAM_PART_KEY,
+  EXAM_PARTS,
+  EXAM_RESULTS,
+  type ExamPart,
+  type ExamResult,
   DECISION_STATUSES,
   type DecisionStatus,
   ERROR_CATEGORIES,
@@ -283,4 +288,81 @@ export function parseFormula(
   if (p === 'bad')
     return { ok: false, error: 'Bestehensgrenze bitte als ganze Zahl von 0 bis 100.' };
   return { ok: true, data: { wAttendance: a, wExercises: e, wTest: t, passPercent: p } };
+}
+
+export interface ModelTestInput {
+  student_id: string;
+  level: LevelKey;
+  date: string;
+  parts: { part: ExamPart; score: number; max_score: number }[];
+}
+
+/** Modelltest: pro Prüfungsteil Punkte und Höchstpunktzahl (leer = Teil nicht geschrieben). */
+export function parseModelTest(f: Form, today: string): Parsed<ModelTestInput> {
+  const student = str(f, 'student_id');
+  const level = str(f, 'level');
+  const date = str(f, 'date') || today;
+  if (!isUuid(student)) return { ok: false, error: 'Schüler fehlt.' };
+  if (!isLevel(level)) return { ok: false, error: 'Bitte ein Level wählen.' };
+  if (!isDate(date)) return { ok: false, error: 'Bitte ein gültiges Datum eingeben.' };
+  const parts: ModelTestInput['parts'] = [];
+  for (const part of EXAM_PARTS) {
+    const sc = str(f, `score-${EXAM_PART_KEY[part]}`).replace(',', '.');
+    const mx = str(f, `max-${EXAM_PART_KEY[part]}`).replace(',', '.');
+    if (!sc && !mx) continue;
+    const score = Number(sc);
+    const max = Number(mx);
+    if (
+      !sc ||
+      !mx ||
+      !Number.isFinite(score) ||
+      !Number.isFinite(max) ||
+      score < 0 ||
+      max <= 0 ||
+      score > max ||
+      max > 1000
+    ) {
+      return {
+        ok: false,
+        error: `${part}: bitte Punkte und Höchstpunktzahl eingeben (Punkte höchstens so viele wie maximal).`,
+      };
+    }
+    parts.push({ part, score: Math.round(score * 10) / 10, max_score: Math.round(max * 10) / 10 });
+  }
+  if (!parts.length) return { ok: false, error: 'Bitte mindestens einen Prüfungsteil eintragen.' };
+  return { ok: true, data: { student_id: student, level, date, parts } };
+}
+
+export interface ExamInput {
+  student_id: string;
+  level: LevelKey;
+  provider: string;
+  exam_date: string | null;
+  place: string;
+  result: ExamResult;
+  notes: string;
+}
+
+/** Prüfungsanmeldung: Anbieter, Datum, Ort, Ergebnis. Nichts davon wird vorgegeben. */
+export function parseExam(f: Form): Parsed<ExamInput> {
+  const student = str(f, 'student_id');
+  const level = str(f, 'level');
+  const date = str(f, 'exam_date');
+  const result = (str(f, 'result') || 'offen') as ExamResult;
+  if (!isUuid(student)) return { ok: false, error: 'Schüler fehlt.' };
+  if (!isLevel(level)) return { ok: false, error: 'Bitte ein Level wählen.' };
+  if (date && !isDate(date)) return { ok: false, error: 'Bitte ein gültiges Datum eingeben.' };
+  if (!EXAM_RESULTS.includes(result)) return { ok: false, error: 'Bitte ein Ergebnis wählen.' };
+  return {
+    ok: true,
+    data: {
+      student_id: student,
+      level,
+      provider: str(f, 'provider', 120),
+      exam_date: optDate(date),
+      place: str(f, 'place', 120),
+      result,
+      notes: str(f, 'notes', 1000),
+    },
+  };
 }

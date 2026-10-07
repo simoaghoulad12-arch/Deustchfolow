@@ -19,7 +19,9 @@ import {
   parseDecision,
   parseDoc,
   parseError,
+  parseExam,
   parseFormula,
+  parseModelTest,
   parseGroup,
   parseHomework,
   parseStudent,
@@ -324,4 +326,52 @@ export async function saveFormula(_prev: FormState, fd: FormData): Promise<FormS
   const failed = await attempt(() => getStore().setSetting('progress_formula', p.data, admin.id));
   if (failed) return failed;
   done(['/einstellungen', '/lernen'], '/einstellungen');
+}
+
+// ------------------------------------------------------------------ Prüfungen (Phase 9)
+
+export async function saveModelTest(_prev: FormState, fd: FormData): Promise<FormState> {
+  await requireMember();
+  const p = parseModelTest(fd, todayISO());
+  if (!p.ok) return { error: p.error };
+  const { parts, ...base } = p.data;
+  const failed = await attempt(async () => {
+    await getRepo().insert(
+      'model_test_results',
+      parts.map((x) => ({ ...base, ...x })),
+    );
+  });
+  if (failed) return failed;
+  done(
+    ['/pruefungen', `/fortschritt/${base.student_id}`, '/lernen/pruefung'],
+    `/fortschritt/${base.student_id}#pruefungen`,
+  );
+}
+
+/** Prüfungsanmeldung anlegen oder Ergebnis ändern. „bestanden“ setzt das Level auf 100 % und schaltet das nächste frei. */
+export async function saveExam(_prev: FormState, fd: FormData): Promise<FormState> {
+  await requireMember();
+  const p = parseExam(fd);
+  if (!p.ok) return { error: p.error };
+  const repo = getRepo();
+  const failed = await attempt(async () => {
+    if (id(fd)) await repo.update('exam_registrations', id(fd), p.data);
+    else await repo.insert('exam_registrations', [p.data]);
+  });
+  if (failed) return failed;
+  done(
+    ['/pruefungen', `/fortschritt/${p.data.student_id}`, '/lernen', '/lernen/pruefung', '/'],
+    `/fortschritt/${p.data.student_id}#pruefungen`,
+  );
+}
+
+export async function deleteExam(fd: FormData): Promise<void> {
+  await requireAdmin();
+  const repo = getRepo();
+  const row = await repo.get('exam_registrations', id(fd));
+  await repo.remove('exam_registrations', { id: id(fd) });
+  done(
+    ['/pruefungen', '/lernen'],
+    row ? `/fortschritt/${row.student_id}#pruefungen` : '/pruefungen',
+  );
 }

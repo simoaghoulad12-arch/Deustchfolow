@@ -144,6 +144,41 @@ export interface SubmissionRow {
   created_at: string;
 }
 
+export const EXAM_PARTS = ['Lesen', 'Hören', 'Schreiben', 'Sprechen'] as const;
+export type ExamPart = (typeof EXAM_PARTS)[number];
+/** ASCII-Schlüssel für Formularfelder: Feldnamen mit Umlauten kommen beim Absenden nicht sicher an. */
+export const EXAM_PART_KEY: Record<ExamPart, string> = {
+  Lesen: 'lesen',
+  Hören: 'hoeren',
+  Schreiben: 'schreiben',
+  Sprechen: 'sprechen',
+};
+export const EXAM_RESULTS = ['offen', 'bestanden', 'nicht bestanden'] as const;
+export type ExamResult = (typeof EXAM_RESULTS)[number];
+
+export interface ModelTestResultRow {
+  id: string;
+  student_id: string;
+  level: LevelKey;
+  date: string;
+  part: ExamPart;
+  score: number;
+  max_score: number;
+  created_at: string;
+}
+
+export interface ExamRegistrationRow {
+  id: string;
+  student_id: string;
+  level: LevelKey;
+  provider: string;
+  exam_date: string | null;
+  place: string;
+  result: ExamResult;
+  notes: string;
+  created_at: string;
+}
+
 export interface Tables {
   groups: GroupRow;
   group_staff: GroupStaffRow;
@@ -156,5 +191,7 @@ export interface Tables {
   exercise_attempts: ExerciseAttemptRow;
   test_results: TestResultRow;
   submissions: SubmissionRow;
+  model_test_results: ModelTestResultRow;
+  exam_registrations: ExamRegistrationRow;
 }
 export type TableName = keyof Tables;

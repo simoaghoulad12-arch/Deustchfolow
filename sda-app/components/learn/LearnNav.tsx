@@ -36,7 +36,7 @@ export function LearnNav({
       aria-label="Lern-App"
       className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-panel pb-[env(safe-area-inset-bottom)]"
     >
-      <ul className="grid grid-cols-4">
+      <ul className="grid grid-cols-5">
         {items.map((i) => (
           <li key={i.href}>
             <Link

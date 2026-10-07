@@ -96,6 +96,8 @@ function memoryRepo(): Repo {
     exercise_attempts: [],
     test_results: [],
     submissions: [],
+    model_test_results: [],
+    exam_registrations: [],
     // wie die Migration 20261007120100_seed_decisions.sql
     decisions: content.decisions.map((d, i) => ({
       id: d.id,

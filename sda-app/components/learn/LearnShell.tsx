@@ -15,6 +15,7 @@ export const LEARN_NAV: { href: string; key: UIKey; icon: string }[] = [
     key: 'myErrors',
     icon: 'M12 8v5M12 16h.01M10.3 3.9 2.6 17.4A2 2 0 0 0 4.3 20h15.4a2 2 0 0 0 1.7-2.6L13.7 3.9a2 2 0 0 0-3.4 0z',
   },
+  { href: '/lernen/pruefung', key: 'exam', icon: 'M9 12l2 2 4-4M7 3h10l2 4v14H5V7z' },
   { href: '/lernen/deutschland', key: 'germany', icon: 'M3 21h18M5 21V8l7-5 7 5v13M9 21v-6h6v6' },
 ];
 

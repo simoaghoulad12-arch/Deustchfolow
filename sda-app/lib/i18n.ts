@@ -112,6 +112,7 @@ export const UI = {
   myHomework: { de: 'Hausaufgaben', ar: 'الواجبات' },
   myErrors: { de: 'Meine Fehler', ar: 'أخطائي' },
   germany: { de: 'Deutschland', ar: 'ألمانيا' },
+  exam: { de: 'Prüfung', ar: 'الامتحان' },
   settings: { de: 'Einstellungen', ar: 'الإعدادات' },
   learnApp: { de: 'Lern-App', ar: 'تطبيق التعلم' },
   check: { de: 'Prüfen', ar: 'تحقق' },

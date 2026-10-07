@@ -1,6 +1,6 @@
 # Abschlussbericht – Smart Deutsch Akademie App
 
-Stand: nach Phase 7 (Team-App fertig). Phasen 8 und 9 (Lern-App, Prüfungen) siehe `docs/STATUS.md`.
+Stand: alle Phasen 1–9 umgesetzt (Team-App, Lern-App, Prüfungsvorbereitung). Details pro Phase: `docs/STATUS.md`.
 
 ## 1. Analyse der bestehenden Version
 `legacy/index.html` (V2) war eine einzelne HTML-Datei mit allen Inhalten und Logik im Browser:
@@ -22,6 +22,10 @@ Stand: nach Phase 7 (Team-App fertig). Phasen 8 und 9 (Lern-App, Prüfungen) sie
 - **Datenschutz**: Schriften selbst ausgeliefert (keine Anfragen an Google), Service Worker ohne Datenspeicherung,
   keine Schülerdaten in URLs außer zufälligen IDs, Service-Role-Schlüssel nur auf dem Server.
 - **Speicherstatus sichtbar** („Wird gespeichert …“ / „Gespeichert“) beim Abhaken.
+- **Lern-App für Schüler**: „Mein Weg“ bis zur Prüfung mit Prozent, Übungen mit automatischer Prüfung, Mini-Tests,
+  Hausaufgaben-Abgabe, Fehler-Wiederholung – strikt getrennt vom Team (eigene Daten, keine Skripte oder Notizen).
+- **Prüfungsvorbereitung**: Modelltest-Ergebnisse pro Teil, „Bereit für die Prüfung?“, Anmeldungen; „bestanden“
+  schaltet das nächste Level frei. Keine Termine, Gebühren oder Formate erfunden.
 
 ## 3. Struktur
 ```
@@ -30,7 +34,8 @@ sda-app/
   content/           Inhalte als JSON, erzeugt aus legacy (pnpm extract) + Typen
   scripts/           Extraktion, Migration der Entscheidungen, Icons
   supabase/          Migrationen (Schema + RLS), E-Mail-Vorlagen, config.toml
-  app/(app)/         alle Seiten im App-Rahmen
+  app/(app)/         Team-Bereich (alle Seiten im App-Rahmen)
+  app/lernen/        Lern-App für Schüler
   components/        Rahmen, Stunden-Ansicht, Formulare, Kennzeichnung
   lib/               Logik (Rollenplan, Fortschritt, Schule, Suche, Qualität, Import, Datenzugriff)
   tests/             Vitest (Logik, Zugriffsregeln gegen echtes Postgres, Vergleich mit legacy)
@@ -60,6 +65,7 @@ in dieser Umsetzung entstanden bzw. betroffen:
 - Warnschwellen der Qualitätskontrolle (nur Leitung, Standard: keine)
 - Häufigkeit und Aufbewahrungsfrist der Datensicherung
 - Uhrzeiten der Stunden (für „heute“ gilt Europe/Berlin)
+- Gewichtung und Bestehensgrenze der Fortschritts-Formel (Standard: gleiche Gewichte, keine Grenze)
 
 ## 7. Technische Änderungen
 Next.js 14 (App Router), TypeScript strict, Tailwind CSS, Supabase (Postgres, Auth per Magic Link, RLS), Vercel.
@@ -67,8 +73,9 @@ Inhalte als versionierte JSON-Dateien. Tests: Vitest, PGlite (Zugriffsregeln geg
 Playwright mit axe. Neue Bibliotheken jeweils begründet in `docs/STATUS.md`.
 
 ## 8. Qualitätscheck
-- Vitest: 96 Tests (Vollständigkeit der Inhalte, Logik identisch mit legacy, Zugriffsregeln, Formulare, Import).
-- Playwright: 56 Tests auf 390 px und Desktop, inkl. Barrierefreiheit hell und dunkel.
+- Vitest: 121 Tests (Vollständigkeit der Inhalte, Logik identisch mit legacy, Zugriffsregeln für Team und Schüler
+  gegen echtes Postgres mit Gegenproben, Formulare, Import, Lern-App, Prüfungen).
+- Playwright: Tests auf 390 px und Desktop für alle Abläufe, inkl. Barrierefreiheit hell und dunkel (Team und Lern-App).
 - Keine erfundenen Inhalte: feste Texte im Seiten-Code werden per Test gegen den Text der alten Version geprüft.
 - Kein seitliches Scrollen auf 390 px; Tippflächen mindestens 44 px; Eingaben 16 px.
 
@@ -76,5 +83,7 @@ Playwright mit axe. Neue Bibliotheken jeweils begründet in `docs/STATUS.md`.
 1. Supabase-Projekt anlegen (`docs/SUPABASE.md`), erste Leitung anlegen, Team einladen.
 2. Auf Vercel veröffentlichen (`docs/DEPLOY.md`), auf dem Handy installieren.
 3. Daten aus der alten Version importieren, Gruppen anlegen, Startdaten eintragen.
-4. Offene Entscheidungen in der App entscheiden.
-5. Phase 8 (Lern-App) und Phase 9 (Prüfungsvorbereitung).
+4. Offene Entscheidungen in der App entscheiden (inkl. Fortschritts-Formel und Warnschwellen).
+5. Schüler zur Lern-App einladen.
+6. Fehlende Inhalte ergänzen (`docs/CONTENT-STATUS.md`): B1/B2-Skripte und Übungen, Wortlisten,
+   Regel-Zusammenfassungen, eigene Modelltests, Hörtexte – jeweils prüfen lassen, bevor Schüler sie sehen.
