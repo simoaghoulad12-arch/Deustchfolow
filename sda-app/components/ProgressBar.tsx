@@ -17,7 +17,7 @@ export function ProgressBar({ progress, label }: { progress: Progress; label: st
           style={{ width: `${p}%` }}
         />
       </div>
-      <p className="mt-1 text-sm text-muted">
+      <p className="mt-1 text-sm opacity-80">
         {progress.done} / {progress.total} · {p} %
       </p>
     </div>

@@ -15,6 +15,7 @@ const config: Config = {
         anth2: 'var(--anth2)',
         'anth-ink': 'var(--anth-ink)',
         red: 'var(--red)',
+        'red-strong': 'var(--red-strong)',
         'red-soft': 'var(--red-soft)',
         gold: 'var(--gold)',
         'gold-soft': 'var(--gold-soft)',

@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { saveDayRoles, setPerson } from '@/app/actions/lesson';
 import { setLanguage, setTheme } from '@/app/actions/prefs';
+import { ImportForm } from '@/components/ImportForm';
 import { Label, LabelLegend } from '@/components/Label';
 import { content } from '@/content';
 import { DAYS, DUTY_LABELS, PERSON_LABELS, PERSONS, TEACHER_DUTIES } from '@/lib/dayRoles';
@@ -138,6 +139,17 @@ export default async function SettingsPage() {
           <Link href="/admin/team" className="btn-primary">
             {t(lang, 'team')}
           </Link>
+        </section>
+      )}
+      {isAdmin && (
+        <section className="card mb-4">
+          <h2 className="mb-1 text-xl font-bold">Daten aus der alten Version übernehmen</h2>
+          <p className="mb-3 text-sm text-muted">
+            Schüler, Dokumentation, Fehler, Hausaufgaben und Lehrbuch-Notizen. Die alte Version
+            kannte keine Gruppen: pro Level entsteht eine Gruppe „Übernommen …“, die danach
+            umbenannt oder aufgeteilt werden kann. Erst prüfen, dann importieren.
+          </p>
+          <ImportForm />
         </section>
       )}
       <section className="card">

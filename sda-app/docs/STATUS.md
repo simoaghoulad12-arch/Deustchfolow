@@ -231,5 +231,36 @@ Checklisten-IDs sind identisch mit legacy (z. B. `A1.1.Mo#3`), damit Fortschritt
   Kopieren einer Vorlage, Probestunde, Entscheidung eintragen und zurücksetzen, Warnschwellen, Suche mit Filtern.
 - typecheck, lint, build.
 
+## Phase 7 – Handy-App, Tests und Veröffentlichung ✅
+
+**Was geändert**
+- **PWA**: Manifest „Smart Deutsch Akademie“ (eigenständiges Fenster, Farben wie legacy), Icons 192/512, maskierbares
+  Icon, iPhone-Icon und App-Modus (Startbildschirm). Icons werden mit `scripts/make-icons.ts` erzeugt.
+  Service Worker bewusst minimal: speichert keine Seiten oder Daten (Schülerdaten), zeigt ohne Internet nur eine
+  Hinweisseite (`public/offline.html`).
+- **Barrierefreiheit**: automatische Prüfung (axe, WCAG 2.1 A/AA) von 18 Seiten in hell und dunkel, auf Handy und
+  Desktop. Gefundene Kontrastprobleme behoben: Gold im hellen Modus dunkler, Rot als Schriftfarbe im Dunkelmodus
+  heller, Knöpfe immer in kräftigem Rot mit weißer Schrift; Fortschrittstext erbt die Farbe des Hintergrunds.
+  Tastatur: „Zum Inhalt springen“ als erster Tab, Menü mit Enter/Escape, Fokus kehrt zurück.
+- **Geschwindigkeit**: höchstens 102 kB JavaScript beim ersten Laden einer Seite; Unterrichtsinhalte bleiben auf
+  dem Server.
+- **Import aus der alten Version** (Einstellungen, nur Leitung): Export-Text einfügen, „Prüfen“ zeigt, was übernommen
+  wird (mit Hinweisen zu übersprungenen Einträgen), dann „Importieren“. Pro Level eine Gruppe „Übernommen …“, weil
+  die alte Version keine Gruppen kannte; Lehrkraft-Namen (freier Text) bleiben im Feld „Probleme“ erhalten.
+- Anleitungen: `docs/DEPLOY.md` (GitHub, Vercel, Umgebungsvariablen, Supabase-URLs, eigene Domain) und
+  `docs/BACKUP.md` (automatische und eigene Sicherung, verschlüsselt aufbewahren, Wiederherstellen).
+- Neue Bibliothek: `@axe-core/playwright` (nur Tests) – automatische Barrierefreiheits-Prüfung.
+
+**Was getestet**
+- Vitest 96 Tests, neu: Import mit einem Export, den die alte Version selbst erzeugt.
+- Playwright 56 Tests (je 390 px und Desktop), neu: Barrierefreiheit hell/dunkel, PWA (Manifest, Icons, Offline,
+  iPhone), Login-Seite, Tastatur, Import über die Oberfläche. Die wichtigsten Abläufe (Stunde öffnen, Skript lesen,
+  Stunde dokumentieren, Fortschritt prüfen) sind seit Phase 4/5 abgedeckt.
+- typecheck, lint, build.
+
+**Was offen**
+- Login mit echten E-Mails ist erst mit einem Supabase-Projekt testbar (in den Tests: Testzugang).
+- Lighthouse-Messung auf dem echten Server nach dem Veröffentlichen.
+
 ## Nächste Phase
-Phase 7 – Handy-App, Tests und Veröffentlichung (`docs/PROMPTS.md`).
+Phase 8 – Lern-App für Schüler (`docs/PROMPTS.md`).

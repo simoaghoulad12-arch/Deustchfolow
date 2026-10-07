@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <rect width="512" height="512" fill="#1b1d21"/>
+  <g transform="translate(0 0)">
+    <text x="256" y="317.44" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-weight="700"
+      font-size="235.52" fill="#f4f4f5" letter-spacing="5.12">SD</text>
+    <rect x="102.4" y="378.88" width="307.2" height="30.72" fill="#c8102e"/>
+  </g>
+</svg>

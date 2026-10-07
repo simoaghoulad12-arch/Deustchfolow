@@ -16,8 +16,10 @@
   --anth2: #26292f;
   --anth-ink: #f4f4f5;
   --red: #c8102e;
+  /* Knopf-Rot: in hell und dunkel gleich kräftig, damit weiße Schrift lesbar bleibt (Kontrast ≥ 4,5:1) */
+  --red-strong: #c8102e;
   --red-soft: #fbe8eb;
-  --gold: #8a6d27;
+  --gold: #765b1c;
   --gold-soft: #f6f1e4;
   --ok: #2d7a4f;
   --ok-soft: #e3f2e8;
@@ -34,7 +36,8 @@
     --anth: #0b0c0e;
     --anth2: #17191c;
     --anth-ink: #ececee;
-    --red: #ef4a5f;
+    --red: #ff7385;
+    --red-strong: #c8102e;
     --red-soft: #3a1a20;
     --gold: #d2b067;
     --gold-soft: #2f2a1c;
@@ -53,7 +56,8 @@
   --anth: #0b0c0e;
   --anth2: #17191c;
   --anth-ink: #ececee;
-  --red: #ef4a5f;
+  --red: #ff7385;
+  --red-strong: #c8102e;
   --red-soft: #3a1a20;
   --gold: #d2b067;
   --gold-soft: #2f2a1c;
@@ -106,7 +110,7 @@ h3 {
     @apply min-h-11 w-full rounded-lg border border-line bg-panel px-3 text-base text-ink;
   }
   .btn-primary {
-    @apply inline-flex min-h-11 items-center justify-center rounded-lg bg-red px-4 font-semibold text-white disabled:opacity-60;
+    @apply inline-flex min-h-11 items-center justify-center rounded-lg bg-red-strong px-4 font-semibold text-white disabled:opacity-60;
   }
   .btn-secondary {
     @apply inline-flex min-h-11 items-center justify-center rounded-lg border border-line bg-panel px-4 font-medium;

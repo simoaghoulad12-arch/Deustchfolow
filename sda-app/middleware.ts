@@ -42,5 +42,6 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/((?!_next/static|_next/image|favicon.ico|.*\\.(?:png|jpg|svg|ico|webmanifest)$).*)'],
+  // Statische Dateien (Icons, Manifest, Service Worker, Offline-Seite) ohne Anmeldung
+  matcher: ['/((?!_next/static|_next/image|favicon.ico|manifest.webmanifest|sw.js|offline.html|icons/).*)'],
 };
