@@ -14,7 +14,9 @@ Die Migrationen in `supabase/migrations/` der Reihe nach ausführen:
 Danach gibt es alle Tabellen mit Row Level Security und die 21 offenen Entscheidungen aus der bestehenden Version.
 
 ## 3. Anmeldung einstellen (Dashboard → Authentication)
-- **Sign In / Providers → Email**: aktiv. **Allow new users to sign up: aus** (keine offene Registrierung).
+- **Sign In / Providers → Email**: muss **aktiv** bleiben (sonst funktioniert auch der Anmeldelink nicht).
+- **Allow new users to sign up: aus** (keine offene Registrierung) – das ist eine eigene Einstellung, nicht der
+  E-Mail-Anbieter selbst.
 - **URL Configuration**: Site URL = Adresse der App (z. B. `https://app.example.org`),
   Redirect URLs: `https://app.example.org/auth/confirm` (und `http://localhost:3000/auth/confirm` für lokal).
 - **Emails → Templates**: Für „Invite user“ und „Magic Link“ den Inhalt aus `supabase/templates/invite.html`

@@ -29,6 +29,14 @@ export async function sendMagicLink(_prev: LoginState, formData: FormData): Prom
     email,
     options: { shouldCreateUser: false, emailRedirectTo: `${origin}/auth/confirm` },
   });
+  // Einrichtungsfehler im Supabase-Projekt sichtbar machen (betrifft alle Adressen gleich, verrät also nichts).
+  if (error?.code === 'email_provider_disabled') {
+    return {
+      status: 'error',
+      message:
+        'Die Anmeldung per E-Mail ist im Supabase-Projekt ausgeschaltet (siehe docs/SUPABASE.md).',
+    };
+  }
   // Fehler „Nutzer nicht gefunden“ bewusst wie Erfolg behandeln (keine Auskunft über eingeladene Adressen).
   if (error && error.status !== 400 && error.status !== 422) {
     return {

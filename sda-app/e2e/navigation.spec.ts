@@ -131,3 +131,25 @@ test('Kennzeichnungen werden angezeigt', async ({ page }) => {
     page.locator('main').getByText('IMPROVEMENT', { exact: true }).first(),
   ).toBeVisible();
 });
+
+test('Handy-Menü liegt über der unteren Leiste: Abmelden und letzte Einträge sind antippbar', async ({
+  page,
+}) => {
+  test.skip((page.viewportSize()?.width ?? 0) >= 1024, 'nur Handy');
+  await page.goto('/');
+  await page.getByRole('button', { name: 'Menü' }).click();
+  const dialog = page.getByRole('dialog', { name: 'Hauptnavigation' });
+  // Element am Mittelpunkt des Knopfs muss der Knopf selbst sein (nicht die untere Leiste)
+  for (const target of [
+    dialog.getByRole('button', { name: 'Abmelden' }),
+    dialog.getByRole('link', { name: 'Einstellungen & Daten' }),
+  ]) {
+    await target.scrollIntoViewIfNeeded();
+    const hit = await target.evaluate((el) => {
+      const r = el.getBoundingClientRect();
+      const top = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
+      return !!top && (el === top || el.contains(top));
+    });
+    expect(hit).toBe(true);
+  }
+});

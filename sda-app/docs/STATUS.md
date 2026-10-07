@@ -319,6 +319,25 @@ Checklisten-IDs sind identisch mit legacy (z. B. `A1.1.Mo#3`), damit Fortschritt
 - Playwright: Modelltest eintragen (mit Fehlerprüfung) → schwächster Teil → Anmeldung „bestanden“ → Übersicht →
   Schüler: Level 100 %, nächstes Level offen, Prüfungsbereich mit Hinweis.
 
+## Probelauf mit echtem Supabase ✅ (2026-10-07)
+
+Die nächsten Schritte (Supabase einrichten, App starten, Daten importieren, Entscheidungen) als Probe durchgespielt:
+lokales Supabase (Postgres 15, Auth, REST, Mailpit) per `supabase start`, alle 6 Migrationen, erste Leitung genau wie in
+`docs/SUPABASE.md`, Produktions-Build der App ohne Testzugang. Automatisiert in `e2e-supabase/` (10 Schritte, siehe README).
+
+**Ergebnis:** alle 10 Schritte bestanden – Einladungen und Magic Link, keine offene Registrierung, Import, Gruppe
+mit Team, Lehrkraft sieht nur ihre Gruppe, Dokumentation, Entscheidung nur durch die Leitung, Schüler-Einladung,
+Lern-App mit Mini-Test und Abgabe, Team sieht Ergebnis, Abgabe und Anwesenheit.
+
+**Dabei gefunden und behoben:**
+- Handy: Das Menü lag in der Ebene der Kopfzeile; die untere Leiste verdeckte „Abmelden“ und die letzten Einträge.
+  Jetzt per Portal über allem; neuer Test prüft, dass die Knöpfe antippbar sind (schlägt ohne Fix fehl).
+- `supabase/config.toml`: `[auth.email] enable_signup = false` schaltete den E-Mail-Anbieter ganz ab – kein Magic
+  Link möglich. Jetzt `true`; offene Registrierung bleibt über `[auth] enable_signup = false` aus. Hinweis in
+  `docs/SUPABASE.md` ergänzt.
+- Login-Seite: Dieser Einrichtungsfehler wurde verschluckt (neutrale Meldung, aber keine E-Mail). Jetzt klare Meldung.
+- Lokal: E-Mail-Limit für Tests erhöht (`[auth.rate_limit] email_sent`).
+
 ## Alle Phasen abgeschlossen
 Siehe `docs/ABSCHLUSSBERICHT.md`. Inhalte, die laut `docs/CONTENT-STATUS.md` noch fehlen (B1/B2-Skripte und Übungen,
 Wortlisten, Regel-Zusammenfassungen, Modelltests, Hörtexte), werden im gleichen Format ergänzt und vor der Freigabe
