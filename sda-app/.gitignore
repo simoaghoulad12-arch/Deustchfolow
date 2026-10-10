@@ -6,3 +6,7 @@ next-env.d.ts.bak
 .env.local
 test-results/
 playwright-report/
+
+# Supabase CLI (lokal)
+supabase/.branches/
+supabase/.temp/

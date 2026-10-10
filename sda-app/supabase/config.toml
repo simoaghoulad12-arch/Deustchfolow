@@ -9,7 +9,9 @@ additional_redirect_urls = ["http://localhost:3000/auth/confirm"]
 enable_signup = false
 
 [auth.email]
-enable_signup = false
+# Muss an bleiben: Hier schaltet die CLI den E-Mail-Anbieter insgesamt (sonst geht auch kein Magic Link).
+# Neue Registrierungen verhindert `enable_signup = false` unter [auth].
+enable_signup = true
 
 [auth.email.template.invite]
 subject = "Einladung: Smart Deutsch Akademie"
@@ -18,3 +20,7 @@ content_path = "./supabase/templates/invite.html"
 [auth.email.template.magic_link]
 subject = "Dein Anmeldelink: Smart Deutsch Akademie"
 content_path = "./supabase/templates/magic_link.html"
+
+# Nur lokal: genug E-Mails für Tests (Einladungen, Anmeldelinks). Im gehosteten Projekt eigenes SMTP einrichten.
+[auth.rate_limit]
+email_sent = 100

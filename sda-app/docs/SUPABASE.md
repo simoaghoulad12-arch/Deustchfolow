@@ -14,7 +14,9 @@ Die Migrationen in `supabase/migrations/` der Reihe nach ausführen:
 Danach gibt es alle Tabellen mit Row Level Security und die 21 offenen Entscheidungen aus der bestehenden Version.
 
 ## 3. Anmeldung einstellen (Dashboard → Authentication)
-- **Sign In / Providers → Email**: aktiv. **Allow new users to sign up: aus** (keine offene Registrierung).
+- **Sign In / Providers → Email**: muss **aktiv** bleiben (sonst funktioniert auch der Anmeldelink nicht).
+- **Allow new users to sign up: aus** (keine offene Registrierung) – das ist eine eigene Einstellung, nicht der
+  E-Mail-Anbieter selbst.
 - **URL Configuration**: Site URL = Adresse der App (z. B. `https://app.example.org`),
   Redirect URLs: `https://app.example.org/auth/confirm` (und `http://localhost:3000/auth/confirm` für lokal).
 - **Emails → Templates**: Für „Invite user“ und „Magic Link“ den Inhalt aus `supabase/templates/invite.html`
@@ -35,6 +37,11 @@ Die Admin-Seite kann erst jemand benutzen, der schon Admin ist. Einmalig:
    ```
 3. Einladungslink in der E-Mail öffnen. Danach alle weiteren Personen über **Team und Zugänge** einladen.
 
+## Schüler (Lern-App)
+Schüler werden von der Leitung oder einer Lehrkraft auf der Seite des Schülers (Student Progress) eingeladen.
+`SUPABASE_SERVICE_ROLE_KEY` muss gesetzt sein: Über ihn verschickt der Server die Einladung und speichert die
+ausgewerteten Ergebnisse von Übungen und Mini-Tests (Schüler können diese Tabellen selbst nicht beschreiben).
+
 ## Zugriffsregeln (Kurzfassung)
 | | admin | teacher / native | nicht eingeladen |
 |---|---|---|---|
@@ -43,6 +50,7 @@ Die Admin-Seite kann erst jemand benutzen, der schon Admin ist. Einmalig:
 | Schüler, Fehler, Hausaufgaben | alle | sichtbare Gruppen: lesen, anlegen, bearbeiten; nicht löschen | nichts |
 | Dokumentation | alle | sichtbare Gruppen; nur eigene bearbeiten | nichts |
 | Checklisten-Häkchen | alle lesen | nur eigene | nichts |
+| Lern-App (Schüler) | alles | Ergebnisse und Abgaben der sichtbaren Schüler | Schüler: nur eigene Daten, keine Team-Inhalte |
 
 „Eigene Gruppen“ = Zuordnung in `group_staff`. Ob das Team alle Gruppen sieht, ist eine OFFENE ENTSCHEIDUNG
 und unter **Team und Zugänge** umschaltbar (Standard: nur eigene Gruppen).

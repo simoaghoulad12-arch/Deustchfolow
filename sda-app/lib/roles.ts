@@ -1,12 +1,17 @@
-/** Rollen im Team (Tabelle profiles). Schüler (student) folgen in Phase 8. */
+/** Rollen im Team (Tabelle profiles). Schüler haben die Rolle 'student' und nutzen die Lern-App. */
 export const APP_ROLES = ['admin', 'teacher', 'native'] as const;
 export type AppRole = (typeof APP_ROLES)[number];
+export type MemberRole = AppRole | 'student';
 
-export const ROLE_LABELS: Record<AppRole, string> = {
+export const ROLE_LABELS: Record<MemberRole, string> = {
   admin: 'Leitung (Admin)',
   teacher: 'Lehrkraft',
   native: 'Muttersprachler/in',
+  student: 'Schüler',
 };
+
+export const isMemberRole = (v: unknown): v is MemberRole =>
+  v === 'student' || APP_ROLES.includes(v as AppRole);
 
 /** OFFENE ENTSCHEIDUNG: Sieht das Team alle Gruppen oder nur die eigenen? Standard: own_groups. */
 export const GROUP_VISIBILITY = ['own_groups', 'all'] as const;

@@ -1,6 +1,12 @@
 import Link from 'next/link';
 import { saveDayRoles, setPerson } from '@/app/actions/lesson';
 import { setLanguage, setTheme } from '@/app/actions/prefs';
+import { saveFormula } from '@/app/actions/school';
+import { ActionForm } from '@/components/forms/ActionForm';
+import { Field } from '@/components/forms/Field';
+import { ImportForm } from '@/components/ImportForm';
+import { getStore } from '@/lib/data/store';
+import { normalizeFormula } from '@/lib/learn';
 import { Label, LabelLegend } from '@/components/Label';
 import { content } from '@/content';
 import { DAYS, DUTY_LABELS, PERSON_LABELS, PERSONS, TEACHER_DUTIES } from '@/lib/dayRoles';
@@ -21,6 +27,7 @@ export default async function SettingsPage() {
   const { lang, theme } = getPrefs();
   const person = getPerson();
   const roles = await getDayRoles();
+  const formula = normalizeFormula(await getStore().setting('progress_formula'));
   const isAdmin = member.role === 'admin';
   return (
     <>
@@ -138,6 +145,78 @@ export default async function SettingsPage() {
           <Link href="/admin/team" className="btn-primary">
             {t(lang, 'team')}
           </Link>
+        </section>
+      )}
+      {isAdmin && (
+        <section className="card mb-4">
+          <h2 className="mb-1 flex flex-wrap items-center gap-2 text-xl font-bold">
+            Fortschritt in der Lern-App <Label kind="PROPOSAL" lang={lang} />
+          </h2>
+          <p className="mb-3 text-sm text-muted">
+            Modul-Fortschritt = gewichteter Durchschnitt aus Anwesenheit (laut Dokumentation),
+            richtig gelösten Übungen und bestem Mini-Test. Gewichtung und Bestehensgrenze sind eine
+            OFFENE ENTSCHEIDUNG. Ohne Festlegung: gleiche Gewichte, keine Bestehensgrenze.
+          </p>
+          <ActionForm
+            action={saveFormula}
+            submitLabel="Formel speichern"
+            className="grid gap-3 sm:grid-cols-4"
+          >
+            <Field label="Gewicht Anwesenheit">
+              <input
+                name="wAttendance"
+                type="number"
+                min={0}
+                max={10}
+                required
+                defaultValue={formula.wAttendance}
+                className="input"
+              />
+            </Field>
+            <Field label="Gewicht Übungen">
+              <input
+                name="wExercises"
+                type="number"
+                min={0}
+                max={10}
+                required
+                defaultValue={formula.wExercises}
+                className="input"
+              />
+            </Field>
+            <Field label="Gewicht Mini-Test">
+              <input
+                name="wTest"
+                type="number"
+                min={0}
+                max={10}
+                required
+                defaultValue={formula.wTest}
+                className="input"
+              />
+            </Field>
+            <Field label="Bestanden ab (%)" hint="leer = nicht festgelegt">
+              <input
+                name="passPercent"
+                type="number"
+                min={0}
+                max={100}
+                defaultValue={formula.passPercent ?? ''}
+                className="input"
+              />
+            </Field>
+          </ActionForm>
+        </section>
+      )}
+      {isAdmin && (
+        <section className="card mb-4">
+          <h2 className="mb-1 text-xl font-bold">Daten aus der alten Version übernehmen</h2>
+          <p className="mb-3 text-sm text-muted">
+            Schüler, Dokumentation, Fehler, Hausaufgaben und Lehrbuch-Notizen. Die alte Version
+            kannte keine Gruppen: pro Level entsteht eine Gruppe „Übernommen …“, die danach
+            umbenannt oder aufgeteilt werden kann. Erst prüfen, dann importieren.
+          </p>
+          <ImportForm />
         </section>
       )}
       <section className="card">

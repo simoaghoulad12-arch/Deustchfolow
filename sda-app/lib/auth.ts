@@ -1,13 +1,17 @@
 import 'server-only';
+import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
+import { isMemberRole, type MemberRole } from './roles';
 import { createClient } from './supabase/server';
-import { isAppRole, type AppRole } from './roles';
+
+/** Nur Entwicklung/Tests: Rolle des Testzugangs per Cookie umschalten (z. B. auf 'student'). */
+export const DEV_ROLE_COOKIE = 'sda-dev-role';
 
 export interface CurrentMember {
   id: string;
   email: string;
   fullName: string;
-  role: AppRole;
+  role: MemberRole;
 }
 
 /**
@@ -16,9 +20,23 @@ export interface CurrentMember {
  */
 export function devMember(): CurrentMember | null {
   if (process.env.NODE_ENV !== 'development') return null;
-  const role = process.env.SDA_DEV_MEMBER_ROLE;
-  if (!isAppRole(role)) return null;
-  return { id: 'dev', email: 'entwicklung@localhost', fullName: 'Entwicklung (Testzugang)', role };
+  const base = process.env.SDA_DEV_MEMBER_ROLE;
+  if (!isMemberRole(base)) return null;
+  let role: MemberRole = base;
+  try {
+    const override = cookies().get(DEV_ROLE_COOKIE)?.value;
+    if (isMemberRole(override)) role = override;
+  } catch {
+    /* außerhalb einer Anfrage (z. B. Build) */
+  }
+  return role === 'student'
+    ? {
+        id: 'dev-student',
+        email: 'schueler@localhost',
+        fullName: 'Testschüler (Entwicklung)',
+        role,
+      }
+    : { id: 'dev', email: 'entwicklung@localhost', fullName: 'Entwicklung (Testzugang)', role };
 }
 
 /** Angemeldete Person mit Profil, sonst null (nicht angemeldet oder nicht eingeladen). */
@@ -39,15 +57,28 @@ export async function getCurrentMember(): Promise<CurrentMember | null> {
   return { id: data.id, email: data.email, fullName: data.full_name, role: data.role };
 }
 
-export async function requireMember(): Promise<CurrentMember> {
+export type StaffMember = CurrentMember & { role: Exclude<MemberRole, 'student'> };
+export type StudentMember = CurrentMember & { role: 'student' };
+
+/** Team-Bereich: Leitung, Lehrkräfte, Muttersprachler/innen. Schüler werden zur Lern-App geleitet. */
+export async function requireMember(): Promise<StaffMember> {
   const member = await getCurrentMember();
   // Angemeldet, aber ohne Profil = nicht eingeladen: kein Zugang.
   if (!member) redirect('/login?fehler=zugang');
-  return member;
+  if (member.role === 'student') redirect('/lernen');
+  return member as StaffMember;
 }
 
-export async function requireAdmin(): Promise<CurrentMember> {
+export async function requireAdmin(): Promise<StaffMember> {
   const member = await requireMember();
   if (member.role !== 'admin') redirect('/');
   return member;
+}
+
+/** Lern-App: nur Schüler. Das Team landet im Team-Bereich. */
+export async function requireStudent(): Promise<StudentMember> {
+  const member = await getCurrentMember();
+  if (!member) redirect('/login?fehler=zugang');
+  if (member.role !== 'student') redirect('/');
+  return member as StudentMember;
 }

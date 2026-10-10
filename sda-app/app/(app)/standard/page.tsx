@@ -1,11 +1,14 @@
-import { Placeholder } from '@/components/Placeholder';
+import { PageHeader } from '@/components/PageHeader';
+import { StatementSections } from '@/components/StatementSections';
+import { getPrefs } from '@/lib/prefs';
 
-export default function Page() {
+/** 01 Academy Standard (legacy: pageStd) – alle Regeln mit Kennzeichnung. */
+export default function StandardPage() {
+  const { lang } = getPrefs();
   return (
-    <Placeholder
-      page="std"
-      phase={6}
-      plan="Academy Standard mit allen gekennzeichneten Regeln aus der bestehenden Version."
-    />
+    <>
+      <PageHeader page="std" lang={lang} />
+      <StatementSections page="std" lang={lang} />
+    </>
   );
 }

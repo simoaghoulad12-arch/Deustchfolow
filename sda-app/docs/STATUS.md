@@ -164,5 +164,181 @@ Checklisten-IDs sind identisch mit legacy (z. B. `A1.1.Mo#3`), damit Fortschritt
   Zugriffsregeln dafür sind bereits getestet (Phase 2).
 - „Meine Rolle im Team-Plan“ gilt pro Gerät. Ob die Leitung das fest pro Person zuordnen soll, kann später entschieden werden.
 
-## Nächste Phase
-Phase 5 – Lehren, Dokumentieren, Messen (`docs/PROMPTS.md`).
+## Phase 5 – Lehren, Dokumentieren, Messen ✅
+
+**Was geändert**
+- Datenzugriff: `lib/data/repo.ts` (Supabase mit RLS; nur mit Testzugang in der Entwicklung im Arbeitsspeicher,
+  inkl. „on delete cascade“ wie in der Datenbank), Zeilentypen in `lib/data/types.ts`, Prüfung aller Formulare in
+  `lib/validation.ts`, Logik in `lib/school.ts`.
+- **Gruppen** (`/fortschritt/gruppen`, nur Leitung): anlegen, bearbeiten, löschen mit Bestätigung, Startdatum,
+  Team der Gruppe (Grundlage für „nur eigene Gruppen“).
+- **Schüler** (`/fortschritt`): anlegen und löschen (Leitung), bearbeiten (Team), Fertigkeiten 1–5, Stärken,
+  Schwächen, nächste Lernziele.
+- **Teacher Playbook „Heute“** (`/playbook`): pro Gruppe die Stunde laut Startdatum (legacy: lessonAt), sonst die
+  nächste offene Stunde; Schüler, zuletzt gemacht, offene Hausaufgaben, Probleme und offene Fehler, Lernziel heute,
+  gekennzeichnete Regeln „Während der Stunde“.
+- **Stunde dokumentieren** (`/dokumentation/neu`, Button in jeder Stunde und im Playbook): vorausgefüllt aus dem
+  Skript (legacy: docPrefill), Anwesenheit per Häkchen (nicht angehakt = abwesend), Option „Hausaufgabe für alle
+  Anwesenden anlegen“, Material wird als Lehrbuch-Notiz der Stunde übernommen. Liste und Bearbeiten.
+- **Student Progress**: Anwesenheit aus der Dokumentation, Hausaufgaben-Status, offene Fehler, Fertigkeiten als
+  Balken, letzte und nächste Stunde.
+- **Error Tracking** (`/fehler`): Kategorien und Status wie im Bauplan, Filter, Status direkt in der Liste änderbar.
+- **Hausaufgaben** (`/hausaufgaben`): Ziel, Deadline, Status, Feedback; auch für alle Schüler einer Gruppe.
+- **Dashboard**: Lernweg A1 → A2 → B1 → B2 → Deutschland mit Fortschritt, Kennzahlen aus den Daten.
+- Barrierefreiheit: Formularbeschriftungen über for/id statt Verschachtelung (sonst liest ein Screenreader alle
+  Optionen einer Auswahlliste mit vor); Formulare zeigen Fehlermeldungen als Hinweis.
+- „Heute“ wird in der Zeitzone Europe/Berlin bestimmt (nur kurz vor Mitternacht relevant; die Uhrzeiten der
+  Stunden sind eine OFFENE ENTSCHEIDUNG).
+
+**Was getestet**
+- Vitest 74 Tests, neu: Stunde von heute (lessonAt) und Vorausfüllung der Dokumentation identisch mit legacy,
+  Anwesenheit, Hausaufgaben-Kennzahlen, alle Formularprüfungen.
+- Playwright 32 Tests (je Handy 390 px und Desktop), neu: kompletter Ablauf Gruppe → Schüler → Playbook mit der
+  Stunde von heute → Stunde dokumentieren (vorausgefüllt, Abwesenheit, Hausaufgabe für Anwesende) → Hausaufgabe
+  und Fehler bearbeiten und filtern → Fortschritt (Anwesenheit 100 % / 0 %, Fertigkeiten) → Schüler löschen;
+  Dokumentieren aus der Stunden-Ansicht; Dashboard.
+- typecheck, lint, build.
+
+**Was offen**
+- Speichern in Supabase erst mit einem Supabase-Projekt testbar (Zugriffsregeln sind getestet).
+- Wer Schülerdaten ändern darf, bleibt OFFENE ENTSCHEIDUNG (vorläufige Regel siehe Phase 2).
+
+## Phase 6 – Qualität, Deutschland, Material, Suche ✅
+
+**Was geändert**
+- **Quality Control** (`/qualitaet`): Kennzahlen (Schüler, Ø Anwesenheit, Hausaufgaben erledigt, Fehler offen /
+  verbessert, Dokumentationen, davon letzte 7 Tage) und Listen (niedrigste Anwesenheit, meiste offene Fehler, am
+  längsten ohne Dokumentation). Warnschwellen sind eine OFFENE ENTSCHEIDUNG: ohne Festlegung keine Warnungen; nur
+  die Leitung kann sie setzen (`app_settings.qc_thresholds`). Bestehende Kontrollpunkte mit Kennzeichnung.
+- **Academy Standard, Germany Preparation, Materialien, Onboarding**: Regeln und Hinweise direkt aus den
+  gekennzeichneten Aussagen der bestehenden Version (`StatementSections`); Germany Preparation mit Links auf die
+  Stunden; Materialien mit der Tabelle aller Lehrbuch-Einträge; Onboarding mit Checkliste zum Abhaken.
+- **Betrieb & Plattformen**: Abläufe (Einrichtung, Generalprobe, Probestunde mit Vorlese-Skript),
+  Online-Profi-Leitfaden (Plattformen, Standards, 18 Aktivitäten mit Niveau-Filter, Wochenroutine des Teams),
+  WhatsApp-Vorlagen mit Kopier-Button, Notfallplan, Zeitunterschied, bisheriger Sheets-Plan.
+- Extraktion ergänzt: Online-Profi-Leitfaden als Seitentext und die Wochenroutine (`weeklyRoutine.json`) – sie
+  hatte in legacy keine eigene Daten-Variable. Ein Test prüft, dass alle fest im Seiten-Code stehenden Texte
+  wörtlich aus legacy stammen.
+- **Offene Entscheidungen** aus der Tabelle `decisions`: die Leitung trägt Entscheidung, Status und Datum ein;
+  „entschieden“ braucht einen Text. Dashboard zählt die noch offenen.
+- **Suche** über Stunden, Module, Lernziele, Aktivitäten, Vorlagen, Schüler und Dokumentationen, mit Filter nach
+  Level und Bereich; Groß/klein und Akzente egal.
+- Formularfelder haben eindeutige IDs (mehrere gleiche Formulare auf einer Seite).
+
+**Was getestet**
+- Vitest 91 Tests, neu: Suche (Filter, Schüler, Dokumentationen), Kennzahlen und Warnschwellen, feste Texte aus legacy.
+- Playwright 44 Tests (je 390 px und Desktop), neu: Standard, Deutschland, Materialien, Onboarding, Betrieb inkl.
+  Kopieren einer Vorlage, Probestunde, Entscheidung eintragen und zurücksetzen, Warnschwellen, Suche mit Filtern.
+- typecheck, lint, build.
+
+## Phase 7 – Handy-App, Tests und Veröffentlichung ✅
+
+**Was geändert**
+- **PWA**: Manifest „Smart Deutsch Akademie“ (eigenständiges Fenster, Farben wie legacy), Icons 192/512, maskierbares
+  Icon, iPhone-Icon und App-Modus (Startbildschirm). Icons werden mit `scripts/make-icons.ts` erzeugt.
+  Service Worker bewusst minimal: speichert keine Seiten oder Daten (Schülerdaten), zeigt ohne Internet nur eine
+  Hinweisseite (`public/offline.html`).
+- **Barrierefreiheit**: automatische Prüfung (axe, WCAG 2.1 A/AA) von 18 Seiten in hell und dunkel, auf Handy und
+  Desktop. Gefundene Kontrastprobleme behoben: Gold im hellen Modus dunkler, Rot als Schriftfarbe im Dunkelmodus
+  heller, Knöpfe immer in kräftigem Rot mit weißer Schrift; Fortschrittstext erbt die Farbe des Hintergrunds.
+  Tastatur: „Zum Inhalt springen“ als erster Tab, Menü mit Enter/Escape, Fokus kehrt zurück.
+- **Geschwindigkeit**: höchstens 102 kB JavaScript beim ersten Laden einer Seite; Unterrichtsinhalte bleiben auf
+  dem Server.
+- **Import aus der alten Version** (Einstellungen, nur Leitung): Export-Text einfügen, „Prüfen“ zeigt, was übernommen
+  wird (mit Hinweisen zu übersprungenen Einträgen), dann „Importieren“. Pro Level eine Gruppe „Übernommen …“, weil
+  die alte Version keine Gruppen kannte; Lehrkraft-Namen (freier Text) bleiben im Feld „Probleme“ erhalten.
+- Anleitungen: `docs/DEPLOY.md` (GitHub, Vercel, Umgebungsvariablen, Supabase-URLs, eigene Domain) und
+  `docs/BACKUP.md` (automatische und eigene Sicherung, verschlüsselt aufbewahren, Wiederherstellen).
+- Neue Bibliothek: `@axe-core/playwright` (nur Tests) – automatische Barrierefreiheits-Prüfung.
+
+**Was getestet**
+- Vitest 96 Tests, neu: Import mit einem Export, den die alte Version selbst erzeugt.
+- Playwright 56 Tests (je 390 px und Desktop), neu: Barrierefreiheit hell/dunkel, PWA (Manifest, Icons, Offline,
+  iPhone), Login-Seite, Tastatur, Import über die Oberfläche. Die wichtigsten Abläufe (Stunde öffnen, Skript lesen,
+  Stunde dokumentieren, Fortschritt prüfen) sind seit Phase 4/5 abgedeckt.
+- typecheck, lint, build.
+
+**Was offen**
+- Login mit echten E-Mails ist erst mit einem Supabase-Projekt testbar (in den Tests: Testzugang).
+- Lighthouse-Messung auf dem echten Server nach dem Veröffentlichen.
+
+## Phase 8 – Lern-App für Schüler ✅
+
+**Was geändert**
+- Datenbank (`20261008090000_phase8_student_role.sql`, `20261008090100_phase8_learning.sql`): Rolle `student`,
+  Verknüpfung `students.profile_id` ↔ Login, neue Tabellen `exercise_attempts`, `test_results`, `submissions`.
+  **Wichtig:** `is_staff()` schließt Schüler jetzt ausdrücklich aus (vorher: jede Rolle). Schüler lesen nur eigene
+  Daten; Ergebnisse von Übungen und Tests schreibt nur der Server nach der Auswertung (Service-Role), damit niemand
+  Punkte fälschen kann; Hausaufgaben über die Funktion `submit_homework`; Anwesenheit über `my_attendance()` ohne
+  Einblick in die Dokumentation.
+- **Einladung** zur Lern-App durch Leitung oder Lehrkraft auf der Seite des Schülers (Magic Link per E-Mail).
+- **Lern-App** (`/lernen`, eigener Rahmen): „Mein Weg“ A1 → A2 → B1 → B2 → Prüfung bestanden mit Prozent pro Level,
+  Modul und gesamt; Module mit Lernzielen, Regeln (Kernpunkte), Beispielsätzen, Wortfeldern, Sprechthema und
+  Übungen mit automatischer Prüfung; Wochen-Mini-Test pro Modul (2 Fragen pro Grammatikstunde wie legacy);
+  Hausaufgaben mit Abgabe als Text, Status und Feedback; persönliche Fehlerliste mit Wiederholungsübung;
+  Fertigkeiten als Balken; Deutschland-Bereich aus `content/germany`.
+- Ein Schüler sieht nur sein Level und die darunter; Team-Seiten (Skripte, Notizen, Dokumentation) leiten zur Lern-App.
+- **Fortschritts-Formel** als PROPOSAL (`lib/learn.ts`, dokumentiert): Anwesenheit, Übungen, Mini-Test. Gewichtung
+  und Bestehensgrenze sind OFFENE ENTSCHEIDUNG und in den Einstellungen der Leitung einstellbar (Standard: gleiche
+  Gewichte, keine Bestehensgrenze).
+- Team sieht in der Lern-App-Karte des Schülers Mini-Tests, gelöste Übungen und Abgaben; Abgaben auch bei den Hausaufgaben.
+- Keine neuen Inhalte erfunden: B1/B2 haben noch keine Übungen, Wortlisten fehlen noch – die App sagt das
+  (siehe `docs/CONTENT-STATUS.md`).
+
+**Was getestet**
+- Vitest 112 Tests, neu: 8 Zugriffsregel-Tests für Schüler (nur eigene Daten, keine Team-Inhalte, nichts selbst
+  schreibbar, Abgabe nur eigener Hausaufgaben, Anwesenheit ohne Dokumentation, Team sieht nur eigene Gruppen) mit
+  Gegenprobe; Übungen, Mini-Test identisch mit legacy, Antwortprüfung, Fortschritts-Formel.
+- Playwright: Einladung → Mein Weg → Übung falsch/richtig → Mini-Test 8/8 → Hausaufgabe abgeben → Fehler wiederholen
+  → Team-Seiten gesperrt, B1 gesperrt → Team sieht Ergebnis und Abgabe; Barrierefreiheit der Lern-App hell/dunkel.
+
+## Phase 9 – Prüfungsvorbereitung bis B2 ✅
+
+**Was geändert**
+- Datenbank (`20261008120000_phase9_exams.sql`): `model_test_results` (Punkte pro Prüfungsteil Lesen, Hören,
+  Schreiben, Sprechen) und `exam_registrations` (Anbieter, Datum, Ort, Ergebnis offen/bestanden/nicht bestanden,
+  Notiz). Team trägt für sichtbare Schüler ein, Löschen nur Leitung, Schüler lesen nur eigene.
+- **Termine, Gebühren und Formate werden nicht eingetragen oder vorgegeben** – überall der Hinweis „beim
+  Prüfungsanbieter prüfen“.
+- **Prüfungsbereich pro Level** (Lern-App `/lernen/pruefung`): Aufbau mit den vier Teilen, die Prüfungsstunden des
+  Kurses (z. B. „Modelltest Hören“ in B2), „Bereit für die Prüfung?“, eigene Anmeldungen.
+- **Eigene Modelltests** gibt es laut `docs/CONTENT-STATUS.md` noch nicht – nichts erfunden. Stattdessen trägt das
+  Team nach einem Modelltest die Punkte pro Teil ein; die App wertet pro Teil aus.
+- **„Bereit für die Prüfung?“**: letztes Ergebnis pro Teil, schwächster Teil, Empfehlung zum Wiederholen (Stunden des
+  Levels im passenden Bereich). Keine erfundene Bestehensgrenze.
+- **Ergebnis „bestanden“** setzt das Level in der Lern-App auf 100 % und schaltet das nächste Level frei. Den
+  Stufenwechsel selbst (Level des Schülers) entscheidet weiterhin das Team (wie in legacy).
+- **Übersicht** (`/pruefungen`, neu in der Navigation): Schüler pro Level, Anmeldungen, bestanden/nicht bestanden,
+  Prüfungsstunden im Kurs. Prüfungen pro Schüler auf der Seite des Schülers.
+- Gefunden und behoben: Formularfelder mit Umlaut im Namen (`score-Hören`) kamen beim Absenden nicht an – jetzt
+  ASCII-Namen; ein Test prüft alle Feldnamen der App.
+
+**Was getestet**
+- Vitest 121 Tests, neu: Zugriffsregeln Prüfungen (inkl. Punkte ≤ Maximum), „Bereit?“-Auswertung, Freischaltung,
+  Prüfungsstunden, ASCII-Feldnamen.
+- Playwright: Modelltest eintragen (mit Fehlerprüfung) → schwächster Teil → Anmeldung „bestanden“ → Übersicht →
+  Schüler: Level 100 %, nächstes Level offen, Prüfungsbereich mit Hinweis.
+
+## Probelauf mit echtem Supabase ✅ (2026-10-07)
+
+Die nächsten Schritte (Supabase einrichten, App starten, Daten importieren, Entscheidungen) als Probe durchgespielt:
+lokales Supabase (Postgres 15, Auth, REST, Mailpit) per `supabase start`, alle 6 Migrationen, erste Leitung genau wie in
+`docs/SUPABASE.md`, Produktions-Build der App ohne Testzugang. Automatisiert in `e2e-supabase/` (10 Schritte, siehe README).
+
+**Ergebnis:** alle 10 Schritte bestanden – Einladungen und Magic Link, keine offene Registrierung, Import, Gruppe
+mit Team, Lehrkraft sieht nur ihre Gruppe, Dokumentation, Entscheidung nur durch die Leitung, Schüler-Einladung,
+Lern-App mit Mini-Test und Abgabe, Team sieht Ergebnis, Abgabe und Anwesenheit.
+
+**Dabei gefunden und behoben:**
+- Handy: Das Menü lag in der Ebene der Kopfzeile; die untere Leiste verdeckte „Abmelden“ und die letzten Einträge.
+  Jetzt per Portal über allem; neuer Test prüft, dass die Knöpfe antippbar sind (schlägt ohne Fix fehl).
+- `supabase/config.toml`: `[auth.email] enable_signup = false` schaltete den E-Mail-Anbieter ganz ab – kein Magic
+  Link möglich. Jetzt `true`; offene Registrierung bleibt über `[auth] enable_signup = false` aus. Hinweis in
+  `docs/SUPABASE.md` ergänzt.
+- Login-Seite: Dieser Einrichtungsfehler wurde verschluckt (neutrale Meldung, aber keine E-Mail). Jetzt klare Meldung.
+- Lokal: E-Mail-Limit für Tests erhöht (`[auth.rate_limit] email_sent`).
+
+## Alle Phasen abgeschlossen
+Siehe `docs/ABSCHLUSSBERICHT.md`. Inhalte, die laut `docs/CONTENT-STATUS.md` noch fehlen (B1/B2-Skripte und Übungen,
+Wortlisten, Regel-Zusammenfassungen, Modelltests, Hörtexte), werden im gleichen Format ergänzt und vor der Freigabe
+geprüft (Status `entwurf` → `geprüft`).

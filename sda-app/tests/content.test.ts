@@ -116,6 +116,17 @@ describe('Online-Leitfaden und Betrieb', () => {
       for (const id of g.lessonIds) expect(ids.has(id), id).toBe(true);
   });
 
+  it('Wochenroutine des Teams aus dem Leitfaden (Mo bis So)', () => {
+    expect(content.weeklyRoutine.map((r) => r.tag)).toEqual([
+      'Montag',
+      'Di bis Do',
+      'Freitag',
+      'Samstag',
+      'Sonntag',
+    ]);
+    expect(content.pages.guide?.length).toBeGreaterThan(10);
+  });
+
   it('Lesson System hat 9 Schritte mit Minuten und Kennzeichnung', () => {
     expect(content.lessonSystem.map((s) => s.nr)).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9]);
     for (const s of content.lessonSystem) expect(s.labels.length).toBeGreaterThan(0);
@@ -267,4 +278,39 @@ describe('content/ entspricht legacy/index.html', () => {
       expect(ours, id).toBe(legacyText);
     }
   });
+});
+
+describe('Feste Texte in den Seiten stammen aus legacy', () => {
+  // Texte, die in der App direkt im Seiten-Code stehen, weil sie in legacy ohne eigene Daten-Variable vorkommen.
+  const fixed: [string, string][] = [
+    ['mat', 'Hueber: Menschen, Menschen hier, Schritte plus Neu, Miteinander!, Momente.'],
+    ['mat', 'Klett: Netzwerk neu (A1 bis B1).'],
+    [
+      'ops',
+      'Der Unterschied ändert sich im Jahr (Sommer-/Winterzeit in Deutschland, Ramadan in Marokko). Bei jeder Einladung beide Uhrzeiten schreiben.',
+    ],
+    ['ops', 'Platzhalter in [eckigen Klammern] vor dem Senden ersetzen.'],
+    [
+      'guide',
+      'Limits und Preise ändern sich. Vor dem Kauf immer auf der Seite des Anbieters prüfen.',
+    ],
+    [
+      'de',
+      'Bestehende Stunden mit direktem Bezug zum Leben in Deutschland, neu nach Themen gruppiert. Ein Tipp öffnet die Stunde mit Skript.',
+    ],
+    [
+      'lo',
+      'Messbare Ziele pro Modul, abgeleitet aus den bestehenden Themen, Sprechsituationen und Wortfeldern.',
+    ],
+    ['doc', 'Kurz nach jeder Stunde ausfüllen. Felder sind aus dem Skript vorausgefüllt.'],
+    [
+      'play',
+      'Dokumentiert werden: Thema, behandelte Inhalte, Lernfortschritt, wichtige Fehler, Hausaufgabe, nächstes Lernziel, besondere Probleme.',
+    ],
+  ];
+  for (const [page, text] of fixed) {
+    it(`${page}: ${text.slice(0, 40)} …`, () => {
+      expect(content.pages[page]?.join('\n')).toContain(text);
+    });
+  }
 });

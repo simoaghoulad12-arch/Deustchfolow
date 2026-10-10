@@ -21,6 +21,7 @@ export const ROUTES = {
   ops: '/betrieb',
   dec: '/entscheidungen',
   set: '/einstellungen',
+  exam: '/pruefungen',
 } as const;
 
 export type PageKey = keyof typeof ROUTES;
@@ -46,16 +47,26 @@ export interface NavGroup {
 
 const isPageKey = (k: string): k is PageKey => k in ROUTES;
 
-/** Navigation wie in legacy (V2): Gruppen und Beschriftungen DE + Darija. */
+/** Neue Seiten, die es in legacy noch nicht gab (pro Gruppe angehängt). */
+const NEW_ITEMS: Record<string, NavItem[]> = {
+  'Dokumentieren & Messen': [
+    { key: 'exam', href: ROUTES.exam, label: { de: 'Prüfungen', ar: 'الامتحانات' } },
+  ],
+};
+
+/** Navigation wie in legacy (V2): Gruppen und Beschriftungen DE + Darija, ergänzt um neue Seiten. */
 export const NAV: NavGroup[] = meta.nav.map((g) => ({
   label: { de: g.group, ar: GROUP_AR[g.group] ?? g.group },
-  items: g.items
-    .filter((i) => isPageKey(i.key))
-    .map((i) => ({
-      key: i.key as PageKey,
-      href: ROUTES[i.key as PageKey],
-      label: i.label,
-    })),
+  items: [
+    ...g.items
+      .filter((i) => isPageKey(i.key))
+      .map((i) => ({
+        key: i.key as PageKey,
+        href: ROUTES[i.key as PageKey],
+        label: i.label,
+      })),
+    ...(NEW_ITEMS[g.group] ?? []),
+  ],
 }));
 
 export const NAV_ITEMS: NavItem[] = NAV.flatMap((g) => g.items);

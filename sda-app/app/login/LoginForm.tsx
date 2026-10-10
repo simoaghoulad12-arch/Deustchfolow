@@ -1,5 +1,6 @@
 'use client';
 
+import { Field } from '@/components/forms/Field';
 import { useFormState, useFormStatus } from 'react-dom';
 import { sendMagicLink, type LoginState } from './actions';
 
@@ -19,8 +20,7 @@ export function LoginForm() {
   });
   return (
     <form action={action} className="space-y-4">
-      <label className="block">
-        <span className="mb-1 block font-medium">E-Mail</span>
+      <Field label="E-Mail">
         <input
           name="email"
           type="email"
@@ -29,7 +29,7 @@ export function LoginForm() {
           inputMode="email"
           className="input"
         />
-      </label>
+      </Field>
       <Submit />
       {state.message && (
         <p role="status" className={state.status === 'error' ? 'text-red' : 'text-muted'}>

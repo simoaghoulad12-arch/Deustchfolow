@@ -28,6 +28,7 @@ import speaking from './speaking.json';
 import standards from './standards.json';
 import statements from './statements.json';
 import templates from './templates.json';
+import weeklyRoutine from './weeklyRoutine.json';
 import type {
   Activity,
   Curriculum,
@@ -44,6 +45,7 @@ import type {
   Platform,
   ProbeSection,
   Readouts,
+  RoutineDay,
   SpecialChecklists,
   SpeakingDialogue,
   Standard,
@@ -80,6 +82,7 @@ export const content = {
   decisions: decisions as OpenDecision[],
   statements: statements as Statement[],
   lessonSystem: lessonSystem as LessonSystemStep[],
+  weeklyRoutine: weeklyRoutine as RoutineDay[],
   pages: pages as LegacyPages,
   meta: meta as Meta,
 };

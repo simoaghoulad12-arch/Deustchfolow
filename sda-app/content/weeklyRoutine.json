@@ -1,0 +1,22 @@
+[
+  {
+    "tag": "Montag",
+    "aufgabe": "30 Min. Wochenplanung: Skripte lesen, Material hochladen, Rollen klären."
+  },
+  {
+    "tag": "Di bis Do",
+    "aufgabe": "Stunde, danach 10 Min. Debrief. Assistenz korrigiert die Hausaufgaben in 24 Std."
+  },
+  {
+    "tag": "Freitag",
+    "aufgabe": "Sprechstunde, danach 15 Min. Wochen-Review mit Zahlen und Fehlerliste."
+  },
+  {
+    "tag": "Samstag",
+    "aufgabe": "Sprechstunde, Fehlerliste aktualisieren."
+  },
+  {
+    "tag": "Sonntag",
+    "aufgabe": "Mini-Test versenden, Anfragen beantworten."
+  }
+]
