@@ -17,6 +17,8 @@ import {
   SimulationCategory,
   CareerModuleType,
 } from '@prisma/client';
+import { seedContent } from './content/seed-content';
+import { seedDemo } from './content/seed-demo';
 
 if (process.env.NODE_ENV === 'production') {
   throw new Error('Refusing to run development seed data against a production environment.');
@@ -264,7 +266,7 @@ async function main() {
   for (const entry of vocabulary) {
     const normalizedWord = entry.word.trim().toLowerCase();
     await prisma.vocabulary.upsert({
-      where: { normalizedWord_level: { normalizedWord, level: 'A1' } },
+      where: { languageCode_normalizedWord_level: { languageCode: 'de', normalizedWord, level: 'A1' } },
       update: {},
       create: {
         word: entry.word,
@@ -572,7 +574,14 @@ async function upsertTextExercise(input: {
   });
 }
 
-main()
+async function run() {
+  await main();
+  console.log('Seeding immersion content…');
+  await seedContent(prisma);
+  await seedDemo(prisma);
+}
+
+run()
   .catch((error) => {
     console.error(error);
     process.exit(1);

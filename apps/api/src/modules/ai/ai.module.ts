@@ -4,6 +4,7 @@ import { EntitlementsModule } from '../entitlements/entitlements.module';
 import { LearningModule } from '../learning/learning.module';
 import { ClaudeProvider } from './providers/claude.provider';
 import { AiProviderFactory } from './providers/ai-provider.factory';
+import { MockAiProvider } from './providers/mock/mock-ai.provider';
 import { AiObservabilityLogger } from './logging/ai-observability.logger';
 import { AiContextBuilder } from './context/ai-context-builder.service';
 import { PromptManager } from './prompts/prompt-manager.service';
@@ -36,6 +37,7 @@ import { AiUsageController } from './controllers/usage.controller';
   controllers: [TutorController, WritingController, AiUsageController],
   providers: [
     ClaudeProvider,
+    MockAiProvider,
     AiProviderFactory,
     AiObservabilityLogger,
     AiContextBuilder,
@@ -47,6 +49,6 @@ import { AiUsageController } from './controllers/usage.controller';
     ExerciseGenerationService,
     TutorService,
   ],
-  exports: [RecommendationService],
+  exports: [RecommendationService, AiService, AiProviderFactory, AiUsageService],
 })
 export class AiModule {}

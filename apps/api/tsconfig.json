@@ -2,7 +2,10 @@
   "extends": "@deutschflow/config/nestjs.json",
   "compilerOptions": {
     "baseUrl": "./",
-    "outDir": "./dist"
+    "outDir": "./dist",
+    // An application, not a library: no consumer reads its .d.ts files,
+    // and declaration emit chokes on inferred Prisma JSON payload types.
+    "declaration": false
   },
   "include": ["src/**/*.ts", "test/**/*.ts", "scripts/**/*.ts"],
   "exclude": ["node_modules", "dist"]

@@ -2,9 +2,9 @@ import type { Metadata, Viewport } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'DeutschFlow – Deutsch lernen. Deutsch sprechen.',
+  title: 'DeutschFlow – Learn a language. Live it.',
   description:
-    'DeutschFlow begleitet dich von A1 bis C1: strukturiertes Lernen, echte Konversation und Tutor-Stunden auf dem Weg nach Deutschland.',
+    'Learn German, English, Spanish, French or Italian by living it: real-life missions with AI characters, natural corrections and a plan that adapts to you.',
 };
 
 export const viewport: Viewport = {
@@ -14,7 +14,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="de">
+    <html lang="en">
       <body className="min-h-screen font-sans antialiased">{children}</body>
     </html>
   );

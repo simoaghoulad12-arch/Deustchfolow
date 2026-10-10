@@ -16,6 +16,7 @@ import { GermanyModule } from './modules/germany/germany.module';
 import { SimulationsModule } from './modules/simulations/simulations.module';
 import { CareerModule } from './modules/career/career.module';
 import { PaymentsModule } from './modules/payments/payments.module';
+import { ImmersionModule } from './modules/immersion/immersion.module';
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { PaymentsModule } from './modules/payments/payments.module';
     SimulationsModule,
     CareerModule,
     PaymentsModule,
+    ImmersionModule,
   ],
 })
 export class AppModule {}

@@ -111,6 +111,8 @@ export type WritingCorrectionResponse = z.infer<typeof WritingCorrectionResponse
 export interface AiUsageLimits {
   tutorMessagesPerDay: number;
   writingCorrectionsPerDay: number;
+  /** Mission/practice turns against a real (non-mock) provider. */
+  immersionTurnsPerDay: number;
   maxInputChars: number;
 }
 
@@ -124,18 +126,21 @@ export const AI_USAGE_LIMITS: Record<SubscriptionPlan, AiUsageLimits> = {
   [SubscriptionPlan.FREE]: {
     tutorMessagesPerDay: 10,
     writingCorrectionsPerDay: 3,
+    immersionTurnsPerDay: 60,
     maxInputChars: 500,
   },
   [SubscriptionPlan.PREMIUM]: {
     tutorMessagesPerDay: 100,
     writingCorrectionsPerDay: 30,
+    immersionTurnsPerDay: 600,
     maxInputChars: 2000,
   },
   [SubscriptionPlan.PRO]: {
     tutorMessagesPerDay: 300,
     writingCorrectionsPerDay: 100,
+    immersionTurnsPerDay: 2000,
     maxInputChars: 4000,
   },
 };
 
-export type AiUsageFeature = 'tutor' | 'writing_correction';
+export type AiUsageFeature = 'tutor' | 'writing_correction' | 'immersion';

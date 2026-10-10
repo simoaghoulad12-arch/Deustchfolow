@@ -14,7 +14,8 @@
     "typecheck": "tsc --noEmit",
     "lint": "eslint src --ext .ts",
     "seed": "prisma db seed",
-    "clean": "rm -rf dist"
+    "clean": "rm -rf dist",
+    "seed:content": "ts-node --transpile-only --compiler-options {\\\"module\\\":\\\"CommonJS\\\"} prisma/content/run-content-seed.ts"
   },
   "prisma": {
     "seed": "ts-node --transpile-only --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"

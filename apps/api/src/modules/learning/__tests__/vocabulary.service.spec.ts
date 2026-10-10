@@ -1,5 +1,9 @@
 import { NotFoundException } from '@nestjs/common';
-import { DUE_QUEUE_LIMIT, NEW_WORDS_PER_SESSION, VocabularyService } from '../vocabulary/vocabulary.service';
+import {
+  DUE_QUEUE_LIMIT,
+  NEW_WORDS_PER_SESSION,
+  VocabularyService,
+} from '../vocabulary/vocabulary.service';
 import type { PrismaService } from '../../../common/prisma/prisma.service';
 
 const NOW = new Date('2026-10-05T10:00:00.000Z');
@@ -25,7 +29,13 @@ function buildPrismaMock() {
   } as unknown as PrismaService;
 }
 
-const card = (id: string) => ({ id, word: id, level: 'A1', partOfSpeech: null, exampleSentence: null });
+const card = (id: string) => ({
+  id,
+  word: id,
+  level: 'A1',
+  partOfSpeech: null,
+  exampleSentence: null,
+});
 
 describe('VocabularyService', () => {
   it('can save a vocabulary word', async () => {
@@ -36,7 +46,11 @@ describe('VocabularyService', () => {
 
     expect(prisma.client.vocabulary.create).toHaveBeenCalledWith(
       expect.objectContaining({
-        data: expect.objectContaining({ word: 'das Haus', normalizedWord: 'das haus', level: 'A1' }),
+        data: expect.objectContaining({
+          word: 'das Haus',
+          normalizedWord: 'das haus',
+          level: 'A1',
+        }),
       }),
     );
   });
@@ -51,7 +65,11 @@ describe('VocabularyService', () => {
       expect(prisma.client.userVocabulary.findMany).toHaveBeenCalledTimes(1);
       expect(prisma.client.userVocabulary.findMany).toHaveBeenCalledWith(
         expect.objectContaining({
-          where: { userId: 'user-1', OR: [{ nextReviewAt: { lte: NOW } }, { nextReviewAt: null }] },
+          where: {
+            userId: 'user-1',
+            vocabulary: { languageCode: 'de' },
+            OR: [{ nextReviewAt: { lte: NOW } }, { nextReviewAt: null }],
+          },
           take: DUE_QUEUE_LIMIT,
         }),
       );
@@ -69,7 +87,7 @@ describe('VocabularyService', () => {
 
       expect(prisma.client.vocabulary.findMany).toHaveBeenCalledWith(
         expect.objectContaining({
-          where: { level: 'A1', userEntries: { none: { userId: 'user-1' } } },
+          where: { languageCode: 'de', level: 'A1', userEntries: { none: { userId: 'user-1' } } },
           take: NEW_WORDS_PER_SESSION,
         }),
       );
@@ -83,7 +101,10 @@ describe('VocabularyService', () => {
     it('skips new words when the due queue is already full', async () => {
       const prisma = buildPrismaMock();
       (prisma.client.userVocabulary.findMany as jest.Mock).mockResolvedValue(
-        Array.from({ length: DUE_QUEUE_LIMIT }, (_, i) => ({ status: 'LEARNING', vocabulary: card(`v-${i}`) })),
+        Array.from({ length: DUE_QUEUE_LIMIT }, (_, i) => ({
+          status: 'LEARNING',
+          vocabulary: card(`v-${i}`),
+        })),
       );
       const service = new VocabularyService(prisma);
 
@@ -101,7 +122,12 @@ describe('VocabularyService', () => {
       const result = await service.review('user-1', 'vocab-1', ' House ', NOW);
 
       expect(result).toEqual(
-        expect.objectContaining({ isCorrect: true, correctTranslation: 'house', status: 'LEARNING', intervalDays: 1 }),
+        expect.objectContaining({
+          isCorrect: true,
+          correctTranslation: 'house',
+          status: 'LEARNING',
+          intervalDays: 1,
+        }),
       );
       expect(prisma.client.userVocabulary.upsert).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -125,7 +151,12 @@ describe('VocabularyService', () => {
 
       expect(prisma.client.userVocabulary.upsert).toHaveBeenCalledWith(
         expect.objectContaining({
-          update: expect.objectContaining({ status: 'MASTERED', intervalDays: 30, correctCount: 5, incorrectCount: 1 }),
+          update: expect.objectContaining({
+            status: 'MASTERED',
+            intervalDays: 30,
+            correctCount: 5,
+            incorrectCount: 1,
+          }),
         }),
       );
     });
@@ -145,7 +176,11 @@ describe('VocabularyService', () => {
       expect(result.isCorrect).toBe(false);
       expect(prisma.client.userVocabulary.upsert).toHaveBeenCalledWith(
         expect.objectContaining({
-          update: expect.objectContaining({ status: 'LEARNING', intervalDays: 1, incorrectCount: 1 }),
+          update: expect.objectContaining({
+            status: 'LEARNING',
+            intervalDays: 1,
+            incorrectCount: 1,
+          }),
         }),
       );
     });
@@ -155,7 +190,9 @@ describe('VocabularyService', () => {
       (prisma.client.vocabulary.findUnique as jest.Mock).mockResolvedValue(null);
       const service = new VocabularyService(prisma);
 
-      await expect(service.review('user-1', 'missing', 'x', NOW)).rejects.toBeInstanceOf(NotFoundException);
+      await expect(service.review('user-1', 'missing', 'x', NOW)).rejects.toBeInstanceOf(
+        NotFoundException,
+      );
       expect(prisma.client.userVocabulary.upsert).not.toHaveBeenCalled();
     });
   });
@@ -167,7 +204,7 @@ describe('VocabularyService', () => {
     await service.list({ level: 'A1' });
 
     expect(prisma.client.vocabulary.findMany).toHaveBeenCalledWith(
-      expect.objectContaining({ where: { level: 'A1' }, take: 50, skip: 0 }),
+      expect.objectContaining({ where: { languageCode: 'de', level: 'A1' }, take: 50, skip: 0 }),
     );
   });
 
@@ -184,8 +221,14 @@ describe('VocabularyService', () => {
     const summary = await service.getSummary('user-1', NOW);
 
     expect(prisma.client.userVocabulary.groupBy).toHaveBeenCalledWith(
-      expect.objectContaining({ where: { userId: 'user-1' } }),
+      expect.objectContaining({ where: { userId: 'user-1', vocabulary: { languageCode: 'de' } } }),
     );
-    expect(summary).toEqual({ dueCount: 3, newAvailable: 5, sessionSize: 8, learningCount: 4, masteredCount: 2 });
+    expect(summary).toEqual({
+      dueCount: 3,
+      newAvailable: 5,
+      sessionSize: 8,
+      learningCount: 4,
+      masteredCount: 2,
+    });
   });
 });
