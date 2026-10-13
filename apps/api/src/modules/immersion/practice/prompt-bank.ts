@@ -105,22 +105,27 @@ export const SPEAKING_TOPICS: Record<CEFRLevel, string[]> = {
   C1: ['Discuss the ethical limits of artificial intelligence.'],
 };
 
-export const EMOTION_TONES = ['polite', 'friendly', 'formal', 'casual', 'firm', 'apologetic', 'enthusiastic', 'sympathetic'] as const;
+export const EMOTION_TONES = ['friendly', 'formal', 'professional', 'angry', 'uncertain', 'enthusiastic', 'sarcastic', 'diplomatic'] as const;
 export type EmotionTone = (typeof EMOTION_TONES)[number];
 
-export const EMOTION_SCENARIOS: { situation: string; tone: EmotionTone; level: CEFRLevel }[] = [
-  { situation: 'Your neighbour plays loud music at midnight. Ask them to turn it down.', tone: 'polite', level: 'A1' },
-  { situation: 'A friend got a new job. Congratulate them.', tone: 'enthusiastic', level: 'A1' },
-  { situation: 'You bumped into someone on the street.', tone: 'apologetic', level: 'A1' },
-  { situation: 'Greet a new colleague on their first day.', tone: 'friendly', level: 'A1' },
-  { situation: 'Your colleague\'s cat is ill. Respond to their message.', tone: 'sympathetic', level: 'A2' },
-  { situation: 'A shop refuses to take back a broken product. Insist on a refund.', tone: 'firm', level: 'A2' },
-  { situation: 'Write to your landlord that the heating is broken.', tone: 'formal', level: 'A2' },
-  { situation: 'Invite a friend to a party this weekend.', tone: 'casual', level: 'A2' },
-  { situation: 'You are late for an important meeting. Apologise to your manager.', tone: 'apologetic', level: 'B1' },
-  { situation: 'Turn down a job offer without burning bridges.', tone: 'polite', level: 'B1' },
-  { situation: 'A supplier delivered the wrong goods for the third time.', tone: 'firm', level: 'B2' },
-  { situation: 'Open a formal presentation in front of the management board.', tone: 'formal', level: 'B2' },
+/**
+ * Emotion & communication mode (spec section 25): the learner says the same
+ * message in several tones, and the feedback explains how each tone changes
+ * what a listener perceives.
+ */
+export const EMOTION_SCENARIOS: { message: string; tones: EmotionTone[]; level: CEFRLevel }[] = [
+  { message: 'Tell your flatmate that the kitchen is dirty again.', tones: ['friendly', 'angry', 'sarcastic'], level: 'A1' },
+  { message: 'Say that you cannot come to the party on Saturday.', tones: ['friendly', 'formal', 'uncertain'], level: 'A1' },
+  { message: 'Tell a friend that you got the job.', tones: ['enthusiastic', 'uncertain', 'friendly'], level: 'A1' },
+  { message: 'Tell the waiter that your soup is cold.', tones: ['friendly', 'angry', 'diplomatic'], level: 'A2' },
+  { message: 'Ask a colleague to move the meeting to Friday.', tones: ['professional', 'friendly', 'uncertain'], level: 'A2' },
+  { message: 'Tell your landlord that the heating is still broken.', tones: ['formal', 'angry', 'sarcastic'], level: 'A2' },
+  { message: 'Tell your team that the deadline has moved forward by a week.', tones: ['professional', 'enthusiastic', 'diplomatic'], level: 'B1' },
+  { message: 'Disagree with a friend who wants to spend the holiday at the beach.', tones: ['diplomatic', 'sarcastic', 'enthusiastic'], level: 'B1' },
+  { message: 'Reply to a customer whose order arrived late.', tones: ['formal', 'professional', 'diplomatic'], level: 'B1' },
+  { message: 'Tell a supplier that the wrong goods were delivered for the third time.', tones: ['professional', 'angry', 'diplomatic'], level: 'B2' },
+  { message: 'React to your manager\'s proposal to cut the project budget.', tones: ['diplomatic', 'uncertain', 'sarcastic'], level: 'B2' },
+  { message: 'Announce a new company policy on remote work.', tones: ['formal', 'enthusiastic', 'professional'], level: 'B2' },
 ];
 
 export function pickForLevel<T>(byLevel: Partial<Record<CEFRLevel, T[]>>, level: CEFRLevel): T[] {

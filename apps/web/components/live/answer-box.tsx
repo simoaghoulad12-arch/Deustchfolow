@@ -9,6 +9,8 @@ export interface AnswerMeta {
   spoken: boolean;
   speechConfidence?: number;
   responseMs: number;
+  /** Time until the learner first typed or started recording. */
+  firstInputMs?: number;
 }
 
 /**
@@ -26,6 +28,8 @@ export function AnswerBox({
   autoFocus = false,
   resetKey,
   minLength = 1,
+  variant = 'default',
+  onFirstInput,
 }: {
   languageCode: string;
   onSubmit: (text: string, meta: AnswerMeta) => void | Promise<void>;
@@ -36,10 +40,14 @@ export function AnswerBox({
   autoFocus?: boolean;
   resetKey?: string | number;
   minLength?: number;
+  /** "speak": a large microphone button with "Speak naturally." (Speaking mode). */
+  variant?: 'default' | 'speak';
+  onFirstInput?: () => void;
 }) {
   const [text, setText] = useState('');
   const [spoken, setSpoken] = useState(false);
   const startedAt = useRef(Date.now());
+  const firstInputAt = useRef<number | null>(null);
   const speech = useSpeechRecognition(languageCode);
   const textarea = useRef<HTMLTextAreaElement>(null);
 
@@ -47,6 +55,7 @@ export function AnswerBox({
     setText('');
     setSpoken(false);
     startedAt.current = Date.now();
+    firstInputAt.current = null;
     if (autoFocus) textarea.current?.focus();
   }, [resetKey, autoFocus]);
 
@@ -57,6 +66,18 @@ export function AnswerBox({
     }
   }, [speech.transcript]);
 
+  const markInput = () => {
+    if (firstInputAt.current !== null) return;
+    firstInputAt.current = Date.now();
+    onFirstInput?.();
+  };
+
+  const toggleMic = () => {
+    if (speech.listening) return speech.stop();
+    markInput();
+    speech.start();
+  };
+
   const submit = async () => {
     const value = text.trim();
     if (value.length < minLength || busy) return;
@@ -64,6 +85,7 @@ export function AnswerBox({
       spoken,
       speechConfidence: spoken ? speech.confidence : undefined,
       responseMs: Date.now() - startedAt.current,
+      firstInputMs: firstInputAt.current !== null ? firstInputAt.current - startedAt.current : undefined,
     });
   };
 
@@ -75,6 +97,33 @@ export function AnswerBox({
         void submit();
       }}
     >
+      {variant === 'speak' && (
+        <div className="mb-4 flex flex-col items-center gap-3 text-center">
+          <p className="text-lg font-semibold text-slate-800">Speak naturally.</p>
+          {speech.supported ? (
+            <>
+              <button
+                type="button"
+                onClick={toggleMic}
+                disabled={busy}
+                aria-pressed={speech.listening}
+                aria-label={speech.listening ? 'Stop recording' : 'Start recording your answer'}
+                className={cn(
+                  'flex h-28 w-28 items-center justify-center rounded-full text-5xl shadow-lg transition focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-indigo-200 sm:h-32 sm:w-32',
+                  speech.listening ? 'animate-pulse bg-rose-500 text-white shadow-rose-200' : 'bg-gradient-to-br from-indigo-500 to-violet-600 text-white shadow-indigo-200 hover:scale-105',
+                )}
+              >
+                <span aria-hidden>🎙️</span>
+              </button>
+              <p className="text-sm text-muted-foreground" aria-live="polite">
+                {speech.listening ? 'Listening… tap again when you are done.' : text ? 'Check the transcript, then submit.' : 'Tap the microphone and answer out loud.'}
+              </p>
+            </>
+          ) : (
+            <p className="text-sm text-muted-foreground">Voice input is not available in this browser. Type your answer below instead.</p>
+          )}
+        </div>
+      )}
       <div
         className={cn(
           'flex flex-wrap items-end gap-2 rounded-2xl border border-border bg-white p-2 shadow-sm focus-within:border-indigo-300 focus-within:ring-2 focus-within:ring-indigo-100',
@@ -91,6 +140,7 @@ export function AnswerBox({
           rows={rows}
           disabled={busy}
           onChange={(e) => {
+            markInput();
             setText(e.target.value);
             if (!e.target.value) setSpoken(false);
           }}
@@ -106,10 +156,10 @@ export function AnswerBox({
           maxLength={2000}
         />
         <div className="ml-auto flex shrink-0 gap-2">
-          {speech.supported && (
+          {speech.supported && variant === 'default' && (
             <button
               type="button"
-              onClick={() => (speech.listening ? speech.stop() : speech.start())}
+              onClick={toggleMic}
               disabled={busy}
               aria-pressed={speech.listening}
               aria-label={speech.listening ? 'Stop recording' : 'Answer with your voice'}

@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { MISTAKE_CATEGORY_LABELS } from '@deutschflow/types';
 import { getSession } from '@/lib/auth/session';
 import { liveGet, type Home } from '@/lib/api/live';
-import { Badge, ButtonLink, Card, ErrorState, ProgressBar, SectionTitle, Stat } from '@/components/live/ui';
+import { AiFallbackNotice, Badge, ButtonLink, Card, ErrorState, ProgressBar, SectionTitle, Stat } from '@/components/live/ui';
 import { DnaRadar } from '@/components/live/dna-radar';
 import { MissionCard } from '@/components/live/mission-card';
 import { DailyChallengeCard } from './daily-challenge';
@@ -77,6 +77,7 @@ export default async function HomePage() {
           {coach && (
             <Card>
               <SectionTitle action={<Badge tone="violet">AI coach</Badge>}>Your coach</SectionTitle>
+              {coach.aiAvailable === false && <AiFallbackNotice className="mb-3" />}
               <ul className="space-y-2 text-sm">
                 {coach.insights.map((insight) => (
                   <li key={insight} className="flex gap-2">

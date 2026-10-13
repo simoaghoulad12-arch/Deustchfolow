@@ -28,6 +28,8 @@ import { JournalService } from './journal/journal.service';
 import { JournalController } from './journal/journal.controller';
 import { ProgressService } from './progress/progress.service';
 import { ProgressController } from './progress/progress.controller';
+import { PathService } from './path/path.service';
+import { PathController } from './path/path.controller';
 import { AdminService } from './admin/admin.service';
 import { AdminController } from './admin/admin.controller';
 
@@ -51,6 +53,7 @@ import { AdminController } from './admin/admin.controller';
     PracticeController,
     JournalController,
     ProgressController,
+    PathController,
     AdminController,
   ],
   providers: [
@@ -72,6 +75,7 @@ import { AdminController } from './admin/admin.controller';
     PracticeService,
     JournalService,
     ProgressService,
+    PathService,
     AdminService,
   ],
 })

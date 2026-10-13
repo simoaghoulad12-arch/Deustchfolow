@@ -4,7 +4,7 @@ import { useEffect, useRef, useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { cn } from '@deutschflow/ui';
 import type { Evaluation } from '@/lib/api/live';
-import { Badge, Card, EmptyState, ProgressBar, buttonClass } from './ui';
+import { Badge, Card, EmptyState, ProgressBar, Ring, buttonClass } from './ui';
 import { AnswerBox, type AnswerMeta } from './answer-box';
 import { EvaluationView } from './evaluation-view';
 import { speak } from './use-speech';
@@ -18,7 +18,20 @@ export interface PracticeItem {
 type Mode = 'speaking' | 'brain' | 'emotion';
 
 /** Shared runner for Speaking, Brain and Emotion modes. */
-export function PracticeRunner({ mode, items, languageCode, timeLimitMs }: { mode: Mode; items: PracticeItem[]; languageCode: string; timeLimitMs?: number }) {
+export function PracticeRunner({
+  mode,
+  items,
+  languageCode,
+  timeLimitMs,
+  startWindowMs = 5_000,
+}: {
+  mode: Mode;
+  items: PracticeItem[];
+  languageCode: string;
+  timeLimitMs?: number;
+  /** Brain mode: the countdown in which the learner has to start answering. */
+  startWindowMs?: number;
+}) {
   const router = useRouter();
   const [index, setIndex] = useState(0);
   const [result, setResult] = useState<{ evaluation: Evaluation; xp: number; inTime: boolean } | null>(null);
@@ -26,12 +39,14 @@ export function PracticeRunner({ mode, items, languageCode, timeLimitMs }: { mod
   const [error, setError] = useState<string | null>(null);
   const [pending, start] = useTransition();
   const [remaining, setRemaining] = useState(timeLimitMs ?? 0);
+  const [answering, setAnswering] = useState(false);
   const startedAt = useRef(Date.now());
   const item = items[index];
 
   useEffect(() => {
     startedAt.current = Date.now();
     setRemaining(timeLimitMs ?? 0);
+    setAnswering(false);
     if (mode === 'brain' && item) speak(item.prompt, languageCode);
   }, [index, timeLimitMs, mode, item, languageCode]);
 
@@ -67,6 +82,7 @@ export function PracticeRunner({ mode, items, languageCode, timeLimitMs }: { mod
         prompt: item.prompt,
         response: text,
         responseMs: meta.responseMs,
+        firstInputMs: meta.firstInputMs,
         timeLimitMs,
         targetTone: item.targetTone,
         spoken: meta.spoken,
@@ -78,6 +94,8 @@ export function PracticeRunner({ mode, items, languageCode, timeLimitMs }: { mod
     });
 
   const pct = timeLimitMs ? (remaining / timeLimitMs) * 100 : 0;
+  const elapsed = (timeLimitMs ?? 0) - remaining;
+  const startLeft = Math.max(0, startWindowMs - elapsed);
 
   return (
     <Card className="mx-auto max-w-2xl">
@@ -103,19 +121,29 @@ export function PracticeRunner({ mode, items, languageCode, timeLimitMs }: { mod
         </button>
       )}
 
-      {mode === 'brain' && !result && timeLimitMs && (
+      {mode === 'brain' && !result && timeLimitMs && !answering && (
+        <div className="mt-5 flex items-center gap-4">
+          <Ring value={(startLeft / startWindowMs) * 100} size={76} label={`${Math.ceil(startLeft / 1000)} seconds to start answering`}>
+            <span className={cn('text-2xl font-bold tabular-nums', startLeft <= 2000 ? 'text-rose-600' : 'text-slate-900')}>{Math.ceil(startLeft / 1000)}</span>
+          </Ring>
+          <p className="text-sm text-muted-foreground" role="timer" aria-live="off">
+            {startLeft > 0 ? 'Start answering before the countdown ends — no time to translate.' : 'Too slow to start this time. Answer anyway for half XP.'}
+          </p>
+        </div>
+      )}
+      {mode === 'brain' && !result && timeLimitMs && answering && (
         <div className="mt-4">
           <div className="h-2 overflow-hidden rounded-full bg-slate-100" role="timer" aria-label={`${Math.ceil(remaining / 1000)} seconds left`}>
             <div className={cn('h-full rounded-full transition-[width] duration-100', pct > 40 ? 'bg-emerald-500' : pct > 15 ? 'bg-amber-500' : 'bg-rose-500')} style={{ width: `${pct}%` }} />
           </div>
-          <p className="mt-1 text-right text-xs text-muted-foreground">{remaining > 0 ? `${Math.ceil(remaining / 1000)}s` : 'Time is up — answer anyway for half XP'}</p>
+          <p className="mt-1 text-right text-xs text-muted-foreground">{remaining > 0 ? `${Math.ceil(remaining / 1000)}s to finish` : 'Time is up — answer anyway for half XP'}</p>
         </div>
       )}
 
       <div className="mt-5">
         {result ? (
           <>
-            {mode === 'brain' && <p className={cn('mb-3 text-sm font-semibold', result.inTime ? 'text-emerald-600' : 'text-amber-600')}>{result.inTime ? '⚡ In time!' : '⏱️ A bit too slow this time'}</p>}
+            {mode === 'brain' && <p className={cn('mb-3 text-sm font-semibold', result.inTime ? 'text-emerald-600' : 'text-amber-600')}>{result.inTime ? '⚡ Fast start and in time!' : '⏱️ A bit too slow this time'}</p>}
             <EvaluationView evaluation={result.evaluation} xpAwarded={result.xp} />
             <button
               type="button"
@@ -137,7 +165,9 @@ export function PracticeRunner({ mode, items, languageCode, timeLimitMs }: { mod
             resetKey={index}
             autoFocus
             submitLabel={mode === 'brain' ? 'Go' : 'Submit'}
-            placeholder={mode === 'speaking' ? 'Tap the mic and speak — or type' : 'Your answer…'}
+            variant={mode === 'speaking' ? 'speak' : 'default'}
+            onFirstInput={() => setAnswering(true)}
+            placeholder={mode === 'speaking' ? 'Your transcript appears here — or type' : 'Your answer…'}
           />
         )}
         {error && (

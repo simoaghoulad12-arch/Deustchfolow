@@ -17,6 +17,8 @@ export interface AssessmentInput {
   response: string;
   targetTone?: string;
   responseMs?: number;
+  /** Brain mode: time until the learner started answering. */
+  firstInputMs?: number;
   timeLimitMs?: number;
   speechConfidence?: number;
   spoken?: boolean;
@@ -80,7 +82,10 @@ export class AssessmentService {
     const channel: DnaDimension = input.spoken ? 'SPEAKING' : 'WRITING';
     observation[channel] = average([s.grammar, s.vocabulary, s.fluency, s.naturalness]);
     if (s.pronunciation != null) observation.PRONUNCIATION = s.pronunciation;
-    if (input.responseMs != null && input.timeLimitMs) {
+    if (input.firstInputMs != null) {
+      // Starting within ~1s scores high; at the 5-second countdown limit it is average.
+      observation.RESPONSE_SPEED = Math.max(5, Math.min(100, 100 - (input.firstInputMs / 5000) * 50));
+    } else if (input.responseMs != null && input.timeLimitMs) {
       observation.RESPONSE_SPEED = Math.max(5, Math.min(100, 100 - (input.responseMs / input.timeLimitMs) * 70));
     }
     await this.dna.observe(userId, languageCode, observation);

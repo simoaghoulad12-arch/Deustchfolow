@@ -11,6 +11,17 @@ export function countWords(text: string): number {
   return text.trim().split(/\s+/).filter(Boolean).length;
 }
 
+type ComparableEntry = { id: string; text: string; score: number | null; wordCount: number; createdAt: Date };
+
+/** "Day 1 vs Day N" (spec section 27): the learner's very first entry next to the latest one. */
+export function compareEntries(first: ComparableEntry | null, latest: ComparableEntry | null) {
+  if (!first || !latest || first.id === latest.id) return null;
+  const day = (d: Date) => Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate());
+  const dayNumber = Math.floor((day(latest.createdAt) - day(first.createdAt)) / 86_400_000) + 1;
+  const pick = (e: ComparableEntry) => ({ text: e.text, score: e.score, wordCount: e.wordCount, createdAt: e.createdAt });
+  return { first: pick(first), latest: pick(latest), dayNumber };
+}
+
 /**
  * AI Journal (spec section 21): the learner writes daily; the AI corrects
  * it, explains mistakes, suggests a natural version and the service
@@ -62,7 +73,12 @@ export class JournalService {
       orderBy: { createdAt: 'desc' },
       take: 60,
     });
-    return { entries, growth: this.growth([...entries].reverse()) };
+    const first = await this.prisma.client.journalEntry.findFirst({
+      where: { userId, languageCode: lang },
+      orderBy: { createdAt: 'asc' },
+      select: { id: true, text: true, score: true, wordCount: true, createdAt: true },
+    });
+    return { entries, growth: this.growth([...entries].reverse()), comparison: compareEntries(first, entries[0] ?? null) };
   }
 
   async get(userId: string, id: string) {

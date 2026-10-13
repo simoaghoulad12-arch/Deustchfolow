@@ -20,8 +20,12 @@ export class PlacementController {
   }
 
   @Get('next')
-  next(@CurrentUser() user: AuthenticatedUser, @Query('since', new ZodValidationPipe(since)) value: string) {
-    return this.placement.next(user.id, value);
+  next(
+    @CurrentUser() user: AuthenticatedUser,
+    @Query('since', new ZodValidationPipe(since)) value: string,
+    @Query('speech', new ZodValidationPipe(z.enum(['0', '1']).optional())) speech?: '0' | '1',
+  ) {
+    return this.placement.next(user.id, value, { speech: speech === '1' });
   }
 
   @Post('answer')

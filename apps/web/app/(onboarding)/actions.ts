@@ -35,10 +35,10 @@ export async function startPlacementAction(): Promise<LiveResult<{ since: string
   return liveSend(await user(), 'POST', '/placement/start');
 }
 
-export async function nextPlacementAction(since: string): Promise<LiveResult<PlacementQuestion>> {
+export async function nextPlacementAction(since: string, speech = false): Promise<LiveResult<PlacementQuestion>> {
   const session = await user();
   const { liveGet } = await import('@/lib/api/live');
-  const data = await liveGet<PlacementQuestion>(session, `/placement/next?since=${encodeURIComponent(since)}`);
+  const data = await liveGet<PlacementQuestion>(session, `/placement/next?since=${encodeURIComponent(since)}&speech=${speech ? '1' : '0'}`);
   return data ? { ok: true, data } : { ok: false, message: 'Could not load the next question. Please try again.', status: 0 };
 }
 
@@ -46,7 +46,9 @@ export async function answerPlacementAction(since: string, exerciseId: string, a
   return liveSend(await user(), 'POST', '/placement/answer', { since, exerciseId, answer });
 }
 
-export async function finishPlacementAction(since: string): Promise<LiveResult<{ level: string; answered: number; correct: number; xpAwarded: number }>> {
+export type PlacementResult = { level: string; answered: number; correct: number; xpAwarded: number; skillScores: Record<string, number>; recommendation: string };
+
+export async function finishPlacementAction(since: string): Promise<LiveResult<PlacementResult>> {
   return liveSend(await user(), 'POST', '/placement/finish', { since });
 }
 

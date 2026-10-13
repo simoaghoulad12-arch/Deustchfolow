@@ -10,14 +10,14 @@ export default async function Page() {
   const session = await getSession();
   if (!session) redirect('/login');
   const [prompts, me] = await Promise.all([
-    liveGet<{ items: PracticeItem[]; timeLimitMs?: number; level: string }>(session, '/practice/prompts?mode=brain'),
+    liveGet<{ items: PracticeItem[]; timeLimitMs?: number; startWindowMs?: number; level: string }>(session, '/practice/prompts?mode=brain'),
     liveGet<Me>(session, '/me'),
   ]);
   if (!prompts) return <ErrorState retryHref="/brain" />;
   return (
     <div>
-      <PageHeader eyebrow={`Think in the language · ${prompts.level}`} title="Brain mode" description="Questions come fast and in the language you’re learning. Answer before the timer runs out — no time to translate." />
-      <PracticeRunner mode="brain" items={prompts.items} timeLimitMs={prompts.timeLimitMs} languageCode={me?.targetLanguage?.code ?? 'de'} />
+      <PageHeader eyebrow={`Think in the language · ${prompts.level}`} title="Brain mode" description="Questions come fast and in the language you’re learning. You have a 5-second countdown to start answering, so there is no time to translate." />
+      <PracticeRunner mode="brain" items={prompts.items} timeLimitMs={prompts.timeLimitMs} startWindowMs={prompts.startWindowMs} languageCode={me?.targetLanguage?.code ?? 'de'} />
     </div>
   );
 }

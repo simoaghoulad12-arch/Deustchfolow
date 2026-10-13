@@ -17,6 +17,7 @@ import { MISSIONS_DE, CHAOS_DE, STORY_DE, STORY_CHAPTERS_DE, DEBATE_DE } from '.
 import { MISSIONS_INTL, EXTRA_MODES_EN } from './missions-intl';
 import { VOCABULARY, difficultyFor } from './vocabulary';
 import { GRAMMAR } from './grammar';
+import { PLACEMENT_ITEMS } from './placement';
 import { CURRICULUM_DE, CURRICULUM_INTL, CHALLENGE_PROMPTS, type ModuleTheme } from './curriculum';
 import type { Level, MissionDef } from './types';
 
@@ -187,6 +188,31 @@ export async function seedContent(prisma: PrismaClient) {
     exercises += g.exercises.length;
   }
   log(`${GRAMMAR.length} grammar topics, ${exercises} exercises`);
+
+  // Per-skill placement pool (vocabulary, reading, listening, writing, speaking); grammar items come from the topics above.
+  let placementItems = 0;
+  for (const l of LANGUAGES) {
+    const items = PLACEMENT_ITEMS.filter((p) => p.lang === l.code);
+    if (items.length === 0) continue;
+    const existing = await prisma.practiceExercise.count({ where: { languageCode: l.code, isPlacement: true, skill: { not: 'GRAMMAR' } } });
+    if (existing > 0) continue;
+    await prisma.practiceExercise.createMany({
+      data: items.map((p) => ({
+        languageCode: l.code,
+        cefrLevel: p.level as CEFRLevel,
+        type: p.type,
+        skill: p.skill as LearningSkill,
+        prompt: p.prompt,
+        payload: json(p.payload),
+        explanation: p.explanation ?? null,
+        difficulty: difficultyFor(p.level),
+        isPlacement: true,
+        grammarTopicId: null,
+      })),
+    });
+    placementItems += items.length;
+  }
+  log(`${placementItems} new placement items`);
 
   let challenges = 0;
   for (const l of LANGUAGES) {

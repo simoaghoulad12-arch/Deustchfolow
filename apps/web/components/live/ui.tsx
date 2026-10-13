@@ -109,6 +109,15 @@ export function ErrorState({ title = 'This page could not load', description = '
   );
 }
 
+/** Shown when the real AI provider failed and the offline coach answered (spec section 43). */
+export function AiFallbackNotice({ className }: { className?: string }) {
+  return (
+    <p role="status" className={cn('rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900', className)}>
+      The AI coach is temporarily unavailable. Your progress has been saved, and this feedback comes from the offline coach.
+    </p>
+  );
+}
+
 export function Skeleton({ className }: { className?: string }) {
   return <div className={cn('animate-pulse rounded-xl bg-slate-100', className)} aria-hidden />;
 }

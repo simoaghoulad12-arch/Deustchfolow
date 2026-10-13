@@ -1,6 +1,6 @@
 import type { Evaluation } from '@/lib/api/live';
 import { MISTAKE_CATEGORY_LABELS } from '@deutschflow/types';
-import { Badge, Ring, ScoreBar } from './ui';
+import { AiFallbackNotice, Badge, Ring, ScoreBar } from './ui';
 
 export function CorrectionCard({ c }: { c: Evaluation['corrections'][number] }) {
   return (
@@ -22,6 +22,7 @@ export function EvaluationView({ evaluation, xpAwarded }: { evaluation: Evaluati
   const s = evaluation.scores;
   return (
     <div className="space-y-4" aria-live="polite">
+      {evaluation.aiAvailable === false && <AiFallbackNotice />}
       <div className="flex items-center gap-4">
         <Ring value={evaluation.overall} size={72} label={`Score ${evaluation.overall}`} />
         <div className="min-w-0 flex-1">

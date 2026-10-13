@@ -27,6 +27,8 @@ export interface AdminResource {
   adminOnly?: boolean;
   /** Creation disabled (rows are created by the system, e.g. curriculum lessons). */
   readOnlyCreate?: boolean;
+  /** Fixed filter for list views, e.g. missions vs. scenarios share one model. */
+  where?: Record<string, unknown>;
   /** Derives computed columns before writing. */
   prepare?: (data: Record<string, unknown>) => Record<string, unknown>;
 }
@@ -45,6 +47,7 @@ export const ADMIN_RESOURCES: AdminResource[] = [
   {
     key: 'missions',
     label: 'Missions',
+    where: { mode: { in: ['MISSION', 'DAILY'] } },
     model: 'mission',
     idField: 'id',
     search: ['title', 'slug'],
@@ -54,6 +57,41 @@ export const ADMIN_RESOURCES: AdminResource[] = [
       slug,
       languageCode: lang,
       mode: z.enum(['MISSION', 'CHAOS', 'STORY', 'DEBATE', 'DAILY']).default('MISSION'),
+      title: text(140),
+      description: text(600),
+      objective: text(600),
+      scenario: text(2000),
+      cefrLevel: level,
+      difficulty: z.number().int().min(1).max(5).default(1),
+      requiredSkills: z.array(skill).max(6).default([]),
+      estimatedMinutes: z.number().int().min(1).max(60).default(5),
+      xpReward: z.number().int().min(0).max(1000).default(100),
+      keyPhrases: z.array(z.object({ term: text(120), translation: text(200) })).max(30).default([]),
+      grammarFocus: z.string().max(200).nullable().optional(),
+      criteria: z.array(criterion).max(12).default([]),
+      openingLine: text(600),
+      extra: z.record(z.unknown()).nullable().optional(),
+      order: z.number().int().min(0).max(10000).default(0),
+      isActive: z.boolean().default(true),
+      environmentId: uuid.nullable().optional(),
+      characterId: uuid.nullable().optional(),
+      storyId: uuid.nullable().optional(),
+      chapter: z.number().int().min(1).max(100).nullable().optional(),
+    }),
+  },
+  {
+    key: 'scenarios',
+    label: 'Scenarios (chaos, story, debate)',
+    where: { mode: { in: ['CHAOS', 'STORY', 'DEBATE'] } },
+    model: 'mission',
+    idField: 'id',
+    search: ['title', 'slug'],
+    orderBy: [{ languageCode: 'asc' }, { cefrLevel: 'asc' }, { order: 'asc' }],
+    columns: ['title', 'slug', 'languageCode', 'mode', 'cefrLevel', 'isActive'],
+    schema: z.object({
+      slug,
+      languageCode: lang,
+      mode: z.enum(['MISSION', 'CHAOS', 'STORY', 'DEBATE', 'DAILY']).default('CHAOS'),
       title: text(140),
       description: text(600),
       objective: text(600),
@@ -152,6 +190,33 @@ export const ADMIN_RESOURCES: AdminResource[] = [
       difficulty: z.number().int().min(1).max(5).default(1),
       isPlacement: z.boolean().default(false),
       grammarTopicId: uuid.nullable().optional(),
+    }),
+  },
+  {
+    key: 'levels',
+    label: 'CEFR levels',
+    model: 'level',
+    idField: 'id',
+    search: ['name'],
+    orderBy: [{ order: 'asc' }],
+    columns: ['code', 'name', 'description'],
+    readOnlyCreate: true,
+    schema: z.object({ name: text(80), description: z.string().max(600).nullable().optional() }),
+  },
+  {
+    key: 'modules',
+    label: 'Curriculum modules',
+    model: 'module',
+    idField: 'id',
+    search: ['title', 'slug'],
+    orderBy: [{ slug: 'asc' }],
+    columns: ['title', 'slug', 'order'],
+    schema: z.object({
+      courseId: uuid,
+      slug,
+      title: text(200),
+      description: z.string().max(600).nullable().optional(),
+      order: z.number().int().min(0).max(1000),
     }),
   },
   {

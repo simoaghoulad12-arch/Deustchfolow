@@ -17,15 +17,23 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         <Link href="/admin" className="whitespace-nowrap rounded-lg px-3 py-2 text-sm font-semibold hover:bg-slate-100">
           Overview
         </Link>
+        <Link href="/admin/analytics" className="whitespace-nowrap rounded-lg px-3 py-2 text-sm hover:bg-slate-100">
+          Analytics
+        </Link>
         {registry.map((r) => (
           <Link key={r.key} href={`/admin/${r.key}`} className="whitespace-nowrap rounded-lg px-3 py-2 text-sm hover:bg-slate-100">
             {r.label}
           </Link>
         ))}
         {session.role === UserRole.ADMIN && (
-          <Link href="/admin/users" className="whitespace-nowrap rounded-lg px-3 py-2 text-sm hover:bg-slate-100">
-            Users
-          </Link>
+          <>
+            <Link href="/admin/users" className="whitespace-nowrap rounded-lg px-3 py-2 text-sm hover:bg-slate-100">
+              Users
+            </Link>
+            <Link href="/admin/ai" className="whitespace-nowrap rounded-lg px-3 py-2 text-sm hover:bg-slate-100">
+              AI settings
+            </Link>
+          </>
         )}
       </nav>
       <div className="min-w-0">{children}</div>

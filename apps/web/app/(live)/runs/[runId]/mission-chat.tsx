@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { DNA_LABELS, MISTAKE_CATEGORY_LABELS } from '@deutschflow/types';
 import { cn } from '@deutschflow/ui';
 import type { ChatTurn, MissionCompletion, MissionRun } from '@/lib/api/live';
-import { Badge, ButtonLink, ProgressBar, Ring, buttonClass } from '@/components/live/ui';
+import { AiFallbackNotice, Badge, ButtonLink, ProgressBar, Ring, buttonClass } from '@/components/live/ui';
 import { AnswerBox } from '@/components/live/answer-box';
 import { speak } from '@/components/live/use-speech';
 import { finishRunAction, hintAction, sendTurnAction } from '../../actions';
@@ -19,6 +19,7 @@ export function MissionChat({ run, languageCode }: { run: MissionRun; languageCo
   const [error, setError] = useState<string | null>(null);
   const [autoSpeak, setAutoSpeak] = useState(false);
   const [showPhrases, setShowPhrases] = useState(false);
+  const [aiDown, setAiDown] = useState(false);
   const [pending, startTransition] = useTransition();
   const bottom = useRef<HTMLDivElement>(null);
 
@@ -42,6 +43,7 @@ export function MissionChat({ run, languageCode }: { run: MissionRun; languageCo
       }
       setTurns((t) => [...t.filter((x) => x.id !== optimistic.id), res.data.userTurn, res.data.reply]);
       setGoals((g) => g.map((goal) => ({ ...goal, met: res.data.criteriaMet.includes(goal.id) })));
+      setAiDown(res.data.aiAvailable === false);
       if (autoSpeak) speak(res.data.reply.content, languageCode);
       if (res.data.completion) {
         setCompletion(res.data.completion);
@@ -187,6 +189,7 @@ export function MissionChat({ run, languageCode }: { run: MissionRun; languageCo
 
         {!ended && (
           <div className="sticky bottom-16 border-t border-border bg-white/95 px-4 py-3 backdrop-blur sm:px-6 lg:bottom-0">
+            {aiDown && <AiFallbackNotice className="mb-2" />}
             {error && (
               <p className="mb-2 text-sm text-rose-600" role="alert">
                 {error}

@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { cn } from '@deutschflow/ui';
 import type { PublicExercise } from '@/lib/api/live';
 import { buttonClass } from './ui';
-import { speak } from './use-speech';
+import { speak, useSpeechRecognition } from './use-speech';
 
 const TYPE_LABEL: Record<string, string> = {
   MULTIPLE_CHOICE: 'Choose the right answer',
@@ -42,6 +42,11 @@ export function ExerciseInput({
   const [picked, setPicked] = useState<string | null>(null);
   const [order, setOrder] = useState<number[]>([]);
   const [matches, setMatches] = useState<Record<string, string>>({});
+  const speech = useSpeechRecognition(languageCode);
+
+  useEffect(() => {
+    if (exercise.type === 'SPEAKING' && speech.transcript) setText(speech.transcript);
+  }, [speech.transcript, exercise.type]);
 
   useEffect(() => {
     setText(exercise.type === 'ERROR_CORRECTION' ? exercise.prompt : '');
@@ -141,8 +146,44 @@ export function ExerciseInput({
       );
       break;
     }
+    case 'SPEAKING': {
+      answer = text;
+      body = (
+        <div className="space-y-3">
+          {p.sourceText && (
+            <p className="rounded-xl bg-slate-50 p-4 text-lg font-medium" lang={languageCode}>
+              {p.sourceText}
+            </p>
+          )}
+          {speech.supported ? (
+            <div className="flex flex-wrap items-center gap-3">
+              <button
+                type="button"
+                disabled={disabled}
+                onClick={() => (speech.listening ? speech.stop() : speech.start())}
+                aria-pressed={speech.listening}
+                aria-label={speech.listening ? 'Stop recording' : 'Record your answer'}
+                className={cn('flex h-16 w-16 items-center justify-center rounded-full text-2xl text-white shadow', speech.listening ? 'animate-pulse bg-rose-500' : 'bg-indigo-600 hover:bg-indigo-700')}
+              >
+                <span aria-hidden>🎙️</span>
+              </button>
+              <p className="min-w-0 flex-1 text-sm text-muted-foreground" aria-live="polite" lang={languageCode}>
+                {speech.listening ? 'Listening…' : text ? `We heard: “${text}”` : 'Tap the microphone and speak naturally.'}
+              </p>
+            </div>
+          ) : (
+            <textarea value={text} disabled={disabled} onChange={(e) => setText(e.target.value)} rows={2} className="w-full rounded-xl border border-border bg-white p-3 text-base" lang={languageCode} aria-label="Your answer" />
+          )}
+          {speech.error && (
+            <p className="text-xs text-rose-600" role="alert">
+              {speech.error}
+            </p>
+          )}
+        </div>
+      );
+      break;
+    }
     case 'FREE_WRITING':
-    case 'SPEAKING':
     case 'CONVERSATION': {
       answer = text;
       body = (
