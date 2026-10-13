@@ -52,7 +52,13 @@ natural corrections → XP, Language DNA and the next recommendation.
    content; languages, feature flags, settings and user roles are admin-only.
    The CMS lives in its own route group so staff are not forced through
    learner onboarding.
-8. **Answers never reach the browser.** `publicPayload` strips answers from
+8. **AI kill switch.** Admins can route every immersion call to the
+   offline coach (SystemSetting `ai.enabled = false`, Admin → AI settings)
+   without touching the server environment.
+9. **Curriculum path.** `/path` shows the A1–B2 courses
+   (`<lang>-<level>-curriculum`); lesson XP is claimed once per lesson and
+   the level bonus once per course.
+10. **Answers never reach the browser.** `publicPayload` strips answers from
    exercises; grading happens on the server.
 
 ## Testing
@@ -64,9 +70,25 @@ natural corrections → XP, Language DNA and the next recommendation.
 - Browser journeys at 390, 768, 1024 and 1440 px covering registration
   through the first café mission, plus every learner and admin page.
 
+## Hosting on Vercel (no Railway)
+
+- Web: Vercel project `deustchfolow-web` (`apps/web/vercel.json`).
+- API: a second Vercel project with root directory `apps/api`. `apps/api/vercel.json`
+  rewrites every request to `api/index.js`, which serves the compiled Nest app
+  (`src/serverless.ts`). The build applies Prisma migrations and the content
+  seed (`scripts/vercel-migrate.sh`) when `DATABASE_URL` is set.
+- Database: any Postgres (for example Neon from the Vercel Marketplace)
+  connected to both projects. `DIRECT_DATABASE_URL` falls back to
+  `DATABASE_URL_UNPOOLED`, then `DATABASE_URL`.
+- Set `NEST_API_URL=https://<api-domain>/api/v1` and the same
+  `SERVICE_TOKEN_SECRET` on both projects.
+- `@Cron` jobs only run while a serverless instance is warm; the Docker
+  deployment (`apps/api/Dockerfile`) remains the option for steady cron.
+
 ## Before production
 
-- Wire a real email provider in `apps/web/lib/email/email-service.ts`;
-  registration refuses to run in production without one.
+- Set `RESEND_API_KEY` and `EMAIL_FROM` (a sender on a domain verified in
+  Resend) on the web service; registration refuses to run in production
+  without an email provider.
 - Set `ANTHROPIC_API_KEY` to replace the mock with real conversations.
 - Do not run the demo seed (`seed-demo.ts`) in production.

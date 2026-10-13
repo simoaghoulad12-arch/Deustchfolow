@@ -14,6 +14,7 @@ const ListSchema = z
   })
   .strict();
 const IdSchema = z.string().min(1).max(120);
+const AiSwitchSchema = z.object({ enabled: z.boolean() }).strict();
 const RoleSchema = z.object({ role: z.enum(['STUDENT', 'TUTOR', 'CONTENT_EDITOR', 'SUPPORT', 'ADMIN']) }).strict();
 
 /** Content CMS — editors manage learning content; platform settings and users are admin-only. */
@@ -30,6 +31,23 @@ export class AdminController {
   @Get('dashboard')
   dashboard() {
     return this.admin.dashboard();
+  }
+
+  @Get('analytics')
+  analytics() {
+    return this.admin.analytics();
+  }
+
+  @Get('ai')
+  @Roles(UserRole.ADMIN)
+  aiStatus() {
+    return this.admin.aiStatus();
+  }
+
+  @Patch('ai')
+  @Roles(UserRole.ADMIN)
+  setAi(@Body(new ZodValidationPipe(AiSwitchSchema)) body: z.infer<typeof AiSwitchSchema>) {
+    return this.admin.setAiEnabled(body.enabled);
   }
 
   @Get('users')

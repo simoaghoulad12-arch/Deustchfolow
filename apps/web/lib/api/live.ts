@@ -342,4 +342,60 @@ export interface JournalGrowth {
   mistakesPer100Now: number;
 }
 
+export interface JournalComparison {
+  dayNumber: number;
+  first: { text: string; score: number | null; wordCount: number; createdAt: string };
+  latest: { text: string; score: number | null; wordCount: number; createdAt: string };
+}
+
 export type { MissionSummary, MissionTurnResult, MissionCompletion, ChatTurn, Correction, KeyPhrase };
+
+export interface PathLessonSummary {
+  slug: string;
+  title: string;
+  skill: string;
+  estimatedMinutes: number;
+  completed: boolean;
+}
+
+export interface PathOverview {
+  languageCode: string;
+  currentLevel: string;
+  nextLesson: string | null;
+  levels: {
+    level: string;
+    name: string;
+    available: boolean;
+    total: number;
+    completed: number;
+    modules: { id: string; title: string; description: string | null; lessons: PathLessonSummary[] }[];
+  }[];
+}
+
+export interface LessonContent {
+  goal?: string;
+  aiBrief?: string;
+  reading?: { text: string; gloss?: string };
+  vocabulary?: { word: string; translation: string; example?: string }[];
+  missionSlug?: string;
+  grammarTopic?: string;
+  writingPrompt?: string;
+  speakingPrompt?: string;
+}
+
+export interface PathLesson {
+  slug: string;
+  title: string;
+  description: string | null;
+  skill: string;
+  estimatedMinutes: number;
+  objectives: string[];
+  content: LessonContent | null;
+  level: string;
+  module: { title: string; position: string };
+  grammarTopic: { slug: string; title: string; summary: string } | null;
+  exercises: PublicExercise[];
+  completed: boolean;
+  previous: string | null;
+  next: string | null;
+}

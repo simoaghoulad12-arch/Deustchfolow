@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation';
 import { getSession } from '@/lib/auth/session';
-import { liveGet, type JournalEntry, type JournalGrowth, type Me } from '@/lib/api/live';
+import { liveGet, type JournalComparison, type JournalEntry, type JournalGrowth, type Me } from '@/lib/api/live';
 import { Card, ErrorState, PageHeader, Stat } from '@/components/live/ui';
 import { JournalComposer } from './journal-composer';
 
@@ -9,10 +9,11 @@ export const metadata = { title: 'Journal · DeutschFlow' };
 export default async function JournalPage() {
   const session = await getSession();
   if (!session) redirect('/login');
-  const [data, me] = await Promise.all([liveGet<{ entries: JournalEntry[]; growth: JournalGrowth | null }>(session, '/journal'), liveGet<Me>(session, '/me')]);
+  const [data, me] = await Promise.all([liveGet<{ entries: JournalEntry[]; growth: JournalGrowth | null; comparison?: JournalComparison | null }>(session, '/journal'), liveGet<Me>(session, '/me')]);
   if (!data) return <ErrorState retryHref="/journal" />;
   const lang = me?.targetLanguage?.code ?? 'de';
   const g = data.growth;
+  const cmp = data.comparison;
 
   return (
     <div className="space-y-6">
@@ -24,6 +25,25 @@ export default async function JournalPage() {
           <Stat icon="✍️" label="Words per entry" value={`${g.wordsBefore} → ${g.wordsNow}`} />
           <Stat icon="🩹" label="Mistakes / 100 words" value={`${g.mistakesPer100Before} → ${g.mistakesPer100Now}`} />
         </div>
+      )}
+      {cmp && (
+        <section aria-labelledby="journal-compare">
+          <h2 id="journal-compare" className="mb-3 text-lg font-semibold">
+            Day 1 vs. Day {cmp.dayNumber}
+          </h2>
+          <div className="grid gap-3 md:grid-cols-2">
+            <Card className="bg-slate-50">
+              <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Day 1 · {cmp.first.wordCount} words{cmp.first.score != null ? ` · score ${cmp.first.score}` : ''}</p>
+              <p className="text-slate-700" lang={lang}>“{cmp.first.text}”</p>
+            </Card>
+            <Card className="border-emerald-200 bg-emerald-50/60">
+              <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-emerald-700">
+                Day {cmp.dayNumber} · {cmp.latest.wordCount} words{cmp.latest.score != null ? ` · score ${cmp.latest.score}` : ''}
+              </p>
+              <p className="text-slate-900" lang={lang}>“{cmp.latest.text}”</p>
+            </Card>
+          </div>
+        </section>
       )}
       <JournalComposer languageCode={lang} />
       <section>

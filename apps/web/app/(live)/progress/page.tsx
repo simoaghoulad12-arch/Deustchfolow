@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation';
 import { DNA_LABELS, type DnaDimension } from '@deutschflow/types';
 import { getSession } from '@/lib/auth/session';
 import { liveGet, type ProgressOverview } from '@/lib/api/live';
-import { Badge, Card, ErrorState, PageHeader, ProgressBar, ScoreBar, SectionTitle, Stat } from '@/components/live/ui';
+import { AchievementCard, Badge, Card, ErrorState, PageHeader, ProgressBar, ScoreBar, SectionTitle, Stat } from '@/components/live/ui';
 import { DnaRadar } from '@/components/live/dna-radar';
 
 export const metadata = { title: 'Progress · DeutschFlow' };
@@ -101,12 +101,8 @@ export default async function ProgressPage() {
           <SectionTitle action={<Badge tone="violet">{p.achievements.filter((a) => a.unlockedAt).length} / {p.achievements.length}</Badge>}>Achievements</SectionTitle>
           <ul className="grid grid-cols-2 gap-2 sm:grid-cols-3">
             {p.achievements.map((a) => (
-              <li key={a.code} className={`rounded-xl border p-3 text-center text-xs ${a.unlockedAt ? 'border-violet-200 bg-violet-50' : 'border-border opacity-50 grayscale'}`} title={a.description}>
-                <span className="block text-2xl" aria-hidden>
-                  {a.icon}
-                </span>
-                <span className="mt-1 block font-semibold">{a.title}</span>
-                <span className="sr-only">{a.unlockedAt ? 'Unlocked' : 'Locked'}: {a.description}</span>
+              <li key={a.code}>
+                <AchievementCard icon={a.icon} title={a.title} description={a.description} unlocked={Boolean(a.unlockedAt)} />
               </li>
             ))}
           </ul>

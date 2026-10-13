@@ -13,6 +13,7 @@ export const PRIMARY_NAV: NavItem[] = [
 ];
 
 export const PRACTICE_NAV: NavItem[] = [
+  { href: '/path', label: 'A1–B2 path', icon: '🗺️' },
   { href: '/grammar', label: 'Grammar', icon: '🧩' },
   { href: '/brain', label: 'Brain mode', icon: '⚡' },
   { href: '/chaos', label: 'Chaos mode', icon: '🌀' },

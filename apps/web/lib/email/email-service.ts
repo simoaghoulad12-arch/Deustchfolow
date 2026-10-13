@@ -1,20 +1,23 @@
 import 'server-only';
 import type { EmailProvider } from './types';
 import { ConsoleEmailProvider } from './providers/console-provider';
+import { ResendEmailProvider } from './providers/resend-provider';
 
 /**
- * Provider-abstract email layer. No concrete production provider
- * (Postmark/SES/Resend/...) is wired up in Phase 2 — only the dev
- * transport. Resolution is lazy (on first send, not at module load) so
- * that importing this module never throws during `next build`, where
- * NODE_ENV is also "production".
+ * Provider-abstract email layer. Resend is used whenever RESEND_API_KEY and
+ * EMAIL_FROM are set; otherwise development falls back to the console
+ * transport and production refuses to send. Resolution is lazy (on first
+ * send, not at module load) so that importing this module never throws
+ * during `next build`, where NODE_ENV is also "production".
  */
-function resolveProvider(): EmailProvider {
-  if (process.env.NODE_ENV === 'production') {
+export function resolveProvider(env: NodeJS.ProcessEnv = process.env): EmailProvider {
+  if (env.RESEND_API_KEY && env.EMAIL_FROM) {
+    return new ResendEmailProvider(env.RESEND_API_KEY, env.EMAIL_FROM);
+  }
+  if (env.NODE_ENV === 'production') {
     throw new Error(
-      'No production EmailProvider configured. Wire a real provider in ' +
-        'apps/web/lib/email/email-service.ts before deploying — the dev ' +
-        'ConsoleEmailProvider must never run in production.',
+      'No production EmailProvider configured. Set RESEND_API_KEY and EMAIL_FROM — ' +
+        'the dev ConsoleEmailProvider must never run in production.',
     );
   }
   return new ConsoleEmailProvider();

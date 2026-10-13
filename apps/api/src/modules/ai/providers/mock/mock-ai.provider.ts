@@ -13,6 +13,7 @@ import {
 } from './contracts';
 import {
   TONE_CUES,
+  TONE_EFFECTS,
   findCorrections,
   improveText,
   looksLikeEnglish,
@@ -205,8 +206,8 @@ export class MockAiProvider implements AiProvider {
         detected,
         matchesTarget,
         explanation: matchesTarget
-          ? `Your wording reads as ${ctx.task.targetTone}. Listeners would pick that up from your word choice.`
-          : `This sounds more ${detected} than ${ctx.task.targetTone}. Try words like: ${(cues[ctx.task.targetTone] ?? []).filter((c) => c !== '!').slice(0, 3).join(', ')}.`,
+          ? `Your wording reads as ${ctx.task.targetTone}. ${TONE_EFFECTS[ctx.task.targetTone] ?? ''}`.trim()
+          : `This sounds more ${detected} than ${ctx.task.targetTone}. ${TONE_EFFECTS[ctx.task.targetTone] ?? ''} Try words like: ${(cues[ctx.task.targetTone] ?? []).filter((c) => c !== '!').slice(0, 3).join(', ')}.`.replace(/\s+/g, ' '),
       };
     }
 

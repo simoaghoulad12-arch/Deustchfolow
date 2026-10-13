@@ -65,6 +65,7 @@ export async function submitPracticeAction(input: {
   prompt: string;
   response: string;
   responseMs?: number;
+  firstInputMs?: number;
   timeLimitMs?: number;
   targetTone?: string;
   spoken?: boolean;
@@ -111,5 +112,12 @@ export async function grammarStageAction(slug: string, stage: 'EXPLANATION' | 'E
 export async function updateProfileAction(input: Record<string, unknown>): Promise<LiveResult<unknown>> {
   const result = await liveSend(await user(), 'PATCH', '/me', input);
   if (result.ok) revalidatePath('/', 'layout');
+  return result;
+}
+
+// ── Learning path ────────────────────────────────────────────────────
+export async function completeLessonAction(slug: string): Promise<LiveResult<XpReward & { levelCompleted: boolean }>> {
+  const result = await liveSend<XpReward & { levelCompleted: boolean }>(await user(), 'POST', `/path/lessons/${encodeURIComponent(slug)}/complete`);
+  if (result.ok) revalidatePath('/path');
   return result;
 }

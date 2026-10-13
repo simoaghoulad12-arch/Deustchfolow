@@ -1,8 +1,9 @@
 import { BadRequestException, ConflictException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
-import { UserRole } from '@deutschflow/types';
+import { AI_USAGE_LIMITS, UserRole } from '@deutschflow/types';
 import { Prisma } from '@deutschflow/database';
 import { PrismaService } from '../../../common/prisma/prisma.service';
 import { daysAgo } from '../common/dates';
+import { ImmersionAiService } from '../ai/immersion-ai.service';
 import { ADMIN_RESOURCES, findResource, type AdminResource } from './admin-resources';
 
 /** Optional JSON columns: null must be written as SQL NULL. */
@@ -21,7 +22,10 @@ interface Delegate {
 
 @Injectable()
 export class AdminService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly ai: ImmersionAiService,
+  ) {}
 
   private resource(key: string, role: UserRole): AdminResource {
     const resource = findResource(key);
@@ -71,7 +75,7 @@ export class AdminService {
   async list(key: string, role: UserRole, query: { q?: string; page?: number; languageCode?: string }) {
     const resource = this.resource(key, role);
     const page = Math.max(1, query.page ?? 1);
-    const where: Record<string, unknown> = {};
+    const where: Record<string, unknown> = { ...(resource.where ?? {}) };
     if (query.q) where.OR = resource.search.map((field) => ({ [field]: { contains: query.q, mode: 'insensitive' } }));
     if (query.languageCode && 'languageCode' in resource.schema.shape) where.languageCode = query.languageCode;
     const delegate = this.delegate(resource);
@@ -165,5 +169,64 @@ export class AdminService {
     return this.prisma.client.user
       .update({ where: { id: userId }, data: { role }, select: { id: true, email: true, role: true } })
       .catch((e: unknown) => this.handleWriteError(e));
+  }
+
+  /** Daily series for the last `days` days (UTC), oldest first. */
+  async analytics(days = 14) {
+    const db = this.prisma.client;
+    const since = daysAgo(days - 1);
+    since.setUTCHours(0, 0, 0, 0);
+    const day = (d: Date) => d.toISOString().slice(0, 10);
+    const keys = Array.from({ length: days }, (_, i) => day(new Date(since.getTime() + i * 86_400_000)));
+    const series = (rows: { createdAt: Date }[]) => {
+      const counts = new Map(keys.map((k) => [k, 0]));
+      for (const r of rows) {
+        const k = day(r.createdAt);
+        if (counts.has(k)) counts.set(k, (counts.get(k) ?? 0) + 1);
+      }
+      return keys.map((k) => ({ day: k, value: counts.get(k) ?? 0 }));
+    };
+    const [signups, runs, ai, xp, mistakes, dna, languages] = await Promise.all([
+      db.user.findMany({ where: { createdAt: { gte: since } }, select: { createdAt: true } }),
+      db.missionRun.findMany({ where: { status: 'COMPLETED', completedAt: { gte: since } }, select: { completedAt: true } }),
+      db.aiUsageRecord.findMany({ where: { createdAt: { gte: since } }, select: { createdAt: true } }),
+      db.xpEvent.findMany({ where: { createdAt: { gte: since } }, select: { createdAt: true, userId: true } }),
+      db.mistake.groupBy({ by: ['category'], _count: { _all: true }, orderBy: { _count: { category: 'desc' } } }),
+      db.dnaScore.groupBy({ by: ['dimension'], _avg: { score: true } }),
+      db.learningProfile.groupBy({ by: ['targetLanguageCode'], _count: { _all: true } }),
+    ]);
+    const activeByDay = new Map(keys.map((k) => [k, new Set<string>()]));
+    for (const e of xp) activeByDay.get(day(e.createdAt))?.add(e.userId);
+    return {
+      days: keys,
+      signups: series(signups),
+      activeLearners: keys.map((k) => ({ day: k, value: activeByDay.get(k)?.size ?? 0 })),
+      missionsCompleted: series(runs.map((r) => ({ createdAt: r.completedAt ?? new Date(0) }))),
+      aiRequests: series(ai),
+      mistakesByCategory: mistakes.map((m) => ({ category: m.category, count: m._count._all })),
+      averageDna: dna.map((d) => ({ dimension: d.dimension, score: Math.round(d._avg.score ?? 0) })),
+      learnersByLanguage: languages.map((l) => ({ languageCode: l.targetLanguageCode ?? 'none', count: l._count._all })),
+    };
+  }
+
+  async aiStatus() {
+    const since = daysAgo(1);
+    const byFeature = await this.prisma.client.aiUsageRecord.groupBy({ by: ['feature'], where: { createdAt: { gte: since } }, _count: { _all: true } });
+    const configured = this.ai.isRealProviderActive();
+    const enabled = await this.ai.realProviderEnabled();
+    return {
+      configured,
+      enabled,
+      mode: configured && enabled ? 'real' : 'offline',
+      model: configured ? process.env.ANTHROPIC_MODEL || 'default' : null,
+      limits: AI_USAGE_LIMITS,
+      requests24h: byFeature.map((f) => ({ feature: f.feature, count: f._count._all })),
+    };
+  }
+
+  async setAiEnabled(enabled: boolean) {
+    await this.prisma.client.systemSetting.upsert({ where: { key: 'ai.enabled' }, update: { value: enabled }, create: { key: 'ai.enabled', value: enabled } });
+    this.ai.invalidateSwitch();
+    return this.aiStatus();
   }
 }

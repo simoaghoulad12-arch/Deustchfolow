@@ -63,7 +63,7 @@ export function evaluationPrompt(ctx: EvaluationContextPayload): string {
 You assess a ${ctx.learner.targetLanguage.name} learner (CEFR ${ctx.learner.level}) on a ${ctx.task.kind} task. The learner's answer is the user message.
 Score 0–100: grammar, vocabulary, fluency, naturalness; pronunciation only if speechConfidence is given (else null); coherence for debate/journal/challenge (else null).
 Give encouraging, specific feedback (2–3 sentences, in simple English), up to 4 corrections of real mistakes, and an improvedVersion that keeps the learner's meaning and level.
-${ctx.task.kind === 'emotion' ? `Also judge the tone: target tone is "${ctx.task.targetTone}". Fill "tone" with what a native listener would perceive and why.` : 'Set tone to null.'}
+${ctx.task.kind === 'emotion' ? `Also judge the tone: target tone is "${ctx.task.targetTone}". Fill "tone" with what a native listener would perceive, and explain how this tone changes the perceived meaning of the same message.` : 'Set tone to null.'}
 
 ${SAFETY}
 

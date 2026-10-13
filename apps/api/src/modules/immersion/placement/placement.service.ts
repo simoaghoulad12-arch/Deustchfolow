@@ -8,8 +8,11 @@ import { LearnerService } from '../learner/learner.service';
 import { gradeExercise, publicPayload } from '../exercises/exercise-grader';
 import {
   PLACEMENT_MAX_QUESTIONS,
+  PLACEMENT_SKILLS,
   estimatePlacementLevel,
   nextPlacementLevel,
+  nextPlacementSkill,
+  placementSkillScores,
   type PlacementAnswer,
 } from './placement-engine';
 
@@ -51,7 +54,7 @@ export class PlacementService {
     return attempts;
   }
 
-  async next(userId: string, since: string) {
+  async next(userId: string, since: string, options: { speech?: boolean } = {}) {
     const from = this.parseSince(since);
     const lang = await this.context.activeLanguage(userId);
     const attempts = await this.answered(userId, lang, from);
@@ -61,13 +64,24 @@ export class PlacementService {
     const target = nextPlacementLevel(answers);
     const seen = attempts.map((a) => a.exerciseId);
     const pool = await this.prisma.client.practiceExercise.findMany({
-      where: { languageCode: lang, isPlacement: true, id: { notIn: seen } },
+      where: {
+        languageCode: lang,
+        isPlacement: true,
+        id: { notIn: seen },
+        ...(options.speech ? {} : { skill: { not: 'SPEAKING' as const } }),
+      },
       select: { id: true, type: true, prompt: true, payload: true, cefrLevel: true, skill: true },
     });
     if (pool.length === 0) return { done: true as const, answered: answers.length };
+    // Rotate through the skills so every one gets a score, then pick the item closest to the staircase level.
+    const available = PLACEMENT_SKILLS.filter((skill) => pool.some((p) => p.skill === skill));
+    const skill = nextPlacementSkill(
+      attempts.map((a) => a.exercise.skill),
+      available,
+    );
+    const candidates = pool.filter((p) => p.skill === skill);
     const order = ['A1', 'A2', 'B1', 'B2'];
-    // Closest level to the staircase target; deterministic within a level.
-    const item = [...pool].sort(
+    const item = [...(candidates.length ? candidates : pool)].sort(
       (a, b) => Math.abs(order.indexOf(a.cefrLevel) - order.indexOf(target)) - Math.abs(order.indexOf(b.cefrLevel) - order.indexOf(target)) || a.id.localeCompare(b.id),
     )[0]!;
     return {
@@ -110,14 +124,7 @@ export class PlacementService {
     const answers: PlacementAnswer[] = attempts.map((a) => ({ level: a.exercise.cefrLevel as CEFRLevel, correct: a.isCorrect }));
     const level = answers.length ? estimatePlacementLevel(answers) : 'A1';
 
-    const bySkill = new Map<string, { correct: number; total: number }>();
-    for (const a of attempts) {
-      const entry = bySkill.get(a.exercise.skill) ?? { correct: 0, total: 0 };
-      entry.total++;
-      if (a.isCorrect) entry.correct++;
-      bySkill.set(a.exercise.skill, entry);
-    }
-    const skillScores = Object.fromEntries([...bySkill].map(([skill, v]) => [skill, Math.round((v.correct / v.total) * 100)]));
+    const skillScores = placementSkillScores(attempts.map((a) => ({ skill: a.exercise.skill, correct: a.isCorrect })));
 
     const result = await this.prisma.client.placementResult.create({
       data: {
@@ -131,7 +138,19 @@ export class PlacementService {
     await this.learner.setLevel(userId, lang, level);
     const reward = answers.length >= 5 ? await this.gamification.rewardFor('test') : 0;
     if (reward > 0) await this.gamification.awardXp(userId, lang, 'test', reward, { refId: result.id, minutes: 5 });
-    return { level, skillScores, answered: answers.length, correct: answers.filter((a) => a.correct).length, xpAwarded: reward };
+    const startModule = await this.prisma.client.module.findFirst({
+      where: { course: { slug: `${lang}-${level.toLowerCase()}-curriculum` } },
+      orderBy: { order: 'asc' },
+      select: { title: true },
+    });
+    return {
+      level,
+      skillScores,
+      answered: answers.length,
+      correct: answers.filter((a) => a.correct).length,
+      xpAwarded: reward,
+      recommendation: startModule ? `Start with ${level}, module 1: ${startModule.title}.` : `Start with the ${level} missions in your language world.`,
+    };
   }
 
   /** "Skip the test": start at A1 (or a self-selected level) right away. */

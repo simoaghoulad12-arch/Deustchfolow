@@ -34,3 +34,9 @@ export async function setRoleAction(userId: string, role: string): Promise<LiveR
   if (result.ok) revalidatePath('/admin/users');
   return result;
 }
+
+export async function setAiEnabledAction(enabled: boolean): Promise<LiveResult<unknown>> {
+  const result = await liveSend(await user(), 'PATCH', '/admin/ai', { enabled });
+  if (result.ok) revalidatePath('/admin/ai');
+  return result;
+}

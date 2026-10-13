@@ -2,10 +2,12 @@ import { difficultyProfile, nextDifficulty, nextProficiency, smoothScore, TARGET
 import { nextStreak } from '../gamification/streak';
 import { generateLearningPlan, nextLevel } from '../plan/learning-plan';
 import { MASTERED_INTERVAL_DAYS, reviewCard } from '../vocabulary/srs';
-import { estimatePlacementLevel, nextPlacementLevel, type PlacementAnswer } from '../placement/placement-engine';
+import { estimatePlacementLevel, nextPlacementLevel, nextPlacementSkill, placementSkillScores, type PlacementAnswer } from '../placement/placement-engine';
 import { gradeExercise, isAutoGraded, normalizeAnswer, publicPayload } from '../exercises/exercise-grader';
 import { mistakeKey, nextMastery } from '../errors/mistake-key';
-import { countWords } from '../journal/journal.service';
+import { compareEntries, countWords } from '../journal/journal.service';
+import { BRAIN_START_MS, brainInTime } from '../practice/practice.service';
+import { curriculumSlug } from '../path/path.service';
 import { deckCandidates } from '../missions/conversation.service';
 
 describe('adaptive engine', () => {
@@ -206,5 +208,59 @@ describe('mission vocabulary to deck', () => {
   it('finds article-stored nouns from inflected key phrases', () => {
     const candidates = deckCandidates(['Ich möchte einen Kaffee.', 'la cuenta', "l'addition"]);
     expect(candidates).toEqual(expect.arrayContaining(['der kaffee', 'ich möchte einen kaffee', 'la cuenta', "l'addition"]));
+  });
+});
+
+describe('placement skills', () => {
+  it('rotates through the least-tested skill in spec order', () => {
+    const all = ['GRAMMAR', 'VOCABULARY', 'READING', 'LISTENING', 'WRITING', 'SPEAKING'];
+    expect(nextPlacementSkill([], all)).toBe('GRAMMAR');
+    expect(nextPlacementSkill(['GRAMMAR'], all)).toBe('VOCABULARY');
+    expect(nextPlacementSkill(['GRAMMAR', 'VOCABULARY', 'READING', 'LISTENING', 'WRITING'], all)).toBe('SPEAKING');
+    expect(nextPlacementSkill(['GRAMMAR', 'VOCABULARY', 'READING', 'LISTENING', 'WRITING'], all.filter((s) => s !== 'SPEAKING'))).toBe('GRAMMAR');
+    expect(nextPlacementSkill([], [])).toBeNull();
+  });
+
+  it('scores each tested skill as a percentage', () => {
+    expect(
+      placementSkillScores([
+        { skill: 'GRAMMAR', correct: true },
+        { skill: 'GRAMMAR', correct: false },
+        { skill: 'LISTENING', correct: true },
+      ]),
+    ).toEqual({ GRAMMAR: 50, LISTENING: 100 });
+  });
+});
+
+describe('brain mode countdown', () => {
+  it('requires starting within five seconds and finishing within the window', () => {
+    expect(BRAIN_START_MS).toBe(5000);
+    expect(brainInTime({ firstInputMs: 1200, responseMs: 7000, timeLimitMs: 12000 })).toBe(true);
+    expect(brainInTime({ firstInputMs: 6000, responseMs: 7000, timeLimitMs: 12000 })).toBe(false);
+    expect(brainInTime({ firstInputMs: 1000, responseMs: 13000, timeLimitMs: 12000 })).toBe(false);
+    expect(brainInTime({ responseMs: 4000 })).toBe(true);
+    expect(brainInTime({})).toBe(false);
+  });
+});
+
+describe('journal Day 1 vs Day N', () => {
+  const entry = (id: string, day: string, text: string) => ({ id, text, score: 50, wordCount: text.split(' ').length, createdAt: new Date(`${day}T10:00:00Z`) });
+
+  it('compares the first entry with the latest one', () => {
+    const cmp = compareEntries(entry('a', '2026-01-01', 'I go work yesterday.'), entry('b', '2026-03-31', 'Yesterday I went to work early.'));
+    expect(cmp?.dayNumber).toBe(90);
+    expect(cmp?.first.text).toBe('I go work yesterday.');
+  });
+
+  it('needs two different entries', () => {
+    const only = entry('a', '2026-01-01', 'Hi');
+    expect(compareEntries(only, only)).toBeNull();
+    expect(compareEntries(null, null)).toBeNull();
+  });
+});
+
+describe('learning path', () => {
+  it('derives curriculum course slugs', () => {
+    expect(curriculumSlug('de', 'B1')).toBe('de-b1-curriculum');
   });
 });

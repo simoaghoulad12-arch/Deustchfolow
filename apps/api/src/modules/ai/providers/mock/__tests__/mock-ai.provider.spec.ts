@@ -1,6 +1,7 @@
 import { EvaluationSchema, MissionHintSchema, MissionTurnSchema } from '../../../../immersion/ai/immersion-schemas';
 import { SCHEMA, embedContext, type EvaluationContextPayload, type LearnerContextPayload, type MissionContextPayload } from '../contracts';
-import { findCorrections, improveText } from '../language-rules';
+import { EMOTION_TONES } from '../../../../immersion/practice/prompt-bank';
+import { TONE_CUES, findCorrections, improveText } from '../language-rules';
 import { MockAiProvider } from '../mock-ai.provider';
 
 const learner = (code = 'de', difficulty = 3): LearnerContextPayload => ({
@@ -95,9 +96,23 @@ describe('MockAiProvider', () => {
   });
 
   it('detects tone in emotion mode', async () => {
-    const ctx: EvaluationContextPayload = { learner: learner('en'), task: { kind: 'emotion', prompt: 'Ask your neighbour', targetTone: 'polite' } };
-    const evaluation = EvaluationSchema.parse((await provider.complete(request(SCHEMA.evaluation, ctx, 'Could you please turn the music down? Thank you.'))).data);
+    const ctx: EvaluationContextPayload = { learner: learner('en'), task: { kind: 'emotion', prompt: 'Ask your neighbour', targetTone: 'friendly' } };
+    const evaluation = EvaluationSchema.parse((await provider.complete(request(SCHEMA.evaluation, ctx, 'Hey, could you turn the music down? Thanks!'))).data);
     expect(evaluation.tone?.matchesTarget).toBe(true);
+  });
+
+  it('explains how a missed tone is perceived', async () => {
+    const ctx: EvaluationContextPayload = { learner: learner('de'), task: { kind: 'emotion', prompt: 'Die Küche ist schon wieder schmutzig.', targetTone: 'sarcastic' } };
+    const evaluation = EvaluationSchema.parse((await provider.complete(request(SCHEMA.evaluation, ctx, 'Es reicht! Die Küche ist schon wieder schmutzig.'))).data);
+    expect(evaluation.tone?.detected).toBe('angry');
+    expect(evaluation.tone?.matchesTarget).toBe(false);
+    expect(evaluation.tone?.explanation).toMatch(/opposite of the words/);
+  });
+
+  it('has tone cues for every emotion tone in every language', () => {
+    for (const cues of Object.values(TONE_CUES)) {
+      expect(Object.keys(cues).sort()).toEqual([...EMOTION_TONES].sort());
+    }
   });
 
   it('rejects schemas it does not implement so legacy fallbacks keep working', async () => {

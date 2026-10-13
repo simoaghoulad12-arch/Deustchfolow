@@ -4,6 +4,7 @@ import { AiService } from '../../ai/services/ai.service';
 import { AiProviderFactory } from '../../ai/providers/ai-provider.factory';
 import { MockAiProvider } from '../../ai/providers/mock/mock-ai.provider';
 import { AiUsageService } from '../../ai/usage/ai-usage.service';
+import { PrismaService } from '../../../common/prisma/prisma.service';
 import type { AiConversationTurn } from '../../ai/providers/ai-provider.interface';
 
 export interface ImmersionAiRequest<T> {
@@ -44,14 +45,34 @@ export class ImmersionAiService {
     private readonly providerFactory: AiProviderFactory,
     private readonly mockProvider: MockAiProvider,
     private readonly usage: AiUsageService,
+    private readonly prisma: PrismaService,
   ) {}
+
+  private switchCache: { enabled: boolean; at: number } | null = null;
 
   isRealProviderActive(): boolean {
     return this.providerFactory.isRealProviderActive();
   }
 
+  /**
+   * Admin kill switch (SystemSetting "ai.enabled" = false): routes every
+   * immersion call to the offline coach, e.g. to cap costs during an
+   * incident. Cached briefly so it costs one query per 30 seconds.
+   */
+  async realProviderEnabled(): Promise<boolean> {
+    if (this.switchCache && Date.now() - this.switchCache.at < 30_000) return this.switchCache.enabled;
+    const setting = await this.prisma.client.systemSetting.findUnique({ where: { key: 'ai.enabled' } }).catch(() => null);
+    const enabled = setting?.value !== false;
+    this.switchCache = { enabled, at: Date.now() };
+    return enabled;
+  }
+
+  invalidateSwitch() {
+    this.switchCache = null;
+  }
+
   async complete<T>(request: ImmersionAiRequest<T>): Promise<ImmersionAiResult<T>> {
-    const real = this.providerFactory.isRealProviderActive();
+    const real = this.providerFactory.isRealProviderActive() && (await this.realProviderEnabled());
     if (real) {
       try {
         if (request.metered !== false) {

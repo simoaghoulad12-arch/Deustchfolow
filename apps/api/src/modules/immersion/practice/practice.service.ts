@@ -16,6 +16,16 @@ export function brainTimeLimitMs(level: CEFRLevel, difficulty: number): number {
   return Math.round(base * (1.2 - Math.min(Math.max(difficulty, 1), 5) * 0.08));
 }
 
+/** Brain mode: the learner must start answering within this window (spec section 21: 5-second countdown). */
+export const BRAIN_START_MS = 5_000;
+
+/** In time = started within the countdown and finished within the answer window. */
+export function brainInTime(input: { responseMs?: number; firstInputMs?: number; timeLimitMs?: number }): boolean {
+  const started = input.firstInputMs ?? input.responseMs;
+  if (started == null || started > BRAIN_START_MS) return false;
+  return !input.timeLimitMs || (input.responseMs ?? Infinity) <= input.timeLimitMs;
+}
+
 /** Full XP for the first sessions of the day, then a small amount, so XP tracks learning, not spamming. */
 const FULL_REWARD_SESSIONS_PER_DAY = 3;
 
@@ -47,12 +57,15 @@ export class PracticeService {
 
     if (mode === 'brain') {
       const pool = pickForLevel(BRAIN_QUESTIONS[lang] ?? BRAIN_QUESTIONS.de ?? {}, level);
-      return { mode, level, timeLimitMs: brainTimeLimitMs(level, stats.difficulty), items: rotate(pool, 5).map((prompt) => ({ prompt })) };
+      return { mode, level, startWindowMs: BRAIN_START_MS, timeLimitMs: brainTimeLimitMs(level, stats.difficulty), items: rotate(pool, 5).map((prompt) => ({ prompt })) };
     }
     if (mode === 'emotion') {
       const order: CEFRLevel[] = ['A1', 'A2', 'B1', 'B2', 'C1'];
       const pool = EMOTION_SCENARIOS.filter((s) => order.indexOf(s.level) <= order.indexOf(level));
-      return { mode, level, items: rotate(pool, 3).map((s) => ({ prompt: s.situation, targetTone: s.tone })) };
+      // Prefer scenarios at the learner's level; one message, said in each of its tones.
+      const atLevel = pool.filter((s) => s.level === level);
+      const scenario = rotate(atLevel.length ? atLevel : pool, 1)[0];
+      return { mode, level, items: scenario ? scenario.tones.map((tone) => ({ prompt: scenario.message, targetTone: tone })) : [] };
     }
     return { mode, level, items: rotate(pickForLevel(SPEAKING_TOPICS, level), 3).map((prompt) => ({ prompt })) };
   }
@@ -64,6 +77,7 @@ export class PracticeService {
       prompt: string;
       response: string;
       responseMs?: number;
+      firstInputMs?: number;
       timeLimitMs?: number;
       targetTone?: string;
       spoken?: boolean;
@@ -76,6 +90,7 @@ export class PracticeService {
       prompt: input.prompt,
       response: input.response,
       responseMs: input.responseMs,
+      firstInputMs: input.mode === 'brain' ? input.firstInputMs : undefined,
       timeLimitMs: input.timeLimitMs,
       targetTone: input.targetTone,
       spoken: input.spoken,
@@ -89,7 +104,7 @@ export class PracticeService {
     });
     const source = input.mode === 'speaking' && input.spoken ? 'speaking' : input.mode === 'brain' ? 'brain' : 'practice';
     const full = await this.gamification.rewardFor(source);
-    const inTime = input.mode !== 'brain' || !input.timeLimitMs || (input.responseMs ?? Infinity) <= input.timeLimitMs;
+    const inTime = input.mode !== 'brain' || brainInTime(input);
     const base = sessionsToday < FULL_REWARD_SESSIONS_PER_DAY ? full : Math.min(full, 5);
     const reward = evaluation.overall >= 30 ? Math.round(base * (inTime ? 1 : 0.5)) : 1;
 
