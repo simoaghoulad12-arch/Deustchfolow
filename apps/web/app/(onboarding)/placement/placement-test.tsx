@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import type { PublicExercise } from '@/lib/api/live';
-import { buttonClass, ProgressBar, ScoreBar } from '@/components/live/ui';
+import { buttonClass, ProgressBar, ScoreBar, XpGain } from '@/components/live/ui';
 import { ExerciseInput } from '@/components/live/exercise-input';
 import { answerPlacementAction, finishPlacementAction, nextPlacementAction, skipPlacementAction, startPlacementAction, type PlacementResult } from '../actions';
 
@@ -66,7 +66,7 @@ export function PlacementTest({ languageName, languageCode }: { languageName: st
           <p className="mt-2 text-muted-foreground">
             {result.correct} of {result.answered} answers correct. Your missions, grammar and vocabulary are now tuned to {result.level}.
           </p>
-          {result.xpAwarded > 0 && <p className="mt-2 font-semibold text-indigo-600">+{result.xpAwarded} XP</p>}
+          <XpGain amount={result.xpAwarded} className="mt-2" />
         </div>
         {skills.length > 0 && (
           <div className="mx-auto mt-8 max-w-md space-y-3 rounded-3xl border border-border bg-white p-6 shadow-sm">

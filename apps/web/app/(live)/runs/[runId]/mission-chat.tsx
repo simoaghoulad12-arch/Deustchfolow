@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { DNA_LABELS, MISTAKE_CATEGORY_LABELS } from '@deutschflow/types';
 import { cn } from '@deutschflow/ui';
 import type { ChatTurn, MissionCompletion, MissionRun } from '@/lib/api/live';
-import { AiFallbackNotice, Badge, ButtonLink, ProgressBar, Ring, buttonClass } from '@/components/live/ui';
+import { AchievementCard, AiFallbackNotice, ButtonLink, ProgressBar, Ring, buttonClass } from '@/components/live/ui';
 import { AnswerBox } from '@/components/live/answer-box';
 import { speak } from '@/components/live/use-speech';
 import { finishRunAction, hintAction, sendTurnAction } from '../../actions';
@@ -269,13 +269,13 @@ function Completion({ completion }: { completion: MissionCompletion }) {
       </div>
       <div className="space-y-5 p-6">
         {completion.newAchievements.length > 0 && (
-          <div className="flex flex-wrap gap-2">
+          <ul className="grid grid-cols-2 gap-2 sm:grid-cols-3" aria-label="New achievements">
             {completion.newAchievements.map((a) => (
-              <Badge key={a.code} tone="violet" className="text-sm">
-                {a.icon} {a.title}
-              </Badge>
+              <li key={a.code}>
+                <AchievementCard icon={a.icon} title={a.title} />
+              </li>
             ))}
-          </div>
+          </ul>
         )}
         <div>
           <p className="mb-2 text-sm font-semibold">What went well</p>

@@ -184,3 +184,46 @@ export function ScoreBar({ label, value }: { label: string; value: number | null
     </div>
   );
 }
+
+const avatarSizes = { sm: 'h-8 w-8 text-xs', md: 'h-12 w-12 text-base', lg: 'h-16 w-16 text-xl' } as const;
+
+/** Profile picture with an initials fallback. */
+export function Avatar({ name, src, size = 'md', className }: { name: string; src?: string | null; size?: keyof typeof avatarSizes; className?: string }) {
+  const initials =
+    name
+      .split(/[\s@._-]+/)
+      .filter(Boolean)
+      .slice(0, 2)
+      .map((part) => part[0]?.toUpperCase())
+      .join('') || '?';
+  return src ? (
+    // eslint-disable-next-line @next/next/no-img-element -- user-supplied URLs on any host
+    <img src={src} alt="" className={cn('shrink-0 rounded-full object-cover', avatarSizes[size], className)} />
+  ) : (
+    <span aria-hidden className={cn('inline-flex shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-indigo-500 to-violet-500 font-semibold text-white', avatarSizes[size], className)}>
+      {initials}
+    </span>
+  );
+}
+
+/** One achievement tile; locked achievements are greyed out. */
+export function AchievementCard({ icon, title, description, unlocked = true }: { icon: string; title: string; description?: string; unlocked?: boolean }) {
+  return (
+    <div className={cn('rounded-xl border p-3 text-center text-xs', unlocked ? 'border-violet-200 bg-violet-50' : 'border-border opacity-50 grayscale')} title={description}>
+      <span className={cn('block text-2xl', unlocked && 'motion-safe:animate-xp-pop')} aria-hidden>
+        {icon}
+      </span>
+      <span className="mt-1 block font-semibold">{title}</span>
+      <span className="sr-only">
+        {unlocked ? 'Unlocked' : 'Locked'}
+        {description ? `: ${description}` : ''}
+      </span>
+    </div>
+  );
+}
+
+/** "+N XP" with a short pop animation (skipped under reduced motion). */
+export function XpGain({ amount, className }: { amount: number; className?: string }) {
+  if (amount <= 0) return null;
+  return <p className={cn('inline-block font-semibold text-indigo-600 motion-safe:animate-xp-pop', className)}>+{amount} XP</p>;
+}

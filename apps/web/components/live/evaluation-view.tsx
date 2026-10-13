@@ -1,6 +1,6 @@
 import type { Evaluation } from '@/lib/api/live';
 import { MISTAKE_CATEGORY_LABELS } from '@deutschflow/types';
-import { AiFallbackNotice, Badge, Ring, ScoreBar } from './ui';
+import { AiFallbackNotice, Badge, Ring, ScoreBar, XpGain } from './ui';
 
 export function CorrectionCard({ c }: { c: Evaluation['corrections'][number] }) {
   return (
@@ -28,7 +28,7 @@ export function EvaluationView({ evaluation, xpAwarded }: { evaluation: Evaluati
         <div className="min-w-0 flex-1">
           <p className="font-semibold">{evaluation.overall >= 80 ? 'Excellent!' : evaluation.overall >= 60 ? 'Nice work!' : 'Good effort — keep going!'}</p>
           <p className="text-sm text-muted-foreground">{evaluation.feedback}</p>
-          {xpAwarded ? <p className="mt-1 text-sm font-semibold text-indigo-600">+{xpAwarded} XP</p> : null}
+          {xpAwarded ? <XpGain amount={xpAwarded} className="mt-1 text-sm" /> : null}
         </div>
       </div>
       <div className="grid gap-3 sm:grid-cols-2">

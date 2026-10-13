@@ -30,6 +30,16 @@ const config: Config = {
         md: 'calc(var(--radius) - 2px)',
         sm: 'calc(var(--radius) - 4px)',
       },
+      keyframes: {
+        'xp-pop': {
+          '0%': { transform: 'scale(0.6)', opacity: '0' },
+          '60%': { transform: 'scale(1.15)', opacity: '1' },
+          '100%': { transform: 'scale(1)' },
+        },
+      },
+      animation: {
+        'xp-pop': 'xp-pop 450ms ease-out both',
+      },
     },
   },
   plugins: [require('tailwindcss-animate')],
