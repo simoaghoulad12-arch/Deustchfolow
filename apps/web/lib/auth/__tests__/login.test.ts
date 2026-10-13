@@ -10,6 +10,11 @@ jest.mock('@deutschflow/database', () => ({
 jest.mock('../session', () => ({ createSession: jest.fn() }));
 jest.mock('../../security/auth-rate-limits', () => ({ checkAuthRateLimit: jest.fn() }));
 
+// Each test runs several real bcrypt operations at cost 12 (hash, plus the
+// constant-time dummy compare for unknown accounts). On a shared CI runner
+// running other packages' tests in parallel that can exceed Jest's 5 s default.
+jest.setTimeout(20_000);
+
 const mockedPrisma = prisma as unknown as { user: { findUnique: jest.Mock } };
 const mockedCheckAuthRateLimit = checkAuthRateLimit as jest.Mock;
 
