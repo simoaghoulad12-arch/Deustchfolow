@@ -27,7 +27,7 @@ export function LandingHeader({ signedIn }: { signedIn: boolean }) {
             </a>
           ))}
         </nav>
-        <nav aria-label="Account" className="flex items-center gap-2">
+        <nav aria-label="Account" className="flex shrink-0 items-center gap-1 whitespace-nowrap sm:gap-2">
           {signedIn ? (
             <ButtonLink href="/home" size="sm">
               Open app
