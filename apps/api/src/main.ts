@@ -1,7 +1,6 @@
 import { NestFactory } from '@nestjs/core';
-import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
-import { applySecurityHeaders } from './common/security-headers';
+import { configureApp } from './configure-app';
 
 async function bootstrap(): Promise<void> {
   // rawBody: true preserves the exact request bytes on `req.rawBody`
@@ -11,20 +10,7 @@ async function bootstrap(): Promise<void> {
   // 6.5). This does not disable JSON parsing for any other route.
   const app = await NestFactory.create(AppModule, { rawBody: true });
 
-  applySecurityHeaders(app);
-
-  app.setGlobalPrefix('api/v1');
-
-  // whitelist + forbidNonWhitelisted: any field not declared on a DTO is
-  // rejected outright, not silently stripped — the mass-assignment
-  // defense (see architecture decision record, section 8).
-  app.useGlobalPipes(
-    new ValidationPipe({
-      whitelist: true,
-      forbidNonWhitelisted: true,
-      transform: true,
-    }),
-  );
+  configureApp(app);
 
   const port = process.env.PORT ?? 4000;
   await app.listen(port);

@@ -70,6 +70,21 @@ natural corrections → XP, Language DNA and the next recommendation.
 - Browser journeys at 390, 768, 1024 and 1440 px covering registration
   through the first café mission, plus every learner and admin page.
 
+## Hosting on Vercel (no Railway)
+
+- Web: Vercel project `deustchfolow-web` (`apps/web/vercel.json`).
+- API: a second Vercel project with root directory `apps/api`. `apps/api/vercel.json`
+  rewrites every request to `api/index.js`, which serves the compiled Nest app
+  (`src/serverless.ts`). The build applies Prisma migrations and the content
+  seed (`scripts/vercel-migrate.sh`) when `DATABASE_URL` is set.
+- Database: any Postgres (for example Neon from the Vercel Marketplace)
+  connected to both projects. `DIRECT_DATABASE_URL` falls back to
+  `DATABASE_URL_UNPOOLED`, then `DATABASE_URL`.
+- Set `NEST_API_URL=https://<api-domain>/api/v1` and the same
+  `SERVICE_TOKEN_SECRET` on both projects.
+- `@Cron` jobs only run while a serverless instance is warm; the Docker
+  deployment (`apps/api/Dockerfile`) remains the option for steady cron.
+
 ## Before production
 
 - Set `RESEND_API_KEY` and `EMAIL_FROM` (a sender on a domain verified in
